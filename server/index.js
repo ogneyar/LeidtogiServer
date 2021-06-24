@@ -17,7 +17,7 @@ app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use('/api', router)
 app.get('/', (req, res) => {
-    res.send("PERN server - приветствует тебя!")
+    res.send("MERN server - приветствует тебя!")
 })
 app.get('/undefined', (req, res) => {
     res.status(200)

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Container, Image, Row, Button } from 'react-bootstrap'
-import star from '../../assets/star.png'
 import {useParams} from 'react-router-dom'
+
+// import star from '../../public/assets/star.png'
 import { fetchOneDevice } from '../../http/deviceAPI'
+import { API_URL, HOST_URL } from '../../utils/consts'
+
+const star = HOST_URL + 'assets/star.png'
 
 const Device = () => {
     const [device, setDevice] = useState({info: []})
@@ -16,7 +20,7 @@ const Device = () => {
         <Container className="mt-3">
             <Row>
                 <Col md={4}>
-                    <Image width={300} height={300} src={process.env.REACT_APP_API_URL + device.img} />                
+                    <Image width={300} height={300} src={API_URL + device.img} />                
                 </Col>
                 <Col md={4}>
                     <Row className="d-flex flex-column align-items-center">

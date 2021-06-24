@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import App from '../components/App'
+import App from '../../components/App'
 
 const PageId = () => {
   const router = useRouter()

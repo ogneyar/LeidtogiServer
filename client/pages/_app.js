@@ -1,6 +1,6 @@
-import '../styles/globals.css'
 import React, { createContext } from 'react';
-import './index.css';
+
+import '../styles/globals.css'
 import UserStore from '../store/UserStore';
 import DeviceStore from '../store/DeviceStore';
 
