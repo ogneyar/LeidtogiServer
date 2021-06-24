@@ -1,6 +1,7 @@
 import React from 'react'
 import { Col, Card, Image } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
+
 import star from '../assets/star.png'
 import { DEVICE_ROUTE } from '../utils/consts'
 

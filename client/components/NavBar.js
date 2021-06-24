@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
-import { Context } from '..'
 import { Navbar, Nav, Button, Container } from 'react-bootstrap'
 import { NavLink, useHistory } from 'react-router-dom'
-import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/consts'
 import { observer } from 'mobx-react-lite'
+
+import { Context } from '../pages/_app'
+import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/consts'
 
 
 const NavBar = observer(() => {

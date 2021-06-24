@@ -2,7 +2,7 @@
 import { observer } from 'mobx-react-lite'
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Dropdown, Row, Col} from 'react-bootstrap'
-import { Context } from '../..'
+import { Context } from '../../pages/_app'
 import {fetchBrands, fetchTypes, createDevice} from '../../http/deviceAPI'
 
 

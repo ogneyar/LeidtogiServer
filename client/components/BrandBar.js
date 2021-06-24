@@ -1,7 +1,9 @@
 import React, { useContext } from 'react'
-import { observer } from 'mobx-react-lite'
-import { Context } from '..'
 import { Row, Card } from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
+
+import { Context } from '../pages/_app'
+
 
 const BrandBar =  observer(() => {
     const {device} = useContext(Context)

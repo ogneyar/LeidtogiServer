@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
-import { Context } from '../..'
+import { Context } from '../../pages/_app'
 import { fetchTypes, deleteType } from '../../http/deviceAPI'
 import { observer } from 'mobx-react-lite'
 

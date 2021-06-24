@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react-lite'
 import { ListGroup } from 'react-bootstrap'
-import { Context } from '..'
+
+import { Context } from '../pages/_app'
 
 
 const TypeBar = observer(() => {

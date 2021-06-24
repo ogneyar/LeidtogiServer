@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Container, Image, Row, Button } from 'react-bootstrap'
-import star from '../assets/star.png'
+import star from '../../assets/star.png'
 import {useParams} from 'react-router-dom'
-import { fetchOneDevice } from '../http/deviceAPI'
+import { fetchOneDevice } from '../../http/deviceAPI'
 
 const Device = () => {
     const [device, setDevice] = useState({info: []})

@@ -1,14 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Container, Button } from 'react-bootstrap'
-import CreateBrand from '../components/modals/CreateBrand'
-import CreateDevice from '../components/modals/CreateDevice'
-import CreateType from '../components/modals/CreateType'
-import DeleteType from '../components/modals/DeleteType'
-import DeleteBrand from '../components/modals/DeleteBrand'
-import DeleteDevice from '../components/modals/DeleteDevice'
+import CreateBrand from '../modals/CreateBrand'
+import CreateDevice from '../modals/CreateDevice'
+import CreateType from '../modals/CreateType'
+import DeleteType from '../modals/DeleteType'
+import DeleteBrand from '../modals/DeleteBrand'
+import DeleteDevice from '../modals/DeleteDevice'
 import { observer } from 'mobx-react-lite'
-import { Context } from '..'
-import {fetchDevices} from '../http/deviceAPI'
+import { Context } from '../../pages/_app'
+import {fetchDevices} from '../../http/deviceAPI'
 
 
 const Admin = observer(() => {
