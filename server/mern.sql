@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `role`, `createdAt`, `updatedAt`) VALUES
-(1, 'mail@mail.ru', '$2b$05$VcmvaUgj4y3CKve.Q8/3teI38PXp6z9y/bakOVkpSpYf6oNSFGn7y', 'ADMIN', '2021-06-24 14:31:50', '2021-06-24 14:31:50');
+(1, 'ya13th@mail.ru', '$2b$05$Xt3xpk4JpdSzCD.tF8xR9.oWZZmK9AlZwr8NOKeW.dbA32Mt5yCz6', 'ADMIN', '2021-06-24 14:31:50', '2021-06-24 14:31:50');
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
