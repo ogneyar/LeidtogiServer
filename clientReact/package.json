@@ -16,8 +16,8 @@
     "react-scripts": "4.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
+    "start": "cross-env REACT_APP_ENV=develop react-scripts start",
+    "build": "cross-env REACT_APP_ENV=production react-scripts build"
   },
   "eslintConfig": {
     "extends": [
@@ -36,5 +36,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
