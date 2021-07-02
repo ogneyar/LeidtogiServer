@@ -9,6 +9,8 @@ import { useContext, useState, useEffect } from 'react';
 import { Context } from '.';
 import { check } from './http/userAPI';
 import { Spinner } from 'react-bootstrap';
+import LogoPanel from './components/LogoPanel';
+import Footer from './components/Footer';
 
 const App = observer(() => {
   const {user} = useContext(Context)
@@ -28,7 +30,9 @@ const App = observer(() => {
   return (
     <BrowserRouter>
       <NavBar />
+      <LogoPanel />
       <AppRouter />
+      <Footer />
     </BrowserRouter>
   );
 })

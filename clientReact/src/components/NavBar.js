@@ -1,10 +1,12 @@
 import React, { useContext } from 'react'
 import { Context } from '..'
-import { Navbar, Nav, Button, Container } from 'react-bootstrap'
+import { Navbar, Nav, Button, Container, Image } from 'react-bootstrap'
 import { NavLink, useHistory } from 'react-router-dom'
-import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from '../utils/consts'
+import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, CART_ROUTE } from '../utils/consts'
 import { observer } from 'mobx-react-lite'
+import cart from '../assets/cart.png'
 
+import '../styles/NavBar.css';
 
 const NavBar = observer(() => {
     const { user } = useContext(Context)
@@ -19,39 +21,59 @@ const NavBar = observer(() => {
     return (
         <Navbar bg="dark" variant="dark" className="NavBar">
             <Container>
-                <NavLink 
-                    style={{color: 'white'}} 
+                <NavLink className="NavLink"
+                    style={{color: 'white', textDecoration: 'none'}} 
                     to={SHOP_ROUTE}
                 >
-                    КупиДевайс
+                    <div className="NavBar_Brand">
+                        LeidTogi
+                    </div>
+                    
+                    Стройте с нами, экономьте время
+                    
                 </NavLink>
-                {user.isAuth ?
-                    <Nav className="ml-auto">
-                        <Button 
-                            variant={'outline-light'} 
-                            onClick={() => history.push(ADMIN_ROUTE)}
-                        >
-                            Админ панель
-                        </Button>
-                        <Button 
-                            variant={'outline-light'} 
-                            onClick={logOut} 
-                            className="ml-2"
-                        >
-                            Выйти
-                        </Button>
-                    </Nav>
+
+                <Nav className="ml-auto">
+
+                    <NavLink className="NavLink"
+                        to={CART_ROUTE}
+                    >
+                        <Image className="NavBar_Image" src={cart} />
+                    </NavLink>
+
+                    {user.isAuth ?
+                    
+                        <>
+                            <Button 
+                                variant={'outline-light'} 
+                                onClick={() => history.push(ADMIN_ROUTE)}
+                            >
+                                Админ панель
+                            </Button>
+                            <Button 
+                                variant={'outline-light'} 
+                                onClick={logOut} 
+                                className="ml-2"
+                            >
+                                Выйти
+                            </Button>
+                        </>
                     :
-                    <Nav className="ml-auto">
+                    
+
                         <Button 
                             onClick={() => history.push(LOGIN_ROUTE)}
                             variant={'outline-light'}
                         >
                             Авторизация
                         </Button>
-                    </Nav>
-                }
+                    
+                    }
+
+                </Nav>
+                
             </Container>
+            
         </Navbar>
     )
 })

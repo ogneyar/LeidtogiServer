@@ -57,7 +57,6 @@ const Device = () => {
                     </Row>    
                 )}
             </Row>
-            <div className="App">{device.name}</div>
         </Container>
     )
 }

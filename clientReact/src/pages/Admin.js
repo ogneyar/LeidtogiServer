@@ -10,6 +10,8 @@ import { observer } from 'mobx-react-lite'
 import { Context } from '..'
 import {fetchDevices} from '../http/deviceAPI'
 
+import '../styles/Admin.css';
+
 
 const Admin = observer(() => {
     const {device} = useContext(Context)
@@ -31,7 +33,7 @@ const Admin = observer(() => {
     const [deleteDeviceVisible, setDeleteDeviceVisible] = useState(false)
 
     return (
-        <Container className="d-flex flex-column">
+        <Container className="d-flex flex-column Admin">
             <Button 
                 variant={"outline-dark"} 
                 className="mt-4 p-2"
@@ -75,13 +77,14 @@ const Admin = observer(() => {
             >
                 Удалить устройство
             </Button>
+            
             <CreateType show={typeVisible} onHide={() => setTypeVisible(false)}/>
             <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)}/>
             <CreateDevice show={deviceVisible} onHide={() => setDeviceVisible(false)}/>
             <DeleteType show={deleteTypeVisible} onHide={() => setDeleteTypeVisible(false)}/>
             <DeleteBrand show={deleteBrandVisible} onHide={() => setDeleteBrandVisible(false)}/>
             <DeleteDevice show={deleteDeviceVisible} onHide={() => setDeleteDeviceVisible(false)}/>
-            <h1 className="App" style={{border:'1px solid', padding: '46px 0', margin:'10px auto', width:'150px', height:'150px', borderRadius:'100%'}}>admin</h1>
+            
         </Container>
     )
 })

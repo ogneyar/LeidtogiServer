@@ -3,7 +3,7 @@
   padding: 50px;
   font-weight: 700;
   /* transform: rotate(345deg); */
-  animation: text 5s linear infinite;
+  /* animation: text 5s linear infinite; */
 }
 @keyframes text {
   0% {
@@ -14,9 +14,12 @@
   }
 }
 
-.NavBar {
-  border-radius: 0 0 0 30px;
+.NavLink {
+  text-decoration: none;
 }
+
 .white {
   color: white;
 }
+
+
