@@ -4,3 +4,10 @@ export const REGISTRATION_ROUTE = '/registration'
 export const SHOP_ROUTE = '/'
 export const CART_ROUTE = '/cart'
 export const DEVICE_ROUTE = '/device'
+
+export const API_URL = 
+        process.env.REACT_APP_ENV === 'production' 
+    ? 
+        process.env.REACT_APP_API_URL_PRODUCTION 
+    : 
+        process.env.REACT_APP_API_URL

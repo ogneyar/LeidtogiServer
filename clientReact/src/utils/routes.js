@@ -1,9 +1,9 @@
-import Admin from './pages/Admin'
-import Cart from './pages/Cart'
-import Shop from './pages/Shop'
-import Auth from './pages/Auth'
-import Device from './pages/Device'
-import {ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, DEVICE_ROUTE} from './utils/consts'
+import Admin from '../pages/Admin'
+import Cart from '../pages/Cart'
+import Shop from '../pages/Shop'
+import Auth from '../pages/Auth'
+import Device from '../pages/Device'
+import {ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, DEVICE_ROUTE} from './consts'
 
 export const authRoutes = [
     {

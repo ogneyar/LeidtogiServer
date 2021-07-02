@@ -3,7 +3,7 @@ import React from 'react'
 import { useContext } from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 import { Context } from '..'
-import {authRoutes, publicRoutes} from '../routes'
+import {authRoutes, publicRoutes} from '../utils/routes'
 import {SHOP_ROUTE} from '../utils/consts'
 
 
