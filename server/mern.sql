@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Июн 24 2021 г., 20:00
+-- Время создания: Июл 03 2021 г., 11:59
 -- Версия сервера: 5.5.25
 -- Версия PHP: 5.3.13
 
@@ -19,45 +19,6 @@ SET time_zone = "+00:00";
 --
 -- База данных: `mern`
 --
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `baskets`
---
-
-CREATE TABLE IF NOT EXISTS `baskets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  `userId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `userId` (`userId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Дамп данных таблицы `baskets`
---
-
-INSERT INTO `baskets` (`id`, `createdAt`, `updatedAt`, `userId`) VALUES
-(1, '2021-06-24 14:31:50', '2021-06-24 14:31:50', 1);
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `basket_devices`
---
-
-CREATE TABLE IF NOT EXISTS `basket_devices` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  `basketId` int(11) DEFAULT NULL,
-  `deviceId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `basketId` (`basketId`),
-  KEY `deviceId` (`deviceId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -82,6 +43,38 @@ INSERT INTO `brands` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 (1, 'DeWALT', '2021-06-24 14:47:57', '2021-06-24 14:47:57'),
 (2, 'Makita', '2021-06-24 14:48:13', '2021-06-24 14:48:13'),
 (3, 'Metabo', '2021-06-24 14:48:45', '2021-06-24 14:48:45');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `carts`
+--
+
+CREATE TABLE IF NOT EXISTS `carts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  `userId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `cart_devices`
+--
+
+CREATE TABLE IF NOT EXISTS `cart_devices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  `cartId` int(11) DEFAULT NULL,
+  `deviceId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cartId` (`cartId`),
+  KEY `deviceId` (`deviceId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -225,17 +218,17 @@ INSERT INTO `users` (`id`, `email`, `password`, `role`, `createdAt`, `updatedAt`
 --
 
 --
--- Ограничения внешнего ключа таблицы `baskets`
+-- Ограничения внешнего ключа таблицы `carts`
 --
-ALTER TABLE `baskets`
-  ADD CONSTRAINT `baskets_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `carts`
+  ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Ограничения внешнего ключа таблицы `basket_devices`
+-- Ограничения внешнего ключа таблицы `cart_devices`
 --
-ALTER TABLE `basket_devices`
-  ADD CONSTRAINT `basket_devices_ibfk_1` FOREIGN KEY (`basketId`) REFERENCES `baskets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `basket_devices_ibfk_2` FOREIGN KEY (`deviceId`) REFERENCES `devices` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `cart_devices`
+  ADD CONSTRAINT `cart_devices_ibfk_1` FOREIGN KEY (`cartId`) REFERENCES `carts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `cart_devices_ibfk_2` FOREIGN KEY (`deviceId`) REFERENCES `devices` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Ограничения внешнего ключа таблицы `devices`
