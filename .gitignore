@@ -12,4 +12,4 @@
 # misc
 */.env
 
-*/*.sql
+*/mern.sql
