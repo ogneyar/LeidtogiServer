@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import UserStore from './store/UserStore';
-import DeviceStore from './store/DeviceStore';
+import DeviceStore from './store/ProductStore';
 
 export const Context = createContext(null)
 

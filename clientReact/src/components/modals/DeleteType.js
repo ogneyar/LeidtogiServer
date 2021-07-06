@@ -1,18 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
 import { Context } from '../..'
-import { fetchTypes, deleteType } from '../../http/deviceAPI'
+import { fetchTypes, deleteType } from '../../http/productAPI'
 import { observer } from 'mobx-react-lite'
 
 
 const DeleteType = observer(({show, onHide}) => {
-    const {device} = useContext(Context)
+    const {product} = useContext(Context)
     const [info, setInfo] = useState([])
 
     useEffect(() => {
         fetchTypes().then(data => {
-            device.setDevices(data)
-            setInfo(device.types)
+            product.setDevices(data)
+            setInfo(product.types)
             // console.log(data);
         })
     },[])

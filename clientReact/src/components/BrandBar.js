@@ -4,23 +4,23 @@ import { Context } from '..'
 import { Row, Card } from 'react-bootstrap'
 
 const BrandBar =  observer(() => {
-    const {device} = useContext(Context)
+    const {product} = useContext(Context)
     return (
         <Row className='d-flex mt-3 ml-0'>
             <Card
                 style={{cursor: "pointer"}}
-                border={undefined === device.selectedBrand.id ? 'danger' : 'light'}
-                onClick={() => device.setSelectedBrand({})}
+                border={undefined === product.selectedBrand.id ? 'danger' : 'light'}
+                onClick={() => product.setSelectedBrand({})}
                 key={0}
                 className="p-3"
             >
                 Все бренды
             </Card>
-            {device.brands.map(brand =>
+            {product.brands.map(brand =>
                 <Card
                     style={{cursor: "pointer"}}
-                    border={brand.id === device.selectedBrand.id ? 'danger' : 'light'}
-                    onClick={() => device.setSelectedBrand(brand)}
+                    border={brand.id === product.selectedBrand.id ? 'danger' : 'light'}
+                    onClick={() => product.setSelectedBrand(brand)}
                     key={brand.id}
                     className="p-3"
                 >

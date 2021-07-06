@@ -1,18 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
 import { Context } from '../..'
-import { fetchBrands, deleteBrand } from '../../http/deviceAPI'
+import { fetchBrands, deleteBrand } from '../../http/productAPI'
 import { observer } from 'mobx-react-lite'
 
 
 const DeleteBrand = observer(({show, onHide}) => {
-    const {device} = useContext(Context)
+    const {product} = useContext(Context)
     const [info, setInfo] = useState([])
 
     useEffect(() => {
         fetchBrands().then(data => {
-            device.setBrands(data)
-            setInfo(device.brands)
+            product.setBrands(data)
+            setInfo(product.brands)
         })
     },[])
 

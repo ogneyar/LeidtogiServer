@@ -2,26 +2,26 @@ import React, { useEffect, useState } from 'react'
 import { Card, Col, Container, Image, Row, Button } from 'react-bootstrap'
 import star from '../assets/star.png'
 import {useParams} from 'react-router-dom'
-import { fetchOneDevice } from '../http/deviceAPI'
+import { fetchOneProduct } from '../http/productAPI'
 import { API_URL } from '../utils/consts'
 
-const Device = () => {
-    const [device, setDevice] = useState({info: []})
+const Product = () => {
+    const [product, setProduct] = useState({info: []})
     const {id} = useParams()    
 
     useEffect(() => {
-        fetchOneDevice(id).then(data => setDevice(data))
+        fetchOneProduct(id).then(data => setProduct(data))
     },[])
     
     return (
         <Container className="mt-3">
             <Row>
                 <Col md={4}>
-                    <Image width={300} height={300} src={API_URL + device.img} />
+                    <Image width={300} height={300} src={API_URL + product.img} />
                 </Col>
                 <Col md={4}>
                     <Row className="d-flex flex-column align-items-center">
-                        <h2>{device.name}</h2>
+                        <h2>{product.name}</h2>
                         <div 
                             className="d-flex align-items-center justify-content-center"
                             style={{
@@ -33,7 +33,7 @@ const Device = () => {
                                 color: 'green'
                             }}
                         >
-                            {device.rating}
+                            {product.rating}
                         </div>                        
                     </Row>
                 </Col>
@@ -42,14 +42,14 @@ const Device = () => {
                         className="d-flex flex-column align-items-center justify-content-around"
                         style={{width: 300, height: 300, fontSize: 32, border: '5px solid lightgray'}}
                     >
-                        <h3>От {device.price} руб.</h3>
+                        <h3>От {product.price} руб.</h3>
                         <Button variant={'outline-dark'}>Добавить в корзину</Button>
                     </Card>
                 </Col>
             </Row>
             <Row className="d-flex flex-column m-3">
                 <h1>Характеристики</h1>
-                {device.info.map((info, index) =>
+                {product.info.map((info, index) =>
                     <Row 
                         key={info.id}
                         style={{background: index % 2 === 0 ? 'lightgray' : 'transparent', padding: 10}}
@@ -62,4 +62,4 @@ const Device = () => {
     )
 }
 
-export default Device
+export default Product

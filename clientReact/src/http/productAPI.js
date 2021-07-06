@@ -34,24 +34,24 @@ export const deleteBrand = async (id) => {
 
 // ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-export const createDevice = async (device) => {
-    const {data} = await $authHost.post('api/device', device)
+export const createProduct = async (product) => {
+    const {data} = await $authHost.post('api/product', product)
     return data
 }
 
-export const fetchDevices = async (typeId, brandId, page, limit) => {
-    const {data} = await $host.get('api/device', {params: {
+export const fetchProducts = async (typeId, brandId, page, limit) => {
+    const {data} = await $host.get('api/product', {params: {
         typeId, brandId, page
     }})
     return data
 }
 
-export const fetchOneDevice = async (id) => {
-    const {data} = await $host.get('api/device/' + id)
+export const fetchOneProduct = async (id) => {
+    const {data} = await $host.get('api/product/' + id)
     return data
 }
 
-export const deleteDevice = async (id) => {
-    const {data} = await $authHost.delete('api/device/' + id)
+export const deleteProduct = async (id) => {
+    const {data} = await $authHost.delete('api/product/' + id)
     return data
 }

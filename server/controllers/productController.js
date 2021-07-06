@@ -1,11 +1,11 @@
-const {Device, DeviceInfo} = require('../models/models')
+const {Product, ProductInfo} = require('../models/models')
 const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
 
 
-class DeviceController {
+class ProductController {
     async create(req, res, next) { 
        try {
         let {name, price, brandId, typeId, info} = req.body
@@ -13,18 +13,18 @@ class DeviceController {
         let fileName = uuid.v4() + '.jpg'
         img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
-        const device = await Device.create({name, price, brandId, typeId, img: fileName})
+        const product = await Product.create({name, price, brandId, typeId, img: fileName})
 
         if (info) {
             let inf = JSON.parse(info)
-            inf.forEach(i => DeviceInfo.create({
+            inf.forEach(i => ProductInfo.create({
                 title: i.title,
                 description: i.description,
-                deviceId: device.id 
+                productId: product.id 
             }))
         }
 
-        return res.json(device)
+        return res.json(product)
        }catch (e) {
            return next(ApiError.badRequest(e.message))
        }
@@ -35,48 +35,48 @@ class DeviceController {
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
-        let devices;
+        let products;
         if (!brandId && !typeId) {
-            devices = await Device.findAndCountAll({limit, offset})
+            products = await Product.findAndCountAll({limit, offset})
         }
         if (brandId && !typeId) {
-            devices = await Device.findAndCountAll({where:{brandId}, limit, offset})
+            products = await Product.findAndCountAll({where:{brandId}, limit, offset})
         }
         if (!brandId && typeId) {
-            devices = await Device.findAndCountAll({where:{typeId}, limit, offset})
+            products = await Product.findAndCountAll({where:{typeId}, limit, offset})
         }
         if (brandId && typeId) {
-            devices = await Device.findAndCountAll({where:{brandId, typeId}, limit, offset})
+            products = await Product.findAndCountAll({where:{brandId, typeId}, limit, offset})
         }
-        return res.json(devices)
+        return res.json(products)
     }
 
     async getOne(req, res) {
         const {id} = req.params
-        const device = await Device.findOne({
+        const product = await Product.findOne({
             where: {id},
-            include: [{model: DeviceInfo, as: 'info'}]
+            include: [{model: ProductInfo, as: 'info'}]
         })
-        return res.json(device)
+        return res.json(product)
     }
 
     async delete(req, res) {
         const {id} = req.params
-        const device = await Device.findOne({
+        const product = await Product.findOne({
             where: {id}
         })        
       
         try {
-            fs.unlinkSync(path.resolve(__dirname, '..', 'static', device.img))
+            fs.unlinkSync(path.resolve(__dirname, '..', 'static', product.img))
         }catch(e) {
             console.log("Удаляемый файл не найден.");
         }
         
 
-        await DeviceInfo.destroy({
-            where: {deviceId: id}
+        await ProductInfo.destroy({
+            where: {productId: id}
         })
-        const response = await Device.destroy({
+        const response = await Product.destroy({
             where: {id}
         })
         return res.json(response)
@@ -84,4 +84,4 @@ class DeviceController {
 
 }
 
-module.exports = new DeviceController()
+module.exports = new ProductController()

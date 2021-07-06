@@ -2,8 +2,8 @@ import Admin from '../pages/Admin'
 import Cart from '../pages/Cart'
 import Shop from '../pages/Shop'
 import Auth from '../pages/Auth'
-import Device from '../pages/Device'
-import {ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, DEVICE_ROUTE} from './consts'
+import Product from '../pages/Product'
+import {ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, PRODUCT_ROUTE} from './consts'
 
 export const authRoutes = [
     {
@@ -30,7 +30,7 @@ export const publicRoutes = [
         Component: Auth
     },
     {
-        path: DEVICE_ROUTE + '/:id',
-        Component: Device
+        path: PRODUCT_ROUTE + '/:id',
+        Component: Product
     }
 ]

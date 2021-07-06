@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {Modal, Button, Form} from 'react-bootstrap'
-import { createBrand } from '../../http/deviceAPI'
+import { createBrand } from '../../http/productAPI'
 
 const CreateBrand = ({show, onHide}) => {
     const [value, setValue] = useState('')

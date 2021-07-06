@@ -5,20 +5,20 @@ import { Context } from '..'
 
 
 const TypeBar = observer(() => {
-    const {device} = useContext(Context)
+    const {product} = useContext(Context)
     return (
         <ListGroup style={{cursor: "pointer"}}>
             <ListGroup.Item 
-                active={undefined === device.selectedType.id}
-                onClick={() => device.setSelectedType({})}
+                active={undefined === product.selectedType.id}
+                onClick={() => product.setSelectedType({})}
                 key={0}
             >
                 Все типы
             </ListGroup.Item>
-            {device.types.map(type => 
+            {product.types.map(type => 
                 <ListGroup.Item 
-                    active={type.id === device.selectedType.id}
-                    onClick={() => device.setSelectedType(type)}
+                    active={type.id === product.selectedType.id}
+                    onClick={() => product.setSelectedType(type)}
                     key={type.id}
                 >
                     {type.name}

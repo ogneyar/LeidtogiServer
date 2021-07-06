@@ -1,18 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
 import { Context } from '../..'
-import { fetchDevices, deleteDevice } from '../../http/deviceAPI'
+import { fetchProducts, deleteProduct } from '../../http/productAPI'
 import { observer } from 'mobx-react-lite'
 
 
-const DeleteDevice = observer(({show, onHide}) => {
-    const {device} = useContext(Context)
+const DeleteProduct = observer(({show, onHide}) => {
+    const {product} = useContext(Context)
     const [info, setInfo] = useState([])
 
     useEffect(() => {
-        fetchDevices().then(data => {
-            device.setDevices(data)
-            setInfo(device.devices.rows)
+        fetchProducts().then(data => {
+            product.setDevices(data)
+            setInfo(product.devices.rows)
         })
     },[])
 
@@ -21,7 +21,7 @@ const DeleteDevice = observer(({show, onHide}) => {
     }
 
     const hideAndDelete = (id) => {
-        deleteDevice(id)
+        deleteProduct(id)
         removeInfo(id)
         onHide()
     }
@@ -72,4 +72,4 @@ const DeleteDevice = observer(({show, onHide}) => {
     )
 })
 
-export default DeleteDevice
+export default DeleteProduct

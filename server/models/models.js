@@ -45,7 +45,7 @@ Category.hasMany(CategoryProduct)
 CategoryProduct.belongsTo(Category)
 
 Product.hasOne(CategoryProduct)
-CategoryProduct.belongsToMany(Product)
+CategoryProduct.belongsTo(Product)
 
 
 module.exports = {
