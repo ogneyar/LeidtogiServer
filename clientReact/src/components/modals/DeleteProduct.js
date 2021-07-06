@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
 import { fetchProducts, deleteProduct } from '../../http/productAPI'
-import { observer } from 'mobx-react-lite'
 
 
 const DeleteProduct = observer(({show, onHide}) => {
@@ -16,13 +16,18 @@ const DeleteProduct = observer(({show, onHide}) => {
         })
     },[])
 
-    const removeInfo = (number) => {
-        setInfo(info.filter(i => i.number !== number))
+   
+    const updateInfo = () => {
+        // setInfo(info.filter(i => i.number !== number))
+        fetchProducts().then(data => {
+            product.setProducts(data)
+            setInfo(product.products.rows)
+        })
     }
 
-    const hideAndDelete = (id) => {
-        deleteProduct(id)
-        removeInfo(id)
+    const hideAndDelete = async (id) => {
+        await deleteProduct(id)
+        updateInfo()
         onHide()
     }
 

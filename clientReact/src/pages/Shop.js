@@ -21,17 +21,17 @@ const Shop = observer(() => {
         fetchProducts(null, null, 1, product.limit).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
-            category.setSelectedCategory({})
-            product.setSelectedBrand({})
+            // category.setSelectedCategory({})
+            // product.setSelectedBrand({})
         })
     },[])
 
     useEffect(() => {
-        fetchProducts(product.selectedType.id, product.selectedBrand.id, product.page, product.limit).then(data => {
+        fetchProducts(category.selectedCategory.id, product.selectedBrand.id, product.page, product.limit).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
         })
-    },[product.page, product.selectedType, product.selectedBrand])
+    },[product.page, category.selectedCategory, product.selectedBrand])
 
     return (
         <Container>

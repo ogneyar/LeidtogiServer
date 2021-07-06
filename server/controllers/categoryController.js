@@ -31,6 +31,17 @@ class CategoryController {
         return res.json(category)
     }
 
+    async edit(req, res) {
+        const {id} = req.params
+        const {name} = req.body
+        const category = await Category.update({ name }, {
+            where: { id }
+        })
+        return res.json(category)
+    }
+
+
+
 }
 
 module.exports = new CategoryController()

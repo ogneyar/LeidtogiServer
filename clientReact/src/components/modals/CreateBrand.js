@@ -1,13 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import {Modal, Button, Form} from 'react-bootstrap'
-import { createBrand } from '../../http/productAPI'
+import { observer } from 'mobx-react-lite'
+import { createBrand, fetchBrands } from '../../http/productAPI'
+import { Context } from '../..'
 
-const CreateBrand = ({show, onHide}) => {
+
+const CreateBrand = observer(({show, onHide}) => {
+
+    const {product} = useContext(Context)
+
     const [value, setValue] = useState('')
     const addBrand = () => {
         createBrand({name: value}).then(data => {
             setValue('')
             onHide()
+        })
+        fetchBrands().then(data => {
+            product.setBrands(data)
         })
     }
 
@@ -39,7 +48,7 @@ const CreateBrand = ({show, onHide}) => {
             </Modal.Footer>
         </Modal>
     )
-}
+})
 
 export default CreateBrand
  

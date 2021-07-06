@@ -2,8 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import CreateBrand from '../components/modals/CreateBrand'
 import CreateProduct from '../components/modals/CreateProduct'
-import CreateCategory from '../components/modals/CreateCategory'
-import DeleteCategory from '../components/modals/DeleteCategory'
+import Category from '../components/modals/Category'
 import DeleteBrand from '../components/modals/DeleteBrand'
 import DeleteProduct from '../components/modals/DeleteProduct'
 import { observer } from 'mobx-react-lite'
@@ -16,7 +15,7 @@ import '../styles/Admin.css';
 const Admin = observer(() => {
     const {product, category} = useContext(Context)
 
-    useEffect(() => {        
+    useEffect(() => {
         fetchProducts(null, null, 1, 2).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
@@ -28,7 +27,7 @@ const Admin = observer(() => {
     const [categoryVisible, setCategoryVisible] = useState(false)
     const [brandVisible, setBrandVisible] =  useState(false)
     const [productVisible, setProductVisible] = useState(false)
-    const [deleteCategoryVisible, setDeleteCategoryVisible] = useState(false)
+    
     const [deleteBrandVisible, setDeleteBrandVisible] = useState(false)
     const [deleteProductVisible, setDeleteProductVisible] = useState(false)
 
@@ -36,52 +35,47 @@ const Admin = observer(() => {
         <Container className="d-flex flex-column Admin">
             <Button 
                 variant={"outline-dark"} 
-                className="mt-4 p-2"
+                className="mt-4 p-2 Admin_button"
                 onClick={() => setCategoryVisible(true)}
             >
-                Добавить категорию
+                Редактирование категорий
             </Button>
+
             <Button 
                 variant={"outline-dark"} 
-                className="mt-4 p-2"
+                className="mt-4 p-2 Admin_button"
                 onClick={() => setBrandVisible(true)}
             >
                 Добавить бренд
             </Button>
             <Button 
                 variant={"outline-dark"} 
-                className="mt-4 p-2"
+                className="mt-4 p-2 Admin_button"
                 onClick={() => setProductVisible(true)}
             >
                 Добавить устройство
             </Button>
+
             <hr/>
+
             <Button 
                 variant={"outline-danger"} 
-                className="mt-4 p-2"
-                onClick={() => setDeleteCategoryVisible(true)}
-            >
-                Удалить категорию
-            </Button>
-            <Button 
-                variant={"outline-danger"} 
-                className="mt-4 p-2"
+                className="mt-4 p-2 Admin_button"
                 onClick={() => setDeleteBrandVisible(true)}
             >
                 Удалить бренд
             </Button>
             <Button 
                 variant={"outline-danger"} 
-                className="mt-4 p-2"
+                className="mt-4 p-2 Admin_button"
                 onClick={() => setDeleteProductVisible(true)}
             >
                 Удалить устройство
             </Button>
             
-            <CreateCategory show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
+            <Category show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
             <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)}/>
             <CreateProduct show={productVisible} onHide={() => setProductVisible(false)}/>
-            <DeleteCategory show={deleteCategoryVisible} onHide={() => setDeleteCategoryVisible(false)}/>
             <DeleteBrand show={deleteBrandVisible} onHide={() => setDeleteBrandVisible(false)}/>
             <DeleteProduct show={deleteProductVisible} onHide={() => setDeleteProductVisible(false)}/>
             

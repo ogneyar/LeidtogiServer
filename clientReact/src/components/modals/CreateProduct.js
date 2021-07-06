@@ -1,9 +1,9 @@
 
-import { observer } from 'mobx-react-lite'
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Dropdown, Row, Col} from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
-import {fetchBrands, createProduct} from '../../http/productAPI'
+import {fetchBrands, createProduct, fetchProducts} from '../../http/productAPI'
 import {fetchCategoryes} from '../../http/categoryAPI'
 
 
@@ -22,8 +22,9 @@ const CreateProduct = observer(({show, onHide}) => {
         fetchBrands().then(data => product.setBrands(data))
     },[])
 
+
     const addInfo = () => {
-        setInfo([...info, {title: '', description: '', number: Date.now()}])
+        setInfo([...info, {title: '', description: '', number: Date.now()}]) 
     }
     const removeInfo = (number) => {
         setInfo(info.filter(i => i.number !== number))
@@ -37,7 +38,7 @@ const CreateProduct = observer(({show, onHide}) => {
         setFile(e.target.files[0]);
     }
 
-    const addDevice = () => {
+    const addProduct = async () => {
         const formData = new FormData()
         formData.append('name', name)
         formData.append('price', `${price}`)
@@ -45,7 +46,10 @@ const CreateProduct = observer(({show, onHide}) => {
         formData.append('brandId', product.selectedBrand.id)
         formData.append('categoryId', category.selectedCategory.id)
         formData.append('info', JSON.stringify(info))
-        createProduct(formData).then(data => onHide())
+
+        await createProduct(formData).then(data => onHide())
+
+        fetchProducts().then(data => product.setProducts(data))
     }
 
     return (
@@ -147,7 +151,7 @@ const CreateProduct = observer(({show, onHide}) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
-                <Button variant="outline-success" onClick={addDevice}>Добавить</Button>
+                <Button variant="outline-success" onClick={addProduct}>Добавить</Button>
             </Modal.Footer>
         </Modal>
     )

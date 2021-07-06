@@ -13,7 +13,10 @@ export default class CategoryStore {
     }
 
     setSubCategoryes(sub_categoryes) {
-        this._sub_categoryes = sub_categoryes
+        // this._sub_categoryes = sub_categoryes
+
+        let newCategoryStore = new CategoryStore()
+        this._sub_categoryes = newCategoryStore.setCategoryes(sub_categoryes)
     }
     
     setSelectedCategory(category) {

@@ -16,11 +16,17 @@ const DeleteBrand = observer(({show, onHide}) => {
         })
     },[])
 
-    const removeInfo = (number) => setInfo(info.filter(i => i.number !== number))
+    const updateInfo = () => {
+        // setInfo(info.filter(i => i.number !== number))
+        fetchBrands().then(data => {
+            product.setBrands(data)
+            setInfo(product.brands)
+        })
+    }
 
-    const hideAndDelete = (id) => {
-        deleteBrand(id)
-        removeInfo(id)
+    const hideAndDelete = async (id) => {
+        await deleteBrand(id)
+        updateInfo()
         onHide()
     }
 
