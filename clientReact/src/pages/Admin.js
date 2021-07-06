@@ -2,8 +2,8 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import CreateBrand from '../components/modals/CreateBrand'
 import CreateProduct from '../components/modals/CreateProduct'
-import CreateType from '../components/modals/CreateType'
-import DeleteType from '../components/modals/DeleteType'
+import CreateCategory from '../components/modals/CreateCategory'
+import DeleteCategory from '../components/modals/DeleteCategory'
 import DeleteBrand from '../components/modals/DeleteBrand'
 import DeleteProduct from '../components/modals/DeleteProduct'
 import { observer } from 'mobx-react-lite'
@@ -14,21 +14,21 @@ import '../styles/Admin.css';
 
 
 const Admin = observer(() => {
-    const {product} = useContext(Context)
+    const {product, category} = useContext(Context)
 
     useEffect(() => {        
         fetchProducts(null, null, 1, 2).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
-            product.setSelectedType({})
+            category.setSelectedCategory({})
             product.setSelectedBrand({})
         })
     },[])
 
-    const [typeVisible, setTypeVisible] = useState(false)
+    const [categoryVisible, setCategoryVisible] = useState(false)
     const [brandVisible, setBrandVisible] =  useState(false)
     const [productVisible, setProductVisible] = useState(false)
-    const [deleteTypeVisible, setDeleteTypeVisible] = useState(false)
+    const [deleteCategoryVisible, setDeleteCategoryVisible] = useState(false)
     const [deleteBrandVisible, setDeleteBrandVisible] = useState(false)
     const [deleteProductVisible, setDeleteProductVisible] = useState(false)
 
@@ -37,9 +37,9 @@ const Admin = observer(() => {
             <Button 
                 variant={"outline-dark"} 
                 className="mt-4 p-2"
-                onClick={() => setTypeVisible(true)}
+                onClick={() => setCategoryVisible(true)}
             >
-                Добавить тип
+                Добавить категорию
             </Button>
             <Button 
                 variant={"outline-dark"} 
@@ -59,9 +59,9 @@ const Admin = observer(() => {
             <Button 
                 variant={"outline-danger"} 
                 className="mt-4 p-2"
-                onClick={() => setDeleteTypeVisible(true)}
+                onClick={() => setDeleteCategoryVisible(true)}
             >
-                Удалить тип
+                Удалить категорию
             </Button>
             <Button 
                 variant={"outline-danger"} 
@@ -78,10 +78,10 @@ const Admin = observer(() => {
                 Удалить устройство
             </Button>
             
-            <CreateType show={typeVisible} onHide={() => setTypeVisible(false)}/>
+            <CreateCategory show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
             <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)}/>
             <CreateProduct show={productVisible} onHide={() => setProductVisible(false)}/>
-            <DeleteType show={deleteTypeVisible} onHide={() => setDeleteTypeVisible(false)}/>
+            <DeleteCategory show={deleteCategoryVisible} onHide={() => setDeleteCategoryVisible(false)}/>
             <DeleteBrand show={deleteBrandVisible} onHide={() => setDeleteBrandVisible(false)}/>
             <DeleteProduct show={deleteProductVisible} onHide={() => setDeleteProductVisible(false)}/>
             

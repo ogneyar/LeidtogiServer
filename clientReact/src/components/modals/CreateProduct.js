@@ -3,11 +3,12 @@ import { observer } from 'mobx-react-lite'
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Dropdown, Row, Col} from 'react-bootstrap'
 import { Context } from '../..'
-import {fetchBrands, fetchTypes, createProduct} from '../../http/productAPI'
+import {fetchBrands, createProduct} from '../../http/productAPI'
+import {fetchCategoryes} from '../../http/categoryAPI'
 
 
 const CreateProduct = observer(({show, onHide}) => {
-    const {product} = useContext(Context)
+    const {product, category} = useContext(Context)
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
     const [file, setFile] = useState(null)
@@ -17,7 +18,7 @@ const CreateProduct = observer(({show, onHide}) => {
     const [info, setInfo] = useState([])
 
     useEffect(() => {
-        fetchTypes().then(data => product.setTypes(data))
+        fetchCategoryes().then(data => category.setCategoryes(data))
         fetchBrands().then(data => product.setBrands(data))
     },[])
 
@@ -42,7 +43,7 @@ const CreateProduct = observer(({show, onHide}) => {
         formData.append('price', `${price}`)
         formData.append('img', file)
         formData.append('brandId', product.selectedBrand.id)
-        formData.append('typeId', product.selectedType.id)
+        formData.append('categoryId', category.selectedCategory.id)
         formData.append('info', JSON.stringify(info))
         createProduct(formData).then(data => onHide())
     }
@@ -63,14 +64,14 @@ const CreateProduct = observer(({show, onHide}) => {
             <Modal.Body>
                 <Form>
                     <Dropdown className='mt-2 mb-2'>
-                        <Dropdown.Toggle>{product.selectedType.name || "Выберите тип"}</Dropdown.Toggle>
+                        <Dropdown.Toggle>{category.selectedCategory.name || "Выберите категорию"}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {product.types.map(type =>
+                            {category.categoryes.map(cat =>
                                 <Dropdown.Item 
-                                    onClick={() => product.setSelectedType(type)} 
-                                    key={type.id}
+                                    onClick={() => category.setSelectedCategory(cat)} 
+                                    key={cat.id}
                                 >
-                                    {type.name}
+                                    {cat.name}
                                 </Dropdown.Item>    
                             )}
                         </Dropdown.Menu>

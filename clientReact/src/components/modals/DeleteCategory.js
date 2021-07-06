@@ -1,18 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
 import { Context } from '../..'
-import { fetchTypes, deleteType } from '../../http/productAPI'
+import { fetchCategoryes, deleteCategory } from '../../http/categoryAPI'
 import { observer } from 'mobx-react-lite'
 
 
-const DeleteType = observer(({show, onHide}) => {
-    const {product} = useContext(Context)
+const DeleteCategory = observer(({show, onHide}) => {
+    const {category} = useContext(Context)
     const [info, setInfo] = useState([])
 
     useEffect(() => {
-        fetchTypes().then(data => {
-            product.setDevices(data)
-            setInfo(product.types)
+        fetchCategoryes().then(data => {
+            category.setCategoryes(data)
+            setInfo(category.categoryes)
             // console.log(data);
         })
     },[])
@@ -22,7 +22,7 @@ const DeleteType = observer(({show, onHide}) => {
     }
 
     const hideAndDelete = (id) => {
-        deleteType(id)
+        deleteCategory(id)
         removeInfo(id)
         onHide()
     }
@@ -38,7 +38,7 @@ const DeleteType = observer(({show, onHide}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Удалить тип
+                    Удалить категорию
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -71,4 +71,4 @@ const DeleteType = observer(({show, onHide}) => {
     )
 })
 
-export default DeleteType
+export default DeleteCategory

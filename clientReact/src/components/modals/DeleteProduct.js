@@ -11,8 +11,8 @@ const DeleteProduct = observer(({show, onHide}) => {
 
     useEffect(() => {
         fetchProducts().then(data => {
-            product.setDevices(data)
-            setInfo(product.devices.rows)
+            product.setProducts(data)
+            setInfo(product.products.rows)
         })
     },[])
 

@@ -3,14 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import UserStore from './store/UserStore';
-import DeviceStore from './store/ProductStore';
+import ProductStore from './store/ProductStore';
+import CategoryStore from './store/CategoryStore';
 
 export const Context = createContext(null)
 
 ReactDOM.render(
   <Context.Provider value={{
     user: new UserStore(),
-    device: new DeviceStore()
+    product: new ProductStore(),
+    category: new CategoryStore()
   }}>
     <App />
   </Context.Provider>,

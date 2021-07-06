@@ -1,33 +1,34 @@
 import React from 'react'
+import { useEffect } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-import TypeBar from '../components/TypeBar'
+import CategoryBar from '../components/CategoryBar'
 import BrandBar from '../components/BrandBar'
 import ProductList from '../components/ProductList'
 import { observer } from 'mobx-react-lite'
 import { useContext } from 'react'
 import { Context } from '..'
-import { useEffect } from 'react'
-import {fetchBrands, fetchTypes, fetchProducts} from '../http/productAPI'
+import {fetchBrands, fetchProducts} from '../http/productAPI'
+import {fetchCategoryes} from '../http/categoryAPI.js'
 import Pages from '../components/Pages'
 
 
 const Shop = observer(() => {
-    const {product} = useContext(Context)
+    const {product, category} = useContext(Context)
 
     useEffect(() => {
-        fetchTypes().then(data => product.setTypes(data))
+        fetchCategoryes().then(data => category.setCategoryes(data))
         fetchBrands().then(data => product.setBrands(data))
         fetchProducts(null, null, 1, product.limit).then(data => {
-            product.setDevices(data.rows)
+            product.setProducts(data.rows)
             product.setTotalCount(data.count)
-            product.setSelectedType({})
+            category.setSelectedCategory({})
             product.setSelectedBrand({})
         })
     },[])
 
     useEffect(() => {
         fetchProducts(product.selectedType.id, product.selectedBrand.id, product.page, product.limit).then(data => {
-            product.setDevices(data.rows)
+            product.setProducts(data.rows)
             product.setTotalCount(data.count)
         })
     },[product.page, product.selectedType, product.selectedBrand])
@@ -36,7 +37,8 @@ const Shop = observer(() => {
         <Container>
             <Row className="mt-2">
                 <Col md={3}>
-                    <TypeBar />
+                    {/* <TypeBar /> */}
+                    <CategoryBar />
                 </Col>
                 <Col md={9}>
                     <BrandBar />
