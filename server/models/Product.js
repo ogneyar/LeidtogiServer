@@ -2,7 +2,7 @@ const sequelize = require('../db')
 const {DataTypes} = require('sequelize')
 
 
-const Device = sequelize.define('device', {
+const Product = sequelize.define('product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
@@ -10,4 +10,4 @@ const Device = sequelize.define('device', {
     img: {type: DataTypes.STRING, allowNull: false}
 })
 
-module.exports = Device
+module.exports = Product

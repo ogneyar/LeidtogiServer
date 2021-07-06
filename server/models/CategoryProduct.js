@@ -2,8 +2,8 @@ const sequelize = require('../db')
 const {DataTypes} = require('sequelize')
 
 
-const CartDevice = sequelize.define('cart_device', {
+const CategoryProduct = sequelize.define('category_product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
 })
 
-module.exports = CartDevice
+module.exports = CategoryProduct

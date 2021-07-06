@@ -3,14 +3,16 @@ const {DataTypes} = require('sequelize')
 
 const User = require('./User')
 const Cart = require('./Cart')
-const CartDevice = require('./CartDevice')
-const Device = require('./Device')
+const CartProduct = require('./CartProduct')
+const Product = require('./Product')
 const Type = require('./Type')
 const Brand = require('./Brand')
 const Rating = require('./Rating')
-const DeviceInfo = require('./DeviceInfo')
+const ProductInfo = require('./ProductInfo')
 const TypeBrand = require('./TypeBrand')
 
+const Category = require('./Category')
+const CategoryProduct = require('./CategoryProduct')
 
 User.hasOne(Cart)
 Cart.belongsTo(User)
@@ -18,35 +20,44 @@ Cart.belongsTo(User)
 User.hasMany(Rating)
 Rating.belongsTo(User)
 
-Cart.hasMany(CartDevice)
-CartDevice.belongsTo(Cart)
+Cart.hasMany(CartProduct)
+CartProduct.belongsTo(Cart)
 
-Type.hasMany(Device)
-Device.belongsTo(Type)
+Type.hasMany(Product)
+Product.belongsTo(Type)
 
-Brand.hasMany(Device)
-Device.belongsTo(Brand)
+Brand.hasMany(Product)
+Product.belongsTo(Brand)
 
-Device.hasMany(Rating)
-Rating.belongsTo(Device)
+Product.hasMany(Rating)
+Rating.belongsTo(Product)
 
-Device.hasMany(CartDevice)
-CartDevice.belongsTo(Device)
+Product.hasMany(CartProduct)
+CartProduct.belongsTo(Product)
 
-Device.hasMany(DeviceInfo, {as: 'info'})
-DeviceInfo.belongsTo(Device)
+Product.hasMany(ProductInfo, {as: 'info'})
+ProductInfo.belongsTo(Product)
 
 Type.belongsToMany(Brand, {through: TypeBrand})
 Brand.belongsToMany(Type, {through: TypeBrand})
 
+Category.hasMany(CategoryProduct)
+CategoryProduct.belongsTo(Category)
+
+Product.hasOne(CategoryProduct)
+CategoryProduct.belongsToMany(Product)
+
+
 module.exports = {
     User,
     Cart,
-    CartDevice,
-    Device,
+    CartProduct,
+    Product,
     Type,
     Brand,
     Rating,
     TypeBrand,
-    DeviceInfo
+    ProductInfo,
+    Category,
+    CategoryProduct
 }
