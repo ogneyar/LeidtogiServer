@@ -1,10 +1,15 @@
 import React from 'react'
+import { Container } from 'react-bootstrap'
+
 
 const Cart = () => {
+
     return (
-        <div className="App">
+        <Container 
+            className="Mobile"
+        >
             Cart
-        </div>
+        </Container>
     )
 }
 

@@ -20,3 +20,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.Row {
+  width:100%;
+  padding:0;
+  margin:0;
+}
+
+.Mobile {
+  /* background-color:red; */
+}
+
+@media(max-width:1000px) {
+  .Mobile {
+    /* background-color:green; */
+  }
+}

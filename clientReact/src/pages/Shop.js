@@ -34,7 +34,9 @@ const Shop = observer(() => {
     },[product.page, category.selectedCategory, product.selectedBrand])
 
     return (
-        <Container>
+        <Container
+            className="Mobile"
+        >
             <Row className="mt-2">
                 <Col md={3}>
                     {/* <TypeBar /> */}

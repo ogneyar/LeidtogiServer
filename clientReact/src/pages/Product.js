@@ -14,7 +14,7 @@ const Product = () => {
     },[])
     
     return (
-        <Container className="mt-3">
+        <Container className="mt-3 Mobile">
             <Row>
                 <Col md={4}>
                     <Image width={300} height={300} src={API_URL + product.img} />

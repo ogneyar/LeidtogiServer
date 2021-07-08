@@ -32,7 +32,7 @@ const Admin = observer(() => {
     const [deleteProductVisible, setDeleteProductVisible] = useState(false)
 
     return (
-        <Container className="d-flex flex-column Admin">
+        <Container className="d-flex flex-column Admin Mobile">
             <Button 
                 variant={"outline-dark"} 
                 className="mt-4 p-2 Admin_button"
