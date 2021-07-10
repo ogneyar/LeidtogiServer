@@ -1,1 +1,1 @@
-cd clientReact
+cd client
