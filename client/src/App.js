@@ -10,7 +10,8 @@ import { Context } from '.';
 import { check } from './http/userAPI';
 import { Spinner, Container } from 'react-bootstrap';
 import LogoPanel from './components/LogoPanel';
-import Footer from './components/Footer';
+import Footer from './components/footer/Footer';
+import End from './components/footer/End';
 
 const App = observer(() => {
   const {user} = useContext(Context)
@@ -43,7 +44,10 @@ const App = observer(() => {
       
       <AppRouter />
       
-      <Footer />
+      <footer>
+        <Footer />
+        <End />
+      </footer>      
     </BrowserRouter>
   );
 })

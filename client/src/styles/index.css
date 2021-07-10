@@ -1,10 +1,22 @@
+
+:root {
+  --main-grey-color:#6d6f71; /* 109 111 113  */
+  --main-orange-color:#ff9900; /* 255 153 0  */
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-a {
-  text-decoration: none;
+
+li {
+  list-style-type: none;
+}
+
+ul {
+  margin-left: 0;
+  padding-left: 0;
 }
 
 body {
@@ -19,6 +31,13 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.NavLink, 
+.NavLink:hover, 
+a, 
+a:hover {
+  text-decoration: none;
 }
 
 .Row {
