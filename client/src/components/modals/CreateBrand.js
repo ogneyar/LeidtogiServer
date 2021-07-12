@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import {Modal, Button, Form} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { createBrand, fetchBrands } from '../../http/productAPI'
+import { createBrand, fetchBrands } from '../../http/brandAPI'
 import { Context } from '../..'
 
 

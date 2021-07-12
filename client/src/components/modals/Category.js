@@ -1,24 +1,27 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
 import { Context } from '../..'
-import { fetchCategoryes, deleteCategory, createCategory, updateCategory } from '../../http/categoryAPI'
+import { fetchCategoryes, fetchSubCategoryes, deleteCategory, createCategory, updateCategory } from '../../http/categoryAPI'
 import { observer } from 'mobx-react-lite'
-// import CategoryEdit from './CategoryEdit'
+import SubCategory from './SubCategory'
+
 
 
 const DeleteCategory = observer(({show, onHide}) => {
     const {category} = useContext(Context)
     const [info, setInfo] = useState([])
+    const [subInfo, setSubInfo] = useState([])
     
     const [value, setValue] = useState('')
+    const [subValue, setSubValue] = useState('')
 
-    // const [categoryEditVisible, setCategoryEditVisible] = useState(false)
+    const [toggle, setToggle] = useState(false)
+
 
     useEffect(() => {
         fetchCategoryes().then(data => {
             category.setCategoryes(data)
             setInfo(category.categoryes)
-            // console.log(data);
         })
     },[])
 
@@ -29,6 +32,7 @@ const DeleteCategory = observer(({show, onHide}) => {
             // onHide()
         })        
     }
+
     
     const delCategory = async (id, name) => {
         let yes = window.confirm(`Вы уверены, что хотите удалить категорию ${name}?`)
@@ -71,20 +75,54 @@ const DeleteCategory = observer(({show, onHide}) => {
 
         
         await updateCategory(id, newName)
-        
-        // updateInfo()
-
-        // console.log("newName ",newName)
-
     }
 
 
     const updateInfo = () => {
-        // setInfo(info.filter(i => i.number !== number))
         fetchCategoryes().then(data => {
             category.setCategoryes(data)
             setInfo(category.categoryes)
         })
+    }
+
+
+    const openSubCategory = (id, target) => {
+        setSubInfo([])
+        fetchSubCategoryes(id).then(data => {
+            if (data.length > 0) {
+                category.setSubCategoryes(data)
+                setSubInfo(category.subCategoryes)                
+            }
+        })
+    }
+
+
+    const closeSubCategory = (id, target) => {
+        setSubInfo([])
+    }
+
+
+    const toggleSubCategory = (id, target) => {
+        
+        let element = document.getElementById("sub_category_" + id)
+
+        if (element.style.display === "flex") {
+            closeSubCategory(id, target)
+            element.style.display = "none"
+        }else if (element.style.display === "none"){
+            element.style.display = "flex"
+            openSubCategory(id, target)
+        }
+
+    }
+
+    
+    const addSubCategory = (id) => {
+        createCategory(subValue, id).then(data => {
+            setSubValue('')
+            updateInfo()
+            // onHide()
+        })        
     }
 
     
@@ -104,36 +142,31 @@ const DeleteCategory = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    {info.map(i =>
+                    {info.map(i => 
+                        <>
                         <Row
                             className='mt-4'
                             key={i.id}
                         >
 
                             <Col md={5}>
-                                {/* {i.name} */}
-                                {/* <Form> */}
-                                    <Form.Control 
-                                        className='mt-1'
-                                        style={{cursor:'pointer'}}
-                                        value={i.name}
-                                        // disabled={true}
-                                        readOnly={true}
-                                        id={"category_" + i.id}
-                                        // ref={"category_"+i.id}
-                                        onChange={e => {
-                                            // i.name = e.target.value
-                                            setInfo(info.map(k => i.id === k.id ? {...k, name:e.target.value} : k))
-                                        }}
+                                <Form.Control 
+                                    className='mt-1'
+                                    style={{cursor:'pointer'}}
+                                    value={i.name}
+                                    // disabled={true}
+                                    readOnly={true}
+                                    id={"category_" + i.id}
+                                    onChange={e => {
+                                        setInfo(info.map(k => i.id === k.id ? {...k, name:e.target.value} : k))
+                                    }}
 
-                                        onClick={e => {
-                                            // openSubCategory(i.id, e.target)
-                                        }}
+                                    onClick={e => {
+                                        toggleSubCategory(i.id, e.target)
+                                    }}
 
-                                        // placeholder={i.name}
-                                        title="Показать подкатегории"
-                                    />
-                                {/* </Form> */}
+                                    title="Показать подкатегории"
+                                />
                             </Col>
                             
                             <Col md={3}>
@@ -169,6 +202,31 @@ const DeleteCategory = observer(({show, onHide}) => {
 
                         </Row>
 
+
+                        {subInfo.map(subI => <SubCategory subInfo={subI} key={subI.id} />)}
+
+
+                        {/* изначально не видимая форма для добавления подкатегории */}
+                        <Form
+                            id={"sub_category_" + i.id}
+                            style={{display:"none"}}
+                        >
+                            <Form.Control 
+                                className='mt-4 ml-4'
+                                value={subValue}
+                                onChange={e => setSubValue(e.target.value)}
+                                placeholder={'Введите название новой подкатегории'}
+                            />
+                            <Button 
+                                variant="outline-success" 
+                                onClick={() => addSubCategory(i.id)}
+                                className='mt-4 ml-4'
+                            >
+                                Добавить
+                            </Button>
+                        </Form>
+
+                        </>
                     )}
                 </Form>
 

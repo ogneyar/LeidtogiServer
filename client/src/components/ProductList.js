@@ -8,9 +8,18 @@ const ProductList = observer(() => {
     const {product} = useContext(Context)
     return (
         <Row className='d-flex'>
-            {product.products.map(product => 
-                <ProductItem key={product.id} product={product}/>    
-            )}
+            {product.totalCount > 0 
+            ?
+                product.products.map(product => 
+                    <ProductItem key={product.id} product={product}/>    
+                )
+            : 
+                <div class="m-4 p-4">
+                    <p>
+                        Таких товаров ещё нет...
+                    </p>
+                </div>
+            }
         </Row>
     )
 })

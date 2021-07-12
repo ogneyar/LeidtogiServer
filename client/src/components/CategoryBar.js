@@ -55,7 +55,7 @@ const CategoryBar = observer(() => {
                     {category.sub_categoryes.map(sub_cat => 
                         <ListGroup.Item 
                             active={sub_cat.id === category.selectedCategory.id}
-                            onClick={() => category.setSelectedCategory(cat)}
+                            onClick={() => category.setSelectedCategory(sub_cat)}
                             key={sub_cat.id}
                         >
                             {sub_cat.name}

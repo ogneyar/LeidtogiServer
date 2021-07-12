@@ -7,31 +7,32 @@ import ProductList from '../components/ProductList'
 import { observer } from 'mobx-react-lite'
 import { useContext } from 'react'
 import { Context } from '..'
-import {fetchBrands, fetchProducts} from '../http/productAPI'
-import {fetchCategoryes} from '../http/categoryAPI.js'
+import { fetchProducts } from '../http/productAPI'
+import { fetchCategoryes } from '../http/categoryAPI'
+import { fetchBrands } from '../http/brandAPI'
 import Pages from '../components/Pages'
 
 
 const Shop = observer(() => {
-    const {product, category} = useContext(Context)
+    const {product, category, brand} = useContext(Context)
 
     useEffect(() => {
         fetchCategoryes().then(data => category.setCategoryes(data))
-        fetchBrands().then(data => product.setBrands(data))
+        fetchBrands().then(data => brand.setBrands(data))
         fetchProducts(null, null, 1, product.limit).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
             // category.setSelectedCategory({})
-            // product.setSelectedBrand({})
+            // brand.setSelectedBrand({})
         })
     },[])
 
     useEffect(() => {
-        fetchProducts(category.selectedCategory.id, product.selectedBrand.id, product.page, product.limit).then(data => {
+        fetchProducts(category.selectedCategory.id, brand.selectedBrand.id, product.page, product.limit).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
         })
-    },[product.page, category.selectedCategory, product.selectedBrand])
+    },[product.page, category.selectedCategory, brand.selectedBrand])
 
     return (
         <Container

@@ -11,7 +11,7 @@ const End = () => {
             <NavLink className="NavLink FooterEnd_NavLink"
                 to={SHOP_ROUTE}
             >
-                © ООО "ЛеидТоги" 2020-{(new Date()).getFullYear()}
+                © ООО "ЛеидТоги" {(new Date()).getFullYear()}
             </NavLink>
         </div>
     )

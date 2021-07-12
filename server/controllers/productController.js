@@ -8,12 +8,12 @@ const fs = require('fs')
 class ProductController {
     async create(req, res, next) { 
        try {
-        let {name, price, brandId, typeId, info} = req.body
+        let {name, price, brandId, categoryId, info} = req.body
         const {img} = req.files
         let fileName = uuid.v4() + '.jpg'
         img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
-        const product = await Product.create({name, price, brandId, typeId, img: fileName})
+        const product = await Product.create({name, price, brandId, categoryId, img: fileName})
 
         if (info) {
             let inf = JSON.parse(info)
@@ -31,22 +31,22 @@ class ProductController {
     }
 
     async getAll(req, res) {
-        let {brandId, typeId, limit, page} = req.query
+        let {brandId, categoryId, limit, page} = req.query
         page = page || 1
         limit = limit || 9
         let offset = page * limit - limit
         let products;
-        if (!brandId && !typeId) {
+        if (!brandId && !categoryId) {
             products = await Product.findAndCountAll({limit, offset})
         }
-        if (brandId && !typeId) {
+        if (brandId && !categoryId) {
             products = await Product.findAndCountAll({where:{brandId}, limit, offset})
         }
-        if (!brandId && typeId) {
-            products = await Product.findAndCountAll({where:{typeId}, limit, offset})
+        if (!brandId && categoryId) {
+            products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
         }
-        if (brandId && typeId) {
-            products = await Product.findAndCountAll({where:{brandId, typeId}, limit, offset})
+        if (brandId && categoryId) {
+            products = await Product.findAndCountAll({where:{brandId, categoryId}, limit, offset})
         }
         return res.json(products)
     }

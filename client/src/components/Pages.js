@@ -14,6 +14,8 @@ const Pages = observer(() => {
 
     return (
         <Pagination className="mt-2">
+            {product.totalCount > 1 ? <Pagination.First /> : ""}
+            {product.totalCount > 1 ? <Pagination.Prev /> : ""}            
             {pages.map(page => 
                 <Pagination.Item
                     key={page}
@@ -23,6 +25,8 @@ const Pages = observer(() => {
                     {page}
                 </Pagination.Item>
             )}
+            {product.totalCount > 1 ? <Pagination.Next /> : ""}
+            {product.totalCount > 1 ? <Pagination.Last /> : ""}
         </Pagination>
     )
 })

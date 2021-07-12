@@ -3,8 +3,10 @@ const ApiError = require('../error/apiError')
 
 class CategoryController {
     async create(req, res) {
-        const {name} = req.body
-        const category = await Category.create({name})
+        // const {name} = req.body
+        // const category = await Category.create({name})
+        const body = req.body
+        const category = await Category.create(body)
         return res.json(category)
     }
 

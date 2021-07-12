@@ -3,12 +3,13 @@ import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Dropdown, Row, Col} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
-import {fetchBrands, createProduct, fetchProducts} from '../../http/productAPI'
+import { createProduct, fetchProducts } from '../../http/productAPI'
 import {fetchCategoryes} from '../../http/categoryAPI'
+import { fetchBrands } from '../../http/brandAPI'
 
 
 const CreateProduct = observer(({show, onHide}) => {
-    const {product, category} = useContext(Context)
+    const {product, category, brand} = useContext(Context)
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
     const [file, setFile] = useState(null)
@@ -19,7 +20,7 @@ const CreateProduct = observer(({show, onHide}) => {
 
     useEffect(() => {
         fetchCategoryes().then(data => category.setCategoryes(data))
-        fetchBrands().then(data => product.setBrands(data))
+        fetchBrands().then(data => brand.setBrands(data))
     },[])
 
 
@@ -81,14 +82,14 @@ const CreateProduct = observer(({show, onHide}) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown className='mt-2 mb-2'>
-                        <Dropdown.Toggle>{product.selectedBrand.name || "Выберите бренд"}</Dropdown.Toggle>
+                        <Dropdown.Toggle>{brand.selectedBrand.name || "Выберите бренд"}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {product.brands.map(brand =>
+                            {brand.brands.map(br =>
                                 <Dropdown.Item 
-                                    onClick={() => product.setSelectedBrand(brand)} 
-                                    key={brand.id}
+                                    onClick={() => brand.setSelectedBrand(br)} 
+                                    key={br.id}
                                 >
-                                    {brand.name}
+                                    {br.name}
                                 </Dropdown.Item>    
                             )}
                         </Dropdown.Menu>

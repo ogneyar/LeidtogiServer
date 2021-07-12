@@ -13,14 +13,14 @@ import '../styles/Admin.css';
 
 
 const Admin = observer(() => {
-    const {product, category} = useContext(Context)
+    const {product, category, brand} = useContext(Context)
 
     useEffect(() => {
         fetchProducts(null, null, 1, 2).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
             category.setSelectedCategory({})
-            product.setSelectedBrand({})
+            brand.setSelectedBrand({})
         })
     },[])
 
