@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite'
 import { useContext } from 'react'
 import { Context } from '..'
 import { fetchProducts } from '../http/productAPI'
-import { fetchCategoryes } from '../http/categoryAPI'
+import { fetchCategories } from '../http/categoryAPI'
 import { fetchBrands } from '../http/brandAPI'
 import Pages from '../components/Pages'
 
@@ -17,7 +17,7 @@ const Shop = observer(() => {
     const {product, category, brand} = useContext(Context)
 
     useEffect(() => {
-        fetchCategoryes().then(data => category.setCategoryes(data))
+        fetchCategories().then(data => category.setCategories(data))
         fetchBrands().then(data => brand.setBrands(data))
         fetchProducts(null, null, 1, product.limit).then(data => {
             product.setProducts(data.rows)
@@ -40,7 +40,6 @@ const Shop = observer(() => {
         >
             <Row className="mt-2">
                 <Col md={3}>
-                    {/* <TypeBar /> */}
                     <CategoryBar />
                 </Col>
                 <Col md={9}>
@@ -48,7 +47,7 @@ const Shop = observer(() => {
                     <ProductList />
                     <Pages />
                 </Col>
-            </Row>            
+            </Row>
         </Container>
     )
 })

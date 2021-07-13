@@ -9,7 +9,7 @@ const CategoryBar = observer(() => {
     const {category} = useContext(Context)
 
     let subCategory = () => {
-        category.categoryes.map(cat => 
+        category.categories.map(cat => 
             <>
             <ListGroup.Item 
                 active={cat.id === category.selectedCategory.id}
@@ -42,24 +42,26 @@ const CategoryBar = observer(() => {
                 key={0}
             >
                 Все категории
-            </ListGroup.Item>            
-            {category.categoryes.map(cat => 
+            </ListGroup.Item>
+
+            {/* {category.categories.map(i =>console.log(i))} */}
+            
+            {category.categories !== undefined && category.categories.map(i => 
                 <ListGroup.Item 
-                    active={cat.id === category.selectedCategory.id}
-                    onClick={() => category.setSelectedCategory(cat)}
-                    key={cat.id}
+                    active={i.id === category.selectedCategory.id}
+                    onClick={() => category.setSelectedCategory(i)}
+                    key={i.id}
                 >
-                    {cat.name}
+                    {i.name}
 
 
-                    {category.sub_categoryes.map(sub_cat => 
+                    {category.sub_categories !== undefined && category.sub_categories.map(sub_cat => 
                         <ListGroup.Item 
                             active={sub_cat.id === category.selectedCategory.id}
                             onClick={() => category.setSelectedCategory(sub_cat)}
                             key={sub_cat.id}
                         >
                             {sub_cat.name}
-                            {/* {subCategory()} */}
                         </ListGroup.Item>
                     )}
 

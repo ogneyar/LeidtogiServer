@@ -11,18 +11,18 @@ class CategoryController {
     }
 
     async getAll(req, res) {
-        const categoryes = await Category.findAll({
+        const categories = await Category.findAll({
             where: {sub_category_id: 0}
         })
-        return res.json(categoryes)
+        return res.json(categories)
     }
 
-    async getSubCategoryes(req, res) {
+    async getSubCategories(req, res) {
         const {id} = req.params
-        const categoryes = await Category.findAll({
+        const categories = await Category.findAll({
             where: {sub_category_id: id}
         })
-        return res.json(categoryes)
+        return res.json(categories)
     }
 
     async delete(req, res) {

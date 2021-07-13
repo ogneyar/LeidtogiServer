@@ -85,8 +85,8 @@ const NavBar = observer(() => {
 
                         </Nav>
                     </Col>
-                </Row>                
-            </Container>            
+                </Row>
+            </Container>
         </Navbar>
     )
 })

@@ -5,12 +5,12 @@ export const createCategory = async (name, sub_category_id = 0) => {
     return data
 }
 
-export const fetchCategoryes = async () => {
+export const fetchCategories = async () => {
     const {data} = await $host.get('api/category')
     return data
 }
 
-export const fetchSubCategoryes = async (id) => {
+export const fetchSubCategories = async (id) => {
     const {data} = await $host.get('api/category/sub/' + id)
     return data
 }

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button, Form, Row, Col} from 'react-bootstrap'
 import { Context } from '../..'
-import { fetchCategoryes, fetchSubCategoryes, deleteCategory, createCategory, updateCategory } from '../../http/categoryAPI'
+import { fetchCategories, fetchSubCategories, deleteCategory, createCategory, updateCategory } from '../../http/categoryAPI'
 import { observer } from 'mobx-react-lite'
 import SubCategory from './SubCategory'
 
@@ -19,9 +19,9 @@ const DeleteCategory = observer(({show, onHide}) => {
 
 
     useEffect(() => {
-        fetchCategoryes().then(data => {
-            category.setCategoryes(data)
-            setInfo(category.categoryes)
+        fetchCategories().then(data => {
+            category.setCategories(data)
+            setInfo(category.categories)
         })
     },[])
 
@@ -79,19 +79,19 @@ const DeleteCategory = observer(({show, onHide}) => {
 
 
     const updateInfo = () => {
-        fetchCategoryes().then(data => {
-            category.setCategoryes(data)
-            setInfo(category.categoryes)
+        fetchCategories().then(data => {
+            category.setCategories(data)
+            setInfo(category.categories)
         })
     }
 
 
     const openSubCategory = (id, target) => {
         setSubInfo([])
-        fetchSubCategoryes(id).then(data => {
+        fetchSubCategories(id).then(data => {
             if (data.length > 0) {
-                category.setSubCategoryes(data)
-                setSubInfo(category.subCategoryes)                
+                category.setSubCategories(data)
+                setSubInfo(category.subCategories)
             }
         })
     }

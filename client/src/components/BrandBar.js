@@ -20,7 +20,7 @@ const BrandBar =  observer(() => {
             {brand.brands.map(br =>
                 <Card
                     style={{cursor: "pointer"}}
-                    border={br.id === brand.selectedBrand.id ? 'warning' : 'light'}                    
+                    border={br.id === brand.selectedBrand.id ? 'warning' : 'light'}
                     bg={br.id === brand.selectedBrand.id ? 'warning' : ''}
                     onClick={() => brand.setSelectedBrand(br)}
                     key={br.id}

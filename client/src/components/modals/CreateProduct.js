@@ -4,7 +4,7 @@ import {Modal, Button, Form, Dropdown, Row, Col} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
 import { createProduct, fetchProducts } from '../../http/productAPI'
-import {fetchCategoryes} from '../../http/categoryAPI'
+import {fetchCategories} from '../../http/categoryAPI'
 import { fetchBrands } from '../../http/brandAPI'
 
 
@@ -19,7 +19,7 @@ const CreateProduct = observer(({show, onHide}) => {
     const [info, setInfo] = useState([])
 
     useEffect(() => {
-        fetchCategoryes().then(data => category.setCategoryes(data))
+        fetchCategories().then(data => category.setCategories(data))
         fetchBrands().then(data => brand.setBrands(data))
     },[])
 

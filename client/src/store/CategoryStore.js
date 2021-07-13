@@ -2,33 +2,29 @@ import {makeAutoObservable} from 'mobx'
 
 export default class CategoryStore {
     constructor() {
-        this._categoryes = []
-        this._subCategoryes = []
+        this._categories = []
+        this._subCategories = []
         this._selectedCategory = {}
         makeAutoObservable(this)
     }
 
-    setCategoryes(categoryes) {
-        this._categoryes = categoryes
+    setCategories(categories) {
+        this._categories = categories
     }
 
-    setSubCategoryes(sub_categoryes) {
-        this._subCategoryes = sub_categoryes
-
-        // let newCategoryStore = new CategoryStore()
-        // newCategoryStore.setCategoryes(sub_categoryes)
-        // this._sub_categoryes = newCategoryStore
+    setSubCategories(sub_categories) {
+        this._subCategories = sub_categories
     }
     
     setSelectedCategory(category) {
         this._selectedCategory = category
     }
 
-    get categoryes() {
-        return this._categoryes
+    get categories() {
+        return this._categories
     }
-    get subCategoryes() {
-        return this._subCategoryes
+    get subCategories() {
+        return this._subCategories
     }
     get selectedCategory() {
         return this._selectedCategory

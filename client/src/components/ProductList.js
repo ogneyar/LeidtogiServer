@@ -14,7 +14,7 @@ const ProductList = observer(() => {
                     <ProductItem key={product.id} product={product}/>    
                 )
             : 
-                <div class="m-4 p-4">
+                <div className="m-4 p-4">
                     <p>
                         Таких товаров ещё нет...
                     </p>
