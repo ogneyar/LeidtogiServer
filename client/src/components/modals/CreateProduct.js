@@ -71,14 +71,16 @@ const CreateProduct = observer(({show, onHide}) => {
                     <Dropdown className='mt-2 mb-2'>
                         <Dropdown.Toggle>{category.selectedCategory.name || "Выберите категорию"}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {category.categoryes.map(cat =>
+                            {category.categoryes !== undefined ?
+                            category.categoryes.map(cat =>
                                 <Dropdown.Item 
                                     onClick={() => category.setSelectedCategory(cat)} 
                                     key={cat.id}
                                 >
                                     {cat.name}
-                                </Dropdown.Item>    
-                            )}
+                                </Dropdown.Item>
+                            )
+                            : null}
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown className='mt-2 mb-2'>

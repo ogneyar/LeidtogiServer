@@ -26,7 +26,7 @@ const App = observer(() => {
 
   if (loading) {
     return (
-      <Container      
+      <Container
         className="d-flex justify-content-center align-items-center App" 
       >
         <Spinner

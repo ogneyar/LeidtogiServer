@@ -1,8 +1,9 @@
 import Admin from '../pages/Admin'
-import Cart from '../pages/Cart'
+import Cart from '../pages/Cart/Cart'
 import Shop from '../pages/Shop'
 import Auth from '../pages/Auth'
 import Product from '../pages/Product'
+import Lk from '../pages/Lk/Lk'
 
 import AboutUs from '../pages/informations/AboutUs'
 import Delivery from '../pages/informations/Delivery'
@@ -13,7 +14,7 @@ import TermsOfUse from '../pages/informations/TermsOfUse'
 import Warranty from '../pages/informations/Warranty'
 
 import {
-    ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, PRODUCT_ROUTE,
+    ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, PRODUCT_ROUTE, LK_ROUTE,
     ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE,
     TERMS_OF_USE_ROUTE, WARRANTY_ROUTE
 } from './consts'
@@ -22,6 +23,10 @@ export const authRoutes = [
     {
         path: ADMIN_ROUTE,
         Component: Admin
+    },
+    {
+        path: LK_ROUTE,
+        Component: Lk
     }
 ]
 

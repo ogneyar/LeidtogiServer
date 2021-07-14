@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Context } from '..'
 import { Navbar, Nav, Button, Container, Image, Row, Col } from 'react-bootstrap'
 import { NavLink, useHistory } from 'react-router-dom'
-import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, CART_ROUTE } from '../utils/consts'
+import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, CART_ROUTE, LK_ROUTE } from '../utils/consts'
 import { observer } from 'mobx-react-lite'
 import cart from '../assets/cart.png'
 
@@ -22,7 +22,7 @@ const NavBar = observer(() => {
         <Navbar 
             bg="secondary" 
             variant="secondary" 
-            className="NavBar Mobile"            
+            className="NavBar Mobile"
         >
             <Container>
                 <Row
@@ -37,8 +37,8 @@ const NavBar = observer(() => {
                         >
                             <div className="NavBar_Brand">
                                 LeidTogi
-                            </div>                    
-                            Стройте с нами, экономьте время                    
+                            </div>
+                            Стройте с нами, экономьте время
                         </NavLink>
                     </Col>
 
@@ -57,12 +57,22 @@ const NavBar = observer(() => {
                             {user.isAuth ?
                             
                                 <>
-                                    <Button 
-                                        variant={'outline-light'} 
-                                        onClick={() => history.push(ADMIN_ROUTE)}
-                                    >
-                                        Админ панель
-                                    </Button>
+                                    {user.user.role === 'ADMIN' ?
+                                        <Button 
+                                            variant={'outline-light'} 
+                                            onClick={() => history.push(ADMIN_ROUTE)}
+                                        >
+                                            Админ панель
+                                        </Button>
+                                    : 
+                                        <Button 
+                                            variant={'outline-light'} 
+                                            onClick={() => history.push(LK_ROUTE)}
+                                        >
+                                            Личный Кабинет
+                                        </Button>
+                                    }
+                                    
                                     <Button 
                                         variant={'outline-light'} 
                                         onClick={logOut} 

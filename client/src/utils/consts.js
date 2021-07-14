@@ -4,6 +4,8 @@ export const REGISTRATION_ROUTE = '/registration' // регистрация
 export const SHOP_ROUTE = '/' // главная
 export const CART_ROUTE = '/cart' // корзина
 export const PRODUCT_ROUTE = '/product' // товар
+export const LK_ROUTE = '/lk' // личный кабинет
+
 // отдел Информация
 export const ABOUT_US_ROUTE = '/about_us' // о нас
 export const DELIVERY_ROUTE = '/delivery' // доставка
