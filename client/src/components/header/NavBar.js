@@ -1,12 +1,13 @@
 import React, { useContext } from 'react'
-import { Context } from '..'
 import { Navbar, Nav, Button, Container, Image, Row, Col } from 'react-bootstrap'
-import { NavLink, useHistory } from 'react-router-dom'
-import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, CART_ROUTE, LK_ROUTE } from '../utils/consts'
 import { observer } from 'mobx-react-lite'
-import cart from '../assets/cart.png'
+import { NavLink, useHistory } from 'react-router-dom'
+import { Context } from '../..'
+import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, CART_ROUTE, LK_ROUTE } from '../../utils/consts'
+import logo from '../../assets/logo.png'
+import cart from '../../assets/cart.png'
 
-import '../styles/NavBar.css';
+import './NavBar.css';
 
 const NavBar = observer(() => {
     const { user } = useContext(Context)
@@ -35,10 +36,16 @@ const NavBar = observer(() => {
                         <NavLink className="NavLink NavBar_NavLink"
                             to={SHOP_ROUTE}
                         >
-                            <div className="NavBar_Brand">
+                            {/* <div className="NavBar_Brand">
                                 LeidTogi
-                            </div>
+                            </div> */}
+
+                            <Image width={150} src={logo} className="NavBar_Logo" />
+
+                            <div>
                             Стройте с нами, экономьте время
+                            </div>
+                            
                         </NavLink>
                     </Col>
 

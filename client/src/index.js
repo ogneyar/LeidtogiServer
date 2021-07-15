@@ -1,11 +1,12 @@
 import React, { createContext } from 'react'
 import ReactDOM from 'react-dom'
-import './styles/index.css'
 import App from './App'
 import UserStore from './store/UserStore'
 import ProductStore from './store/ProductStore'
 import CategoryStore from './store/CategoryStore'
 import BrandStore from './store/BrandStore'
+import './styles/index.css'
+
 
 export const Context = createContext(null)
 

@@ -36,7 +36,7 @@ const Shop = observer(() => {
 
     return (
         <Container
-            className="Mobile"
+            className="Content Mobile"
         >
             <Row className="mt-2">
                 <Col md={3}>

@@ -32,10 +32,10 @@ const Admin = observer(() => {
     const [deleteProductVisible, setDeleteProductVisible] = useState(false)
 
     return (
-        <Container className="d-flex flex-column Admin Mobile">
+        <Container className="Content d-flex flex-column Admin Mobile">
             <Button 
                 variant={"outline-dark"} 
-                className="mt-4 p-2 Admin_button"
+                className="m-2 p-2 Admin_button"
                 onClick={() => setCategoryVisible(true)}
             >
                 Редактирование категорий
@@ -43,14 +43,14 @@ const Admin = observer(() => {
 
             <Button 
                 variant={"outline-dark"} 
-                className="mt-4 p-2 Admin_button"
+                className="m-2 p-2 Admin_button"
                 onClick={() => setBrandVisible(true)}
             >
                 Добавить бренд
             </Button>
             <Button 
                 variant={"outline-dark"} 
-                className="mt-4 p-2 Admin_button"
+                className="m-2 p-2 Admin_button"
                 onClick={() => setProductVisible(true)}
             >
                 Добавить устройство
@@ -60,14 +60,14 @@ const Admin = observer(() => {
 
             <Button 
                 variant={"outline-danger"} 
-                className="mt-4 p-2 Admin_button"
+                className="m-2 p-2 Admin_button"
                 onClick={() => setDeleteBrandVisible(true)}
             >
                 Удалить бренд
             </Button>
             <Button 
                 variant={"outline-danger"} 
-                className="mt-4 p-2 Admin_button"
+                className="m-2 p-2 Admin_button"
                 onClick={() => setDeleteProductVisible(true)}
             >
                 Удалить устройство

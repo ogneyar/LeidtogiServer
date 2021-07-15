@@ -1,4 +1,4 @@
 .FooterLogo {
-    background-color: white;
+    background-color: var(--main-white-color);
     padding: 10px 0;
 }

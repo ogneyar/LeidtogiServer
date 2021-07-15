@@ -30,7 +30,6 @@ const Lk = () => {
                         >
                             магазин!
                         </NavLink>
-                    
                 </Col>
             </Row>
             

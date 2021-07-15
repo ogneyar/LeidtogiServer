@@ -14,6 +14,9 @@ export const PRIVACY_POLICY_ROUTE = '/privacy_policy' // политика кон
 export const RETURNS_POLICY_ROUTE = '/returns_policy' // условия возврата
 export const TERMS_OF_USE_ROUTE = '/terms_of_use' // пользовательское соглашение
 export const WARRANTY_ROUTE = '/warranty' // гарантия и сервис
+export const CONTACTS_ROUTE = '/contacts' // контакты
+export const SPECIALS_ROUTE = '/specials' // акции
+
 
 export const API_URL = 
         process.env.REACT_APP_ENV === 'production' 

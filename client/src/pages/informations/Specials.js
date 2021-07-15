@@ -2,10 +2,10 @@ import React from 'react'
 import { Container, Card, Row, Col } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { SHOP_ROUTE } from '../../utils/consts'
-import './Payment.css'
+import './Specials.css'
 
 
-const Payment = () => {
+const Specials = () => {
     return (
         <Container 
             className="d-flex justify-content-center align-items-center"
@@ -16,7 +16,7 @@ const Payment = () => {
                     <Col
                         className="Card_title d-flex justify-content-center align-items-center"
                     >
-                        <strong>Информация об оплате.</strong>
+                        <strong>Акции.</strong>
                     </Col>
                 </Row>
                 <Row>
@@ -39,4 +39,5 @@ const Payment = () => {
     )
 }
 
-export default Payment
+export default Specials
+

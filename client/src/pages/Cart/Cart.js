@@ -15,14 +15,14 @@ const Cart = () => {
 
                 <Row>
                     <Col
-                        className="Cart_title d-flex justify-content-center align-items-center"
+                        className="Card_title d-flex justify-content-center align-items-center"
                     >
                         <strong>Ваша корзина пуста.</strong>
                     </Col>
                 </Row>
                 <Row>
                     <Col
-                        className="Cart_body d-flex justify-content-center align-items-center"
+                        className="Card_body d-flex justify-content-center align-items-center"
                     >
                         
                             Поищите товар &nbsp;

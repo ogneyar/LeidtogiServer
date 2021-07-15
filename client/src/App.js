@@ -1,17 +1,16 @@
-
-import { BrowserRouter } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom'
+import { Spinner, Container } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
-import 'bootstrap/dist/css/bootstrap.css';
-import './styles/App.css';
 import AppRouter from './components/AppRouter'
-import NavBar from './components/NavBar'
 import { Context } from '.';
 import { check } from './http/userAPI';
-import { Spinner, Container } from 'react-bootstrap';
-import LogoPanel from './components/LogoPanel';
+import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
-import End from './components/footer/End';
+
+import 'bootstrap/dist/css/bootstrap.css';
+import './styles/App.css';
+
 
 const App = observer(() => {
   const {user} = useContext(Context)
@@ -39,15 +38,13 @@ const App = observer(() => {
 
   return (
     <BrowserRouter>
-      <NavBar />
-      <LogoPanel />
+
+      <Header />
       
       <AppRouter />
       
-      <footer>
-        <Footer />
-        <End />
-      </footer>      
+      <Footer />
+
     </BrowserRouter>
   );
 })

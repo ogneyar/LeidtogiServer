@@ -1,7 +1,15 @@
 
 :root {
-  --main-grey-color:#6d6f71; /* 109 111 113  */
-  --main-orange-color:#ff9900; /* 255 153 0  */
+  --main-grey-color: #6d6f71; /* 109 111 113 */
+  --main-orange-color: #ff9900; /* 255 153 0 */
+  --main-silver-color: #c0c0c0; /* 192 192 192 */
+  --main-white-color: #f3f3f3; /* 243 243 243 */
+  --main-black-color: #0e0e0e; /* 14 14 14 */
+}
+
+:active, :hover, :focus {
+  outline: 0;
+  outline-offset: 0;
 }
 
 * {
@@ -26,6 +34,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--main-orange-color);
 }
 
 code {
@@ -44,6 +53,19 @@ a:hover {
   width:100%;
   padding:0;
   margin:0;
+}
+
+.Content {
+  background-color: var(--main-white-color);
+  padding: 30px 10px;
+}
+
+.Card_title {
+  padding: 20px 5px;
+}
+
+.Card_body {
+  padding: 20px 5px;
 }
 
 .Mobile {

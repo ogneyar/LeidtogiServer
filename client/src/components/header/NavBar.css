@@ -1,0 +1,24 @@
+.NavBar {
+    /* border-radius: 0 0 0 30px; */
+}
+
+.NavBar_Brand {
+    font-size:xx-large;
+}
+
+.NavBar_Image {
+    margin: 0 20px;
+    border-radius: 50%;
+    background-color: var(--main-white-color); 
+    width: 50px;
+    height: 50px;
+}
+
+.NavBar_NavLink {
+    color: var(--main-white-color); 
+}
+
+.NavBar_Logo {
+    background-color: var(--main-white-color);
+    padding: 10px;
+}

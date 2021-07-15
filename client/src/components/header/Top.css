@@ -1,0 +1,27 @@
+.Top {
+    background-color: var(--main-silver-color);
+}
+
+.NavLink_Top {
+    color: var(--main-white-color);
+}
+
+.NavLink_Top_Specials {
+    color: var(--main-orange-color);
+}
+
+.button-search {
+    /* position: relative;
+    left: -20px; */
+    /* top: 0; */
+    /* z-index: 1; */
+}
+
+.search {
+    background-color: var(--main-white-color);
+}
+
+.autosearch-input, .autosearch-input:hover {
+    background-color: var(--main-white-color);
+    border: none;
+}
