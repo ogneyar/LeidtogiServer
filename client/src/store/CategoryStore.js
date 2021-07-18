@@ -3,7 +3,7 @@ import {makeAutoObservable} from 'mobx'
 export default class CategoryStore {
     constructor() {
         this._categories = []
-        this._subCategories = []
+        // this._subCategories = []
         this._selectedCategory = {}
         makeAutoObservable(this)
     }
@@ -12,9 +12,9 @@ export default class CategoryStore {
         this._categories = categories
     }
 
-    setSubCategories(sub_categories) {
-        this._subCategories = sub_categories
-    }
+    // setSubCategories(sub_categories) {
+    //     this._subCategories = sub_categories
+    // }
     
     setSelectedCategory(category) {
         this._selectedCategory = category
@@ -23,9 +23,9 @@ export default class CategoryStore {
     get categories() {
         return this._categories
     }
-    get subCategories() {
-        return this._subCategories
-    }
+    // get subCategories() {
+    //     return this._subCategories
+    // }
     get selectedCategory() {
         return this._selectedCategory
     }

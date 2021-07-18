@@ -73,7 +73,12 @@ a:hover {
 }
 
 @media(max-width:1000px) {
-  .Mobile {
-    /* background-color:green; */
+  .hidden-mobile {
+    display:none;
+    visibility: hidden;
+    opacity: 0;
+  }
+  #search {
+    /* width: 800px; */
   }
 }

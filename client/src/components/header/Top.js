@@ -10,9 +10,9 @@ const Top = () => {
     return (
         <div id="top" className="Top">
             <Container className="Container">
-                <Row className="">
+                <Row className="d-flex justify-content-center align-items-center">
                     <Col 
-                        className="hidden-mobile d-flex justify-content-center p-0 m-0" 
+                        className="hidden-mobile" 
                         md={8}
                     >
                         <div className="d-flex justify-content-around align-items-center w-100">
@@ -74,7 +74,7 @@ const Top = () => {
                                 <form method="GET" id="form-search" action="/search">
 
                                     <div id="search" className="search d-flex justify-content-center align-items-center">
-                                        <input className="autosearch-input pl-2 pr-2" type="text" size="35" autoComplete="off" name="search" placeholder="Поиск" />
+                                        <input className="autosearch-input pl-2 pr-2" type="text" size="35" autoComplete="off" name="search" id="search" placeholder="Поиск" />
                                         <span className="input-group-btn">
                                             <button type="button" className="btn btn-default button-search"><i className="fa fa-search " /></button>
                                         </span>
