@@ -11,12 +11,37 @@ const Category = observer(({show, onHide}) => {
     const { category } = useContext(Context)
     const [info, setInfo] = useState([])
 
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         fetchCategories().then(data => {
             category.setCategories(data)
             setInfo(category.categories)
         })
+        
+        // fetchAll(0).then(data => {
+        //     console.log(data);
+
+        //     category.setCategories(data)
+        //     setInfo(category.categories)
+
+        //     console.log(info);
+        // }).finally(() => setLoading(false))
+
+        
     },[])
+
+    // const fetchAll = (id) => {
+    //     let data = fetchCategories(id)
+    //     if (data) {
+    //         return data.map(i => {
+    //             let response = fetchAll(i.id)
+    //             if (response != null) {
+    //                 return {...i, sub:response}
+    //             }else  return i
+    //         })
+    //     }else return null
+    // }
     
 
     return (
@@ -34,7 +59,12 @@ const Category = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
 
-                <CategoryService information={info} idName={"category_"} offset={null} sub_id={0} />
+                {loading === false 
+                ?
+                    <CategoryService information={info} idName={"category_"} offset={null} sub_id={0} />
+                :
+                    ""
+                }
 
             </Modal.Body>
             <Modal.Footer>

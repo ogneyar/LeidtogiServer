@@ -8,12 +8,16 @@ import { fetchCategories, deleteCategory, createCategory, updateCategory } from 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
     
     const { category } = useContext(Context)
-    const [info, setInfo] = useState(information)
+    const [info, setInfo] = useState([])
     const [value, setValue] = useState('')
 
+    useEffect(() => {
+        if (information) setInfo(information)
+    },[])
+
     // useEffect(() => {
-    //     setInfo(information)
-    // },[])
+    //     setInfo(category.categories)
+    // },[category.categories])
     
 
     const addCategory = (sub = 0) => {
@@ -115,7 +119,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         fetchCategories(id).then(data => {
             if (data.length > 0) {
                 category.setCategories(category.categories.map(i => i.id === id ? {...i, sub:data} : i))
-                setInfo(category.categories)
+                setInfo(info.map(i => i.id === id ? {...i, sub:data} : i))
             }
         })
     }
@@ -202,7 +206,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                             <CategoryService information={i.sub} idName={"sub_"+idName} sub_id={i.id} />
                         : 
                             // <div />
-                            // <CategoryService information={[]} idName={"sub_"+idName} sub_id={i.id} />
+                            // <CategoryService information={null} idName={"sub_"+idName} sub_id={i.id} />
 
                             <Form
                                 className="ml-4"
