@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../index'
@@ -8,32 +8,47 @@ import { fetchCategories, deleteCategory, createCategory, updateCategory } from 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
     
     const { category } = useContext(Context)
-    const [info, setInfo] = useState(information)    
+    const [info, setInfo] = useState(information)
     const [value, setValue] = useState('')
+
+    // useEffect(() => {
+    //     setInfo(information)
+    // },[])
+    
 
     const addCategory = (sub = 0) => {
         createCategory(value, sub).then(data => {
             setValue('')
-                        
-            category.setCategories(
-                
-                category.categories.map(i => 
-                    i.id === sub && i.sub !== undefined
-                    ? 
-                        i.sub.push(data[0]) 
-                    : 
-                        i.id === sub && i.sub === undefined
-                        ? 
-                            {...i, sub:data}
-                        :
-                            i
-                )
-            )
 
-            setInfo(category.categories)
+            // let array = info
+            // if (sub === 0)  {
+            //     category.setCategories(array.push(data[0]))
+            // }else {
+            //     category.setCategories(array.map(i => {
+            //         if (i.sub !== undefined) {
+            //             return funcMap(i, sub, data)
+            //         }else return i
+            //     }))
+            // }
+
+            // setInfo(category.categories)
+
+            setTimeout(()=>{console.log(info)},1000)
 
             // onHide()
         })        
+    }
+    
+    function funcMap(array, sub, data) {
+        if (array.sub.sub_category_id === sub) {
+            return array.sub.push(data[0])
+        }else {
+            return array.map(i => {
+                if (i.sub !== undefined) {
+                    return funcMap(i, sub, data)
+                }else return i
+            })
+        }
     }
     
     const delCategory = async (id, name) => {
@@ -41,9 +56,11 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         if (yes) {
             await deleteCategory(id)
             
-            category.setCategories(funcFilter(category.categories, id))
+            // category.setCategories(funcFilter(category.categories, id))
 
-            setInfo(category.categories)
+            // setInfo(category.categories)
+
+            setTimeout(()=>{console.log(info)},1000)
         }
         // onHide()
     }
@@ -94,22 +111,22 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         await updateCategory(id, newName)
     }
 
-    const openSubCategory = (id) => {
+    const openSubCategory = async (id) => {
         fetchCategories(id).then(data => {
-            if (data.length > 0) {                
+            if (data.length > 0) {
                 category.setCategories(category.categories.map(i => i.id === id ? {...i, sub:data} : i))
                 setInfo(category.categories)
             }
-        })        
+        })
     }
 
-    const toggleSubCategory = (id) => {        
+    const toggleSubCategory = async (id) => {
         let element = document.getElementById("sub_" + idName + id)
         if (element.style.display === "flex") {
             element.style.display = "none"
         }else if (element.style.display === "none"){
-            element.style.display = "flex"
             openSubCategory(id)
+            element.style.display = "flex"
         }
     }
 
@@ -118,8 +135,8 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     <div
         className={offset === null ? "" : "ml-4"}
     >
-        <div>        
-            {info.map(i => 
+        <div>
+            {info && info.map(i => 
                 <Row
                     className='mt-4'
                     key={i.id}
@@ -184,8 +201,9 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                         ?
                             <CategoryService information={i.sub} idName={"sub_"+idName} sub_id={i.id} />
                         : 
-                            // <CategoryService information={[]} idName={"sub_"+idName} />
                             // <div />
+                            // <CategoryService information={[]} idName={"sub_"+idName} sub_id={i.id} />
+
                             <Form
                                 className="ml-4"
                             >

@@ -9,14 +9,7 @@ class CategoryController {
         const category = await Category.create(body)
         return res.json(category)
     }
-
-    // async getCategories(req, res) {
-    //     const categories = await Category.findAll({
-    //         where: {sub_category_id: 0}
-    //     })
-    //     return res.json(categories)
-    // }
-
+    
     async getAll(req, res) {        
         const categories = await Category.findAll()
         return res.json(categories)
