@@ -11,22 +11,14 @@ const Category = observer(({show, onHide}) => {
     const { category } = useContext(Context)
     const [info, setInfo] = useState([])
 
-    const [loading, setLoading] = useState(false)
-
     useEffect(() => {
         fetchCategories().then(data => {
             category.setCategories(data)
-            // setInfo(category.categories)
         })
     },[])
    
     useEffect(() => {
-        // setInfo(JSON.parse(JSON.stringify([...category.categories])))
-        
         setInfo(category.categories)
-
-        // console.log("category.categories: ", category.categories)
-
     },[category.categories])
 
 
@@ -45,12 +37,9 @@ const Category = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
 
-                {loading === false 
-                ?
-                    <CategoryService information={info} idName={"category_"} offset={null} sub_id={0} />
-                :
-                    ""
-                }
+
+                <CategoryService information={info} idName={"category_"} offset={"null"} sub_id={0} />
+
 
             </Modal.Body>
             <Modal.Footer>

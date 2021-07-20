@@ -12,9 +12,15 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     const [info, setInfo] = useState(information)
 
 
-    const updateInfo = (sub, data, inform) => {
+    const updateInfo = (sub, data, inform, offset) => {
         if (inform === "state") {
-            setInfo([...info, data])
+            if (offset === "null") {
+                setInfo([...info, data])
+            }else if (offset === "yes") {
+                setInfo(info.map(i => {
+                    return funcMap(i, sub, data)
+                }))
+            }
         }else if (inform === "context") {
             if (sub === 0)  {
                 category.setCategories([...category.categories, data])
@@ -25,6 +31,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
             }
         }        
         function funcMap(i, sub, data) {
+            if (i.id === undefined) return i
             if (i.id === sub) {
                 if (i.sub === undefined){
                     return {...i, sub:data}
@@ -35,7 +42,8 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 return {...i, sub:i.sub.map(k => {
                     return funcMap(k, sub, data)
                 })}
-            }else return i
+            }
+            return i
         }
     }
         
@@ -114,11 +122,14 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     
     return (
     <div
-        className={offset === null ? "" : "ml-4"}
+        className={offset === "null" ? "" : "ml-4"}
     >
         <div>
-            {info && info.map(i => 
-                <Row
+            {info && Array.isArray(info) && info.map(i => {
+
+                if (i.id === undefined) return <div />
+
+                return (<Row
                     className='mt-4'
                     key={i.id}
                 >
@@ -182,18 +193,15 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                         ?
                             <CategoryService information={i.sub} idName={"sub_"+idName} sub_id={i.id} />
                         : 
-                            <CategoryAddService sub_id={i.id} updateInfo={(sub, data, inform) => updateInfo(sub, data, inform)} />
-
-                            // <div />
+                            <CategoryAddService sub_id={i.id} offset={"yes"} updateInfo={(sub, data, inform, offset) => updateInfo(sub, data, inform, offset)} />
                         }
                     </div>
 
-                </Row>
-
+                </Row>)}
             )}
         </div>
 
-        <CategoryAddService sub_id={sub_id} offset={null} updateInfo={(sub, data, inform) => updateInfo(sub, data, inform)} />
+        <CategoryAddService sub_id={sub_id} offset={"null"} updateInfo={(sub, data, inform, offset) => updateInfo(sub, data, inform, offset)} />
 
     </div>
                 

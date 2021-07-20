@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { createCategory } from '../http/categoryAPI'
@@ -13,20 +13,20 @@ const CategoryAddService = observer(({
     const [value, setValue] = useState('')
 
 
-    const addCategory = (sub = 0) => {
-        createCategory(value, sub).then(data => {
+    const addCategory = () => {
+        createCategory(value, sub_id).then(data => { 
             setValue('')
 
-            updateInfo(sub, data, "context") 
+            updateInfo(sub_id, data, "context", offset) 
 
-            updateInfo(sub, data, "state")
+            updateInfo(sub_id, data, "state", offset)
         })        
     }
        
     
     return (
         <Form
-            className={offset === null ? "" : "ml-4"}
+            className={offset === "null" ? "" : "ml-4"}
         >
             <Form.Control 
                 className='mt-4'
@@ -36,7 +36,7 @@ const CategoryAddService = observer(({
             />
             <Button 
                 variant="outline-success" 
-                onClick={() => addCategory(sub_id)}
+                onClick={addCategory}
                 className='mt-4'
             >
                 Добавить категорию
