@@ -1,19 +1,15 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
+import React, { useContext, useState } from 'react'
+import { Button, Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { Context } from '../index'
 import { createCategory } from '../http/categoryAPI'
 
 
-const CategoryAddService = observer((
-    {
+const CategoryAddService = observer(({
         sub_id,     // номер подкатегории
         offset,     // отступ margin
         updateInfo  // передаваемая функция для применения изменений
-    }
-    ) => {
+    }) => {
     
-    const { category } = useContext(Context)
     const [value, setValue] = useState('')
 
 
@@ -21,9 +17,9 @@ const CategoryAddService = observer((
         createCategory(value, sub).then(data => {
             setValue('')
 
-            updateInfo(sub, data, category.categories)
+            updateInfo(sub, data, "context") 
 
-            // updateInfo(sub, data)
+            updateInfo(sub, data, "state")
         })        
     }
        
