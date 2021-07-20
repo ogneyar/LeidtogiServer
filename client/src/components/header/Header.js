@@ -15,7 +15,7 @@ const Header = () => {
             <Top />
             <NavBar />
             <Aside />
-            <Banner />
+            {/* <Banner /> */}
         </header>
     )
 }

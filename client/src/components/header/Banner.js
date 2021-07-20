@@ -46,11 +46,11 @@ const Banner = () => {
     }
 
     return (
-        <aside className="Banner" id="Banner" style={{display: "none"}}> 
+        <aside className="Banner" id="Banner" style={{display: "flex"}}> 
 		    <div className="banner7">
 	            <div className="oc-banner7-container">
 		            <div className="flexslider oc-nivoslider">
-                        <div className="oc-loading" style={{display: "none"}} />
+                        <div className="oc-loading" style={{display: "flex"}} />
                         <div className="row" >
 				            <div className="col-md-1" />
 				            <div className="col-md-10">

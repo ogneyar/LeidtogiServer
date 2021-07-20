@@ -3,83 +3,80 @@ import { Button, Form, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../index'
 import { fetchCategories, deleteCategory, createCategory, updateCategory } from '../http/categoryAPI'
+import CategoryAddService from './CategoryAddService'
 
 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
     
     const { category } = useContext(Context)
-    const [info, setInfo] = useState([])
-    const [value, setValue] = useState('')
+    const [info, setInfo] = useState(information)
+    // const [value, setValue] = useState('')
 
     useEffect(() => {
-        if (information) setInfo(information)
+        // if (information) setInfo(information)
     },[])
 
-    // useEffect(() => {
-    //     setInfo(category.categories)
-    // },[category.categories])
-    
 
-    const addCategory = (sub = 0) => {
-        createCategory(value, sub).then(data => {
-            setValue('')
-
-            // let array = info
-            // if (sub === 0)  {
-            //     category.setCategories(array.push(data[0]))
-            // }else {
-            //     category.setCategories(array.map(i => {
-            //         if (i.sub !== undefined) {
-            //             return funcMap(i, sub, data)
-            //         }else return i
-            //     }))
-            // }
-
-            // setInfo(category.categories)
-
-            setTimeout(()=>{console.log(info)},1000)
-
-            // onHide()
-        })        
-    }
-    
-    function funcMap(array, sub, data) {
-        if (array.sub.sub_category_id === sub) {
-            return array.sub.push(data[0])
+    const updateInfo = (sub, data, information = info) => {
+        if (sub === 0)  {
+            if (information === info)
+                setInfo([...information, data])
+            else if (information === category.categories) 
+                category.setCategories([...information, data])
         }else {
-            return array.map(i => {
-                if (i.sub !== undefined) {
+            if (information === info)
+                setInfo(information.map(i => {                    
                     return funcMap(i, sub, data)
-                }else return i
-            })
+                }))
+            else if (information === category.categories) 
+                category.setCategories(information.map(i => {                    
+                    return funcMap(i, sub, data)
+                }))
+        }
+        function funcMap(i, sub, data) {
+            if (i.id === sub) {
+                if (i.sub === undefined){
+                    return {...i, sub:data}
+                }else {
+                    return {...i, sub:[...i.sub, data]}
+                }
+            }else if (i.sub !== undefined) {
+                return {...i, sub:i.sub.map(k => {
+                    return funcMap(k, sub, data)
+                })}
+            }else return i
         }
     }
     
+        
     const delCategory = async (id, name) => {
         let yes = window.confirm(`Вы уверены, что хотите удалить категорию ${name}?`)
         if (yes) {
             await deleteCategory(id)
             
-            // category.setCategories(funcFilter(category.categories, id))
+            category.setCategories(
+                funcFilter(category.categories, id)
+            )
+            // console.log("category.categories", category.categories)
 
-            // setInfo(category.categories)
-
-            setTimeout(()=>{console.log(info)},1000)
+            setInfo(
+                funcFilter(info, id)
+            )
+            // console.log("info", info)
         }
         // onHide()
     }
 
     function funcFilter(array, id) {
-        
         return array.filter(i => {
             if (i.sub !== undefined) {
-                this.func(i.sub, id)
+                funcFilter(i.sub, id)
+                return true
             }else if (i.id !== id){
                 return true
             }
             return false
         })
-        
     }
     
 
@@ -205,26 +202,9 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                         ?
                             <CategoryService information={i.sub} idName={"sub_"+idName} sub_id={i.id} />
                         : 
-                            // <div />
-                            // <CategoryService information={null} idName={"sub_"+idName} sub_id={i.id} />
+                            <CategoryAddService sub_id={i.id} updateInfo={(sub, data) => updateInfo(sub, data)} />
 
-                            <Form
-                                className="ml-4"
-                            >
-                                <Form.Control 
-                                    className='mt-4'
-                                    value={value}
-                                    onChange={e => setValue(e.target.value)}
-                                    placeholder={'Введите название новой категории'}
-                                />
-                                <Button 
-                                    variant="outline-success" 
-                                    onClick={() => addCategory(i.id)}
-                                    className='mt-4'
-                                >
-                                    Добавить категорию
-                                </Button>
-                            </Form>
+                            // <div />
                         }
                     </div>
 
@@ -233,21 +213,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
             )}
         </div>
 
-        <Form>
-            <Form.Control 
-                className='mt-4'
-                value={value}
-                onChange={e => setValue(e.target.value)}
-                placeholder={'Введите название новой категории'}
-            />
-            <Button 
-                variant="outline-success" 
-                onClick={() => addCategory(sub_id)}
-                className='mt-4'
-            >
-                Добавить категорию
-            </Button>
-        </Form>
+        <CategoryAddService sub_id={sub_id} offset={null} updateInfo={(sub, data) => updateInfo(sub, data)} />
 
     </div>
                 
