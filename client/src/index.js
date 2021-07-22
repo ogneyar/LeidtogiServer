@@ -10,6 +10,10 @@ import './styles/index.css'
 
 export const Context = createContext(null)
 
+// Object.prototype.log = function(){
+//   console.log(this);
+// }
+
 ReactDOM.render(
   <Context.Provider value={{
     user: new UserStore(),

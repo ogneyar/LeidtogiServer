@@ -2,7 +2,7 @@ import {$host,$authHost} from './index'
 
 export const createCategory = async (name, sub_category_id = 0) => {
     const {data} = await $authHost.post('api/category', {name, sub_category_id}) 
-    return data  // возвращает объект а не массив
+    return data  
 }
 
 export const fetchAllCategories = async () => {
@@ -19,7 +19,6 @@ export const deleteCategory = async (id) => {
     const {data} = await $authHost.delete('api/category/' + id)
     return data
 }
-
 
 export const updateCategory = async (id, newName) => {
     const {data} = await $authHost.put('api/category/' + id, {name: newName})

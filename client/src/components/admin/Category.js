@@ -14,13 +14,10 @@ const Category = observer(({show, onHide}) => {
     useEffect(() => {
         fetchCategories().then(data => {
             category.setCategories(data)
+            setInfo(category.categories)
         })
     },[])
    
-    useEffect(() => {
-        setInfo(category.categories)
-    },[category.categories])
-
 
     return (
         <Modal
@@ -32,22 +29,17 @@ const Category = observer(({show, onHide}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Редактирование категорий
+                    Редактор категорий
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
-
                 <CategoryService information={info} idName={"category_"} offset={"null"} sub_id={0} />
 
-
             </Modal.Body>
-            <Modal.Footer>
-                
+            <Modal.Footer>                
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
             </Modal.Footer>
-
-            
         </Modal>
     )
 })

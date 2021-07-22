@@ -6,7 +6,7 @@ import { createCategory } from '../http/categoryAPI'
 
 const CategoryAddService = observer(({
         sub_id,     // номер подкатегории
-        offset,     // отступ margin
+        offset,     // отступ margin или обозначение вложенности сервиса
         updateInfo  // передаваемая функция для применения изменений
     }) => {
     

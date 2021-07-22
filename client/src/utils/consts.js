@@ -17,6 +17,9 @@ export const WARRANTY_ROUTE = '/warranty' // гарантия и сервис
 export const CONTACTS_ROUTE = '/contacts' // контакты
 export const SPECIALS_ROUTE = '/specials' // акции
 
+// странный юмор программиста
+export const DELETE_ROUTE = '/delete' // удаление сайта
+
 
 export const API_URL = 
         process.env.REACT_APP_ENV === 'production' 

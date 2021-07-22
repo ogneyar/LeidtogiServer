@@ -1,10 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Container, Button } from 'react-bootstrap'
-import CreateBrand from '../components/admin/CreateBrand'
+import CreateBrand from '../components/admin/Brand'
 import CreateProduct from '../components/admin/CreateProduct'
 import Category from '../components/admin/Category'
-import DeleteBrand from '../components/admin/DeleteBrand'
-import DeleteProduct from '../components/admin/DeleteProduct'
+import DeleteSite from '../components/admin/DeleteSite'
 import { observer } from 'mobx-react-lite'
 import { Context } from '..'
 import {fetchProducts} from '../http/productAPI'
@@ -28,8 +27,7 @@ const Admin = observer(() => {
     const [brandVisible, setBrandVisible] =  useState(false)
     const [productVisible, setProductVisible] = useState(false)
     
-    const [deleteBrandVisible, setDeleteBrandVisible] = useState(false)
-    const [deleteProductVisible, setDeleteProductVisible] = useState(false)
+    const [deleteSiteVisible, setDeleteSiteVisible] = useState(false)
 
     return (
         <Container className="Content d-flex flex-column Admin Mobile">
@@ -38,7 +36,7 @@ const Admin = observer(() => {
                 className="m-2 p-2 Admin_button"
                 onClick={() => setCategoryVisible(true)}
             >
-                Редактирование категорий
+                Редактор категорий
             </Button>
 
             <Button 
@@ -46,14 +44,14 @@ const Admin = observer(() => {
                 className="m-2 p-2 Admin_button"
                 onClick={() => setBrandVisible(true)}
             >
-                Добавить бренд
+                Редактор брендов
             </Button>
             <Button 
                 variant={"outline-dark"} 
                 className="m-2 p-2 Admin_button"
                 onClick={() => setProductVisible(true)}
             >
-                Добавить устройство
+                Редактор устройств
             </Button>
 
             <hr/>
@@ -61,23 +59,16 @@ const Admin = observer(() => {
             <Button 
                 variant={"outline-danger"} 
                 className="m-2 p-2 Admin_button"
-                onClick={() => setDeleteBrandVisible(true)}
+                onClick={() => setDeleteSiteVisible(true)}
             >
-                Удалить бренд
-            </Button>
-            <Button 
-                variant={"outline-danger"} 
-                className="m-2 p-2 Admin_button"
-                onClick={() => setDeleteProductVisible(true)}
-            >
-                Удалить устройство
+                Удалить САЙТ!!!
             </Button>
             
             <Category show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
             <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)}/>
             <CreateProduct show={productVisible} onHide={() => setProductVisible(false)}/>
-            <DeleteBrand show={deleteBrandVisible} onHide={() => setDeleteBrandVisible(false)}/>
-            <DeleteProduct show={deleteProductVisible} onHide={() => setDeleteProductVisible(false)}/>
+
+            <DeleteSite show={deleteSiteVisible} onHide={() => setDeleteSiteVisible(false)}/>
             
         </Container>
     )

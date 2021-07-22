@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../index'
@@ -15,7 +15,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     const updateInfo = (sub, data, inform, offset) => {
         if (inform === "state") {
             if (offset === "null") {
-                setInfo([...info, data])
+                setInfo([...info, ...data])
             }else if (offset === "yes") {
                 setInfo(info.map(i => {
                     return funcMap(i, sub, data)
@@ -23,7 +23,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
             }
         }else if (inform === "context") {
             if (sub === 0)  {
-                category.setCategories([...category.categories, data])
+                category.setCategories([...category.categories, ...data])
             }else {
                 category.setCategories(category.categories.map(i => {                    
                     return funcMap(i, sub, data)
@@ -36,7 +36,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 if (i.sub === undefined){
                     return {...i, sub:data}
                 }else {
-                    return {...i, sub:[...i.sub, data]}
+                    return {...i, sub:[...i.sub, ...data]}
                 }
             }else if (i.sub !== undefined) {
                 return {...i, sub:i.sub.map(k => {
@@ -48,9 +48,10 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     }
         
     const delCategory = async (id, name) => {
-        let yes = window.confirm(`Вы уверены, что хотите удалить категорию ${name}?`)
+        let yes = window.confirm(`Вы уверены, что хотите удалить категорию ${name}? Вместе с ней удалятся и подкатегории, если в ней таковые имеются! Будьте внимательны!!! Удаляем?!`)
         if (yes) {
-            await deleteCategory(id)
+            
+            reDelete(id)
             
             category.setCategories(reFilter(category.categories, id))
             setInfo(reFilter(info, id))
@@ -66,6 +67,20 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 return false
             })
         }
+        async function reDelete(id) {
+            let response = await deleteCategory(id)
+            if (response) {
+                let categories = await fetchCategories(id)
+                if (categories) {
+                    if (categories[0] !== undefined) {
+                        categories.map(async (i) => {
+                            reDelete(i.id)
+                        })
+                    }
+                }
+                return true
+            }else return false
+        }
         // onHide()
     }
     
@@ -75,10 +90,10 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         elementCategory.readOnly = false
         elementCategory.style.cursor = "text"
 
-        let elementButton = document.getElementById("button_" + id)
+        let elementButton = document.getElementById("button_" + idName + id)
         elementButton.style.display = "none"
 
-        let elementWarningButton = document.getElementById("button_warning_" + id)
+        let elementWarningButton = document.getElementById("button_warning_" + idName + id)
         elementWarningButton.style.display = "flex"
 
     }
@@ -90,10 +105,10 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         elementCategory.style.cursor = "pointer"
         elementCategory.readOnly = true
 
-        let elementButton = document.getElementById("button_" + id)
+        let elementButton = document.getElementById("button_" + idName + id)
         elementButton.style.display = "flex"
 
-        let elementWarningButton = document.getElementById("button_warning_" + id)
+        let elementWarningButton = document.getElementById("button_warning_" + idName + id)
         elementWarningButton.style.display = "none"
 
         
@@ -125,9 +140,9 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         className={offset === "null" ? "" : "ml-4"}
     >
         <div>
-            {info && Array.isArray(info) && info.map(i => {
+            {info && info.map(i => {
 
-                if (i.id === undefined) return <div />
+                if (i.id === undefined) return <div key={42}/>
 
                 return (<Row
                     className='mt-4'
@@ -156,7 +171,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                             variant="outline-primary"
                             onClick={() => editCategory(i.id)}
                             className='mt-1'
-                            id={"button_" + i.id}
+                            id={"button_" + idName + i.id}
                         >
                             Изменить...
                         </Button>
@@ -166,7 +181,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                             onClick={() => editCategoryApply(i.id)}
                             style={{display:"none"}}
                             className='mt-1'
-                            id={"button_warning_" + i.id}
+                            id={"button_warning_" + idName + i.id}
                         >
                             Применить
                         </Button>

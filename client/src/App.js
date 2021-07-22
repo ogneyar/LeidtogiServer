@@ -1,18 +1,20 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { Spinner, Container } from 'react-bootstrap';
-import { observer } from 'mobx-react-lite';
-import AppRouter from './components/AppRouter'
-import { Context } from '.';
-import { check } from './http/userAPI';
-import Header from './components/header/Header';
-import Footer from './components/footer/Footer';
+import { Spinner, Container } from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
 
-import 'bootstrap/dist/css/bootstrap.css';
-import './styles/App.css';
+import AppRouter from './components/AppRouter'
+import Header from './components/header/Header'
+import Footer from './components/footer/Footer'
+import { check } from './http/userAPI'
+import { Context } from '.'
+
+import 'bootstrap/dist/css/bootstrap.css'
+import './styles/App.css'
 
 
 const App = observer(() => {
+
   const {user} = useContext(Context)
   const [loading, setLoading] = useState(true)
 
@@ -36,6 +38,7 @@ const App = observer(() => {
     )
   }
 
+
   return (
     <BrowserRouter>
 
@@ -46,7 +49,7 @@ const App = observer(() => {
       <Footer />
 
     </BrowserRouter>
-  );
+  )
 })
 
-export default App;
+export default App
