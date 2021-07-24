@@ -11,14 +11,19 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     const { category } = useContext(Context)
     const [info, setInfo] = useState(information)
 
+    const [state, setState] = useState(information.map(i => {
+        return {id:i.id,readOnly:true,cursor:"pointer",bEdit:"flex",bApply:"none",divSub:"none"}
+    }))
+   
 
     const updateInfo = (sub, data, inform, offset) => {
         if (inform === "state") {
             if (offset === "null") {
+                setState([...state, {id:data[0].id,readOnly:true,cursor:"pointer",bEdit:"flex",bApply:"none",divSub:"none"}])
                 setInfo([...info, ...data])
             }else if (offset === "yes") {
                 setInfo(info.map(i => {
-                    return funcMap(i, sub, data)
+                    return reMap(i, sub, data)
                 }))
             }
         }else if (inform === "context") {
@@ -26,11 +31,11 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 category.setCategories([...category.categories, ...data])
             }else {
                 category.setCategories(category.categories.map(i => {                    
-                    return funcMap(i, sub, data)
+                    return reMap(i, sub, data)
                 }))
             }
         }        
-        function funcMap(i, sub, data) {
+        function reMap(i, sub, data) { // рекурсивная функция
             if (i.id === undefined) return i
             if (i.id === sub) {
                 if (i.sub === undefined){
@@ -40,7 +45,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 }
             }else if (i.sub !== undefined) {
                 return {...i, sub:i.sub.map(k => {
-                    return funcMap(k, sub, data)
+                    return reMap(k, sub, data)
                 })}
             }
             return i
@@ -56,7 +61,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
             category.setCategories(reFilter(category.categories, id))
             setInfo(reFilter(info, id))
         }
-        function reFilter(array, id) {
+        function reFilter(array, id) { // рекурсивная функция удаления вложеных состояний
             return array.filter(i => {
                 if (i.sub !== undefined) {
                     reFilter(i.sub, id)
@@ -67,7 +72,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 return false
             })
         }
-        async function reDelete(id) {
+        async function reDelete(id) { // рекурсивная функция удаления вложенных категорий
             let response = await deleteCategory(id)
             if (response) {
                 let categories = await fetchCategories(id)
@@ -81,38 +86,25 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 return true
             }else return false
         }
-        // onHide()
     }
     
     const editCategory = (id) => {
-
-        let elementCategory = document.getElementById(idName + id)
-        elementCategory.readOnly = false
-        elementCategory.style.cursor = "text"
-
-        let elementButton = document.getElementById("button_" + idName + id)
-        elementButton.style.display = "none"
-
-        let elementWarningButton = document.getElementById("button_warning_" + idName + id)
-        elementWarningButton.style.display = "flex"
-
+        setState(
+            state.map(i => i.id === id 
+                ? {...i, readOnly:false,cursor:"text",bEdit:"none",bApply:"flex"} 
+                : i
+            )
+        )
     }
 
-    const editCategoryApply = async (id) => {
-
-        let elementCategory = document.getElementById(idName + id)
-        let newName = elementCategory.value
-        elementCategory.style.cursor = "pointer"
-        elementCategory.readOnly = true
-
-        let elementButton = document.getElementById("button_" + idName + id)
-        elementButton.style.display = "flex"
-
-        let elementWarningButton = document.getElementById("button_warning_" + idName + id)
-        elementWarningButton.style.display = "none"
-
-        
-        await updateCategory(id, newName)
+    const editCategoryApply = async (id, name) => {
+        setState(
+            state.map(i => i.id === id 
+                ? {...i, readOnly:true,cursor:"pointer",bEdit:"flex",bApply:"none"} 
+                : i 
+            )
+        )
+        await updateCategory(id, name)
     }
 
     const openSubCategory = async (id) => {
@@ -124,14 +116,18 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         })
     }
 
-    const toggleSubCategory = async (id) => {
-        let element = document.getElementById("sub_" + idName + id)
-        if (element.style.display === "flex") {
-            element.style.display = "none"
-        }else if (element.style.display === "none"){
-            openSubCategory(id)
-            element.style.display = "flex"
-        }
+    const toggleSubCategory = async (id) => {     
+        setState(state.map(i => {
+            if (i.id === id) {
+                if (i.divSub === "flex") {
+                    return {...i, divSub:"none"}
+                }else if (i.divSub === "none") {                    
+                    openSubCategory(id)
+                    return {...i, divSub:"flex"}
+                }
+            }
+            return i
+        }))
     }
 
     
@@ -140,7 +136,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         className={offset === "null" ? "" : "ml-4"}
     >
         <div>
-            {info && info.map(i => {
+            {info && info.map((i, number) => {
 
                 if (i.id === undefined) return <div key={42}/>
 
@@ -151,16 +147,15 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                     <Col md={5}>
                         <Form.Control 
                             className='mt-1'
-                            style={{cursor:'pointer'}}
+                            style={{cursor:state[number].cursor}}
                             value={i.name}
-                            // disabled={true}
-                            readOnly={true}
+                            readOnly={state[number].readOnly}
                             id={idName + i.id}
                             onChange={e => {
                                 setInfo(info.map(k => i.id === k.id ? {...k, name:e.target.value} : k))
                             }}
                             onClick={e => {
-                                toggleSubCategory(i.id)
+                                if (state[number].readOnly) toggleSubCategory(i.id)
                             }}
                             title="Показать подкатегории"
                         />
@@ -170,6 +165,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                         <Button
                             variant="outline-primary"
                             onClick={() => editCategory(i.id)}
+                            style={{display:state[number].bEdit}}
                             className='mt-1'
                             id={"button_" + idName + i.id}
                         >
@@ -178,8 +174,8 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
 
                         <Button
                             variant="outline-warning"
-                            onClick={() => editCategoryApply(i.id)}
-                            style={{display:"none"}}
+                            onClick={() => editCategoryApply(i.id, i.name)}
+                            style={{display:state[number].bApply}}
                             className='mt-1'
                             id={"button_warning_" + idName + i.id}
                         >
@@ -201,7 +197,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                     {/* изначально не видимая форма для добавления подкатегории */}
                     <div 
                         id={"sub_"+ idName + i.id}
-                        style={{display:"none"}}
+                        style={{display:state[number].divSub}}
                         className="flex-column "
                     >
                         {i.sub !== undefined 
@@ -209,6 +205,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                             <CategoryService information={i.sub} idName={"sub_"+idName} sub_id={i.id} />
                         : 
                             <CategoryAddService sub_id={i.id} offset={"yes"} updateInfo={(sub, data, inform, offset) => updateInfo(sub, data, inform, offset)} />
+                            // <CategoryService information={[]} idName={"sub_"+idName} sub_id={i.id} />
                         }
                     </div>
 
