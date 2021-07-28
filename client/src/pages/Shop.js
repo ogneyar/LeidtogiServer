@@ -1,30 +1,36 @@
-import React from 'react'
-import { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
+
 import CategoryBar from '../components/CategoryBar'
 import BrandBar from '../components/BrandBar'
 import ProductList from '../components/ProductList'
-import { observer } from 'mobx-react-lite'
-import { useContext } from 'react'
-import { Context } from '..'
+import Pages from '../components/Pages'
+import Filter from '../components/filter/Filter'
+
 import { fetchProducts } from '../http/productAPI'
 import { fetchCategories } from '../http/categoryAPI'
 import { fetchBrands } from '../http/brandAPI'
-import Pages from '../components/Pages'
 
+import { Context } from '..'
+import { LIMIT } from '../utils/consts'
 
 const Shop = observer(() => {
-    const {product, category, brand} = useContext(Context)
+    const { product, category, brand } = useContext(Context)
+
 
     useEffect(() => {
+        let limit = localStorage.getItem('limit') || LIMIT
+        // console.log(limit);
+        if (limit !== product.limit) product.setLimit(limit)
+        else {
+            fetchProducts(null, null, 1, product.limit).then(data => {
+                product.setProducts(data.rows)
+                product.setTotalCount(data.count)
+            })
+        }
         fetchCategories().then(data => category.setCategories(data))
-        fetchBrands().then(data => brand.setBrands(data))
-        fetchProducts(null, null, 1, product.limit).then(data => {
-            product.setProducts(data.rows)
-            product.setTotalCount(data.count)
-            // category.setSelectedCategory({})
-            // brand.setSelectedBrand({})
-        })
+        fetchBrands().then(data => brand.setBrands(data))        
     },[])
 
     useEffect(() => {
@@ -32,7 +38,7 @@ const Shop = observer(() => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
         })
-    },[product.page, category.selectedCategory, brand.selectedBrand])
+    },[product.page, product.limit, category.selectedCategory, brand.selectedBrand])
 
     return (
         <Container
@@ -44,6 +50,9 @@ const Shop = observer(() => {
                 </Col>
                 <Col md={9}>
                     <BrandBar />
+
+                    <Filter />
+
                     <ProductList />
                     <Pages />
                 </Col>

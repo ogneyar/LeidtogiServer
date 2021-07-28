@@ -1,3 +1,5 @@
+export const LIMIT = 4
+
 export const ADMIN_ROUTE = '/admin' // администрация
 export const LOGIN_ROUTE = '/login' // вход
 export const REGISTRATION_ROUTE = '/registration' // регистрация

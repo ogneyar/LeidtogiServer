@@ -6,7 +6,7 @@ import { Context } from '..'
 
 
 const CategoryBar = observer(() => {
-    const {category} = useContext(Context)
+    const { brand, category } = useContext(Context)
 
     let subCategory = () => {
         category.categories.map(cat => 
@@ -34,22 +34,28 @@ const CategoryBar = observer(() => {
         )
     }
 
+    const onClickSelectedCategory = (id) => {
+        brand.setSelectedBrand({})
+        category.setSelectedCategory(id)
+    }
+
     return (
-        <ListGroup style={{cursor: "pointer"}}>
+        <ListGroup 
+            style={{cursor: "pointer"}}
+            className="mb-4"
+        >
             <ListGroup.Item 
                 active={undefined === category.selectedCategory.id}
-                onClick={() => category.setSelectedCategory({})}
+                onClick={() => onClickSelectedCategory({})}
                 key={0}
             >
                 Все категории
             </ListGroup.Item>
-
-            {/* {category.categories.map(i =>console.log(i))} */}
             
             {category.categories !== undefined && category.categories.map(i => 
                 <ListGroup.Item 
                     active={i.id === category.selectedCategory.id}
-                    onClick={() => category.setSelectedCategory(i)}
+                    onClick={() => onClickSelectedCategory(i)}
                     key={i.id}
                 >
                     {i.name}
@@ -58,7 +64,7 @@ const CategoryBar = observer(() => {
                     {category.sub_categories !== undefined && category.sub_categories.map(sub_cat => 
                         <ListGroup.Item 
                             active={sub_cat.id === category.selectedCategory.id}
-                            onClick={() => category.setSelectedCategory(sub_cat)}
+                            onClick={() => onClickSelectedCategory(sub_cat)}
                             key={sub_cat.id}
                         >
                             {sub_cat.name}

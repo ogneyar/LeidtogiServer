@@ -8,12 +8,12 @@ import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from '../utils/consts'
 import { Context } from '..'
 
 const Auth = observer(() => {
-    const {user} = useContext(Context)
+    const { user } = useContext(Context)
     const location = useLocation()
     const history = useHistory()
     const isLogin = location.pathname === LOGIN_ROUTE
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [ email, setEmail ] = useState('')
+    const [ password, setPassword ] = useState('')
 
     const click = async () => {
         try {
