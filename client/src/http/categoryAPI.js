@@ -20,7 +20,7 @@ export const deleteCategory = async (id) => {
     return data
 }
 
-export const updateCategory = async (id, newName) => {
-    const {data} = await $authHost.put('api/category/' + id, {name: newName})
+export const updateCategory = async (id, body) => {
+    const {data} = await $authHost.put('api/category/' + id, body)
     return data
 }

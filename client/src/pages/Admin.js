@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Container, Button } from 'react-bootstrap'
-import CreateBrand from '../components/admin/Brand'
-import CreateProduct from '../components/admin/CreateProduct'
 import Category from '../components/admin/Category'
+import Brand from '../components/admin/Brand'
+import CreateProduct from '../components/admin/CreateProduct'
 import DeleteSite from '../components/admin/DeleteSite'
 import { observer } from 'mobx-react-lite'
 import { Context } from '..'
@@ -65,7 +65,7 @@ const Admin = observer(() => {
             </Button>
             
             <Category show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
-            <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)}/>
+            <Brand show={brandVisible} onHide={() => setBrandVisible(false)}/>
             <CreateProduct show={productVisible} onHide={() => setProductVisible(false)}/>
 
             <DeleteSite show={deleteSiteVisible} onHide={() => setDeleteSiteVisible(false)}/>

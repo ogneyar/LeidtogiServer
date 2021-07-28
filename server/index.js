@@ -9,15 +9,17 @@ const errorHandler = require('./middleware/errorHandlingMiddleware')
 const path = require('path')
 
 const PORT = process.env.PORT || 3000
+const CORS_URL = process.env.CORS_URL || "https://leidtogi.ru"
 
 const app = express()
-app.use(cors({ origin: true }))
+app.use(cors({ origin: CORS_URL }))
 app.use(express.json())
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use('/api', router)
 app.get('/', (req, res) => {
-    res.send("MERN server - приветствует тебя!")
+    // res.send("MERN server - приветствует тебя!")
+    res.redirect("https://leidtogi.ru")
 })
 app.get('/undefined', (req, res) => {
     res.status(200)

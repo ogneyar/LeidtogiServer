@@ -1,11 +1,24 @@
-import React from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {Modal, Button} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
+import { fetchBrands } from '../../http/brandAPI'
 import BrandService from '../../service/BrandService'
+import { Context } from '../../index'
 
 
 const Brand = observer(({show, onHide}) => {
 
+    const { brand } = useContext(Context)
+    const [ info, setInfo ] = useState([])
+
+    useEffect(() => {
+        fetchBrands().then(data => {
+            brand.setBrands(data)
+            setInfo(brand.brands)
+        })        
+    },[])
+
+    
     return (
         <Modal
             show={show}
@@ -21,7 +34,7 @@ const Brand = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
 
-                <BrandService />                
+                <BrandService information={info} />                
 
             </Modal.Body>
             <Modal.Footer>

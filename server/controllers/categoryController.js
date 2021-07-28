@@ -31,11 +31,11 @@ class CategoryController {
 
     async edit(req, res) {
         const {id} = req.params
-        const {name} = req.body
-        const category = await Category.update({ name }, {
+        const body = req.body
+        const category = await Category.update(body, {
             where: { id }
         })
-        return res.json([category]) // return array
+        return res.json(category) // return boolean
     }
 
 

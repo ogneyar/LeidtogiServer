@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { createCategory } from '../http/categoryAPI'
+import { Input, Button } from '../components/myBootstrap'
 
 
 const CategoryAddService = observer(({
@@ -26,10 +27,11 @@ const CategoryAddService = observer(({
     
     return (
         <Form
+            style={{width:"100%"}}
             className={offset === "null" ? "" : "ml-4"}
         >
-            <Form.Control 
-                className='mt-4'
+            <Input 
+                className='mt-4 ml-2 mr-2'
                 value={value}
                 onChange={e => setValue(e.target.value)}
                 placeholder={'Введите название новой категории'}
@@ -37,10 +39,9 @@ const CategoryAddService = observer(({
             <Button 
                 variant="outline-success" 
                 onClick={addCategory}
-                className='mt-4'
-            >
-                Добавить категорию
-            </Button>
+                className='mt-4 ml-2 mr-2'
+                text="Добавить категорию"
+            />
         </Form>                
     )
 })

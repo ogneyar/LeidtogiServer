@@ -16,11 +16,21 @@ class BrandController {
 
     async delete(req, res) {
         const {id} = req.params
-        const brands = await Brand.destroy({
+        const brand = await Brand.destroy({
             where: {id}
         })
-        return res.json(brands) // return boolean
+        return res.json(brand) // return boolean
     }
+    
+    async edit(req, res) {
+        const {id} = req.params
+        const body = req.body
+        const brand = await Brand.update(body, {
+            where: { id }
+        })
+        return res.json(brand) // return boolean
+    }
+
 
 }
 

@@ -33,6 +33,35 @@ const Category = observer(({show, onHide}) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                
+            <div
+                className='d-flex flex-column'
+            >
+                <div
+                    className='d-flex flex-row'
+                >
+                    <div
+                        className='ml-2 mr-2'
+                    >
+                        <p>1. Название категории</p>
+                    </div>
+                    <div
+                        className='ml-2 mr-2'
+                    >
+                        <p>2. Изменить название</p>
+                    </div>
+                    <div
+                        className='ml-2 mr-2'
+                    >
+                        <p>3. Содержит продукцию?</p>
+                    </div>
+                    <div
+                        className='ml-2 mr-2'
+                    >
+                        <p>4. удаление категории</p>
+                    </div>
+                </div>
+            </div>
 
                 <CategoryService information={info} idName={"category_"} offset={"null"} sub_id={0} />
 

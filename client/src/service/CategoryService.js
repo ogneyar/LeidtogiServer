@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
+// import { Button, Form, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../index'
 import { fetchCategories, deleteCategory, updateCategory } from '../http/categoryAPI'
 import CategoryAddService from './CategoryAddService'
+import { Input, Button } from '../components/myBootstrap'
 
 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
@@ -12,7 +13,10 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     const [info, setInfo] = useState(information)
 
     const [state, setState] = useState(information.map(i => {
-        return {id:i.id,readOnly:true,cursor:"pointer",bEdit:"flex",bApply:"none",divSub:"none"}
+        let cursor
+        if (i.is_product) cursor = "text"
+        else cursor = "pointer"
+        return {id:i.id,readOnly:true,cursor,bEdit:"flex",bApply:"none",divSub:"none"}
     }))
    
 
@@ -104,10 +108,10 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 : i 
             )
         )
-        await updateCategory(id, name)
+        await updateCategory(id, {name})
     }
 
-    const openSubCategory = async (id) => {
+    const openSubCategory = (id) => {
         fetchCategories(id).then(data => {
             if (data.length > 0) {
                 category.setCategories(category.categories.map(i => i.id === id ? {...i, sub:data} : i))
@@ -116,7 +120,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         })
     }
 
-    const toggleSubCategory = async (id) => {     
+    const toggleSubCategory = (id) => {     
         setState(state.map(i => {
             if (i.id === id) {
                 if (i.divSub === "flex") {
@@ -131,6 +135,14 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     }
 
     
+    const toggleIsProduct = async (id, checked) => {     
+        setInfo(info.map(i => i.id === id ? {...i, is_product:checked} : i))
+        await updateCategory(id, {is_product:checked})
+
+    }
+
+
+    
     return (
     <div
         className={offset === "null" ? "" : "ml-4"}
@@ -140,59 +152,110 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
 
                 if (i.id === undefined) return <div key={42}/>
 
-                return (<Row
-                    className='mt-4'
+                return (<div
+                    className='d-flex flex-column'
                     key={i.id}
                 >
-                    <Col md={5}>
-                        <Form.Control 
-                            className='mt-1'
-                            style={{cursor:state[number].cursor}}
-                            value={i.name}
-                            readOnly={state[number].readOnly}
-                            id={idName + i.id}
-                            onChange={e => {
-                                setInfo(info.map(k => i.id === k.id ? {...k, name:e.target.value} : k))
-                            }}
-                            onClick={e => {
-                                if (state[number].readOnly) toggleSubCategory(i.id)
-                            }}
-                            title="Показать подкатегории"
-                        />
-                    </Col>
-                    
-                    <Col md={3}>
-                        <Button
-                            variant="outline-primary"
-                            onClick={() => editCategory(i.id)}
-                            style={{display:state[number].bEdit}}
-                            className='mt-1'
-                            id={"button_" + idName + i.id}
+					<div
+						// style={{width:"100%"}}
+						className='mt-4 d-flex flex-row'
+					>
+						{/* <Col md={6}> */}
+						<div
+							style={{width:"100%"}}
+                            className='ml-2 mr-2'
+						>
+							<Input 
+								className='mt-1'
+								style={{cursor:state[number].cursor,width:"100%"}}
+								value={i.name}
+								readOnly={state[number].readOnly}
+								id={idName + i.id}
+								onChange={e => {
+									setInfo(info.map(k => i.id === k.id ? {...k, name:e.target.value} : k))
+								}}
+								onClick={e => {
+									if (state[number].readOnly) 
+                                        if (!i.is_product) 
+                                            toggleSubCategory(i.id)
+								}}
+								title={state[number].bEdit === "flex" 
+                                    ? i.is_product 
+                                        ? "Категория с продукцией" 
+                                        : "Показать подкатегории"
+                                    : "Редактировать запись"}
+							/>
+						</div>
+						{/* </Col> */}
+						
+						{/* <Col md={3}> */}
+						<div
+                            className='ml-2 mr-2'
                         >
-                            Изменить...
-                        </Button>
+							<Button
+								variant="outline-primary"
+								onClick={() => editCategory(i.id)}
+								style={{display:state[number].bEdit}}
+								className='mt-1'
+								id={"button_" + idName + i.id}
+                                title="Изменить название категории"
+                                text="Изменить..."
+							>
+								{/* Изменить... */}
+							</Button>
 
-                        <Button
-                            variant="outline-warning"
-                            onClick={() => editCategoryApply(i.id, i.name)}
-                            style={{display:state[number].bApply}}
-                            className='mt-1'
-                            id={"button_warning_" + idName + i.id}
+							<Button
+								variant="outline-warning"
+								onClick={() => editCategoryApply(i.id, i.name)}
+								style={{display:state[number].bApply}}
+								className='mt-1'
+								id={"button_warning_" + idName + i.id}
+                                title="Применить изменения в названии"
+                                text="Применить"
+							>
+								{/* Применить */}
+							</Button>
+						</div>
+						{/* </Col> */}
+
+						<div
+                            className='ml-2 mr-2'
                         >
-                            Применить
-                        </Button>
-                    </Col>
+						{/* <Col md={1}> */}
+							<Input 
+								type="checkbox" 
+								className='mt-3'
+								checked={i.is_product}
+								title="Содержит ли продукцию?"
+								style={{cursor:"pointer"}}
+                                onChange={e => {
+									toggleIsProduct(i.id, e.target.checked)
+								}}
+							/>
+						</div>
+						{/* </Col> */}
 
-                    <Col md={3}>
-                        <Button
-                            variant="outline-danger"
-                            onClick={() => delCategory(i.id, i.name)}
-                            className='mt-1'
+						{/* <Col md={2}> */}
+						<div
+                            className='ml-2 mr-2'
                         >
-                            Удалить
-                        </Button>
-                    </Col>
+							<Button
+								variant="outline-danger"
+								onClick={() => {
+                                    if (!i.is_product) delCategory(i.id, i.name)
+                                }}
+								className='mt-1'
+                                title="Удаление категории"                                
+                                readOnly={i.is_product}
+                                text="Удалить"
+							>
+								{/* Удалить */}
+							</Button>
+						</div>
+						{/* </Col> */}
 
+					</div>
+                
 
                     {/* изначально не видимая форма для добавления подкатегории */}
                     <div 
@@ -200,6 +263,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                         style={{display:state[number].divSub}}
                         className="flex-column "
                     >
+                        {/* <br /> */}
                         {i.sub !== undefined 
                         ?
                             <CategoryService information={i.sub} idName={"sub_"+idName} sub_id={i.id} />
@@ -209,7 +273,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                         }
                     </div>
 
-                </Row>)}
+                </div>)}
             )}
         </div>
 
