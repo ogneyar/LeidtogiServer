@@ -9,12 +9,12 @@ import CategoryService from '../../service/CategoryService'
 const Category = observer(({show, onHide}) => {
 
     const { category } = useContext(Context)
-    const [info, setInfo] = useState([])
+    // const [info, setInfo] = useState([])
 
     useEffect(() => {
         fetchCategories().then(data => {
             category.setCategories(data)
-            setInfo(category.categories)
+            // setInfo(category.categories)
         })
     },[])
    
@@ -34,36 +34,16 @@ const Category = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
                 
-            <div
-                className='d-flex flex-column'
-            >
-                <div
-                    className='d-flex flex-row'
-                >
-                    <div
-                        className='ml-2 mr-2'
-                    >
-                        <p>1. Название категории</p>
-                    </div>
-                    <div
-                        className='ml-2 mr-2'
-                    >
-                        <p>2. Изменить название</p>
-                    </div>
-                    <div
-                        className='ml-2 mr-2'
-                    >
-                        <p>3. Содержит продукцию?</p>
-                    </div>
-                    <div
-                        className='ml-2 mr-2'
-                    >
-                        <p>4. удаление категории</p>
+                <div className='d-flex flex-column'>
+                    <div className='d-flex flex-row'>
+                        <div className='ml-2 mr-2'><p>1. Название категории</p></div>
+                        <div className='ml-2 mr-2'><p>2. Изменить название</p></div>
+                        <div className='ml-2 mr-2'><p>3. Содержит продукцию?</p></div>
+                        <div className='ml-2 mr-2'><p>4. удаление категории</p></div>
                     </div>
                 </div>
-            </div>
 
-                <CategoryService information={info} idName={"category_"} offset={"null"} sub_id={0} />
+                <CategoryService information={category.categories} idName={"category_"} offset={"null"} sub_id={0} />
 
             </Modal.Body>
             <Modal.Footer>                
