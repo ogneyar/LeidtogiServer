@@ -9,12 +9,12 @@ import { Context } from '../../index'
 const Brand = observer(({show, onHide}) => {
 
     const { brand } = useContext(Context)
-    const [ info, setInfo ] = useState([])
+    // const [ info, setInfo ] = useState([])
 
     useEffect(() => {
         fetchBrands().then(data => {
             brand.setBrands(data)
-            setInfo(brand.brands)
+            // setInfo(brand.brands)
         })        
     },[])
 
@@ -34,7 +34,7 @@ const Brand = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
 
-                <BrandService information={info} />                
+                <BrandService information={brand.brands} />                
 
             </Modal.Body>
             <Modal.Footer>

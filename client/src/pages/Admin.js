@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import Category from '../components/admin/Category'
 import Brand from '../components/admin/Brand'
-import CreateProduct from '../components/admin/CreateProduct'
+import Product from '../components/admin/Product'
 import DeleteSite from '../components/admin/DeleteSite'
 import { observer } from 'mobx-react-lite'
 import { Context } from '..'
@@ -34,6 +34,14 @@ const Admin = observer(() => {
             <Button 
                 variant={"outline-dark"} 
                 className="m-2 p-2 Admin_button"
+                onClick={() => setProductVisible(true)}
+            >
+                Редактор товаров
+            </Button>
+
+            <Button 
+                variant={"outline-dark"} 
+                className="m-2 p-2 Admin_button"
                 onClick={() => setCategoryVisible(true)}
             >
                 Редактор категорий
@@ -46,13 +54,6 @@ const Admin = observer(() => {
             >
                 Редактор брендов
             </Button>
-            <Button 
-                variant={"outline-dark"} 
-                className="m-2 p-2 Admin_button"
-                onClick={() => setProductVisible(true)}
-            >
-                Редактор устройств
-            </Button>
 
             <hr/>
 
@@ -64,9 +65,9 @@ const Admin = observer(() => {
                 Удалить САЙТ!!!
             </Button>
             
+            <Product show={productVisible} onHide={() => setProductVisible(false)}/>
             <Category show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
             <Brand show={brandVisible} onHide={() => setBrandVisible(false)}/>
-            <CreateProduct show={productVisible} onHide={() => setProductVisible(false)}/>
 
             <DeleteSite show={deleteSiteVisible} onHide={() => setDeleteSiteVisible(false)}/>
             

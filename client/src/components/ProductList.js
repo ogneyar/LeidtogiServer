@@ -4,12 +4,16 @@ import { Context } from '..'
 import { Row } from 'react-bootstrap'
 import ProductItem from './ProductItem'
 
+
 const ProductList = observer(() => {
-    const {product} = useContext(Context)
+
+    const { product } = useContext(Context)
+
+
     return (
         <Row className='d-flex'>
-            {product.totalCount > 0 
-            ?
+            {product.totalCount > 0 && Array.isArray(product.products)
+            ?                
                 product.products.map(product => 
                     <ProductItem key={product.id} product={product}/>    
                 )

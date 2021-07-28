@@ -8,7 +8,7 @@ import {fetchCategories} from '../../http/categoryAPI'
 import { fetchBrands } from '../../http/brandAPI'
 
 
-const CreateProduct = observer(({show, onHide}) => {
+const Product = observer(({show, onHide}) => {
     const {product, category, brand} = useContext(Context)
     const [name, setName] = useState('')
     const [price, setPrice] = useState(0)
@@ -17,9 +17,13 @@ const CreateProduct = observer(({show, onHide}) => {
     // const [type, setType] = useState(null)
 
     const [info, setInfo] = useState([])
+    const [infoCategory, setInfoCategory] = useState([])
 
     useEffect(() => {
-        fetchCategories().then(data => category.setCategories(data))
+        fetchCategories().then(data => {
+            category.setCategories(data)
+            setInfoCategory(category.categories)
+        })
         fetchBrands().then(data => brand.setBrands(data))
     },[])
 
@@ -44,13 +48,24 @@ const CreateProduct = observer(({show, onHide}) => {
         formData.append('name', name)
         formData.append('price', `${price}`)
         formData.append('img', file)
-        formData.append('brandId', product.selectedBrand.id)
+        formData.append('brandId', brand.selectedBrand.id)
         formData.append('categoryId', category.selectedCategory.id)
         formData.append('info', JSON.stringify(info))
 
         await createProduct(formData).then(data => onHide())
 
         fetchProducts().then(data => product.setProducts(data))
+        category.setSelectedCategory({})
+        brand.setSelectedBrand({})
+    }
+
+    const onClickSelectedCategory = (cat) => {
+        if (cat.is_product) category.setSelectedCategory(cat)
+        else {
+            fetchCategories(cat.id).then(data => {
+                setInfoCategory([{id:0, name:"Назад..."}, ...data])
+            })
+        }
     }
 
     return (
@@ -63,7 +78,7 @@ const CreateProduct = observer(({show, onHide}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Добавить устройство
+                    Добавить товар
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -71,15 +86,16 @@ const CreateProduct = observer(({show, onHide}) => {
                     <Dropdown className='mt-2 mb-2'>
                         <Dropdown.Toggle>{category.selectedCategory.name || "Выберите категорию"}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {category.categoryes !== undefined ?
-                            category.categoryes.map(cat =>
-                                <Dropdown.Item 
-                                    onClick={() => category.setSelectedCategory(cat)} 
-                                    key={cat.id}
-                                >
-                                    {cat.name}
-                                </Dropdown.Item>
-                            )
+                            {infoCategory !== undefined 
+                            ?
+                                infoCategory.map(cat =>
+                                    <Dropdown.Item 
+                                        onClick={() => onClickSelectedCategory(cat)} 
+                                        key={cat.id}
+                                    >
+                                        {cat.name}
+                                    </Dropdown.Item>
+                                )
                             : null}
                         </Dropdown.Menu>
                     </Dropdown>
@@ -160,4 +176,4 @@ const CreateProduct = observer(({show, onHide}) => {
     )
 })
 
-export default CreateProduct
+export default Product
