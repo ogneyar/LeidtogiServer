@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { Spinner, Container } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
 import AppRouter from './components/AppRouter'
 import Header from './components/header/Header'
 import Footer from './components/footer/Footer'
+import Loading from './components/Loading'
+import Error from './components/Error'
 import { check } from './http/userAPI'
 import { Context } from '.'
 
@@ -17,37 +18,31 @@ const App = observer(() => {
 
   const {user} = useContext(Context)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     check().then(data => {
       user.setUser(data)
       user.setIsAuth(true)
+    },err => {
+      if (err.response?.status !== 401)
+        setError(true)
     }).finally(() => setLoading(false))
   }, [])
 
-  if (loading) {
-    return (
-      <Container
-        className="d-flex justify-content-center align-items-center App" 
-      >
-        <Spinner
-          animation="border" 
-          variant="secondary" 
-        />
-      </Container>
-    )
-  }
-
+  
+  if (loading) return <Loading />
+  
 
   return (
     <BrowserRouter>
+      <Header />      
 
-      <Header />
-      
-      <AppRouter />
-      
+      {error 
+        ? <Error /> 
+        : <AppRouter />}
+
       <Footer />
-
     </BrowserRouter>
   )
 })

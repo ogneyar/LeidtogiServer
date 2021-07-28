@@ -4,16 +4,31 @@ import star from '../assets/star.png'
 import {useParams} from 'react-router-dom'
 import { fetchOneProduct } from '../http/productAPI'
 import { API_URL } from '../utils/consts'
+import Error from '../components/Error'
+import Loading from '../components/Loading'
 
 const Product = () => {
     const [product, setProduct] = useState({info: []})
-    const {id} = useParams()    
+    const {id} = useParams()        
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
 
     useEffect(() => {
-        fetchOneProduct(id).then(data => setProduct(data))
+        fetchOneProduct(id)
+            .then(data => {
+                setProduct(data)
+            },err => {
+                setError(true)
+            })            
+            .finally(() => setLoading(false))
     },[])
     
-    return (
+
+    if (loading) return <Loading />
+
+    if (error) return <Error />
+
+    return ( 
         <Container className="Content mt-3 Mobile">
             <Row>
                 <Col md={4}>
