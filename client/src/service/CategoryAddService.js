@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Form } from 'react-bootstrap'
+// import { Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { createCategory } from '../http/categoryAPI'
-import { Input, Button } from '../components/myBootstrap'
+import { Input, Button, Form } from '../components/myBootstrap'
 
 
 const CategoryAddService = observer(({
@@ -40,8 +40,10 @@ const CategoryAddService = observer(({
                 variant="outline-success" 
                 onClick={addCategory}
                 className='mt-4 ml-2 mr-2'
-                text="Добавить категорию"
-            />
+                text="Добавить категорию"                
+            >
+                Добавить категорию
+            </Button>
         </Form>                
     )
 })

@@ -30,7 +30,9 @@ const Button = (props) => {
             title={props?.title}
             placeholder={props?.placeholder}
         >
-            {props?.text ? props.text : ""}
+
+            {props?.children}
+            
         </button>
     )
 }

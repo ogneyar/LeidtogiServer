@@ -34,7 +34,7 @@ const Limit = observer(() => {
                 value={state} 
                 onChange={e => change(e)}
             >
-                <option disabled>количество:</option>
+                {/* <option disabled>количество:</option> */}
                 <option name="opt1" value="3">3</option>
                 <option name="opt2" value="4">4</option>
                 <option name="opt3" value="6">6</option>

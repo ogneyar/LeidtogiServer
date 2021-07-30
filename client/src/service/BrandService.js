@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react'
 import { createBrand, deleteBrand, updateBrand } from '../http/brandAPI'
-import { Form } from 'react-bootstrap'
+// import { Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../index'
-import { Input, Button } from '../components/myBootstrap'
+import { Input, Button, Form } from '../components/myBootstrap'
 
 
 const BrandService = observer(({information}) => {
@@ -68,7 +68,7 @@ const BrandService = observer(({information}) => {
                     className='mb-4 d-flex flex-column'
                     key={i.id}
                 >
-                    {/* <Col md={5}> */}
+                    
                     <div
                         className='mt-4 d-flex flex-row'
                     >
@@ -88,9 +88,7 @@ const BrandService = observer(({information}) => {
                                 title="Название бренда"
                             />
                         </div>
-                        {/* </Col> */}
                         
-                        {/* <Col md={3}> */}
                         <div
                             className='ml-2 mr-2'
 						>
@@ -101,9 +99,8 @@ const BrandService = observer(({information}) => {
                                 className='mt-1'
                                 id={"button_" + i.id}
                                 title="Изменить название бренда"
-                                text="Изменить..."
                             >
-                                {/* Изменить... */}
+                                Изменить...
                             </Button>
 
                             <Button
@@ -113,14 +110,11 @@ const BrandService = observer(({information}) => {
                                 className='mt-1'
                                 id={"button_warning_" + i.id}
                                 title="Применить изменение названия"
-                                text="Применить"
                             >
-                                {/* Применить */}
+                                Применить
                             </Button>
                         </div>
-                        {/* </Col> */}
 
-                        {/* <Col md={3}> */}
                         <div
                             className='ml-2 mr-2'
 						>
@@ -129,12 +123,10 @@ const BrandService = observer(({information}) => {
                                 onClick={() => delBrand(i.id, i.name)}
                                 className='mt-1'
                                 title="Удаление бренда"
-                                text="Удалить"
                             >
-                                {/* Удалить */}
+                                Удалить
                             </Button>
                         </div>
-                        {/* </Col> */}
 
                     </div>
 
@@ -155,9 +147,8 @@ const BrandService = observer(({information}) => {
                     className='ml-2 mr-2 mt-2'
                     variant="outline-success" 
                     onClick={addBrand}
-                    text="Добавить"
                 >
-                    {/* Добавить */}
+                    Добавить
                 </Button>
             </Form>
                 

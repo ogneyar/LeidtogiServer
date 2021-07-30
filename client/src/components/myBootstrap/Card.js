@@ -1,24 +1,25 @@
-import './Form.css'
+import React from 'react'
+import './Card.css'
 
 
-const Form = (props) => {
+const Card = (props) => {
 
-    let className = "Form "
+    let className = "Card "
 
     if (props?.readOnly) {
         className += "readOnly " 
+    }else {
+        if (props?.variant) {
+            className += props.variant + " "
+        }else className += "standartCard "
     }
-
-    if (props?.variant) {
-        className += props.variant + " "
-    }
-
+    
     if (props?.className) {
-        className += props.className
+        className += props?.className
     }
 
     return (
-        <form 
+        <div            
             type={props?.type}			
             checked={props?.checked}
             className={className}
@@ -31,11 +32,9 @@ const Form = (props) => {
             title={props?.title}
             placeholder={props?.placeholder}
         >
-            
-            {props?.children}
-
-        </form>
+            {props.children}
+        </div>
     )
 }
 
-export default Form
+export default Card

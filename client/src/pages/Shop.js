@@ -4,8 +4,8 @@ import { observer } from 'mobx-react-lite'
 
 import CategoryBar from '../components/CategoryBar'
 import BrandBar from '../components/BrandBar'
-import ProductList from '../components/ProductList'
-import Pages from '../components/Pages'
+import ProductList from '../components/product/ProductList'
+import Pages from '../components/Pagination'
 import Filter from '../components/filter/Filter'
 
 import { fetchProducts } from '../http/productAPI'

@@ -157,10 +157,9 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                     key={i.id}
                 >
 					<div
-						// style={{width:"100%"}}
 						className='mt-4 d-flex flex-row'
 					>
-						{/* <Col md={6}> */}
+                        
 						<div
 							style={{width:"100%"}}
                             className='ml-2 mr-2'
@@ -186,9 +185,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                                     : "Редактировать запись"}
 							/>
 						</div>
-						{/* </Col> */}
-						
-						{/* <Col md={3}> */}
+                        
 						<div
                             className='ml-2 mr-2'
                         >
@@ -199,9 +196,8 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
 								className='mt-1'
 								id={"button_" + idName + i.id}
                                 title="Изменить название категории"
-                                text="Изменить..."
 							>
-								{/* Изменить... */}
+								Изменить...
 							</Button>
 
 							<Button
@@ -211,17 +207,15 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
 								className='mt-1'
 								id={"button_warning_" + idName + i.id}
                                 title="Применить изменения в названии"
-                                text="Применить"
 							>
-								{/* Применить */}
+								Применить
 							</Button>
 						</div>
-						{/* </Col> */}
 
 						<div
                             className='ml-2 mr-2'
                         >
-						{/* <Col md={1}> */}
+                            
 							<Input 
 								type="checkbox" 
 								className='mt-3'
@@ -233,9 +227,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
 								}}
 							/>
 						</div>
-						{/* </Col> */}
-
-						{/* <Col md={2}> */}
+                        
 						<div
                             className='ml-2 mr-2'
                         >
@@ -245,15 +237,13 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                                     if (!i.is_product) delCategory(i.id, i.name)
                                 }}
 								className='mt-1'
-                                title="Удаление категории"                                
+                                title="Удаление категории"
                                 readOnly={i.is_product}
-                                text="Удалить"
 							>
-								{/* Удалить */}
+								Удалить
 							</Button>
 						</div>
-						{/* </Col> */}
-
+                        
 					</div>
                 
 
@@ -263,14 +253,14 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                         style={{display:state[number].divSub}}
                         className="flex-column "
                     >
-                        {/* <br /> */}
+                        
                         {i.sub !== undefined 
                         ?
                             <CategoryService information={i.sub} idName={"sub_"+idName} sub_id={i.id} />
                         : 
                             <CategoryAddService sub_id={i.id} offset={"yes"} updateInfo={(sub, data, inform, offset) => updateInfo(sub, data, inform, offset)} />
-                            // <CategoryService information={[]} idName={"sub_"+idName} sub_id={i.id} />
                         }
+                        
                     </div>
 
                 </div>)}
