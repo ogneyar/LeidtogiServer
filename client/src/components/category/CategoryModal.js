@@ -2,20 +2,16 @@ import React, { useState, useContext, useEffect } from 'react'
 import {Modal, Button} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { fetchBrands } from '../../http/brandAPI'
-import BrandService from '../../service/admin/BrandService'
+import CategoryService from '../../service/category/CategoryService'
 import { Context } from '../../index'
 
 
-const Brand = observer(({show, onHide}) => {
+const CategoryModal = observer(({show, onHide}) => {
 
-    const { brand } = useContext(Context)
+    const { category } = useContext(Context)
     // const [ info, setInfo ] = useState([])
 
     useEffect(() => {
-        fetchBrands().then(data => {
-            brand.setBrands(data)
-            // setInfo(brand.brands)
-        })        
     },[])
 
     
@@ -29,20 +25,20 @@ const Brand = observer(({show, onHide}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Редактор брендов
+                    Категории
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
-                <BrandService information={brand.brands} />                
+                <CategoryService information={category.categories} />
 
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>                
-            </Modal.Footer>
+            {/* <Modal.Footer>
+                <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
+            </Modal.Footer> */}
         </Modal>
     )
 })
 
-export default Brand
+export default CategoryModal
  

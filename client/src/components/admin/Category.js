@@ -3,7 +3,7 @@ import {Modal, Button} from 'react-bootstrap'
 import { Context } from '../..'
 import { fetchCategories } from '../../http/categoryAPI'
 import { observer } from 'mobx-react-lite'
-import CategoryService from '../../service/CategoryService'
+import CategoryService from '../../service/admin/CategoryService'
 
 
 const Category = observer(({show, onHide}) => {

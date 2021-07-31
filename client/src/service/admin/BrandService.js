@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react'
-import { createBrand, deleteBrand, updateBrand } from '../http/brandAPI'
-// import { Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { Context } from '../index'
-import { Input, Button, Form } from '../components/myBootstrap'
+// import { Form } from 'react-bootstrap'
+import { createBrand, deleteBrand, updateBrand } from '../../http/brandAPI'
+import { Input, Button, Form } from '../../components/myBootstrap'
+import { Context } from '../../index'
 
 
 const BrandService = observer(({information}) => {

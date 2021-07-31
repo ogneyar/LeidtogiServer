@@ -25,3 +25,9 @@
     background-color: var(--main-white-color);
     border: none;
 }
+
+@media (max-width:1000px) {
+    .autosearch-input {
+        width: 80vw;
+    }
+}

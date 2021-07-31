@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 // import { Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { createCategory } from '../http/categoryAPI'
-import { Input, Button, Form } from '../components/myBootstrap'
+import { createCategory } from '../../http/categoryAPI'
+import { Input, Button, Form } from '../../components/myBootstrap'
 
 
 const CategoryAddService = observer(({

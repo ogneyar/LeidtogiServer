@@ -35,10 +35,10 @@ const Limit = observer(() => {
                 onChange={e => change(e)}
             >
                 {/* <option disabled>количество:</option> */}
-                <option name="opt1" value="3">3</option>
-                <option name="opt2" value="4">4</option>
-                <option name="opt3" value="6">6</option>
-                <option name="opt4" value="8">8</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
             </select>
         </div>
     )

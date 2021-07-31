@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
 // import { Button, Form, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { Context } from '../index'
-import { fetchCategories, deleteCategory, updateCategory } from '../http/categoryAPI'
+import { Context } from '../../index'
+import { fetchCategories, deleteCategory, updateCategory } from '../../http/categoryAPI'
 import CategoryAddService from './CategoryAddService'
-import { Input, Button } from '../components/myBootstrap'
+import { Input, Button } from '../../components/myBootstrap'
 
 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
@@ -125,7 +125,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
             if (i.id === id) {
                 if (i.divSub === "flex") {
                     return {...i, divSub:"none"}
-                }else if (i.divSub === "none") {                    
+                }else if (i.divSub === "none") {
                     openSubCategory(id)
                     return {...i, divSub:"flex"}
                 }
