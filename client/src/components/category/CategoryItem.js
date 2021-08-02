@@ -21,23 +21,17 @@ const CategoryItem = ({ category, funcOnClick, item }) => {
             }}
             key={item.id}
         >
-            {/* {item.is_product ? "- " + item.name : "+ " + item.name} */}
-            {item.name}
+            <div>
+                {item.is_product ? item.name : item.name + " +"}
+            </div>
         </ListGroup.Item>
 
             <div
                 className="ml-2"
             >
                 {state && category.categories.map(i => {
-                    if (i.sub_category_id === item.id) return (
-                        <ListGroup.Item 
-                            // active={sub_cat.id === category.selectedCategory.id}
-                            // onClick={() => onClickSelectedCategory(sub_cat)}
-                            key={i.id}
-                        >
-                            {i.name}
-                        </ListGroup.Item>
-                    )
+                    if (i.sub_category_id === item.id) 
+                        return <CategoryItem key={i.id} category={category} item={i} funcOnClick={funcOnClick}  />
                     return null
                 })}
             </div>
