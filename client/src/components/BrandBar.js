@@ -17,18 +17,27 @@ const BrandBar =  observer(() => {
             >
                 Все бренды
             </Card>
-            {brand.brands.map(br =>
-                <Card
-                    style={{cursor: "pointer"}}
-                    border={br.id === brand.selectedBrand.id ? 'warning' : 'light'}
-                    bg={br.id === brand.selectedBrand.id ? 'warning' : ''}
-                    onClick={() => brand.setSelectedBrand(br)}
-                    key={br.id}
-                    className="p-3"
-                >
-                    {br.name}
-                </Card>    
-            )}
+            {brand.brands.map(br => {
+                if (br.id === 1) 
+                    return <Card
+                        style={{cursor: "pointer"}}
+                        border={br.id === brand.selectedBrand.id ? 'warning' : 'light'}
+                        bg={br.id === brand.selectedBrand.id ? 'warning' : ''}
+                        onClick={() => brand.setSelectedBrand(br)}
+                        key={br.id}
+                        className="p-3"
+                    >
+                        {br.name}
+                    </Card>
+                else 
+                    return <Card
+                        style={{backgroundColor: "lightgrey"}}
+                        key={br.id}
+                        className="p-3"
+                    >
+                        {br.name}
+                    </Card>
+            })}
         </Row>
     )
 })
