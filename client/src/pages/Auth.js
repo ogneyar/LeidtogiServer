@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { login, registration } from '../http/userAPI'
 import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from '../utils/consts'
 import { Context } from '..'
+import { Alert } from '../components/myBootstrap'
 
 const Auth = observer(() => {
     const { user } = useContext(Context)
@@ -14,6 +15,9 @@ const Auth = observer(() => {
     const isLogin = location.pathname === LOGIN_ROUTE
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
+
+    const [ alertVisible, setAlertVisible ] = useState(false)
+    const [ alertMessage, setAlertMessage ] = useState('')
 
     const click = async () => {
         try {
@@ -31,7 +35,8 @@ const Auth = observer(() => {
             history.push(SHOP_ROUTE)
         }catch(e) {
             // alert(e.response.data.message)
-            alert(e)
+            setAlertVisible(true)
+            setAlertMessage(e.response.data.message)
         }
     }
 
@@ -77,6 +82,9 @@ const Auth = observer(() => {
                     
                 </Form>
             </Card>
+
+            <Alert show={alertVisible} onHide={() => setAlertVisible(false)} message={alertMessage} />
+
         </Container>
     )
 })
