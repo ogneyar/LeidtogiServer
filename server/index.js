@@ -18,8 +18,11 @@ app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use('/api', router)
 app.get('/', (req, res) => {
-    // res.send("MERN server - приветствует тебя!")
-    res.redirect("https://leidtogi.ru")
+    if (CORS_URL === "http://localhost:3000") {
+        res.send("MERN server - приветствует тебя!")
+    }else {
+        res.redirect("https://leidtogi.ru")
+    }    
 })
 app.get('/undefined', (req, res) => {
     res.status(200)
