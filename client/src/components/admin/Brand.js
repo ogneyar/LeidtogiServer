@@ -34,7 +34,7 @@ const Brand = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
 
-                <BrandService information={brand.brands} />                
+                <BrandService information={brand.brands} />
 
             </Modal.Body>
             <Modal.Footer>

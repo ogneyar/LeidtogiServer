@@ -18,9 +18,10 @@ import Specials from '../pages/informations/Specials'
 import Delete from '../pages/site/Delete'
 
 import {
-    ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, PRODUCT_ROUTE, LK_ROUTE,
-    ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE,
-    TERMS_OF_USE_ROUTE, WARRANTY_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, DELETE_ROUTE
+    ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, 
+    PRODUCT_ROUTE, LK_ROUTE, ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, 
+    PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE, TERMS_OF_USE_ROUTE, 
+    WARRANTY_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, DELETE_ROUTE
 } from './consts'
 
 export const authRoutes = [
@@ -55,6 +56,7 @@ export const publicRoutes = [
         path: PRODUCT_ROUTE + '/:id',
         Component: Product
     },
+    
     // отдел Информация
     {
         path: ABOUT_US_ROUTE,
@@ -94,8 +96,14 @@ export const publicRoutes = [
     },
 
      // юмор It отдела
-     {
+    {
         path: DELETE_ROUTE,
         Component: Delete
+    },
+
+    // роут категорий - /nazvanie-kategorii
+    {
+        path: '/:name',
+        Component: Shop
     }
 ]

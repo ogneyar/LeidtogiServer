@@ -31,7 +31,7 @@ const BrandBar =  observer(() => {
                     </Card>
                 else 
                     return <Card
-                        style={{backgroundColor: "lightgrey"}}
+                        style={{cursor: "default",backgroundColor: "lightgrey"}}
                         key={br.id}
                         className="p-3"
                     >
