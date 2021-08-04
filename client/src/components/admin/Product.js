@@ -4,7 +4,7 @@ import {Modal, Button, Form, Dropdown, Row, Col} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
 import { createProduct, fetchProducts } from '../../http/productAPI'
-import {fetchCategories} from '../../http/categoryAPI'
+import { fetchCategories, fetchAllCategories } from '../../http/categoryAPI'
 import { fetchBrands } from '../../http/brandAPI'
 
 
@@ -22,7 +22,9 @@ const Product = observer(({show, onHide}) => {
     useEffect(() => {
         fetchCategories().then(data => {
             category.setCategories(data)
-            setInfoCategory(category.categories)
+        })
+        fetchAllCategories().then(data => {
+            setInfoCategory(data)
         })
         fetchBrands().then(data => brand.setBrands(data))
     },[])
@@ -59,13 +61,23 @@ const Product = observer(({show, onHide}) => {
         brand.setSelectedBrand({})
     }
 
-    const onClickSelectedCategory = (cat) => {
-        if (cat.is_product) category.setSelectedCategory(cat)
-        else {
-            fetchCategories(cat.id).then(data => {
-                setInfoCategory([{id:0, name:"Назад..."}, ...data])
-            })
-        }
+
+    const reItemCategory = (sub = 0, offset = "") => { // рекурсивная функция, для получения списка категорий
+        return  infoCategory.map(i => {
+            if (i.sub_category_id === sub)
+                return (
+                    <>
+                    <Dropdown.Item 
+                        onClick={() =>  category.setSelectedCategory(i)} 
+                        disabled={i.is_product ? false : true}
+                        key={i.id}
+                    >
+                        {offset + i.name}
+                    </Dropdown.Item>
+                    {reItemCategory(i.id, offset + "-- ")}
+                    </>
+                )
+        })
     }
 
     return (
@@ -87,15 +99,7 @@ const Product = observer(({show, onHide}) => {
                         <Dropdown.Toggle>{category.selectedCategory.name || "Выберите категорию"}</Dropdown.Toggle>
                         <Dropdown.Menu>
                             {infoCategory !== undefined 
-                            ?
-                                infoCategory.map(cat =>
-                                    <Dropdown.Item 
-                                        onClick={() => onClickSelectedCategory(cat)} 
-                                        key={cat.id}
-                                    >
-                                        {cat.name}
-                                    </Dropdown.Item>
-                                )
+                            ? reItemCategory()
                             : null}
                         </Dropdown.Menu>
                     </Dropdown>

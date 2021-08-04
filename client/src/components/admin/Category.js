@@ -46,7 +46,7 @@ const Category = observer(({show, onHide}) => {
                 <CategoryService information={category.categories} idName={"category_"} offset={"null"} sub_id={0} />
 
             </Modal.Body>
-            <Modal.Footer>                
+            <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
             </Modal.Footer>
         </Modal>

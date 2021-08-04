@@ -30,6 +30,7 @@ const Form = (props) => {
             onClick={props?.onClick}
             title={props?.title}
             placeholder={props?.placeholder}
+            onSubmit={e => e.preventDefault()}
         >
             
             {props?.children}

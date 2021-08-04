@@ -4,39 +4,14 @@ import { Card, Button } from '../myBootstrap'
 import { useHistory } from 'react-router-dom'
 import star from '../../assets/star.png'
 import { PRODUCT_ROUTE, API_URL } from '../../utils/consts'
+import ButtonBuy from '../cart/ButtonBuy'
 import './Product.css'
-
 
 const ProductItem = ({product}) => {
 
     const history = useHistory()
 
-    const oClickButtonBuy = (e) => {
-        e.stopPropagation()
-        e.preventDefault()
-        let cart = localStorage.getItem('cart')
-        if (cart) {
-
-            cart = JSON.parse(cart)
-            let yes 
-            cart = cart.map(i => {
-                if (i.id === product.id) {
-                    yes = "yes"
-                    // let number = i.value
-                    // number++
-                    return {...i, value:i.value+1}
-                } else return i
-            })
-            if (!yes) {
-                cart = [...cart, {id:product.id,value:1,name:product.name,article:null}]
-            }
-            
-        }else {
-            cart = [{id:product.id,value:1,name:product.name,article:null}]
-        }
-        localStorage.setItem('cart', JSON.stringify(cart))
-        alert("Товар добавлен в корзину.")
-    }
+    
 
 
     return (
@@ -66,25 +41,24 @@ const ProductItem = ({product}) => {
                         </div> */}
 
                         <div className="product-price">
-                            7000
+                            {product.price}
                         </div>
 
-                        <div className="product-rating">
-                            <div>{product.rating}</div>
-                            <Image className="mt-1 ml-1" width={15} height={15} src={star} />
-                        </div>
+                        {product.rating 
+                        ? 
+                            <div className="product-rating">
+                                <div>{product.rating}</div>
+                                <Image className="mt-1 ml-1" width={15} height={15} src={star} />
+                            </div>
+                        : null}
 
                     </div>
 
                     
                     
-                    <Button 
-                        className="product-button"
-                        variant="outline-warning"
-                        onClick={e => oClickButtonBuy(e)}
-                    >
+                    <ButtonBuy product={product}>
                         КУПИТЬ
-                    </Button>
+                    </ButtonBuy>
 
                 </div>
 

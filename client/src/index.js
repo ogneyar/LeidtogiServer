@@ -5,6 +5,7 @@ import UserStore from './store/UserStore'
 import ProductStore from './store/ProductStore'
 import CategoryStore from './store/CategoryStore'
 import BrandStore from './store/BrandStore'
+import RatingStore from './store/RatingStore'
 import './styles/index.css'
 
 
@@ -16,7 +17,8 @@ ReactDOM.render(
     user: new UserStore(),
     product: new ProductStore(),
     category: new CategoryStore(),
-    brand: new BrandStore()
+    brand: new BrandStore(),
+    rating: new RatingStore()
   }}>
     <App />
   </Context.Provider>,

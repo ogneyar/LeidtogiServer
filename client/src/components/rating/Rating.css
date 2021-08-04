@@ -1,0 +1,29 @@
+.Rating {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction: column;
+    
+    cursor: pointer;
+}
+.RatingLabel {
+    padding-top: 10px;
+}
+.RatingBody {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    
+    width: 240px;
+    height: 240px;
+}
+.RatingStar {
+   width:100%;
+}
+
+.RatingValue {
+    position: absolute;
+    font-size: 64px;
+    color: rgb(0, 128, 0);
+    z-index: 1;    
+}

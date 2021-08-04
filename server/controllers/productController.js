@@ -85,6 +85,24 @@ class ProductController {
         return res.json(response)
     }
 
+    async edit(req, res) {
+        const {id} = req.params
+        const body = req.body
+        const response = await Product.update(body, {
+            where: { id }
+        })
+        return res.json(response) // return boolean
+    }
+
+    async editRating(req, res) {
+        const {id} = req.params
+        const {rate} = req.body
+        const response = await Product.update({rate}, {
+            where: { id }
+        })
+        return res.json(response) // return boolean
+    }
+
 }
 
 module.exports = new ProductController()

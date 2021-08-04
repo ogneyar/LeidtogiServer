@@ -16,7 +16,7 @@ import './styles/App.css'
 
 const App = observer(() => {
 
-  const {user} = useContext(Context)
+  const { user } = useContext(Context)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -36,7 +36,7 @@ const App = observer(() => {
 
   return (
     <BrowserRouter>
-      <Header />      
+      <Header />
 
       {error 
         ? <Error /> 

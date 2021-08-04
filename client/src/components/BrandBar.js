@@ -7,7 +7,7 @@ const BrandBar =  observer(() => {
     const { brand } = useContext(Context)
     return (
         <Row className='d-flex ml-0'>
-            <Card
+            {/* <Card
                 style={{cursor: "pointer"}}
                 border={undefined === brand.selectedBrand.id ? 'warning' : 'light'}
                 bg={undefined === brand.selectedBrand.id ? 'warning' : ''}
@@ -16,9 +16,10 @@ const BrandBar =  observer(() => {
                 className="p-3"
             >
                 Все бренды
-            </Card>
-            {brand.brands.map(br => {
-                if (br.id === 1) 
+            </Card> */}
+            {brand.brands.map((br,index) => {
+                if (index === 0) {
+                    if (brand.selectedBrand.id === undefined) brand.setSelectedBrand(br.id)
                     return <Card
                         style={{cursor: "pointer"}}
                         border={br.id === brand.selectedBrand.id ? 'warning' : 'light'}
@@ -29,7 +30,7 @@ const BrandBar =  observer(() => {
                     >
                         {br.name}
                     </Card>
-                else 
+                }else 
                     return <Card
                         style={{cursor: "default",backgroundColor: "lightgrey"}}
                         key={br.id}

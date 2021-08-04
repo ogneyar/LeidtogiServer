@@ -15,13 +15,15 @@ const CategoryAddService = observer(({
 
 
     const addCategory = () => {
-        createCategory(value, sub_id).then(data => { 
-            setValue('')
-
-            updateInfo(sub_id, data, "context", offset) 
-
-            updateInfo(sub_id, data, "state", offset)
-        })        
+        if (value) {
+            createCategory(value, sub_id).then(data => { 
+                setValue('')
+    
+                updateInfo(sub_id, data, "context", offset) 
+    
+                updateInfo(sub_id, data, "state", offset)
+            })
+        }
     }
        
     

@@ -7,9 +7,7 @@ const Alert = ({children, show, onHide, message}) => {
         <Modal
             show={show}
             onHide={onHide}
-            size="lg"
             aria-labelledby="contained-modal-title-vcenter"
-            centered
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -22,7 +20,7 @@ const Alert = ({children, show, onHide, message}) => {
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>                
+                <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
             </Modal.Footer>
         </Modal>
     )

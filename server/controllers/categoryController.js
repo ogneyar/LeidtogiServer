@@ -1,6 +1,7 @@
 const {Category} = require('../models/models')
 const ApiError = require('../error/apiError')
 
+
 class CategoryController {
     async create(req, res) {
         const body = req.body
@@ -8,7 +9,7 @@ class CategoryController {
         return res.json([category]) // return array
     }
     
-    async getAll(req, res) {        
+    async getAll(req, res) {
         const categories = await Category.findAll()
         return res.json(categories) // return array
     }
@@ -37,8 +38,6 @@ class CategoryController {
         })
         return res.json(category) // return boolean
     }
-
-
 
 }
 
