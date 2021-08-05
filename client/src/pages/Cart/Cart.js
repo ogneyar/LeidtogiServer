@@ -71,71 +71,73 @@ const Cart = () => {
                     </Card.Title>
 
                     <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Номер:
+                                </th>
+                                <th>
+                                    Наименование товара:
+                                </th>
+                                <th>
+                                    Артикул:
+                                </th>
+                                <th>
+                                    Количество:
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Array.isArray(state) && state.map(i => {
+                                return (
+                                    <tr
+                                        key={i.id}
+                                    >
+                                        <th>
+                                            {i.id}
+                                        </th>
+                                        <th>
+                                            {i.name}
+                                        </th>
+                                        <th>
+                                            {i.article}
+                                        </th>
+                                        <th>
+                                            <Button
+                                                // className="pl-2 pr-2"
+                                                style={{width:"30px"}}
+                                                onClick={() => onClickButtonMinus(i)}
+                                            >
+                                                -
+                                            </Button>
 
-                        <tr>
-                            <th>
-                                Номер:
-                            </th>
-                            <th>
-                                Наименование товара:
-                            </th>
-                            <th>
-                                Артикул:
-                            </th>
-                            <th>
-                                Количество:
-                            </th>
-                        </tr>
-                        {Array.isArray(state) && state.map(i => {
-                            return (
-                                <tr
-                                    key={i.id}
-                                >
-                                    <th>
-                                        {i.id}
-                                    </th>
-                                    <th>
-                                        {i.name}
-                                    </th>
-                                    <th>
-                                        {i.article}
-                                    </th>
-                                    <th>
-                                        <Button
-                                            // className="pl-2 pr-2"
-                                            style={{width:"30px"}}
-                                            onClick={() => onClickButtonMinus(i)}
-                                        >
-                                            -
-                                        </Button>
+                                            {/* <div
+                                                className="pl-2 pr-2"
+                                            > */}
+                                                &nbsp;&nbsp;
+                                                {i.value}
+                                                &nbsp;
+                                            {/* </div> */}
 
-                                        {/* <div
-                                            className="pl-2 pr-2"
-                                        > */}
-                                            &nbsp;&nbsp;
-                                            {i.value}
-                                            &nbsp;
-                                        {/* </div> */}
-
-                                        <Button
-                                            // className="pl-2 pr-2"
-                                            style={{width:"30px"}}
-                                            onClick={() => onClickButtonPlus(i)}
-                                        >
-                                            +
-                                        </Button>
-                                        <Button
-                                            className="ml-4"
-                                            onClick={() => onClickButtonDelete(i)}
-                                            variant="danger"
-                                        >
-                                            Удалить
-                                        </Button>
-                                    </th>
-                                </tr>
-                            )
-                        })}
-
+                                            <Button
+                                                // className="pl-2 pr-2"
+                                                style={{width:"30px"}}
+                                                onClick={() => onClickButtonPlus(i)}
+                                            >
+                                                +
+                                            </Button>
+                                            <Button
+                                                className="ml-4"
+                                                onClick={() => onClickButtonDelete(i)}
+                                                variant="danger"
+                                            >
+                                                Удалить
+                                            </Button>
+                                        </th>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
                     </table>
 
                 </Card>

@@ -9,12 +9,12 @@ export const createRating = async (userId, productId, rate) => {
     return data  
 }
 
-export const fetchAllRating = async (productId) => {
+export const fetchAllRating = async (productId) => { // return Array
     const {data} = await $host.get('api/rating/' + productId)
     return data
 }
 
-export const fetchRating = async (userId, productId) => {
+export const fetchRating = async (userId, productId) => { // return Object
     const {data} = await $authHost.get('api/rating', {params: {userId, productId}})
     return data
 }

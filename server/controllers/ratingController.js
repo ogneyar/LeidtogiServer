@@ -18,10 +18,10 @@ class RatingController {
 
     async getOne(req, res) { // рейтинг по одному товару одного клиента
         const {productId, userId} = req.query 
-        const ratings = await Rating.findAll({
+        const ratings = await Rating.findOne({
             where: { productId, userId }
         })
-        return res.json(ratings) // return array
+        return res.json(ratings) // return Object
     }
 
     async delete(req, res) {

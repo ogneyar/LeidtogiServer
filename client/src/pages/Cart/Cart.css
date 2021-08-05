@@ -8,7 +8,7 @@ table  {
     /* border: 1px solid black; */
     border-collapse: collapse; /* Убираем двойные линии между ячейками */
 }
-tr:first-child {
+thead tr {
     background-color: rgb(218, 218, 218);
 }
 th {

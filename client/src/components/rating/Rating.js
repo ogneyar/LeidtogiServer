@@ -12,17 +12,17 @@ import './Rating.css'
 
 const Rating = observer((props) => {
 
-    const { user } = useContext(Context)
+    const { user, rating } = useContext(Context)
     
     const [ratingModalVisible, setRatingModalVisible] = useState(false)
     const [rate, setRate] = useState(0)
 
     useEffect(() => {
         fetchRating(user.user.id, props?.product.id).then(data => {
-            setRate(data)
-            console.log(data);
+            if (data?.rate) setRate(data?.rate)
         })
     },[])
+
 
     return (
         <div
@@ -48,11 +48,18 @@ const Rating = observer((props) => {
                 <div
                     className="RatingValue"
                 >
-                    {props?.rating}
+                    {rating.rate}
                 </div>
             </div>
 
-            <RatingModal show={ratingModalVisible} onHide={() => setRatingModalVisible(false)} rate={rate} />
+            <RatingModal 
+                show={ratingModalVisible} 
+                onHide={() => setRatingModalVisible(false)} 
+                rate={rate} 
+                setRate={setRate} 
+                userId={user.user.id}
+                productId={props?.product.id}
+            />
 
         </div>
     )

@@ -8,6 +8,6 @@ router.get('/', productController.getAll)
 router.get('/:id', productController.getOne)
 router.delete('/:id', checkRole('ADMIN'), productController.delete)
 router.put('/edit/:id', checkRole('ADMIN'), productController.edit)
-router.put('/rating/:id', checkRole('ADMIN'), productController.editRating)
+router.put('/rating/:id', productController.editRating)
 
 module.exports = router

@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Card, Col, Container, Image, Row, Button } from 'react-bootstrap'
+import { Card, Col, Container, Image, Row } from 'react-bootstrap'
 import {useParams} from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
 import { fetchOneProduct } from '../http/productAPI'
-import { fetchAllRating } from '../http/ratingAPI'
 
 import { API_URL } from '../utils/consts'
 import Error from '../components/Error'
@@ -29,24 +28,11 @@ const Product =  observer(() => {
         fetchOneProduct(id)
             .then(data => {
                 setProduct(data)
+                rating.setRate(data.rating)
             },err => {
                 setError(true)
             })
             .finally(() => setLoading(false))
-        fetchAllRating(id).then(data => {
-            let rate = 0
-            data.forEach(i => {
-                if (i.rate !== undefined) rate = rate + i.rate
-            })
-            if (rate !== 0) {
-                if( rate % data.length === 0 ) {
-                    rate = rate / data.length
-                }else {
-                    rate = (rate / data.length).toFixed(1)
-                }
-            }
-            rating.setRate(rate)
-        })
     },[])
     
 

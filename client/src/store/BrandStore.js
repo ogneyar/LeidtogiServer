@@ -1,4 +1,4 @@
-import {makeAutoObservable} from 'mobx'
+import { runInAction, makeAutoObservable } from 'mobx'
 
 export default class BrandStore {
     constructor() {
@@ -12,7 +12,11 @@ export default class BrandStore {
     }
     setSelectedBrand(brand) {
     //     this.setPage(1)
-        this._selectedBrand = brand
+        // this._selectedBrand = brand
+        
+        runInAction(() => {
+            this._selectedBrand = brand
+        })
     }
 
     get brands() {

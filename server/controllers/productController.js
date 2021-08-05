@@ -96,8 +96,8 @@ class ProductController {
 
     async editRating(req, res) {
         const {id} = req.params
-        const {rate} = req.body
-        const response = await Product.update({rate}, {
+        const {rating} = req.body
+        const response = await Product.update({rating}, {
             where: { id }
         })
         return res.json(response) // return boolean

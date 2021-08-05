@@ -38,8 +38,8 @@ const Shop = observer(() => {
 
     useEffect(() => {
         let selectedCategory // выбрана категория
-        if (category.selectedCategory?.is_product || category.selectedCategory.id === undefined) { // tсли выбранная категория содержит товар || или пустой объект {- значит выбрано ВСЕ КАТЕГОРИИ} 
-            selectedCategory = category.selectedCategory.id
+        if (category.selectedCategory?.is_product || category.selectedCategory.id === undefined) { // если выбранная категория содержит товар || или пустой объект {- значит выбрано ВСЕ КАТЕГОРИИ} 
+            selectedCategory = category.selectedCategory.id || null
         }else {
             let array = filterSubCategory(category.selectedCategory.id) // удаляем все категории, которые не подходят для подкатегории id
             selectedCategory = filterIsProduct( // удаляем категории в которых нет товаров - !is_product

@@ -1,13 +1,31 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {Modal, Button} from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
+
+import { createRating, updateRating, fetchAllRating } from '../../http/ratingAPI'
+import { updateRatingProduct } from '../../http/productAPI'
+import { Context } from '../..'
 import './RatingModal.css'
 
 
-const RatingModal = ({children, show, onHide, message, rate }) => {
+const RatingModal = observer(({ show, onHide, rate, setRate, userId, productId }) => {
+
+    const { rating } = useContext(Context)
 
     const [info, setInfo] = useState([])
 
+    // ПРИМЕР: info = [ { id, color, checked }, ... ]
+
+    const [state, setState] = useState([])
+    
     useEffect(() => {
+        let array = calculateArrayRating(rate)
+        setInfo(array)
+        setState(array)
+    },[rate])
+
+    
+    const calculateArrayRating = (rate) => {
         let array = []
         let color, checked
         for(let i = 1; i <= 5; i++) {
@@ -15,7 +33,7 @@ const RatingModal = ({children, show, onHide, message, rate }) => {
             checked = false
             if (rate && rate >= i) {
                 color = "red"
-                checked = true
+                if (rate === i) checked = true
             }
             array = [...array, {
                 id:i,
@@ -23,11 +41,48 @@ const RatingModal = ({children, show, onHide, message, rate }) => {
                 checked
             }]
         }
-        setInfo(array)
-    },[])
+        return array
+    }
 
-    const onMouseEnterLabel = () => {
 
+    const onMouseEnterLabel = (id) => {
+        setInfo(info.map(i => {
+            if (i.id <= id) return {...i,color:"orange"}
+            return {...i,color:"white"}
+        }))
+    }
+
+    const onMouseLeaveLabel = () => {
+        setInfo(state)
+    }
+
+    const onClickLabel = (id) => {
+
+        if (rate) {
+            updateRating(userId, productId, id).then(data => updateRateFunction(productId))
+        }else {
+            createRating(userId, productId, id).then(data => updateRateFunction(productId))
+        }
+
+        setRate(id)
+    }
+
+    const updateRateFunction = (productId) => {
+        fetchAllRating(productId).then(data => {
+            let rate = 0
+            data.forEach(i => {
+                if (i.rate !== undefined) rate = rate + i.rate
+            })
+            if (rate !== 0) {
+                if( rate % data.length === 0 ) {
+                    rate = rate / data.length
+                }else {
+                    rate = (rate / data.length).toFixed(1)
+                }
+            }
+            updateRatingProduct(productId, rate)
+            rating.setRate(rate)
+        })
     }
 
 
@@ -45,32 +100,43 @@ const RatingModal = ({children, show, onHide, message, rate }) => {
             </Modal.Header>
             <Modal.Body className="box"
             >
-                <div
-                    className="rating-box"
-                >
+                <div>
                     <div
-                        className="rating-box__items"
+                        className="box-title"
                     >
-                        {info.map(i => 
-                            <div key={i.id}>
-                                <input
-                                    className="rating-box__item" 
-                                    type="radio"
-                                    id={"rating-box__"+i.id}
-                                    value={i.id}
-                                    // checked={i.checked}
-                                />
-                                <label
-                                    className="rating-box__label" 
-                                    htmlFor={"rating-box__"+i.id}
-                                    onMouseEnter={() => onMouseEnterLabel(i.id)}
-                                    style={{color:i.color}}
-                                ></label>
-                            </div>
-                        )}
-                        
-
+                        {rate ? "Ваша оценка - " + rate : ""}
                     </div>
+                
+                    <div
+                        className="rating-box"
+                    >   
+                        <div
+                            className="rating-box__items"
+                        >   
+                            {info.map(i => 
+                                <div key={i.id}>
+                                    <input
+                                        className="rating-box__item" 
+                                        type="radio"
+                                        id={"rating-box__"+i.id}
+                                        value={i.id}
+                                        // checked={i.checked}
+                                    />
+                                    <label
+                                        className="rating-box__label" 
+                                        htmlFor={"rating-box__"+i.id}
+                                        onMouseEnter={() => onMouseEnterLabel(i.id)}
+                                        onMouseLeave={() => onMouseLeaveLabel(i.id)}
+                                        onClick={() => onClickLabel(i.id)}
+                                        style={{color:i.color}}
+                                    ></label>
+                                </div>
+                            )}
+                            
+
+                        </div>
+                    </div>
+
                 </div>
 
             </Modal.Body>
@@ -79,6 +145,6 @@ const RatingModal = ({children, show, onHide, message, rate }) => {
             </Modal.Footer>
         </Modal>
     )
-}
+})
 
 export default RatingModal

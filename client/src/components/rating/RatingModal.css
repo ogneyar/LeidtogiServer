@@ -3,7 +3,12 @@
     align-items: center;
     justify-content: center;
 }
-
+.box-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
+}
 .rating-box {
     position: relative;
     display: inline-block;
