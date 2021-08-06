@@ -59,12 +59,12 @@ const Product =  observer(() => {
                         className="d-flex flex-column align-items-center justify-content-around"
                         style={{width: 300, height: 300, fontSize: 32, border: '5px solid lightgray'}}
                     >
-                        <h3>От {product.price} руб.</h3>
+                        <h3>Цена {product.price} руб.</h3>
 
                         <div
                             className="p-3"
                         >
-                            <ButtonBuy product={product}>
+                            <ButtonBuy className="pt-3 pb-3" product={product}>
                                 Добавить в корзину
                             </ButtonBuy>
                         </div>
