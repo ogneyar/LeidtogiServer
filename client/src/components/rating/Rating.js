@@ -8,6 +8,7 @@ import { fetchRating } from '../../http/ratingAPI'
 import { Context } from '../..'
 
 import './Rating.css'
+import Notification from '../myBootstrap/Notification'
 
 
 const Rating = observer((props) => {
@@ -15,6 +16,8 @@ const Rating = observer((props) => {
     const { user, rating } = useContext(Context)
     
     const [ratingModalVisible, setRatingModalVisible] = useState(false)
+    const [notificationModalVisible, setNotificationModalVisible] = useState(false)
+
     const [rate, setRate] = useState(0)
 
     useEffect(() => {
@@ -38,7 +41,10 @@ const Rating = observer((props) => {
             <div
                 className="RatingBody"
                 title="Оценить товар"
-                onClick={() => setRatingModalVisible(true)}
+                onClick={() => {
+                    if (user?.user?.id) setRatingModalVisible(true)
+                    else setNotificationModalVisible(true)
+                }}
             >
                 <Image 
                     className="RatingStar" 
@@ -59,6 +65,13 @@ const Rating = observer((props) => {
                 setRate={setRate} 
                 userId={user.user.id}
                 productId={props?.product.id}
+            />
+
+            <Notification 
+                show={notificationModalVisible}
+                onHide={() => setNotificationModalVisible(false)}
+                message={"Для выставления оценки товару необходимо зарегистрироваться."}
+                time={2500}
             />
 
         </div>
