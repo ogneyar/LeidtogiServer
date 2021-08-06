@@ -1,6 +1,8 @@
 import React from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
-import { NavLink } from 'react-router-dom'
+// import { NavLink } from 'react-router-dom'
+
+import { NavLink } from '../myBootstrap'
 import { ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, WARRANTY_ROUTE } from '../../utils/consts'
 
 import './Top.css'

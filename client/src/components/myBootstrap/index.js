@@ -6,6 +6,7 @@ import Input from './Input'
 import Button from './Button'
 import Card from './Card'
 import Alert from './Alert'
+import NavLink from './NavLink'
 
 
 export {
@@ -13,5 +14,6 @@ export {
 	Input, 
 	Button,
 	Card,
-	Alert
+	Alert,
+	NavLink
 }

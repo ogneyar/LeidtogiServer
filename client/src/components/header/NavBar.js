@@ -1,7 +1,9 @@
 import React, { useContext } from 'react'
 import { Navbar, Nav, Button, Container, Image, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { NavLink, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+
+import { NavLink } from '../myBootstrap'
 import { Context } from '../..'
 import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, CART_ROUTE, LK_ROUTE } from '../../utils/consts'
 import logo from '../../assets/logo.png'
