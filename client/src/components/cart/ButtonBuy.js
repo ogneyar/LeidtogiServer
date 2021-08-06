@@ -9,10 +9,13 @@ const ButtonBuy = (props) => {
 
     const [notificationVisible, setNotificationVisible] = useState(false)
 
+    let className
+    if (props?.className) className = props?.className
+
     return (
         <>
         <Button
-            className="ButtonBuy"
+            className={"ButtonBuy "+className}
             variant="outline-warning"
             onClick={e => {
                 setNotificationVisible(true)
