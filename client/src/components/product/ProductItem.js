@@ -1,8 +1,9 @@
 import React from 'react'
 import {  Image } from 'react-bootstrap'
-import { Card, Button } from '../myBootstrap'
 import { useHistory } from 'react-router-dom'
+
 import star from '../../assets/star.png'
+import { Card } from '../myBootstrap'
 import { PRODUCT_ROUTE, API_URL } from '../../utils/consts'
 import ButtonBuy from '../cart/ButtonBuy'
 import './Product.css'
@@ -10,9 +11,6 @@ import './Product.css'
 const ProductItem = ({product}) => {
 
     const history = useHistory()
-
-    
-
 
     return (
         <div
@@ -53,8 +51,6 @@ const ProductItem = ({product}) => {
                         : null}
 
                     </div>
-
-                    
                     
                     <ButtonBuy product={product}>
                         КУПИТЬ

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
-import { Row } from 'react-bootstrap'
+// import { Row } from 'react-bootstrap'
 import ProductItem from './ProductItem'
 import './Product.css'
 

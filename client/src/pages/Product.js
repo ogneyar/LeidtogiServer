@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Card, Col, Container, Image, Row } from 'react-bootstrap'
-import {useParams} from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
 import { fetchOneProduct } from '../http/productAPI'
@@ -18,9 +18,9 @@ const Product =  observer(() => {
 
     const { rating } = useContext(Context)
 
+    const { id } = useParams()
+    
     const [product, setProduct] = useState({info: []})
-
-    const {id} = useParams()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 

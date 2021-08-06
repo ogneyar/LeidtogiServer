@@ -16,7 +16,7 @@ const Limit = observer(() => {
         
 
     const change = (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
 
         setState(e.target.value)
         localStorage.setItem('limit', e.target.value)
