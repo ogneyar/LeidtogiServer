@@ -38,14 +38,11 @@ const NavBar = observer(() => {
                         <NavLink className="NavLink NavBar_NavLink"
                             to={SHOP_ROUTE}
                         >
-                            {/* <div className="NavBar_Brand">
-                                LeidTogi
-                            </div> */}
 
                             <Image width={150} src={logo} className="NavBar_Logo" />
 
                             <div>
-                            Стройте с нами, экономьте время
+                                Стройте с нами, экономьте время
                             </div>
                             
                         </NavLink>
