@@ -1,42 +1,69 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { ListGroup } from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
+// import { NavLink } from 'react-router-dom'
+
+import { Context } from '../..'
+
+import { NavLink } from '../myBootstrap'
+import './Category.css'
 
 
-const CategoryItem = ({ category, funcOnClick, item }) => {
+const CategoryItem = observer(({ funcOnClick, item }) => {
     
-    const [state, setState] = useState(false)
+    const { category } = useContext(Context)
+
+    const [open, setOpen] = useState(item?.open)
     
     const onClickListItem = () => {
-        if (state) setState(false)
-        else setState(true)
+        category.setCategories(category.categories.map(i => {
+            if (i.id === item.id) {
+                if (open) {
+                    setOpen(false)
+                    return {...i,open:false}
+                }else {
+                    setOpen(true)
+                    return {...i,open:true}
+                }
+            }
+            return i
+        }))
+        // if (open) setOpen(false)
+        // else setOpen(true)
     }
 
     return (
         <>
-        <ListGroup.Item 
-            active={item.id === category.selectedCategory.id}
-            onClick={() => {
-                funcOnClick(item)
-                onClickListItem()
-            }}
-            key={item.id}
-        >
-            <div>
-                {item.is_product ? item.name : item.name + " +"}
-            </div>
-        </ListGroup.Item>
+            <NavLink className="CategoryNavLink"
+                to={item.url}
+            >
+                <ListGroup.Item 
+                    active={item.id === category.selectedCategory.id}
+                    onClick={() => {
+                        funcOnClick(item)
+                        onClickListItem()
+                        // window.scrollTo(0,0);
+                    }}
+                    key={item.id}
+                >
+                    
+                    {item.is_product ? item.name : item.name + " +"}
+
+                    
+                </ListGroup.Item>
+            </NavLink>
 
             <div
                 className="ml-2"
             >
-                {state && category.categories.map(i => {
+                {open && category.categories.map(i => {
                     if (i.sub_category_id === item.id) 
-                        return <CategoryItem key={i.id} category={category} item={i} funcOnClick={funcOnClick}  />
+                        return <CategoryItem key={i.id} item={i} funcOnClick={funcOnClick}  />
                     return null
                 })}
             </div>
         </>
     )
-}
+})
 
 export default CategoryItem

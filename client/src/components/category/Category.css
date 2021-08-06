@@ -40,3 +40,8 @@
 .CategoryBar label i {
     font-size: 24px;
 }
+
+.CategoryNavLink,
+.CategoryNavLink:hover {
+    color: var(--main-black-color);
+}

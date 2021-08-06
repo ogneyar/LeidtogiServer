@@ -1,17 +1,20 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { ListGroup } from 'react-bootstrap'
-import { Context } from '../..'
-// import { Button } from '../myBootstrap'
-import './CategoryBar.css'
+// import { NavLink } from 'react-router-dom'
+
 import CategoryModal from './CategoryModal'
-// import { fetchCategories } from '../../http/categoryAPI'
 import CategoryItem from './CategoryItem'
+import { SHOP_ROUTE } from '../../utils/consts'
+import { NavLink } from '../myBootstrap'
+
+import { Context } from '../..'
+import './Category.css'
 
 
 const CategoryBar = observer(() => {
+    
     const { brand, category } = useContext(Context)
-    // const [ info, setInfo ] = useState(category.categories)
 
     const [categoryVisible, setCategoryVisible] = useState(false)
 
@@ -20,7 +23,7 @@ const CategoryBar = observer(() => {
 
 
     const onClickSelectedCategory = (id) => {
-        brand.setSelectedBrand({})
+        // brand.setSelectedBrand({})
         category.setSelectedCategory(id)
     }
 
@@ -30,17 +33,21 @@ const CategoryBar = observer(() => {
             className="CategoryBar"
             id="CategoryBarFull"
         >
-            <ListGroup.Item 
-                active={undefined === category.selectedCategory.id}
-                onClick={() => onClickSelectedCategory({})}
-                key={0}
+            <NavLink className="CategoryNavLink"
+                to={SHOP_ROUTE}
             >
-                Все категории
-            </ListGroup.Item>
-            
+                <ListGroup.Item 
+                    active={undefined === category.selectedCategory.id}
+                    onClick={() => onClickSelectedCategory({})}
+                    key={0}
+                >
+                    Все категории
+                </ListGroup.Item>
+            </NavLink>
+
             {category.categories && Array.isArray(category.categories) && category.categories.map(i => {
                 if (i.sub_category_id === 0)
-                    return <CategoryItem key={i.id} category={category} item={i} funcOnClick={onClickSelectedCategory} />
+                    return <CategoryItem key={i.id} item={i} funcOnClick={onClickSelectedCategory} />
                 return null
             })}
         </ListGroup>
