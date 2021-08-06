@@ -3,12 +3,15 @@ import {Modal, Button} from 'react-bootstrap'
 
 
 const Notification = (props) => {
+
+    let time = props?.time
+    if (!time) time = 1500
  
     useEffect(() => {
         if (props.show) {
             setTimeout(()=> {
                 props.onHide()
-            },1500)
+            },time)
         }
     },[props.show])
 
@@ -18,13 +21,16 @@ const Notification = (props) => {
             show={props.show}
             onHide={props.onHide}
             aria-labelledby="contained-modal-title-vcenter"
+            // className="d-flex justify-content-center align-items-center"
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
                     Уведомление
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body
+                className="pl-4"
+            >
 
                 {props.children ? props.children : props?.message}
 
