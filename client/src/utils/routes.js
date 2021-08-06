@@ -1,6 +1,6 @@
 import Admin from '../pages/Admin'
 import Cart from '../pages/cart/Cart'
-import Shop from '../pages/Shop'
+import Shop from '../pages/shop/Shop'
 import Auth from '../pages/Auth'
 import Product from '../pages/Product'
 import Lk from '../pages/lk/Lk'

@@ -28,10 +28,12 @@ const CategoryBar = observer(() => {
     }
 
     return (
-        <>
-        <ListGroup 
+        <div
             className="CategoryBar"
-            id="CategoryBarFull"
+        >
+        <ListGroup 
+            className="CategoryBarPC"
+            id="CategoryBarPC"
         >
             <NavLink className="CategoryNavLink"
                 to={SHOP_ROUTE}
@@ -53,7 +55,7 @@ const CategoryBar = observer(() => {
         </ListGroup>
 
         <div
-            className="CategoryBar"
+            className="CategoryBarMobile"
             id="CategoryBarMobile"
         >
             <label
@@ -65,7 +67,7 @@ const CategoryBar = observer(() => {
             <CategoryModal show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
 
         </div>
-        </>
+        </div>
     )
 })
 

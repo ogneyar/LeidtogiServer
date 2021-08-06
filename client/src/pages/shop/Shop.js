@@ -3,18 +3,19 @@ import { Container, Row, Col } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
-import CategoryBar from '../components/category/CategoryBar'
-import BrandBar from '../components/BrandBar'
-import ProductList from '../components/product/ProductList'
-import Pagination from '../components/Pagination'
-import Filter from '../components/filter/Filter'
+import CategoryBar from '../../components/category/CategoryBar'
+import BrandBar from '../../components/BrandBar'
+import ProductList from '../../components/product/ProductList'
+import Pagination from '../../components/Pagination'
+import Filter from '../../components/filter/Filter'
 
-import { fetchProducts } from '../http/productAPI'
-import { fetchAllCategories } from '../http/categoryAPI'
-import { fetchBrands } from '../http/brandAPI'
+import { fetchProducts } from '../../http/productAPI'
+import { fetchAllCategories } from '../../http/categoryAPI'
+import { fetchBrands } from '../../http/brandAPI'
 
-import { Context } from '..'
-import { LIMIT } from '../utils/consts'
+import { Context } from '../..'
+import { LIMIT } from '../../utils/consts'
+import './Shop.css'
 
 
 const Shop = observer(() => {
@@ -107,21 +108,19 @@ const Shop = observer(() => {
 
     return (
         <Container
-            className="Content Mobile"
+            className="Shop Content Mobile"
         >
-            <Row className="mt-2">
-                <Col md={3}>
+            <div className="ShopRow mt-2">
+                <div className="ShopColCategory">
                     <CategoryBar />
-                </Col>
-                <Col md={9}>
+                </div>
+                <div className="ShopColContent">
                     <BrandBar />
-
                     <Filter />
-
                     <ProductList />
                     <Pagination />
-                </Col>
-            </Row>
+                </div>
+            </div>
         </Container>
     )
 })

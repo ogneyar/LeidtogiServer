@@ -1,0 +1,22 @@
+.ShopRow {
+    display: flex;
+    flex-direction: row;
+}
+.ShopColCategory {
+    width:30%;
+}
+.ShopColContent {
+    width:70%;
+}
+
+@media (max-width: 991px) {
+    .ShopColCategory {
+        width:100%;
+    }
+    .ShopColContent {
+        width:100%;
+    }
+    .ShopRow {
+        flex-direction: column;
+    }
+}

@@ -1,28 +1,33 @@
 .CategoryBar {
+    width:95%;
     cursor: pointer;
     margin-bottom: 20px;
 }
-#CategoryBarFull {
-    display: none;
-    visibility: hidden;
-    opacity: 0;
-}
-#CategoryBarMobile {
+
+#CategoryBarPC {
     display: flex;
     visibility: visible;
     opacity: 1;
 }
+#CategoryBarMobile {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+}
 
-@media (min-width: 768px) { /* > 767px */
-    #CategoryBarFull {
-        display: flex;
-        visibility: visible;
-        opacity: 1;
+@media (max-width: 991px) { /* < 992px */
+    .CategoryBar {
+        width:100%;
     }
-    #CategoryBarMobile {
+    #CategoryBarPC {
         display: none;
         visibility: hidden;
         opacity: 0;
+    }
+    #CategoryBarMobile {
+        display: flex;
+        visibility: visible;
+        opacity: 1;
     }
 }
 
