@@ -2,7 +2,7 @@ const ApiError = require('../error/apiError')
 const jwt = require('jsonwebtoken')
 
 module.exports = function (role) {
-    return function (req, res, next) {
+    return function (req, res, next) {        
         if (req.method === "OPTIONS") {
             next()
         }
@@ -13,7 +13,15 @@ module.exports = function (role) {
                 // return res.status(401).json({message: 'Не авторизован'})
             }
             const decoded = jwt.verify(token, process.env.SECRET_KEY)
-            if (decoded.role !== role) {
+            
+            if (Array.isArray(role)) {
+                let response = false
+                role.forEach(i => {
+                    if (decoded.role === i) response = true
+                })
+                if (!response) return next(ApiError.forbidden('Нет доступа!'))
+                
+            }else if (decoded.role !== role) {
                 // return res.status(403).json({message: 'Нет доступа'})
                 return next(ApiError.forbidden('Нет доступа!'))
             }
