@@ -1,15 +1,16 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
+import { useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
 import CategoryBar from '../components/category/CategoryBar'
 import BrandBar from '../components/BrandBar'
 import ProductList from '../components/product/ProductList'
-import Pages from '../components/Pagination'
+import Pagination from '../components/Pagination'
 import Filter from '../components/filter/Filter'
 
 import { fetchProducts } from '../http/productAPI'
-import { fetchCategories, fetchAllCategories } from '../http/categoryAPI'
+import { fetchAllCategories } from '../http/categoryAPI'
 import { fetchBrands } from '../http/brandAPI'
 
 import { Context } from '..'
@@ -20,11 +21,10 @@ const Shop = observer(() => {
 
     const { product, category, brand } = useContext(Context)
 
-    let info = []
+    const { name } = useParams()
 
     useEffect(() => {
         let limit = localStorage.getItem('limit') || LIMIT
-        // console.log(limit);
         if (limit !== product.limit) product.setLimit(limit)
         else {
             fetchProducts(null, null, 1, product.limit).then(data => {
@@ -32,10 +32,42 @@ const Shop = observer(() => {
                 product.setTotalCount(data.count)
             })
         }
-        fetchAllCategories().then(data => category.setCategories(data))
+        fetchAllCategories().then(data => {
+            let arrayCategory = []
+            data.forEach(i => {
+                if (name && i.url === name) { // если в url указан категория (напиример: /instrumenti)
+                    category.setSelectedCategory(i) // то сделать её выделенной
+                    arrayCategory = [...arrayCategory, i.id]
+                    arrayCategory = [...arrayCategory, ...reOpenCategory(data, i.sub_category_id)]
+                }
+            })
+            category.setCategories(data.map(i => {
+                if (name) { // если в url указана категория (напиример: /lopata)
+                    let yes = false
+                    arrayCategory.forEach(k => {
+                        if (i.id === k) yes = true
+                    })
+                    if (yes) return {...i,open:true} // то её надо открыть
+                }
+                return {...i,open:false}
+            }))
+            if (!name && category.selectedCategory?.id) category.setSelectedCategory({})
+        })
         fetchBrands().then(data => brand.setBrands(data))
     },[])
 
+
+    const reOpenCategory = (array, item) => { // рекурсивная функция для открытия выбраных подкаталогов
+        let response = []
+        array.forEach(i => {
+            if (item && item === i.id) {
+                response = [...response, i.id]
+                response = [...response, ...reOpenCategory(array, i.sub_category_id)]
+            }
+        })
+        return response
+    }
+    
     useEffect(() => {
         let selectedCategory // выбрана категория
         if (category.selectedCategory?.is_product || category.selectedCategory.id === undefined) { // если выбранная категория содержит товар || или пустой объект {- значит выбрано ВСЕ КАТЕГОРИИ} 
@@ -46,12 +78,10 @@ const Shop = observer(() => {
                 reArray(array) // наращиваем массив рекурсивной функцией
             )
         }
-
         fetchProducts(selectedCategory, brand.selectedBrand.id, product.page, product.limit).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
         })
-        
     },[product.page, product.limit, category.selectedCategory, brand.selectedBrand])
 
 
@@ -74,7 +104,6 @@ const Shop = observer(() => {
         return arr.map(i => i.id)
     }
     
-    
 
     return (
         <Container
@@ -90,7 +119,7 @@ const Shop = observer(() => {
                     <Filter />
 
                     <ProductList />
-                    <Pages />
+                    <Pagination />
                 </Col>
             </Row>
         </Container>
