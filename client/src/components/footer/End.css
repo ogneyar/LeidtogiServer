@@ -3,8 +3,8 @@
     /* padding: 20px; */
     background-color: var(--main-orange-color);
     display:flex;
-    /* justify-content: center; */
-    align-items: center;
+    justify-content: space-between;
+    align-items:center;
 }
 
 .FooterEnd_NavLink {
@@ -14,4 +14,9 @@
 .FooterEnd_NavLink:hover {
     /* color: rgb(250, 0, 0); */
     /* shadow: 1 */
+}
+
+.EndDivArrow {
+    font-size: 48px;
+    display:flex;
 }
