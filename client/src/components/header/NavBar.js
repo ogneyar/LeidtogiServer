@@ -25,39 +25,43 @@ const NavBar = observer(() => {
         <Navbar 
             bg="secondary" 
             variant="secondary" 
-            className="NavBar Mobile"
+            className="NavBar"
         >
-            <Container>
-                <Row
-                    className="mt-2 mb-2 Row"
+            <Container 
+                className="NavBar_Container"
+            >
+                <div
+                    className="NavBar_Row"
                 >
-                    <Col 
-                        className="d-flex align-items-center mt-2 mb-2"
+                    <div 
+                        className="NavBar_Col"
                         md="auto"
                     >
                         <NavLink className="NavLink NavBar_NavLink"
                             to={SHOP_ROUTE}
                         >
 
-                            <Image width={150} src={logo} className="NavBar_Logo" />
+                            <Image src={logo} className="NavBar_Logo" />
 
-                            <div>
+                            <div 
+                                className="hidden-mobile"
+                            >
                                 Стройте с нами, экономьте время
                             </div>
                             
                         </NavLink>
-                    </Col>
+                    </div>
 
-                    <Col 
-                        className="ml-auto d-flex align-items-center justify-content-end mt-2 mb-2"
+                    <div 
+                        className="NavBar_Col"
                         md="auto"
                     >
-                        <Nav >
+                        <Nav className="m-0">
 
                             <NavLink className="NavLink"
                                 to={CART_ROUTE}
                             >
-                                <Image className="NavBar_Image" src={cart} />
+                                <Image className="NavBar_Cart" src={cart} />
                             </NavLink>
 
                             {user.isAuth ?
@@ -100,8 +104,8 @@ const NavBar = observer(() => {
                             }
 
                         </Nav>
-                    </Col>
-                </Row>
+                    </div>
+                </div>
             </Container>
         </Navbar>
     )

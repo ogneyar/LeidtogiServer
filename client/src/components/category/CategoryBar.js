@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { ListGroup } from 'react-bootstrap'
-// import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 import CategoryModal from './CategoryModal'
 import CategoryItem from './CategoryItem'
 import { SHOP_ROUTE } from '../../utils/consts'
-import { NavLink } from '../myBootstrap'
+// import { NavLink } from '../myBootstrap'
 
 import { Context } from '../..'
 import './Category.css'
@@ -14,7 +14,7 @@ import './Category.css'
 
 const CategoryBar = observer(() => {
     
-    const { brand, category } = useContext(Context)
+    const { category } = useContext(Context)
 
     const [categoryVisible, setCategoryVisible] = useState(false)
 
@@ -23,7 +23,6 @@ const CategoryBar = observer(() => {
 
 
     const onClickSelectedCategory = (id) => {
-        // brand.setSelectedBrand({})
         category.setSelectedCategory(id)
     }
 
@@ -31,42 +30,42 @@ const CategoryBar = observer(() => {
         <div
             className="CategoryBar"
         >
-        <ListGroup 
-            className="CategoryBarPC"
-            id="CategoryBarPC"
-        >
-            <NavLink className="CategoryNavLink"
-                to={SHOP_ROUTE}
+            <ListGroup 
+                className="CategoryBarPC"
+                id="CategoryBarPC"
             >
-                <ListGroup.Item 
-                    active={undefined === category.selectedCategory.id}
-                    onClick={() => onClickSelectedCategory({})}
-                    key={0}
+                <NavLink className="CategoryNavLink"
+                    to={SHOP_ROUTE}
                 >
-                    Все категории
-                </ListGroup.Item>
-            </NavLink>
+                    <ListGroup.Item 
+                        active={undefined === category.selectedCategory.id}
+                        onClick={() => onClickSelectedCategory({})}
+                        key={0}
+                    >
+                        Все категории
+                    </ListGroup.Item>
+                </NavLink>
 
-            {category.categories && Array.isArray(category.categories) && category.categories.map(i => {
-                if (i.sub_category_id === 0)
-                    return <CategoryItem key={i.id} item={i} funcOnClick={onClickSelectedCategory} />
-                return null
-            })}
-        </ListGroup>
+                {category.categories && Array.isArray(category.categories) && category.categories.map(i => {
+                    if (i.sub_category_id === 0)
+                        return <CategoryItem key={i.id} item={i} funcOnClick={onClickSelectedCategory} />
+                    return null
+                })}
+            </ListGroup>
 
-        <div
-            className="CategoryBarMobile"
-            id="CategoryBarMobile"
-        >
-            <label
-                onClick={() => setCategoryVisible(true)}
+            <div
+                className="CategoryBarMobile"
+                id="CategoryBarMobile"
             >
-                Категории <i className="fa fa-bars" aria-hidden="true"></i>
-            </label>
-            
-            <CategoryModal show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
+                <label
+                    onClick={() => setCategoryVisible(true)}
+                >
+                    Категории <i className="fa fa-bars" aria-hidden="true"></i>
+                </label>
+                
+                <CategoryModal show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
 
-        </div>
+            </div>
         </div>
     )
 })

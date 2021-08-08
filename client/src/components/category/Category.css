@@ -1,6 +1,7 @@
 .CategoryBar {
     width:95%;
     cursor: pointer;
+    margin: 0;
     margin-bottom: 20px;
 }
 
@@ -18,6 +19,7 @@
 @media (max-width: 991px) { /* < 992px */
     .CategoryBar {
         width:100%;
+        margin-bottom: 10px;
     }
     #CategoryBarPC {
         display: none;

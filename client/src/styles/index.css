@@ -72,7 +72,7 @@ a:hover {
   /* background-color:red; */
 }
 
-@media(max-width:1000px) {
+@media(max-width:991px) {
   .hidden-mobile {
     display:none;
     visibility: hidden;

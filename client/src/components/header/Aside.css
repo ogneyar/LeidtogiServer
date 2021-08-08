@@ -3,3 +3,9 @@
     width:100%;
     height: 45px;
 }
+
+@media(max-width:991px) {
+    .Aside {
+        height: 15px;
+    }
+}

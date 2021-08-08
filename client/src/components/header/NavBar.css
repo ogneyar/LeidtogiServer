@@ -1,12 +1,18 @@
-.NavBar {
-    /* border-radius: 0 0 0 30px; */
-}
+.NavBar {}
 
-.NavBar_Brand {
-    font-size:xx-large;
+.NavBar_Container {
+    margin: 0;
+    padding: 0;
 }
-
-.NavBar_Image {
+.NavBar_Row {
+    width: 100%;
+    margin: 20px 0;
+    padding: 0;
+    display:flex;
+    align-items: center;
+    justify-content:space-between;
+}
+.NavBar_Cart {
     margin: 0 20px;
     border-radius: 50%;
     background-color: var(--main-white-color); 
@@ -20,5 +26,19 @@
 
 .NavBar_Logo {
     background-color: var(--main-white-color);
-    padding: 10px;
+    padding: 10px 0;
+    width: 150px;
+}
+
+@media(max-width:991px) {
+    .NavBar_Row {
+        margin: 0;
+    }
+    .NavBar_Cart {
+        margin: 0 10px;
+    }
+    .NavBar_Logo {
+        padding: 5px 0;
+        width: 100px;
+    }
 }

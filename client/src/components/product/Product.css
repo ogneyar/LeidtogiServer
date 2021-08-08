@@ -86,17 +86,12 @@
     align-items:center;
     flex-direction: row;
     flex-wrap: wrap;
-
-    /* background-color: aquamarine; */
 }
 
 .ProductItem {
     display:flex;
-    justify-content:around; 
+    justify-content:space-around; 
     align-items:center;
-    
-    /* padding: 5px; */
     margin: 5px;
-    
     background-color: #fff;
 }
