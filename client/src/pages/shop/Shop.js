@@ -8,13 +8,13 @@ import BrandBar from '../../components/BrandBar'
 import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/Pagination'
 import Filter from '../../components/filter/Filter'
+import Loading from '../../components/Loading'
 
 import { fetchProducts } from '../../http/productAPI'
 import { fetchAllCategories } from '../../http/categoryAPI'
 import { fetchBrands } from '../../http/brandAPI'
 
 import { Context } from '../..'
-import { LIMIT } from '../../utils/consts'
 import './Shop.css'
 
 
@@ -22,22 +22,32 @@ const Shop = observer(() => {
 
     const { product, category, brand } = useContext(Context)
 
+    const [ loadingCategory, setLoadingCategory ] = useState(true)
+    const [ loadingBrand, setLoadingBrand ] = useState(true)
+    const [ loadingProduct, setLoadingProduct ] = useState(true)
+
     const { name } = useParams()
 
     useEffect(() => {
-        let limit = localStorage.getItem('limit') || LIMIT
-        if (limit !== product.limit) product.setLimit(limit)
-        else {
-            fetchProducts(null, null, 1, product.limit).then(data => {
-                product.setProducts(data.rows)
-                product.setTotalCount(data.count)
+        const reOpenCategory = (array, item) => { // рекурсивная функция для открытия выбраных подкаталогов
+            let response = []
+            array.forEach(i => {
+                if (item && item === i.id) {
+                    response = [...response, i.id]
+                    response = [...response, ...reOpenCategory(array, i.sub_category_id)]
+                }
             })
+            return response
         }
+        // fetchProducts(null, null, 1, product.limit).then(data => {
+        //     product.setProducts(data.rows)
+        //     product.setTotalCount(data.count)
+        // }).finally(data => setLoadingProduct(false))
         fetchAllCategories().then(data => {
             let arrayCategory = []
             data.forEach(i => {
                 if (name && i.url === name) { // если в url указан категория (напиример: /instrumenti)
-                    category.setSelectedCategory(i) // то сделать её выделенной
+                    category.setSelectedCategory(i) // то сделать её выделенной (таким образом fetchProducts вызовится в следующем useEffect)
                     arrayCategory = [...arrayCategory, i.id]
                     arrayCategory = [...arrayCategory, ...reOpenCategory(data, i.sub_category_id)]
                 }
@@ -52,24 +62,35 @@ const Shop = observer(() => {
                 }
                 return {...i,open:false}
             }))
-            if (!name && category.selectedCategory?.id) category.setSelectedCategory({})
-        })
-        fetchBrands().then(data => brand.setBrands(data))
+            if (!name) category.setSelectedCategory({}) // таким образом fetchProducts вызовится в следующем useEffect
+        }).finally(data => setLoadingCategory(false))
+        fetchBrands()
+            .then(data => brand.setBrands(data))
+            .finally(() => setLoadingBrand(false))
     },[])
-
-
-    const reOpenCategory = (array, item) => { // рекурсивная функция для открытия выбраных подкаталогов
-        let response = []
-        array.forEach(i => {
-            if (item && item === i.id) {
-                response = [...response, i.id]
-                response = [...response, ...reOpenCategory(array, i.sub_category_id)]
-            }
-        })
-        return response
-    }
     
     useEffect(() => {
+        setLoadingProduct(true)
+
+        const filterSubCategory = (id) => { // функция фильтрует из store все категории, которые не подходят для подкатегории id
+            return category.categories.filter(i => i.sub_category_id === id) // и возвращает новый массив категорий
+        }
+    
+        const reArray = (array) => { // рекурсивная функция принимает массив и возвращает увеличеный массив категорий
+            let newArray = array
+            array.forEach(i => {
+                let arr = filterSubCategory(i.id) // функция фильтрует из store все категории
+                newArray = [...newArray, ...arr] // наращивается массив
+                newArray = [...newArray, ...reArray(arr)] // функция вызывает саму себя и наращивает массив
+            })
+            return newArray
+        }
+    
+        const filterIsProduct = (array) => { // функция
+            let arr = array.filter(i => i.is_product)
+            return arr.map(i => i.id)
+        }
+
         let selectedCategory // выбрана категория
         if (category.selectedCategory?.is_product || category.selectedCategory.id === undefined) { // если выбранная категория содержит товар || или пустой объект {- значит выбрано ВСЕ КАТЕГОРИИ} 
             selectedCategory = category.selectedCategory.id || null
@@ -82,43 +103,28 @@ const Shop = observer(() => {
         fetchProducts(selectedCategory, brand.selectedBrand.id, product.page, product.limit).then(data => {
             product.setProducts(data.rows)
             product.setTotalCount(data.count)
-        })
+        }).finally(data => setLoadingProduct(false))
     },[product.page, product.limit, category.selectedCategory, brand.selectedBrand])
-
-
-    const filterSubCategory = (id) => { // функция фильтрует из store все категории, которые не подходят для подкатегории id
-        return category.categories.filter(i => i.sub_category_id === id) // и возвращает новый массив категорий
-    }
-
-    const reArray = (array) => { // рекурсивная функция принимает массив и возвращает увеличеный массив категорий
-        let newArray = array
-        array.map(i => {
-            let arr = filterSubCategory(i.id) // функция фильтрует из store все категории
-            newArray = [...newArray, ...arr] // наращивается массив
-            newArray = [...newArray, ...reArray(arr)] // функция вызывает саму себя и наращивает массив
-        })
-        return newArray
-    }
-
-    const filterIsProduct = (array) => { // функция
-        let arr = array.filter(i => i.is_product)
-        return arr.map(i => i.id)
-    }
-    
+   
 
     return (
         <Container
             className="Shop Content Mobile"
         >
-            <div className="ShopRow mt-2">
+            <div className="ShopRow">
                 <div className="ShopColCategory">
-                    <CategoryBar />
+                    {loadingCategory ? <Loading /> : <CategoryBar />}
                 </div>
                 <div className="ShopColContent">
-                    <BrandBar />
+                    {loadingBrand ? <Loading /> : <BrandBar />}
                     <Filter />
-                    <ProductList />
-                    <Pagination />
+                    {loadingProduct 
+                    ? <Loading /> 
+                    : <>
+                        <ProductList />
+                        <Pagination />
+                    </>}
+                    
                 </div>
             </div>
         </Container>

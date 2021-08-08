@@ -7,7 +7,7 @@ export default class ProductStore {
         this._products = []
         this._page = 1
         this._totalCount = 0
-        this._limit = LIMIT
+        this._limit =  localStorage.getItem('limit') || LIMIT
         makeAutoObservable(this)
     }
 

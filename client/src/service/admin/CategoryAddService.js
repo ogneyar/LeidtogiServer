@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 // import { Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { createCategory } from '../../http/categoryAPI'
+import { createCategory, fetchAllCategories } from '../../http/categoryAPI'
 import { Input, Button, Form } from '../../components/myBootstrap'
+import translite from '../../utils/translite'
 
 
 const CategoryAddService = observer(({
@@ -11,17 +12,29 @@ const CategoryAddService = observer(({
         updateInfo  // передаваемая функция для применения изменений
     }) => {
     
-    const [value, setValue] = useState('')
+    const [name, setName] = useState('')
 
 
     const addCategory = () => {
-        if (value) {
-            createCategory(value, sub_id).then(data => { 
-                setValue('')
-    
-                updateInfo(sub_id, data, "context", offset) 
-    
-                updateInfo(sub_id, data, "state", offset)
+        if (name) {
+            fetchAllCategories().then(data => {
+                let url = translite(name)
+                let yes = false
+                data.forEach(i => {
+                    if (url === i.url) yes = true
+                })
+                if (yes) {
+                    if (sub_id) {
+                        data.forEach(i => {
+                            if (sub_id === i.id) url = translite(i.name) + "_" + url
+                        })
+                    }else url = url + "_too"
+                }
+                createCategory(name, url, sub_id).then(data => { 
+                    setName('')
+                    updateInfo(sub_id, data, "context", offset) 
+                    updateInfo(sub_id, data, "state", offset)
+                })
             })
         }
     }
@@ -34,8 +47,8 @@ const CategoryAddService = observer(({
         >
             <Input 
                 className='mt-4 ml-2 mr-2'
-                value={value}
-                onChange={e => setValue(e.target.value)}
+                value={name}
+                onChange={e => setName(e.target.value)}
                 placeholder={'Введите название новой категории'}
             />
             <Button 

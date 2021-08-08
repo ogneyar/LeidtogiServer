@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react'
 import { ListGroup } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-// import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import $ from 'jquery'
 
 import { Context } from '../..'
-
-import { NavLink } from '../myBootstrap'
+// import { NavLink } from '../myBootstrap'
 import './Category.css'
 
 
@@ -28,8 +28,6 @@ const CategoryItem = observer(({ funcOnClick, item }) => {
             }
             return i
         }))
-        // if (open) setOpen(false)
-        // else setOpen(true)
     }
 
     return (
@@ -42,12 +40,33 @@ const CategoryItem = observer(({ funcOnClick, item }) => {
                     onClick={() => {
                         funcOnClick(item)
                         onClickListItem()
-                        // window.scrollTo(0,0);
+                        if (item.is_product) {
+                            // window.scrollTo(0,260)
+                            $('html, body').animate(
+                                {
+                                    scrollTop: 260
+                                }, 
+                                700, 
+                                function(){}
+                            )
+                        }
                     }}
                     key={item.id}
                 >
                     
-                    {item.is_product ? item.name : item.name + " +"}
+                    {item.is_product 
+                    ? item.name 
+                    : <div
+                        className="d-flex justify-content-between"
+                    >
+                        <div>{item.name}</div>
+                        <div>
+                            {item.open 
+                            ? <i className="fa fa-minus-circle" aria-hidden="true"></i> 
+                            : <i className="fa fa-plus-circle" aria-hidden="true"></i>}
+                        </div>
+                        
+                    </div>}
 
                     
                 </ListGroup.Item>

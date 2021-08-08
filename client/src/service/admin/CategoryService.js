@@ -2,9 +2,10 @@ import React, { useContext, useState } from 'react'
 // import { Button, Form, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../../index'
-import { fetchCategories, deleteCategory, updateCategory } from '../../http/categoryAPI'
+import { fetchAllCategories, fetchCategories, deleteCategory, updateCategory } from '../../http/categoryAPI'
 import CategoryAddService from './CategoryAddService'
 import { Input, Button } from '../../components/myBootstrap'
+import translite from '../../utils/translite'
 
 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
@@ -101,14 +102,34 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         )
     }
 
-    const editCategoryApply = async (id, name) => {
+    const editCategoryApply = (id, name) => {
         setState(
             state.map(i => i.id === id 
                 ? {...i, readOnly:true,cursor:"pointer",bEdit:"flex",bApply:"none"} 
                 : i 
             )
         )
-        await updateCategory(id, {name})
+        fetchAllCategories().then(data => {
+            let url = translite(name)
+            let yes = false
+            data.forEach(i => {
+                if (url === i.url) yes = true
+            })
+            if (yes) {
+                let sub_category_id
+                data.forEach(i => {
+                    if (id === i.id) sub_category_id = i.sub_category_id
+                })
+                if (sub_category_id) {
+                    data.forEach(i => {
+                        if (sub_category_id === i.id) url = translite(i.name) + "_" + url
+                    })
+                }else url = url + "_too"
+            }
+            updateCategory(id, {name,url})
+        })
+        
+        
     }
 
     const openSubCategory = (id) => {

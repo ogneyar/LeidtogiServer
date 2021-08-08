@@ -1,9 +1,7 @@
 import {$host,$authHost} from './index'
-import translite from '../utils/translite'
 
 
-export const createCategory = async (name, sub_category_id = 0) => {
-    let url = translite(name)
+export const createCategory = async (name, url, sub_category_id = 0) => {
     const {data} = await $authHost.post('api/category', {name, url, sub_category_id}) 
     return data  
 }
@@ -24,7 +22,6 @@ export const deleteCategory = async (id) => {
 }
 
 export const updateCategory = async (id, body) => {
-    if (body.name) body = {...body, url:translite(body.name)}
     const {data} = await $authHost.put('api/category/' + id, body)
     return data
 }
