@@ -56,7 +56,7 @@ const NavBar = observer(() => {
                         className="NavBar_Col"
                         md="auto"
                     >
-                        <Nav className="m-0">
+                        <Nav>
 
                             <NavLink className="NavLink"
                                 to={CART_ROUTE}

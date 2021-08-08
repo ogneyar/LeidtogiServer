@@ -1,9 +1,7 @@
 .NavBar {}
 
-.NavBar_Container {
-    margin: 0;
-    padding: 0;
-}
+.NavBar_Container {}
+
 .NavBar_Row {
     width: 100%;
     margin: 20px 0;
