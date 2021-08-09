@@ -109,7 +109,7 @@ const Shop = observer(() => {
 
     return (
         <Container
-            className="Shop Content Mobile"
+            className="Shop Mobile"
         >
             <div className="ShopRow">
                 <div className="ShopColCategory">

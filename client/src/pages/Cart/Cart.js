@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Card, Row, Col } from 'react-bootstrap'
+import { Card, Row, Col } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { SHOP_ROUTE } from '../../utils/consts'
-import { Button } from '../../components/myBootstrap'
+import { Container, Button } from '../../components/myBootstrap'
 import './Cart.css'
 
 

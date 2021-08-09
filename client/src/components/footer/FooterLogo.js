@@ -10,15 +10,15 @@ import './FooterLogo.css'
 const FooterLogo = () => {
     
     return (
-        <NavLink className="NavLink"
-            to={SHOP_ROUTE}
+        <div
+            className="FooterLogo"
         >
-            <div
-                className="FooterLogo"
+            <NavLink className="NavLink"
+                to={SHOP_ROUTE}
             >
-                <Image width={150} src={logo} />
-            </div> 
-        </NavLink>
+                <Image className="FooterLogoImage" src={logo} />
+            </NavLink>
+        </div> 
     )
 }
 

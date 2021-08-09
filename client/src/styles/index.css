@@ -57,7 +57,7 @@ a:hover {
 
 .Content {
   background-color: var(--main-white-color);
-  padding: 30px 10px;
+  padding: 10px 10px;
 }
 
 .Card_title {
@@ -68,17 +68,12 @@ a:hover {
   padding: 20px 5px;
 }
 
-.Mobile {
-  /* background-color:red; */
-}
+.Mobile {}
 
 @media(max-width:991px) {
   .hidden-mobile {
     display:none;
     visibility: hidden;
     opacity: 0;
-  }
-  #search {
-    /* width: 800px; */
   }
 }

@@ -7,6 +7,7 @@ import Button from './Button'
 import Card from './Card'
 import Alert from './Alert'
 import NavLink from './NavLink'
+import Container from './container/Container'
 
 
 export {
@@ -15,5 +16,6 @@ export {
 	Button,
 	Card,
 	Alert,
-	NavLink
+	NavLink,
+	Container
 }

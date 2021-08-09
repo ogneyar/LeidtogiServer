@@ -1,6 +1,8 @@
 import React from 'react'
-import { Navbar, Container, Row, Col } from 'react-bootstrap'
+import { Container, Navbar, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
+
+// import { Container } from '../myBootstrap'
 import FooterLogo from './FooterLogo'
 import FooterInformation from './FooterInformation'
 import FooterSocialNetwork from './FooterSocialNetwork'
@@ -21,22 +23,22 @@ const Footer = observer(() => {
                 id="Footer"
             >      
                 <Container
-                    className="Container text-center border-secondary"
+                    className="FooterContainer text-center border-secondary"
                 >
-                    <Row className="Row mt-4">
-                        <Col className="Col mb-4" >
+                    <div className="FooterRow">
+                        <div className="FooterLogo" >
                             <FooterLogo />
-                        </Col>    
-                        <Col className="Col mb-4" md={3}>
+                        </div>    
+                        <div className="FooterCol" md={3}>
                             <FooterInformation />
-                        </Col>
-                        <Col className="Col mb-4" md={3}>
+                        </div>
+                        <div className="FooterCol" md={3}>
                             <FooterSocialNetwork />
-                        </Col>
-                        <Col className="Col mb-4" md={3}>
+                        </div>
+                        <div className="FooterCol" md={3}>
                             <FooterContacts />
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 </Container>
             </Navbar>
 
