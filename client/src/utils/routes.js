@@ -2,7 +2,7 @@ import Admin from '../pages/Admin'
 import Cart from '../pages/cart/Cart'
 import Shop from '../pages/shop/Shop'
 import Auth from '../pages/Auth'
-import Product from '../pages/Product'
+import Product from '../pages/product/Product'
 import Lk from '../pages/lk/Lk'
 
 import AboutUs from '../pages/informations/AboutUs'

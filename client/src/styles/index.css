@@ -5,6 +5,7 @@
   --main-silver-color: #c0c0c0; /* 192 192 192 */
   --main-white-color: #f3f3f3; /* 243 243 243 */
   --main-black-color: #0e0e0e; /* 14 14 14 */
+  --main-red-color: #b31111; /* 179 17 17 */
 }
 
 :active, :hover, :focus {

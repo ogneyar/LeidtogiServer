@@ -3,15 +3,15 @@ import { Card, Col, Container, Image, Row } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
-import { fetchOneProduct } from '../http/productAPI'
+import { fetchOneProduct } from '../../http/productAPI'
 
-import { API_URL } from '../utils/consts'
-import Error from '../components/Error'
-import Loading from '../components/Loading'
-import ButtonBuy from '../components/cart/ButtonBuy'
-import Rating from '../components/rating/Rating'
-import { Context } from '..'
-import '../styles/Product.css'
+import { API_URL } from '../../utils/consts'
+import Error from '../../components/Error'
+import Loading from '../../components/Loading'
+import ButtonBuy from '../../components/cart/ButtonBuy'
+import Rating from '../../components/rating/Rating'
+import { Context } from '../..'
+import './Product.css'
 
 
 const Product =  observer(() => {
@@ -41,7 +41,7 @@ const Product =  observer(() => {
     if (error) return <Error />
 
     return ( 
-        <Container className="Content mt-3 Mobile">
+        <Container className="Product">
             <Row>
                 <Col md={4} className="d-flex flex-column align-items-center">
                     <Image width={300} height={300} src={API_URL + product.img} />

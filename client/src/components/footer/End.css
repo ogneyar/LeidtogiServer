@@ -12,8 +12,7 @@
     padding: 20px;
 }
 .FooterEnd_NavLink:hover {
-    /* color: rgb(250, 0, 0); */
-    /* shadow: 1 */
+    color: var(--main-red-color);
 }
 
 .EndDivArrow {
