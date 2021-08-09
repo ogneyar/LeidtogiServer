@@ -1,43 +1,47 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { Button } from '../../components/myBootstrap'
-import { Context } from '../..'
+import React, { useContext } from 'react'
+import { observer } from 'mobx-react-lite'
+import { ListGroup } from 'react-bootstrap'
+import { NavLink } from 'react-router-dom'
 
+import CategoryItemService from './CategoryItemService'
+import { SHOP_ROUTE } from '../../utils/consts'
+// import { NavLink } from '../myBootstrap'
+
+import { Context } from '../..'
 import './CategoryService.css'
 
 
-const CategoryService = () => {
-
+const CategoryService = observer((props) => {
+    
     const { category } = useContext(Context)
 
-    const [ info, setInfo ] = useState([])
-
-    useEffect(() => {
-        setInfo(category.categories)
-    },[])
-
-    const onClikButtonCategory = () => {
-
+    const onClickSelectedCategory = (id) => {
+        category.setSelectedCategory(id)
     }
 
-    
     return (
-        <div
+        <ListGroup 
             className="CategoryService"
         >
-            {info.map(i => {
+            <NavLink className="CategoryNavLink"
+                to={SHOP_ROUTE}
+            >
+                <ListGroup.Item 
+                    active={undefined === category.selectedCategory.id}
+                    onClick={() => onClickSelectedCategory({})}
+                    key={0}
+                >
+                    Все категории
+                </ListGroup.Item>
+            </NavLink>
 
-                return (
-                    <Button
-                        key={i.id}
-                        onClik={() => onClikButtonCategory(i.id)}
-                    >
-                        {i.name}
-                    </Button>
-                )
-
+            {category.categories && Array.isArray(category.categories) && category.categories.map(i => {
+                if (i.sub_category_id === 0)
+                    return <CategoryItemService key={i.id} item={i} onHide={props?.onHide} funcOnClick={onClickSelectedCategory} />
+                return null
             })}
-        </div>
+        </ListGroup>
     )
-}
+})
 
 export default CategoryService

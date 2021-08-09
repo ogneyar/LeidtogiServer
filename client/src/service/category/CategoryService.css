@@ -1,9 +1,18 @@
 .CategoryService {
-    /* width: 100vw; */
+    width:95%;
+    cursor: pointer;
+    margin: 0;
+    margin-bottom: 20px;
 }
 
-.CategoryService Button {
-    width: 100%;
-    padding: 15px;
-    margin: 15px 0;
+.CategoryNavLink,
+.CategoryNavLink:hover {
+    color: var(--main-black-color);
+}
+
+@media (max-width: 991px) { /* < 992px */
+    .CategoryService {
+        width:100%;
+        margin-bottom: 10px;
+    }
 }

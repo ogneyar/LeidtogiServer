@@ -1,47 +1,42 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { ListGroup } from 'react-bootstrap'
-import { NavLink } from 'react-router-dom'
 
+import CategoryService from '../../service/category/CategoryService'
 import CategoryModal from './CategoryModal'
-import CategoryItem from './CategoryItem'
-import { SHOP_ROUTE } from '../../utils/consts'
-// import { NavLink } from '../myBootstrap'
 
-import { Context } from '../..'
-import './Category.css'
+import './CategoryBar.css'
 
 
-const CategoryBar = observer((props) => {
-    
-    const { category } = useContext(Context)
+const CategoryBar = observer(() => {
 
-    const onClickSelectedCategory = (id) => {
-        category.setSelectedCategory(id)
-    }
+    const [categoryVisible, setCategoryVisible] = useState(false)
+
 
     return (
-        <ListGroup 
+        <div
             className="CategoryBar"
         >
-            <NavLink className="CategoryNavLink"
-                to={SHOP_ROUTE}
+            <div
+                className="CategoryBarPC"
+                id="CategoryBarPC"
             >
-                <ListGroup.Item 
-                    active={undefined === category.selectedCategory.id}
-                    onClick={() => onClickSelectedCategory({})}
-                    key={0}
-                >
-                    Все категории
-                </ListGroup.Item>
-            </NavLink>
+                <CategoryService />
+            </div>
 
-            {category.categories && Array.isArray(category.categories) && category.categories.map(i => {
-                if (i.sub_category_id === 0)
-                    return <CategoryItem key={i.id} item={i} onHide={props?.onHide} funcOnClick={onClickSelectedCategory} />
-                return null
-            })}
-        </ListGroup>
+            <div
+                className="CategoryBarMobile"
+                id="CategoryBarMobile"
+            >
+                <label
+                    onClick={() => setCategoryVisible(true)}
+                >
+                    Категории <i className="fa fa-bars" aria-hidden="true"></i>
+                </label>
+                
+                <CategoryModal show={categoryVisible} onHide={() => setCategoryVisible(false)}/>
+
+            </div>
+        </div>
     )
 })
 

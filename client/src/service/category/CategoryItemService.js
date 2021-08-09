@@ -6,10 +6,10 @@ import $ from 'jquery'
 
 import { Context } from '../..'
 // import { NavLink } from '../myBootstrap'
-import './Category.css'
+import './CategoryService.css'
 
 
-const CategoryItem = observer(({ funcOnClick, item, onHide }) => {
+const CategoryItemService = observer(({ funcOnClick, item, onHide }) => {
     
     const { category } = useContext(Context)
 
@@ -79,7 +79,7 @@ const CategoryItem = observer(({ funcOnClick, item, onHide }) => {
             >
                 {open && category.categories.map(i => {
                     if (i.sub_category_id === item.id) 
-                        return <CategoryItem key={i.id} item={i} onHide={onHide} funcOnClick={funcOnClick}  />
+                        return <CategoryItemService key={i.id} item={i} onHide={onHide} funcOnClick={funcOnClick}  />
                     return null
                 })}
             </div>
@@ -87,4 +87,4 @@ const CategoryItem = observer(({ funcOnClick, item, onHide }) => {
     )
 })
 
-export default CategoryItem
+export default CategoryItemService

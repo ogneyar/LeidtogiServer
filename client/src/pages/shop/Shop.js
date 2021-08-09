@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
-import Category from '../../components/category/Category'
+import CategoryBar from '../../components/category/CategoryBar'
 import BrandBar from '../../components/BrandBar'
 import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/Pagination'
@@ -113,7 +113,7 @@ const Shop = observer(() => {
         >
             <div className="ShopRow">
                 <div className="ShopColCategory">
-                    {loadingCategory ? <Loading /> : <Category />}
+                    {loadingCategory ? <Loading /> : <CategoryBar />}
                 </div>
                 <div className="ShopColContent">
                     {loadingBrand ? <Loading /> : <BrandBar />}
