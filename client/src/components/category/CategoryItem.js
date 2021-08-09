@@ -9,7 +9,7 @@ import { Context } from '../..'
 import './Category.css'
 
 
-const CategoryItem = observer(({ funcOnClick, item }) => {
+const CategoryItem = observer(({ funcOnClick, item, onHide }) => {
     
     const { category } = useContext(Context)
 
@@ -41,14 +41,16 @@ const CategoryItem = observer(({ funcOnClick, item }) => {
                         funcOnClick(item)
                         onClickListItem()
                         if (item.is_product) {
-                            // window.scrollTo(0,260)
-                            $('html, body').animate(
-                                {
-                                    scrollTop: 260
-                                }, 
-                                700, 
-                                function(){}
-                            )
+                            if (window.innerWidth > 991) {
+                                // window.scrollTo(0,260)
+                                $('html, body').animate(
+                                    {
+                                        scrollTop: 260
+                                    }, 
+                                    700, 
+                                    function(){}
+                                )
+                            }else onHide()
                         }
                     }}
                     key={item.id}
@@ -77,7 +79,7 @@ const CategoryItem = observer(({ funcOnClick, item }) => {
             >
                 {open && category.categories.map(i => {
                     if (i.sub_category_id === item.id) 
-                        return <CategoryItem key={i.id} item={i} funcOnClick={funcOnClick}  />
+                        return <CategoryItem key={i.id} item={i} onHide={onHide} funcOnClick={funcOnClick}  />
                     return null
                 })}
             </div>

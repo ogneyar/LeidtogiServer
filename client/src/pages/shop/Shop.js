@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
-import CategoryBar from '../../components/category/CategoryBar'
+import Category from '../../components/category/Category'
 import BrandBar from '../../components/BrandBar'
 import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/Pagination'
@@ -113,7 +113,7 @@ const Shop = observer(() => {
         >
             <div className="ShopRow">
                 <div className="ShopColCategory">
-                    {loadingCategory ? <Loading /> : <CategoryBar />}
+                    {loadingCategory ? <Loading /> : <Category />}
                 </div>
                 <div className="ShopColContent">
                     {loadingBrand ? <Loading /> : <BrandBar />}

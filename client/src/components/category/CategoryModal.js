@@ -1,18 +1,18 @@
 import React, { useState, useContext, useEffect } from 'react'
-import {Modal, Button} from 'react-bootstrap'
+import {Modal, ListGroup} from 'react-bootstrap'
+import { NavLink } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import { fetchBrands } from '../../http/brandAPI'
+
 import CategoryService from '../../service/category/CategoryService'
+import { SHOP_ROUTE } from '../../utils/consts'
 import { Context } from '../../index'
+import CategoryItem from './CategoryItem'
+import CategoryBar from './CategoryBar'
 
 
 const CategoryModal = observer(({show, onHide}) => {
-
+    
     const { category } = useContext(Context)
-    // const [ info, setInfo ] = useState([])
-
-    useEffect(() => {
-    },[])
 
     
     return (
@@ -30,7 +30,9 @@ const CategoryModal = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
 
-                <CategoryService information={category.categories} />
+                {/* <CategoryService information={category.categories} /> */}
+                
+                <CategoryBar onHide={onHide} />
 
             </Modal.Body>
             {/* <Modal.Footer>
