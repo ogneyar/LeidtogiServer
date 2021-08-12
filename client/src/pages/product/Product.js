@@ -42,52 +42,61 @@ const Product =  observer(() => {
 
     return ( 
         <Container className="Product">
+            <Row className="ProductName">
+                <h3>{product.name}</h3> 
+                <p>Артикул: {product.article}</p> 
+            </Row>
             <Row>
-                <Col md={4} className="d-flex flex-column align-items-center">
+                <Col md={4} className="ProductImage">
                     <Image width={300} height={300} src={API_URL + product.img} />
                 </Col>
                 <Col md={4}>
-                    <Row className="d-flex flex-column align-items-center">
-                        <h2>Наименование: {product.name}</h2>
-
+                    <Row className="ProductRating">
                         <Rating product={product} rating={rating.rate} />
-
                     </Row>
                 </Col>
-                <Col md={4} className="d-flex flex-column align-items-center">
-                    <Card 
-                        className="d-flex flex-column align-items-center justify-content-around"
-                        style={{width: 300, height: 300, fontSize: 32, border: '5px solid lightgray'}}
-                    >
-                        <h3>Цена {product.price} руб.</h3>
-
+                <Col md={4} className="ProductColCard">
+                    <Card className="ProductCard">
+                        <h3>Цена: {product.price} руб.</h3>
                         <div
-                            className="p-3"
+                            className="ProductCardDivButtonBuy"
                         >
-                            <ButtonBuy className="pt-3 pb-3" product={product}>
+                            <ButtonBuy className="ProductCardButtonBuy" product={product}>
                                 Добавить в корзину
                             </ButtonBuy>
                         </div>
-
                     </Card>
                 </Col>
             </Row>
-            <Row className="d-flex flex-column m-3">
+            <Row className="ProductDescription">
+                {product.description
+                ?
+                <div className="ProductDescriptionDiv">
+                    <label>
+                        Описание: {product.description}
+                    </label>
+                </div>
+                : null}
+            </Row>
+            <Row className="ProductInfo">
                 {product.info && product.info.length > 0
                 ?
                 <>
-                    <h1>Характеристики</h1>
+                    <h2>Характеристики</h2>
                     {product.info.map((info, index) =>
                         <Row 
+                            className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowtTansparent"}
                             key={info.id}
-                            style={{background: index % 2 === 0 ? 'lightgray' : 'transparent', padding: 10}}
                         >
-                            {info.title}: {info.description}
+                            {info.title && info.description 
+                            ? info.title+": "+info.description 
+                            : info.title 
+                                ? info.title
+                                : info.description}
                         </Row>    
                     )}
                 </>
                 : null}
-                
             </Row>
         </Container>
     )

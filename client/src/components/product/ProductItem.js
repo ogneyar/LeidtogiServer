@@ -1,6 +1,7 @@
 import React from 'react'
 import {  Image } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
+import $ from 'jquery'
 
 import star from '../../assets/star.png'
 import { Card } from '../myBootstrap'
@@ -15,7 +16,16 @@ const ProductItem = ({product}) => {
     return (
         <div
             className="ProductItem"
-            onClick={() => history.push(PRODUCT_ROUTE + '/' + product.id)}
+            onClick={() => {
+                history.push(PRODUCT_ROUTE + '/' + product.id)
+                $('html, body').animate(
+                    {
+                        scrollTop: 0
+                    }, 
+                    700, 
+                    function(){}
+                )
+            }}
         >
             <Card 
                 className="product-card"

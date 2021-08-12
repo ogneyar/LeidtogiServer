@@ -5,7 +5,7 @@ const {DataTypes} = require('sequelize')
 const Product = sequelize.define('product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, allowNull: false},
-    price: {type: DataTypes.INTEGER, allowNull: false},
+    price: {type: DataTypes.FLOAT, allowNull: false},
     rating: {type: DataTypes.FLOAT, defaultValue: 0},
     img: {type: DataTypes.STRING, allowNull: false},
     have: {type: DataTypes.INTEGER, defaultValue: 0},

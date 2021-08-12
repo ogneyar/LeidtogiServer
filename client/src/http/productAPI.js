@@ -13,6 +13,13 @@ export const fetchProducts = async (categoryId, brandId, page, limit) => {
     return data
 }
 
+export const fetchAllProducts = async () => {
+    const {data} = await $host.get('api/product', {params: {
+        limit: "-1"
+    }})
+    return data
+}
+
 export const fetchOneProduct = async (id) => {
     const {data} = await $host.get('api/product/' + id)
     return data

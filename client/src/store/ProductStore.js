@@ -3,7 +3,7 @@ import { LIMIT } from '../utils/consts'
 
 
 export default class ProductStore {
-    constructor() {        
+    constructor() {
         this._products = []
         this._page = 1
         this._totalCount = 0

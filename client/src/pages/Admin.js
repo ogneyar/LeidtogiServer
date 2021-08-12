@@ -36,7 +36,7 @@ const Admin = observer(() => {
                 className="m-2 p-2 Admin_button"
                 onClick={() => setProductVisible(true)}
             >
-                Редактор товаров
+                Редактор продукции
             </Button>
 
             <Button 

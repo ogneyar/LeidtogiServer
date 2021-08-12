@@ -8,6 +8,7 @@
 }
 .RatingLabel {
     padding-top: 10px;
+    font-size: 24px;
 }
 .RatingBody {
     display:flex;
