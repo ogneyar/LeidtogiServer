@@ -7,7 +7,12 @@ const Product = sequelize.define('product', {
     name: {type: DataTypes.STRING, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
     rating: {type: DataTypes.FLOAT, defaultValue: 0},
-    img: {type: DataTypes.STRING, allowNull: false}
+    img: {type: DataTypes.STRING, allowNull: false},
+    have: {type: DataTypes.INTEGER, defaultValue: 0},
+    article: {type: DataTypes.STRING, defaultValue: null},
+    description: {type: DataTypes.STRING, defaultValue: null},
+    promo: {type: DataTypes.STRING, defaultValue: null},
+    country: {type: DataTypes.STRING, defaultValue: null}
 })
 
 module.exports = Product

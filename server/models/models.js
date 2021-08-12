@@ -10,6 +10,7 @@ const Brand = require('./Brand')
 const Rating = require('./Rating')
 const ProductInfo = require('./ProductInfo')
 const CategoryBrand = require('./CategoryBrand')
+const ProductSize = require('./ProductSize')
 
 
 User.hasOne(Cart)
@@ -36,6 +37,9 @@ CartProduct.belongsTo(Product)
 Product.hasMany(ProductInfo, {as: 'info'})
 ProductInfo.belongsTo(Product)
 
+Product.hasMany(ProductSize, {as: 'size'})
+ProductSize.belongsTo(Product)
+
 Category.belongsToMany(Brand, {through: CategoryBrand})
 Brand.belongsToMany(Category, {through: CategoryBrand})
 
@@ -49,5 +53,6 @@ module.exports = {
     Brand,
     Rating,
     ProductInfo,
-    CategoryBrand
+    CategoryBrand,
+    ProductSize
 }
