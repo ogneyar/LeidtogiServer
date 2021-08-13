@@ -33,7 +33,7 @@ const Admin = observer(() => {
         <Container className="Content d-flex flex-column Admin Mobile">
             <Button 
                 variant={"outline-dark"} 
-                className="m-2 p-2 Admin_button"
+                className="m-3 p-2 Admin_button"
                 onClick={() => setProductVisible(true)}
             >
                 Редактор продукции
@@ -41,7 +41,7 @@ const Admin = observer(() => {
 
             <Button 
                 variant={"outline-dark"} 
-                className="m-2 p-2 Admin_button"
+                className="m-3 p-2 Admin_button"
                 onClick={() => setCategoryVisible(true)}
             >
                 Редактор категорий
@@ -49,7 +49,7 @@ const Admin = observer(() => {
 
             <Button 
                 variant={"outline-dark"} 
-                className="m-2 p-2 Admin_button"
+                className="m-3 p-2 Admin_button"
                 onClick={() => setBrandVisible(true)}
             >
                 Редактор брендов
@@ -59,7 +59,7 @@ const Admin = observer(() => {
 
             <Button 
                 variant={"outline-danger"} 
-                className="m-2 p-2 Admin_button"
+                className="m-3 p-2 Admin_button"
                 onClick={() => setDeleteSiteVisible(true)}
             >
                 Удалить САЙТ!!!
