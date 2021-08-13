@@ -11,13 +11,17 @@
     justify-content:space-between;
 }
 .NavBar_Cart {
+    display:flex;
+    align-items: center;
+}
+.NavBar_Cart_Image {
     margin: 0 20px;
     border-radius: 50%;
     background-color: var(--main-white-color); 
     width: 50px;
     height: 50px;
 }
-.NavBar_Cart:hover {
+.NavBar_Cart_Image:hover {
     background-color: var(--main-orange-color);
 }
 
@@ -27,7 +31,7 @@
 
 .NavBar_Logo {
     background-color: var(--main-white-color);
-    padding: 10px 0;
+    padding: 10px;
     width: 150px;
 }
 
@@ -35,11 +39,11 @@
     .NavBar_Row {
         margin: 0;
     }
-    .NavBar_Cart {
+    .NavBar_Cart_Image {
         margin: 0 10px;
     }
     .NavBar_Logo {
-        padding: 5px 0;
-        width: 100px;
+        padding: 5px;
+        width: 125px;
     }
 }

@@ -58,10 +58,10 @@ const NavBar = observer(() => {
                     >
                         <Nav>
 
-                            <NavLink className="NavLink"
+                            <NavLink className="NavLink NavBar_Cart"
                                 to={CART_ROUTE}
                             >
-                                <Image className="NavBar_Cart" src={cart} />
+                                <Image className="NavBar_Cart_Image" src={cart} />
                             </NavLink>
 
                             {user.isAuth ?
