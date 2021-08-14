@@ -25,6 +25,16 @@ export const fetchOneProduct = async (id) => {
     return data
 }
 
+export const fetchProductInfos = async (id) => {
+    const {data} = await $host.get('api/product/info/' + id)
+    return data
+}
+
+export const fetchProductSizes = async (id) => {
+    const {data} = await $host.get('api/product/size/' + id)
+    return data
+}
+
 export const deleteProduct = async (id) => {
     const {data} = await $authHost.delete('api/product/' + id)
     return data
@@ -32,6 +42,11 @@ export const deleteProduct = async (id) => {
 
 export const updateProduct = async (id, body) => {
     const {data} = await $authHost.put('api/product/edit/' + id, body)
+    return data
+}
+
+export const updateAllProduct = async (id, body) => {
+    const {data} = await $authHost.put('api/product/edit_all/' + id, body)
     return data
 }
 

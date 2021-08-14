@@ -74,25 +74,43 @@ class ProductController {
         const {id} = req.params
         const product = await Product.findOne({
             where: {id},
-            include: [{model: ProductInfo, as: 'info'}]
+            include: [{model: ProductInfo, as: 'info'},{model: ProductSize, as: 'size'}]
         })
         return res.json(product)
+    }
+
+    async getInfo(req, res) {
+        const {id} = req.params
+        const info = await ProductInfo.findAll({
+            where: {ProductId: id}
+        })
+        return res.json(info)
+    }
+
+    async getSize(req, res) {
+        const {id} = req.params
+        const size = await ProductSize.findAll({
+            where: {ProductId: id}
+        })
+        return res.json(size)
     }
 
     async delete(req, res) {
         const {id} = req.params
         const product = await Product.findOne({
             where: {id}
-        })        
+        })
       
         try {
             fs.unlinkSync(path.resolve(__dirname, '..', 'static', product.img))
         }catch(e) {
             console.log("Удаляемый файл не найден.");
         }
-        
 
         await ProductInfo.destroy({
+            where: {productId: id}
+        })
+        await ProductSize.destroy({
             where: {productId: id}
         })
         const response = await Product.destroy({
@@ -108,6 +126,80 @@ class ProductController {
             where: { id }
         })
         return res.json(response) // return boolean
+    }
+
+    async editAll(req, res) {
+        console.log("log");
+        const {id} = req.params        
+        const product = await Product.findOne({
+            where: {id}
+        })
+        const deleteOldImage = product.img
+        try {
+            let {name, price, brandId, categoryId, info, have, article, description, promo, country, size} = req.body
+            const {img} = req.files
+            let fileName = uuid.v4() + '.jpg'
+            img.mv(path.resolve(__dirname, '..', 'static', fileName))
+    
+            const product = await Product.update(
+                {name, price, have, article, description, promo, country, brandId, categoryId, img: fileName}, 
+                {where: { id }}
+            )
+    
+            await ProductInfo.destroy({
+                where: {productId: id}
+            })
+
+            if (info) {
+                let inf = JSON.parse(info)
+                inf.forEach(i => ProductInfo.create({
+                    title: i.title,
+                    description: i.description,
+                    productId: id 
+                }))
+            } 
+    
+            if (size) {
+                let s = JSON.parse(size)
+                let yes = await ProductSize.findOne({
+                    where: {productId: id}
+                })
+                if (yes)  {
+                    ProductSize.update({
+                        weight: s.weight,
+                        volume: s.volume,
+                        width: s.width,
+                        height: s.height,
+                        length: s.length
+                    }, {where: { productId: id }})
+                }else {                    
+                    ProductSize.create({
+                        weight: s.weight,
+                        volume: s.volume,
+                        width: s.width,
+                        height: s.height,
+                        length: s.length,
+                        productId: id
+                    })
+                }
+            }else {
+                ProductSize.destroy({
+                    where: {productId: id}
+                })
+            }       
+
+            try {
+                fs.unlinkSync(path.resolve(__dirname, '..', 'static', deleteOldImage))
+            }catch(e) {
+                console.log("Удаляемый файл не найден.");
+                return res.json(product)
+            }
+    
+            return res.json(product)
+
+        }catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
     }
 
     async editRating(req, res) {

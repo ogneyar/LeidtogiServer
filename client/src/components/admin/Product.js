@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import ProductAddService from '../../service/admin/ProductAddService'
-import ProductEditService from '../../service/admin/ProductEditService'
-import ProductDeleteService from '../../service/admin/ProductDeleteService'
+import ProductAddService from '../../service/admin/product/ProductAddService'
+import ProductEditService from '../../service/admin/product/ProductEditService'
+import ProductDeleteService from '../../service/admin/product/ProductDeleteService'
 import './Product.css'
 
 
@@ -64,7 +64,7 @@ const Product = observer(({show, onHide}) => {
                     <ProductAddService onHide={onHideAndBack} back={back} />
                 :
                     <Button
-                        className='mt-4'
+                        className='mt-4 mb-2'
                         variant="outline-primary"
                         onClick={onClickButtonAdd}
                     >
@@ -77,7 +77,7 @@ const Product = observer(({show, onHide}) => {
                     <ProductEditService onHide={onHideAndBack} back={back} />
                 :
                     <Button
-                        className='mt-4'
+                        className='mt-4 mb-2'
                         variant="outline-warning"
                         onClick={onClickButtonEdit}
                     >

@@ -1,0 +1,14 @@
+/* inputBox описан в Admin.css */
+
+.divArticle {
+    border: 1px solid lightgrey;
+    padding: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.DivButtonBack {
+    display:flex; 
+    justify-content:flex-end; 
+    margin: 30px 0;
+}

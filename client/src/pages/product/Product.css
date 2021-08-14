@@ -1,6 +1,6 @@
 .Product {
     background-color: var(--main-white-color);
-    padding: 40px 20px 10px 20px;
+    padding: 40px 20px 30px 20px;
 }
 
 .ProductName {
@@ -31,9 +31,10 @@
 }
 
 .ProductDescription,
-.ProductInfo {
-    padding: 20px;
-    margin: 10px;
+.ProductInfo,
+.ProductSize {
+    padding: 10px 20px;
+    margin: 5px;
     display: flex;
     flex-direction: column; 
 }

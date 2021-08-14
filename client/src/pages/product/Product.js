@@ -20,7 +20,7 @@ const Product =  observer(() => {
 
     const { id } = useParams()
     
-    const [product, setProduct] = useState({info: []})
+    const [product, setProduct] = useState({info: [],size: []})
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
@@ -68,36 +68,49 @@ const Product =  observer(() => {
                     </Card>
                 </Col>
             </Row>
+            
+            {product.description
+            ?
             <Row className="ProductDescription">
-                {product.description
-                ?
                 <div className="ProductDescriptionDiv">
                     <label>
                         Описание: {product.description}
                     </label>
                 </div>
-                : null}
             </Row>
+            : null}
+            
+            {product.info && product.info.length > 0
+            ?
             <Row className="ProductInfo">
-                {product.info && product.info.length > 0
-                ?
-                <>
-                    <h2>Характеристики</h2>
-                    {product.info.map((info, index) =>
-                        <Row 
-                            className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowtTansparent"}
-                            key={info.id}
-                        >
-                            {info.title && info.description 
-                            ? info.title+": "+info.description 
-                            : info.title 
-                                ? info.title
-                                : info.description}
-                        </Row>    
-                    )}
-                </>
-                : null}
+                <h2>Характеристики</h2>
+                {product.info.map((info, index) =>
+                    <Row 
+                        className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowtTansparent"}
+                        key={info.id}
+                    >
+                        {info.title && info.description 
+                        ? info.title+": "+info.description 
+                        : info.title 
+                            ? info.title
+                            : info.description}
+                    </Row>    
+                )}
             </Row>
+            : null}
+           
+            {product.size && product.size.length > 0
+            ?
+            <Row className="ProductSize">
+                <h2>Габариты</h2>
+                <Row className={"ProductInfoRowLight"}>Вес: {product.size[0].weight}</Row>
+                <Row className={"ProductInfoRowtTansparent"}>Объём: {product.size[0].volume}</Row>
+                <Row className={"ProductInfoRowLight"}>Ширина: {product.size[0].width}</Row>
+                <Row className={"ProductInfoRowtTansparent"}>Высота: {product.size[0].height}</Row>
+                <Row className={"ProductInfoRowLight"}>Длина: {product.size[0].length}</Row>
+            </Row>
+            : null}
+            
         </Container>
     )
 })

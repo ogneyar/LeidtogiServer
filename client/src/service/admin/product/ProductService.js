@@ -1,37 +1,43 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Button, Form, Dropdown, Row, Col } from 'react-bootstrap'
+import { Button, Form, Dropdown, Row, Col, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import { createProduct, fetchProducts } from '../../http/productAPI'
-import { fetchCategories, fetchAllCategories } from '../../http/categoryAPI'
-import { fetchBrands } from '../../http/brandAPI'
-import { Context } from '../..'
+import { createProduct, fetchProducts, updateAllProduct } from '../../../http/productAPI'
+import { fetchAllCategories } from '../../../http/categoryAPI'
+import { fetchBrands } from '../../../http/brandAPI'
+import { Context } from '../../..'
+
+import './ProductService.css'
 
 
 const ProductService = observer((props) => {
     
     const {product, category, brand} = useContext(Context)
-    
-    const [name, setName] = useState('')
-    const [price, setPrice] = useState(null)
-    const [file, setFile] = useState(null)
-    
-    const [have, setHave] = useState(1)
-    const [article, setArticle] = useState(null)
-    const [description, setDescription] = useState(null)
-    const [promo, setPromo] = useState(null)
-    const [country, setCountry] = useState(null)
-    const [size, setSize] = useState({})
 
+    const action = props?.action // add or edit
+    
+    const [name, setName] = useState(props?.name || '')
+    const [price, setPrice] = useState(props?.price || "")
+    const [file, setFile] = useState(null)
+    const [fileReader, setFileReader] = useState(props?.file || null)
+    
+    const [have, setHave] = useState(props?.have || 1)
+    const [article, setArticle] = useState(props?.article || "")
+    const [description, setDescription] = useState(props?.description || "")
+    const [promo, setPromo] = useState(props?.promo || "")
+    const [country, setCountry] = useState(props?.country || "")
+
+    const [size, setSize] = useState({})
     const [info, setInfo] = useState([])
-    const [infoCategory, setInfoCategory] = useState([])
+
+    const [allCategories, setAllCategories] = useState([])
 
     useEffect(() => {
-        fetchCategories().then(data => {
-            category.setCategories(data)
-        })
+        // fetchCategories().then(data => {
+        //     category.setCategories(data)
+        // })
         fetchAllCategories().then(data => {
-            setInfoCategory(data)
+            setAllCategories(data)
         })
         fetchBrands().then(data => {
             brand.setBrands(data)
@@ -39,11 +45,19 @@ const ProductService = observer((props) => {
         })
     },[])
 
+    useEffect(() => {
+        setInfo(props?.info)
+    },[props?.info])
+
+    useEffect(() => {
+        setSize(props?.size)
+    },[props?.size])
+
     const openSize = () => {
-        setSize({weight: null, volume: null, width: null, height: null, length: null}) 
+        setSize({weight: "", volume: "", width: "", height: "", length: ""}) 
     }
     const changeSize = (key, value) => {
-        console.log({...size, [key]: value});
+        // console.log({...size, [key]: value});
         setSize({...size, [key]: value}) 
     }
 
@@ -59,7 +73,12 @@ const ProductService = observer((props) => {
     }
 
     const selectFile = e => {
-        setFile(e.target.files[0]);
+        let reader = new FileReader()
+        reader.onload = function(e) {
+              setFileReader(e.target.result)
+        }
+        reader.readAsDataURL(e.target.files[0])
+        setFile(e.target.files[0])
     }
 
     const addProduct = async () => {
@@ -79,16 +98,39 @@ const ProductService = observer((props) => {
         formData.append('categoryId', category.selectedCategory.id)
         formData.append('info', JSON.stringify(info))
 
-        await createProduct(formData).then(data => props?.onHide())
+        await createProduct(formData).then(data => props?.back())
 
         fetchProducts().then(data => product.setProducts(data))
         category.setSelectedCategory({})
         // brand.setSelectedBrand({})
     }
 
+    const editProduct = async (id) => {
+        const formData = new FormData()
+        formData.append('name', name)
+        formData.append('price', `${price}`)
+        formData.append('img', file)
+
+        formData.append('have', have)
+        formData.append('article', article)
+        formData.append('description', description)
+        formData.append('promo', promo)
+        formData.append('country', country)
+        formData.append('size', JSON.stringify(size))
+
+        formData.append('brandId', brand.selectedBrand.id)
+        formData.append('categoryId', category.selectedCategory.id)
+        formData.append('info', JSON.stringify(info))
+
+        await updateAllProduct(id, formData).then(data => props?.back())
+
+        fetchProducts().then(data => product.setProducts(data))
+        category.setSelectedCategory({})
+    }
+
 
     const reItemCategory = (sub = 0, offset = "") => { // рекурсивная функция, для получения списка категорий
-        return  infoCategory.map(i => {
+        return  allCategories.map(i => {
             if (i.sub_category_id === sub)
                 return (
                     <>
@@ -104,6 +146,8 @@ const ProductService = observer((props) => {
                 )
         })
     }
+
+
     return (
         <Form  className="mb-2">
             <div className="inputBox d-flex">
@@ -112,7 +156,7 @@ const ProductService = observer((props) => {
                     <Dropdown >
                         <Dropdown.Toggle>{category.selectedCategory.name || "Выберите категорию"}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {infoCategory !== undefined 
+                            {allCategories !== undefined 
                             ? reItemCategory()
                             : null}
                         </Dropdown.Menu>
@@ -155,13 +199,19 @@ const ProductService = observer((props) => {
                     type="number"
                 />
             </div>
-            <div className="inputBox">
-                <label>Изображение инструмента:</label>
-                <Form.Control 
-                    className=''
-                    type="file"
-                    onChange={selectFile}
-                />
+            <div className="inputBox fileBox">
+                <div>
+                    <label>Изображение инструмента:</label>
+                    <Form.Control 
+                        className=''
+                        type="file"
+                        onChange={selectFile}
+                    />
+                </div>
+                <div>
+                    {fileReader ? <Image src={fileReader} width="100" height="100" /> : null}
+                </div>
+                
             </div>
             <div className="inputBox">
                 <label>В наличие: </label>
@@ -171,12 +221,14 @@ const ProductService = observer((props) => {
                         <Dropdown.Item 
                             onClick={() => setHave(1)} 
                             active={have}
+                            key={have}
                         >
                             Есть
                         </Dropdown.Item>
                         <Dropdown.Item 
                             onClick={() => setHave(0)} 
                             active={!have}
+                            key={!have}
                         >
                             Нет
                         </Dropdown.Item>
@@ -219,7 +271,7 @@ const ProductService = observer((props) => {
                     placeholder={'Введите страну производителя'}
                 />
             </div>
-            {size?.weight || size?.weight === null 
+            {size?.weight || size?.weight === "" 
             ?
                 <Row
                     className='mt-4'
@@ -334,14 +386,27 @@ const ProductService = observer((props) => {
             <hr />
 
             <div className='d-flex justify-content-end mb-4'>
-                <Button variant="outline-success" onClick={addProduct}>Добавить продукцию</Button>
+                {action === "add" 
+                ?
+                    <Button variant="outline-success" onClick={addProduct}>Добавить продукцию</Button>
+                :
+                    <Button variant="outline-success" onClick={() => editProduct(props?.id)}>Изменить продукцию</Button>
+                }
             </div>
 
            
 
-            <div className='d-flex justify-content-end'>
-                <Button variant="outline-warning" onClick={props?.back}>Отменить добавление</Button>
-            </div>
+            {/* <div className='d-flex justify-content-end'>                
+                    <Button variant="outline-warning" onClick={props?.back}>
+                        {action === "add" 
+                        ?
+                            "Отменить добавление"
+                        :
+                            "Отменить изменения"
+                        }
+                    </Button>
+                
+            </div> */}
 
             <hr />
 
