@@ -28,7 +28,7 @@ const ProductService = observer((props) => {
     const [article, setArticle] = useState(props?.article || "")
     const [description, setDescription] = useState(props?.description || "")
     const [promo, setPromo] = useState(props?.promo || "")
-    const [country, setCountry] = useState(props?.country || "")
+    const [country, setCountry] = useState(props?.country || "Германия")
 
     const [size, setSize] = useState({weight: "", volume: "", width: "", height: "", length: ""})
     const [info, setInfo] = useState({title: "Характеристики", description: ""})
