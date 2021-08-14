@@ -22,6 +22,8 @@ const Limit = observer(() => {
         localStorage.setItem('limit', e.target.value)
 
         product.setLimit(e.target.value)
+
+        product.setPage(1)
     }
 
     return (
@@ -39,6 +41,8 @@ const Limit = observer(() => {
                 <option value="4">4</option>
                 <option value="6">6</option>
                 <option value="8">8</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
             </select>
         </div>
     )
