@@ -17,23 +17,27 @@ class ProductController {
 
         if (info) {
             let inf = JSON.parse(info)
-            ProductInfo.create({
-                title: inf.title,
-                description: inf.description,
-                productId: product.id 
-            })
+            if (inf.title || inf.description) {
+                ProductInfo.create({
+                    title: inf.title,
+                    description: inf.description,
+                    productId: product.id 
+                })
+            }
         }
 
         if (size) {
             let s = JSON.parse(size)
-            ProductSize.create({
-                weight: s.weight,
-                volume: s.volume,
-                width: s.width,
-                height: s.height,
-                length: s.length,
-                productId: product.id 
-            })
+            if (s.weight || s.volume || s.width || s.height || s.length) {
+                ProductSize.create({
+                    weight: s.weight,
+                    volume: s.volume,
+                    width: s.width,
+                    height: s.height,
+                    length: s.length,
+                    productId: product.id 
+                })
+            }
         }
 
         return res.json(product)
@@ -154,54 +158,65 @@ class ProductController {
             )
     
             if (info) {
-                console.log("info",info);
                 let inf = JSON.parse(info)
-                let yes = await ProductInfo.findOne({
-                    where: {productId: id}
-                })
-                if (yes)  {
-                    console.log("yes");
-                    ProductInfo.update({
-                        title: inf.title,
-                        description: inf.description
-                    }, {where: { productId: id }})
+                if (inf.title || inf.description) {
+                    let yes = await ProductInfo.findOne({
+                        where: {productId: id}
+                    })
+                    if (yes)  {
+                        console.log("yes");
+                        ProductInfo.update({
+                            title: inf.title,
+                            description: inf.description
+                        }, {where: { productId: id }})
+                    }else {
+                        console.log("no");
+                        ProductInfo.create({
+                            title: inf.title,
+                            description: inf.description,
+                            productId: id 
+                        })
+                    }
                 }else {
-                    console.log("no");
-                    ProductInfo.create({
-                        title: inf.title,
-                        description: inf.description,
-                        productId: id 
+                    ProductInfo.destroy({
+                        where: {productId: id}
                     })
                 }
             }else {
                 ProductInfo.destroy({
                     where: {productId: id}
                 })
-            }    
+            }
     
             if (size) {
                 let s = JSON.parse(size)
-                let yes = await ProductSize.findOne({
-                    where: {productId: id}
-                })
-                if (yes)  {
-                    ProductSize.update({
-                        weight: s.weight,
-                        volume: s.volume,
-                        width: s.width,
-                        height: s.height,
-                        length: s.length
-                    }, {where: { productId: id }})
-                }else {                    
-                    ProductSize.create({
-                        weight: s.weight,
-                        volume: s.volume,
-                        width: s.width,
-                        height: s.height,
-                        length: s.length,
-                        productId: id
+                if (s.weight || s.volume || s.width || s.height || s.length) {
+                    let yes = await ProductSize.findOne({
+                        where: {productId: id}
                     })
-                }
+                    if (yes)  {
+                        ProductSize.update({
+                            weight: s.weight,
+                            volume: s.volume,
+                            width: s.width,
+                            height: s.height,
+                            length: s.length
+                        }, {where: { productId: id }})
+                    }else {
+                        ProductSize.create({
+                            weight: s.weight,
+                            volume: s.volume,
+                            width: s.width,
+                            height: s.height,
+                            length: s.length,
+                            productId: id
+                        })
+                    }
+                }else {
+                    ProductSize.destroy({
+                        where: {productId: id}
+                    })
+                }  
             }else {
                 ProductSize.destroy({
                     where: {productId: id}

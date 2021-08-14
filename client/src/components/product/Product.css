@@ -78,6 +78,7 @@
 .product-name {
     padding: 10px 0;
     font-size: 1.2em;
+    height: 100px;
 }
 
 .product-text {
@@ -86,7 +87,9 @@
     justify-content: space-between;
     align-items:center;
 }
+
 .product-description {}
+
 .product-price {
     /* padding: 5px 0; */
     color: var(--main-orange-color);

@@ -171,7 +171,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
         <div>
             {info && info.map((i, number) => {
 
-                if (i.id === undefined) return <div key={42}/>
+                if (i.id === undefined || i.id === 1) return null
 
                 return (<div
                     className='d-flex flex-column'

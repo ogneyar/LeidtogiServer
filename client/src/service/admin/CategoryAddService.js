@@ -18,7 +18,7 @@ const CategoryAddService = observer(({
     const addCategory = () => {
         if (name) {
             fetchAllCategories().then(data => {
-                let url = translite(name)
+                let url = translite(name) 
                 let yes = false
                 data.forEach(i => {
                     if (url === i.url) yes = true
@@ -30,7 +30,7 @@ const CategoryAddService = observer(({
                         })
                     }else url = url + "_too"
                 }
-                createCategory(name, url, sub_id).then(data => { 
+                createCategory(name.trim(), url, sub_id).then(data => { 
                     setName('')
                     updateInfo(sub_id, data, "context", offset) 
                     updateInfo(sub_id, data, "state", offset)

@@ -27,7 +27,10 @@ const Product =  observer(() => {
     useEffect(() => {
         fetchOneProduct(id)
             .then(data => {
-                setProduct(data)
+                let info = data.info[0].description.split(";").map((i,index) => {
+                    return  {id:index, description:i.trim()[0].toUpperCase() + i.trim().substring(1)} // создание массива характеристик
+                })
+                setProduct({...data, info})
                 rating.setRate(data.rating)
             },err => {
                 setError(true)

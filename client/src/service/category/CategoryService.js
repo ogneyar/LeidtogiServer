@@ -13,10 +13,11 @@ import './CategoryService.css'
 
 const CategoryService = observer((props) => {
     
-    const { category } = useContext(Context)
+    const { product, category } = useContext(Context)
 
     const onClickSelectedCategory = (id) => {
         category.setSelectedCategory(id)
+        product.setPage(1)
     }
 
     return (
