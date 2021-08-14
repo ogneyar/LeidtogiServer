@@ -129,7 +129,6 @@ class ProductController {
     }
 
     async editAll(req, res) {
-        console.log("log");
         const {id} = req.params        
         const product = await Product.findOne({
             where: {id}
