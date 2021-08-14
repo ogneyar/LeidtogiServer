@@ -17,11 +17,11 @@ class ProductController {
 
         if (info) {
             let inf = JSON.parse(info)
-            inf.forEach(i => ProductInfo.create({
-                title: i.title,
-                description: i.description,
+            ProductInfo.create({
+                title: inf.title,
+                description: inf.description,
                 productId: product.id 
-            }))
+            })
         }
 
         if (size) {
@@ -81,7 +81,7 @@ class ProductController {
 
     async getInfo(req, res) {
         const {id} = req.params
-        const info = await ProductInfo.findAll({
+        const info = await ProductInfo.findOne({
             where: {ProductId: id}
         })
         return res.json(info)
@@ -89,7 +89,7 @@ class ProductController {
 
     async getSize(req, res) {
         const {id} = req.params
-        const size = await ProductSize.findAll({
+        const size = await ProductSize.findOne({
             where: {ProductId: id}
         })
         return res.json(size)
@@ -128,35 +128,56 @@ class ProductController {
         return res.json(response) // return boolean
     }
 
-    async editAll(req, res) {
+    async editAll(req, res, next) {
         const {id} = req.params        
         const product = await Product.findOne({
             where: {id}
         })
-        const deleteOldImage = product.img
+        let deleteOldImage = product.img
         try {
             let {name, price, brandId, categoryId, info, have, article, description, promo, country, size} = req.body
-            const {img} = req.files
+            let img
+            
+            if (req.files) img = req.files.img
+
             let fileName = uuid.v4() + '.jpg'
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
-    
+            if (img) {
+                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            }else {
+                fileName = deleteOldImage
+                deleteOldImage = null
+            }
+            
             const product = await Product.update(
                 {name, price, have, article, description, promo, country, brandId, categoryId, img: fileName}, 
                 {where: { id }}
             )
     
-            await ProductInfo.destroy({
-                where: {productId: id}
-            })
-
             if (info) {
+                console.log("info",info);
                 let inf = JSON.parse(info)
-                inf.forEach(i => ProductInfo.create({
-                    title: i.title,
-                    description: i.description,
-                    productId: id 
-                }))
-            } 
+                let yes = await ProductInfo.findOne({
+                    where: {productId: id}
+                })
+                if (yes)  {
+                    console.log("yes");
+                    ProductInfo.update({
+                        title: inf.title,
+                        description: inf.description
+                    }, {where: { productId: id }})
+                }else {
+                    console.log("no");
+                    ProductInfo.create({
+                        title: inf.title,
+                        description: inf.description,
+                        productId: id 
+                    })
+                }
+            }else {
+                ProductInfo.destroy({
+                    where: {productId: id}
+                })
+            }    
     
             if (size) {
                 let s = JSON.parse(size)
@@ -185,13 +206,15 @@ class ProductController {
                 ProductSize.destroy({
                     where: {productId: id}
                 })
-            }       
+            }  
 
-            try {
-                fs.unlinkSync(path.resolve(__dirname, '..', 'static', deleteOldImage))
-            }catch(e) {
-                console.log("Удаляемый файл не найден.");
-                return res.json(product)
+            if (deleteOldImage) {
+                try {
+                    fs.unlinkSync(path.resolve(__dirname, '..', 'static', deleteOldImage))
+                }catch(e) {
+                    console.log("Удаляемый файл не найден.");
+                    return res.json(product)
+                }
             }
     
             return res.json(product)

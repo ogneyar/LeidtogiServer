@@ -24,16 +24,14 @@ const ProductEditService = observer((props) => {
 
     const [productEdit, setProductEdit] = useState({})
 
-    const [info, setInfo] = useState([])
+    const [info, setInfo] = useState({})
     const [size, setSize] = useState({})
     
 
     useEffect(() => {
         fetchAllProducts().then(data => {
-            // console.log(data.length);
             product.setProducts(data)
             product.setTotalCount(data.length)
-            // setSearch(data)
             setLoading(false)
         })
         fetchAllCategories().then(data => {
@@ -44,7 +42,6 @@ const ProductEditService = observer((props) => {
     useEffect(() => {
         if (!loading && article !== "") {
             setSearch(product.products.filter(i => i.article.includes(article)))
-            // console.log(product.products.filter(i => i.article.includes(article)));
         }
     },[article])
 
@@ -53,7 +50,7 @@ const ProductEditService = observer((props) => {
             if (data) setInfo(data)
         })
         fetchProductSizes(item.id).then(data => {
-            if (data[0]) setSize(data[0])
+            if (data) setSize(data)
         })
         setSearch([])
         setArticle("")
@@ -92,7 +89,7 @@ const ProductEditService = observer((props) => {
                     return (
                         <div 
                             className={"divArticle"}
-                            key={i.article}
+                            key={i.id}
                             onClick={() => onClickDivArticle(i)}
                         >
                             {i.article}

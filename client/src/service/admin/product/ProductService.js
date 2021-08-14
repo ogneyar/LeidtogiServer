@@ -7,6 +7,9 @@ import { fetchAllCategories } from '../../../http/categoryAPI'
 import { fetchBrands } from '../../../http/brandAPI'
 import { Context } from '../../..'
 
+import Characteristic from './Characteristic'
+import Size from './Size'
+
 import './ProductService.css'
 
 
@@ -27,15 +30,12 @@ const ProductService = observer((props) => {
     const [promo, setPromo] = useState(props?.promo || "")
     const [country, setCountry] = useState(props?.country || "")
 
-    const [size, setSize] = useState({})
-    const [info, setInfo] = useState([])
+    const [size, setSize] = useState({weight: "", volume: "", width: "", height: "", length: ""})
+    const [info, setInfo] = useState({title: "Характеристики", description: ""})
 
     const [allCategories, setAllCategories] = useState([])
 
     useEffect(() => {
-        // fetchCategories().then(data => {
-        //     category.setCategories(data)
-        // })
         fetchAllCategories().then(data => {
             setAllCategories(data)
         })
@@ -46,88 +46,52 @@ const ProductService = observer((props) => {
     },[])
 
     useEffect(() => {
-        setInfo(props?.info)
+        if (props.info?.title) setInfo(props?.info)
     },[props?.info])
 
     useEffect(() => {
-        setSize(props?.size)
+        if (props.size?.title) setSize(props?.size)
     },[props?.size])
-
-    const openSize = () => {
-        setSize({weight: "", volume: "", width: "", height: "", length: ""}) 
-    }
-    const changeSize = (key, value) => {
-        // console.log({...size, [key]: value});
-        setSize({...size, [key]: value}) 
-    }
-
-    const addInfo = () => {
-        setInfo([...info, {title: '', description: '', number: Date.now()}]) 
-    }
-    const removeInfo = (number) => {
-        setInfo(info.filter(i => i.number !== number))
-    }
-
-    const changeInfo = (key, value, number) => {
-        setInfo(info.map(i => i.number === number ? {...i, [key]:value} : i))
-    }
 
     const selectFile = e => {
         let reader = new FileReader()
         reader.onload = function(e) {
-              setFileReader(e.target.result)
+            setFileReader(e.target.result)
         }
         reader.readAsDataURL(e.target.files[0])
         setFile(e.target.files[0])
     }
 
     const addProduct = async () => {
-        const formData = new FormData()
-        formData.append('name', name)
-        formData.append('price', `${price}`)
-        formData.append('img', file)
-
-        formData.append('have', have)
-        formData.append('article', article)
-        formData.append('description', description)
-        formData.append('promo', promo)
-        formData.append('country', country)
-        formData.append('size', JSON.stringify(size))
-
-        formData.append('brandId', brand.selectedBrand.id)
-        formData.append('categoryId', category.selectedCategory.id)
-        formData.append('info', JSON.stringify(info))
-
+        const formData = getFormData()
         await createProduct(formData).then(data => props?.back())
-
         fetchProducts().then(data => product.setProducts(data))
         category.setSelectedCategory({})
-        // brand.setSelectedBrand({})
     }
 
     const editProduct = async (id) => {
+        const formData = getFormData()
+        await updateAllProduct(id, formData).then(data => props?.back())
+        fetchProducts().then(data => product.setProducts(data))
+        category.setSelectedCategory({})
+    }
+
+    const getFormData = () => {
         const formData = new FormData()
         formData.append('name', name)
         formData.append('price', `${price}`)
         formData.append('img', file)
-
         formData.append('have', have)
         formData.append('article', article)
         formData.append('description', description)
         formData.append('promo', promo)
         formData.append('country', country)
         formData.append('size', JSON.stringify(size))
-
         formData.append('brandId', brand.selectedBrand.id)
         formData.append('categoryId', category.selectedCategory.id)
         formData.append('info', JSON.stringify(info))
-
-        await updateAllProduct(id, formData).then(data => props?.back())
-
-        fetchProducts().then(data => product.setProducts(data))
-        category.setSelectedCategory({})
+        return formData
     }
-
 
     const reItemCategory = (sub = 0, offset = "") => { // рекурсивная функция, для получения списка категорий
         return  allCategories.map(i => {
@@ -221,14 +185,14 @@ const ProductService = observer((props) => {
                         <Dropdown.Item 
                             onClick={() => setHave(1)} 
                             active={have}
-                            key={have}
+                            key={1}
                         >
                             Есть
                         </Dropdown.Item>
                         <Dropdown.Item 
                             onClick={() => setHave(0)} 
                             active={!have}
-                            key={!have}
+                            key={2}
                         >
                             Нет
                         </Dropdown.Item>
@@ -271,117 +235,16 @@ const ProductService = observer((props) => {
                     placeholder={'Введите страну производителя'}
                 />
             </div>
-            {size?.weight || size?.weight === "" 
-            ?
-                <Row
-                    className='mt-4'
-                >
-                    <Col md={4} className='mb-4'>
-                        <Form.Control    
-                            value={size.weight}
-                            onChange={(e) => changeSize('weight', e.target.value)}
-                            placeholder={'Введите вес'}
-                            type="number"
-                            min="0"
-                            step="0.1"
-                        />
-                    </Col>
-                    <Col md={4} className='mb-4'>
-                        <Form.Control    
-                            value={size.volume}
-                            onChange={(e) => changeSize('volume', e.target.value)}
-                            placeholder={'Введите объём'}
-                            type="number"
-                            min="0"
-                            step="0.1"
-                        />
-                    </Col>
-                    <Col md={4} className='mb-4'>
-                        <Form.Control    
-                            value={size.width}
-                            onChange={(e) => changeSize('width', e.target.value)}
-                            placeholder={'Введите ширину'}
-                            type="number"
-                            min="0"
-                            step="0.1"
-                        />
-                    </Col>
-                    <Col md={4} className='mb-4'>
-                        <Form.Control    
-                            value={size.height}
-                            onChange={(e) => changeSize('height', e.target.value)}
-                            placeholder={'Введите высоту'}
-                            type="number"
-                            min="0"
-                            step="0.1"
-                        />
-                    </Col>
-                    <Col md={4} className='mb-4'>
-                        <Form.Control   
-                            value={size.length}    
-                            onChange={(e) => changeSize('length', e.target.value)}
-                            placeholder={'Введите длину'}
-                            type="number"
-                            min="0"
-                            step="0.1"
-                        />
-                    </Col>
-                    <Col md={4} className='mb-4'>
-                        <Button
-                            variant="outline-danger"
-                            onClick={() => setSize({})}
-                        >
-                            Отменить
-                        </Button>
-                    </Col>
-                </Row>   
-            :
-                <Button
-                    className='mt-4'
-                    variant="outline-dark"
-                    onClick={openSize}
-                >
-                    Задать габариты
-                </Button>
-            }
+
+            <div className="inputBox">
+                <Size size={size} setSize={setSize} />
+            </div>
 
             <hr />
 
-            <Button
-                variant="outline-dark"
-                onClick={addInfo}
-            >
-                Добавить характеристику
-            </Button>
-            {info.map(i =>
-                <Row
-                    className='mt-4'
-                    key={i.number}
-                >
-                    <Col md={4}>
-                        <Form.Control    
-                            value={i.title}
-                            onChange={(e) => changeInfo('title', e.target.value, i.number)}
-                            placeholder={'Введите название свойства'}
-                        />
-                    </Col>
-                    <Col md={4}>
-                        <Form.Control   
-                            value={i.description}    
-                            onChange={(e) => changeInfo('description', e.target.value, i.number)}
-                            placeholder={'Введите описание свойства'}
-                        />
-                    </Col>
-                    <Col md={4}>
-                        <Button
-                            variant="outline-danger"
-                            onClick={() => removeInfo(i.number)}
-                        >
-                            Удалить
-                        </Button>
-                    </Col>
-                </Row>   
-            )}
+            <div className="inputBox">
+                <Characteristic info={info} setInfo={setInfo} />
+            </div>
 
             <hr />
 
@@ -393,21 +256,7 @@ const ProductService = observer((props) => {
                     <Button variant="outline-success" onClick={() => editProduct(props?.id)}>Изменить продукцию</Button>
                 }
             </div>
-
            
-
-            {/* <div className='d-flex justify-content-end'>                
-                    <Button variant="outline-warning" onClick={props?.back}>
-                        {action === "add" 
-                        ?
-                            "Отменить добавление"
-                        :
-                            "Отменить изменения"
-                        }
-                    </Button>
-                
-            </div> */}
-
             <hr />
 
         </Form>

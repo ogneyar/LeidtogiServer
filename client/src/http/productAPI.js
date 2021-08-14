@@ -45,7 +45,7 @@ export const updateProduct = async (id, body) => {
     return data
 }
 
-export const updateAllProduct = async (id, body) => {
+export const updateAllProduct = async (id, body) => {   
     const {data} = await $authHost.put('api/product/edit_all/' + id, body)
     return data
 }
