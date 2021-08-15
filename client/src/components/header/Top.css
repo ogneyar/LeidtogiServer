@@ -16,7 +16,6 @@
 
 .TopColLink {}
 
-.TopColSearch {}
 
 .TopDivLink {}
 
@@ -41,46 +40,4 @@
 .NavLink_Top_Specials {
     color: var(--main-orange-color);
     border: 1px solid var(--main-orange-color);
-}
-
-.Search {
-    background-color: var(--main-white-color);
-    display:flex; 
-    justify-content:center; 
-    align-items:center;
-    width: 510px;
-}
-
-.SearchInput, .SearchInput:hover {
-    background-color: var(--main-white-color);
-    border: none;
-    width: 90%;
-    padding: 0 10px;
-}
-
-@media(max-width:1199px) {
-    .Search {
-        width: 330px;
-    }
-}
-
-@media(max-width:991px) {
-    .Search {
-        width: 720px;
-    }
-    .SearchInput {
-        width: 100%;
-    }
-}
-
-@media(max-width:767px) {
-    .Search {
-        width: 540px;
-    }
-}
-
-@media(max-width:575px) {
-    .Search {
-        width: 100vw;
-    }
 }

@@ -6,6 +6,7 @@ import { Container, NavLink } from '../myBootstrap'
 import { ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, WARRANTY_ROUTE } from '../../utils/consts'
 
 import './Top.css'
+import Search from '../search/Search'
 
 
 const Top = () => {
@@ -72,21 +73,7 @@ const Top = () => {
 					<div 
                         className="TopCol TopColSearch" 
                     >
-                        <div className="header-search d-flex justify-content-center align-items-center">
-                            <div className="autosearch-wrapper input-group">
-                                <form method="GET" id="form-search" action="/search">
-
-                                    <div id="search" className="Search">
-                                        <input className="SearchInput" type="text" autoComplete="off" name="search" id="search" placeholder="Поиск" />
-                                        <span className="input-group-btn">
-                                            <button type="submit" className="btn btn-default button-search"><i className="fa fa-search " /></button>
-                                        </span>
-                                    </div>
-                                    
-                                </form>
-	                            <div className="clear clr" />
-                            </div>
-                        </div>
+                        <Search />
 			        </div>
 		        </div>
 	        </Container>

@@ -2,7 +2,8 @@
 :root {
   --main-grey-color: #6d6f71; /* 109 111 113 */
   --main-orange-color: #ff9900; /* 255 153 0 */
-  --main-silver-color: #c0c0c0; /* 192 192 192 */
+  /* --main-silver-color: #c0c0c0;  */  /* 192 192 192 */
+  --main-silver-color: #d1d1d1;
   --main-white-color: #f3f3f3; /* 243 243 243 */
   --main-black-color: #0e0e0e; /* 14 14 14 */
   --main-red-color: #b31111; /* 179 17 17 */
