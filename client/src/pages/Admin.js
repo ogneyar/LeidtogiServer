@@ -23,6 +23,18 @@ const Admin = observer(() => {
         })
     },[])
 
+    // useEffect(() => {
+    //     if (product.allProducts.length) console.log("admin product.allProducts",product.allProducts.length)
+    // },[product.allProducts])
+
+    // useEffect(() => {
+    //     if (category.categories.length) console.log("admin category.categories",category.categories.length)
+    // },[category.categories])
+
+    // useEffect(() => {
+    //     if (brand.brands.length) console.log("admin brand.brands",brand.brands.length)
+    // },[brand.brands])
+
     const [categoryVisible, setCategoryVisible] = useState(false)
     const [brandVisible, setBrandVisible] =  useState(false)
     const [productVisible, setProductVisible] = useState(false)

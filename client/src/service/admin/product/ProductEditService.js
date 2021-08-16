@@ -29,19 +29,26 @@ const ProductEditService = observer((props) => {
     
 
     useEffect(() => {
-        fetchAllProducts().then(data => {
-            product.setProducts(data)
-            product.setTotalCount(data.length)
-            setLoading(false)
-        })
+        // fetchAllProducts().then(data => {
+        //     product.setProducts(data)
+        //     product.setTotalCount(data.length)
+        //     setLoading(false)
+        // })
         fetchAllCategories().then(data => {
             category.setCategories(data)
         })
     },[])
 
     useEffect(() => {
+        if (product.allProducts.length) {
+            setLoading(false)
+            // console.log(product.allProducts);
+        }
+    },[product.allProducts])
+
+    useEffect(() => {
         if (!loading && article !== "") {
-            setSearch(product.products.filter(i => i.article.includes(article)))
+            setSearch(product.allProducts.filter(i => i.article.includes(article)))
         }
     },[article])
 
@@ -89,7 +96,7 @@ const ProductEditService = observer((props) => {
                     return (
                         <div 
                             className={"divArticle"}
-                            key={i.id}
+                            key={i.article}
                             onClick={() => onClickDivArticle(i)}
                         >
                             {i.article}

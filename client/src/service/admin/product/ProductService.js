@@ -185,14 +185,14 @@ const ProductService = observer((props) => {
                         <Dropdown.Item 
                             onClick={() => setHave(1)} 
                             active={have}
-                            key={1}
+                            key={"1z"}
                         >
                             Есть
                         </Dropdown.Item>
                         <Dropdown.Item 
                             onClick={() => setHave(0)} 
                             active={!have}
-                            key={2}
+                            key={"2z"}
                         >
                             Нет
                         </Dropdown.Item>

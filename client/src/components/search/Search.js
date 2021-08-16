@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
 import { fetchAllProducts } from '../../http/productAPI';
 import { API_URL } from '../../utils/consts';
@@ -13,14 +14,11 @@ const Search = () => {
     const [list, setList] = useState([])
     const [array, setArray] = useState([])
 
+    const history = useHistory()
+
     useEffect(() => {
         fetchAllProducts().then(data => setArray(data))
     },[])
-
-    const onClickSearchButton = () => {
-        // console.log(value);
-        // console.log(array);
-    }
 
     const onChangeSearchInputValue = (search) => {
         setValue(search)
@@ -35,9 +33,14 @@ const Search = () => {
         setList([])
     }
 
+    const redirectOnSearch = (key, val) => {
+        setList([])
+        history.push(`/search?${key}=${val}`)
+    }
+    
 
     return (
-        <div className="Search">
+        <div className="SearchComponent">
             <div className="SearchWrapper">
                 <div id="searchDiv" className="SearchDiv">
                     <input 
@@ -57,7 +60,7 @@ const Search = () => {
                         <button 
                             type="text" 
                             className="SearchButton btn btn-default"
-                            onClick={onClickSearchButton}
+                            onClick={() => redirectOnSearch("value", value)}
                         >
                             <i className="fa fa-search " />
                         </button>
@@ -81,6 +84,7 @@ const Search = () => {
                                 {/* {index !== 0 && <hr />} */}
                                 <div
                                     className="SearchListItem"
+                                    onClick={() => redirectOnSearch("article", i.article)}
                                 >
                                     <img 
                                         className="SearchListItemImg"
@@ -122,6 +126,7 @@ const Search = () => {
                                 {/* <hr /> */}
                                 <div
                                     className="SearchListBottom"
+                                    onClick={(e) => redirectOnSearch("value", value)}
                                 >
                                     Показать все
                                 </div>

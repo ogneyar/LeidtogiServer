@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
 // import { Row } from 'react-bootstrap'
@@ -10,13 +10,28 @@ const ProductList = observer(() => {
 
     const { product } = useContext(Context)
 
+    const [info, setInfo] = useState([])
+
+    useEffect(() => {
+        let offset = product.page * product.limit - product.limit // отступ
+        let limit = 0
+
+        setInfo(product.products.filter((i,index) => {
+            if (index + 1 > offset) {
+                limit += 1
+                if (limit <= product.limit) return true
+            }
+            return false
+        }))
+    },[product.limit, product.page, product.selectedCategory, product.products])
+    
 
     return (
         <div className='ProductList'>
 
-            {product.totalCount > 0 && Array.isArray(product.products)
+            {info && product.totalCount > 0 && Array.isArray(info)
             ?
-                product.products.map(product => 
+                info.map(product => 
                     <ProductItem key={product.id} product={product}/>
                 )
             :
