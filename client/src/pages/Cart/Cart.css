@@ -34,3 +34,19 @@ th {
 .Card_body {
     margin: 30px 0;
 }
+
+.CartThDivRow {
+    display:flex;
+    flex-direction:row; 
+    align-items:center; 
+    justify-content:center;
+}
+.CartButtonValue {
+    width: 30px;
+}
+.CartValue {
+    padding: 0 10px; 
+}
+.CartButtonDelete {
+    margin: 5px 15px;
+}
