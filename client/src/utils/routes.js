@@ -2,9 +2,9 @@ import Admin from '../pages/Admin'
 import Cart from '../pages/cart/Cart'
 import Shop from '../pages/shop/Shop'
 import Auth from '../pages/Auth'
-import Product from '../pages/product/Product'
+import ProductPage from '../pages/product/ProductPage'
 import Lk from '../pages/lk/Lk'
-import Search from '../pages/search/Search'
+import SearchPage from '../pages/search/SearchPage'
 import Error from '../components/Error'
 
 import AboutUs from '../pages/informations/AboutUs'
@@ -56,11 +56,11 @@ export const publicRoutes = [
     },
     {
         path: PRODUCT_ROUTE + '/:id',
-        Component: Product
+        Component: ProductPage
     },
     {
         path: SEARCH_ROUTE,
-        Component: Search
+        Component: SearchPage
     },
     {
         path: ERROR_ROUTE,

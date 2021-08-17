@@ -6,7 +6,7 @@ import ProductItem from './ProductItem'
 import './Product.css'
 
 
-const ProductList = observer(() => {
+const ProductList = observer((props) => {
 
     const { product } = useContext(Context)
 
@@ -36,9 +36,7 @@ const ProductList = observer(() => {
                 )
             :
                 <div className="m-4 p-4">
-                    <p>
-                        Таких товаров ещё нет...
-                    </p>
+                    {props?.search ? <p>Поиск не дал результатов.</p> : <p>Таких товаров ещё нет...</p>}
                 </div>
             }
 

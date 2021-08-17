@@ -45,7 +45,7 @@ const CategoryItemService = observer(({ funcOnClick, item, onHide }) => {
                                 // window.scrollTo(0,260)
                                 $('html, body').animate(
                                     {
-                                        scrollTop: 260
+                                        scrollTop: 240
                                     }, 
                                     700, 
                                     function(){}

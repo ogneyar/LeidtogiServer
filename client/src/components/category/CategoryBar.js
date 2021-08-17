@@ -7,7 +7,7 @@ import CategoryModal from './CategoryModal'
 import './CategoryBar.css'
 
 
-const CategoryBar = observer(() => {
+const CategoryBar = observer((props) => {
 
     const [categoryVisible, setCategoryVisible] = useState(false)
 
@@ -20,7 +20,7 @@ const CategoryBar = observer(() => {
                 className="CategoryBarPC"
                 id="CategoryBarPC"
             >
-                <CategoryService />
+                <CategoryService search={props?.search} />
             </div>
 
             <div

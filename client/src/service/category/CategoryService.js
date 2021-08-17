@@ -28,7 +28,7 @@ const CategoryService = observer((props) => {
                 to={SHOP_ROUTE}
             >
                 <ListGroup.Item 
-                    active={undefined === category.selectedCategory.id}
+                    active={props?.search ? false : category.selectedCategory.id === undefined}
                     onClick={() => onClickSelectedCategory({})}
                     key={0}
                 >

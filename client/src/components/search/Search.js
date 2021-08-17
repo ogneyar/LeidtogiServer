@@ -35,7 +35,10 @@ const Search = () => {
 
     const redirectOnSearch = (key, val) => {
         setList([])
-        history.push(`/search?${key}=${val}`)
+        if (key === "value" && val !== "")
+            history.push(`/search?${key}=${val}`)
+        else if (key === "article")
+            history.push(`/product/${val.id}`)
     }
     
 
@@ -84,7 +87,7 @@ const Search = () => {
                                 {/* {index !== 0 && <hr />} */}
                                 <div
                                     className="SearchListItem"
-                                    onClick={() => redirectOnSearch("article", i.article)}
+                                    onClick={() => redirectOnSearch("article", i)}
                                 >
                                     <img 
                                         className="SearchListItemImg"

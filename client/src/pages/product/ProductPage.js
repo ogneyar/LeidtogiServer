@@ -11,7 +11,7 @@ import Loading from '../../components/Loading'
 import ButtonBuy from '../../components/cart/ButtonBuy'
 import Rating from '../../components/rating/Rating'
 import { Context } from '../..'
-import './Product.css'
+import './ProductPage.css'
 
 
 const Product =  observer(() => {
@@ -36,7 +36,7 @@ const Product =  observer(() => {
                 setError(true)
             })
             .finally(() => setLoading(false))
-    },[])
+    },[id])
     
 
     if (loading) return <Loading />
@@ -44,7 +44,7 @@ const Product =  observer(() => {
     if (error) return <Error />
 
     return ( 
-        <Container className="Product">
+        <Container className="ProductPage">
             <Row className="ProductName">
                 <h3>{product.name}</h3> 
                 <p>Артикул: {product.article}</p> 
