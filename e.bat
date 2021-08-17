@@ -1,0 +1,1 @@
+mysqladmin -u root shutdown
