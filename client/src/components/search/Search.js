@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Image } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { fetchAllProducts } from '../../http/productAPI';
@@ -8,7 +7,7 @@ import { API_URL } from '../../utils/consts';
 import './Search.css'
 
 
-const Search = () => {
+const Search = (props) => {
 
     const [value, setValue] = useState("")
     const [list, setList] = useState([])
@@ -19,6 +18,10 @@ const Search = () => {
     useEffect(() => {
         fetchAllProducts().then(data => setArray(data))
     },[])
+
+    // useEffect(() => {
+    //     setValue(props.value)
+    // },[props?.value])
 
     const onChangeSearchInputValue = (search) => {
         setValue(search)
@@ -40,11 +43,16 @@ const Search = () => {
         else if (key === "article")
             history.push(`/product/${val.id}`)
     }
+
+    const onKeyDownInput = (e) => {
+        if (e.key === "Enter") redirectOnSearch("value", e.target.value)
+    }
     
 
     return (
         <div className="SearchComponent">
             <div className="SearchWrapper">
+                {props?.label ? <label>&nbsp;{props.label}</label> : null}
                 <div id="searchDiv" className="SearchDiv">
                     <input 
                         className="SearchInput" 
@@ -56,6 +64,7 @@ const Search = () => {
                         value={value}
                         onChange={e => onChangeSearchInputValue(e.target.value)}
                         onClick={e => onClickSearchInput(e.target.value)}
+                        onKeyDown={e => onKeyDownInput(e)}
                     />
 
                     <span className="InputGroupButton">

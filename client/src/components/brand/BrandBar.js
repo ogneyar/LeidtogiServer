@@ -1,22 +1,32 @@
 import React, { useContext, useState, useEffect } from 'react'
+import { useHistory } from 'react-router'
 import { observer } from 'mobx-react-lite'
-import { Context } from '..'
-import { Row, Card } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
+
+import { Context } from '../..'
+import './BrandBar.css'
 
 
-const BrandBar =  observer(() => {
+const BrandBar =  observer((props) => {
 
     const { brand } = useContext(Context)
 
     const [info, setInfo] = useState([])
 
+    const history = useHistory()
+
     useEffect(() => {
         setInfo(brand.brands)
     },[brand.brands])
 
+    const tempFunction = (br) => { // пока один бренд
+        brand.setSelectedBrand(br)
+        history.push("/")
+    }
+
 
     return (
-        <Row className='d-flex ml-0'>
+        <div className='BrandBar'>
             {/* <Card
                 style={{cursor: "pointer"}}
                 border={undefined === brand.selectedBrand.id ? 'warning' : 'light'}
@@ -34,9 +44,9 @@ const BrandBar =  observer(() => {
                         style={{cursor: "pointer"}}
                         // border={br.id === brand.selectedBrand.id ? 'warning' : 'light'}
                         // bg={br.id === brand.selectedBrand.id ? 'warning' : ''}
-                        border='warning'
-                        bg='warning'
-                        onClick={() => brand.setSelectedBrand(br)}
+                        border={props?.search ? 'light' : 'warning'}
+                        bg={props?.search ? '' : 'warning'}
+                        onClick={() => tempFunction(br)}
                         key={br.id}
                         className="p-3"
                     >
@@ -51,7 +61,7 @@ const BrandBar =  observer(() => {
                         {br.name}
                     </Card>
             })}
-        </Row>
+        </div>
     )
 })
 

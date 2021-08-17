@@ -4,12 +4,13 @@ import { useHistory, useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import { useQueryParam, NumberParam, StringParam } from 'use-query-params';
 
-import BrandBar from '../../components/BrandBar'
+import BrandBar from '../../components/brand/BrandBar'
 import CategoryBar from '../../components/category/CategoryBar'
 import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/Pagination'
 import Filter from '../../components/filter/Filter'
 import Loading from '../../components/Loading'
+import Search from '../../components/search/Search'
 
 import { Context } from '../..'
 
@@ -68,11 +69,23 @@ const SearchPage = observer(() => {
                 {loadingCategory ? <Loading /> : <CategoryBar search />}
             </div>
             <div className="ShopColContent">
-                {loadingBrand ? <Loading /> : <BrandBar />}
+                {loadingBrand ? <Loading /> : <BrandBar search />}
                 <Filter />
                 {loadingProduct 
-                ? <Loading /> 
+                ? <Loading />
                 : <>
+                    <h3>
+                        Поиск - {value}
+                    </h3>
+                    {/* <br /> */}
+                    
+                    {/* <Search label="Новый поиск:" value=""/> */}
+
+                    <br />
+                    <h5>
+                        Товары, соответствующие критериям поиска
+                    </h5>
+                    <br />
                     <ProductList search />
                     <Pagination />
                 </>}

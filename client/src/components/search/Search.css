@@ -20,12 +20,15 @@
     width: 510px;
 }
 
-.SearchInput, .SearchInput:hover {
+.SearchInput {
     /* background-color: var(--main-white-color); */
     background-color: #fff;
     border: none;
     width: 90%;
     padding: 0 10px;
+}
+.SearchInput:hover {
+    background-color: rgb(247, 247, 247);
 }
 
 .SearchListBox {

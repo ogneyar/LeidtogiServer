@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
 import CategoryBar from '../../components/category/CategoryBar'
-import BrandBar from '../../components/BrandBar'
+import BrandBar from '../../components/brand/BrandBar'
 import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/Pagination'
 import Filter from '../../components/filter/Filter'
