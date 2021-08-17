@@ -11,8 +11,20 @@ const path = require('path')
 const PORT = process.env.PORT || 3000
 const CORS_URL = process.env.CORS_URL || "https://leidtogi.ru"
 
+let whitelist = [CORS_URL, 'http://web.pzmarket.ru', 'http://leidtogi.ru']
+let corsOptionsDelegate = function (req, callback) {
+  let corsOptions;
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true } 
+  } else {
+    corsOptions = { origin: false } 
+  }
+  callback(null, corsOptions) 
+}
+
 const app = express()
-app.use(cors({ origin: CORS_URL }))
+// app.use(cors({ origin: CORS_URL }))
+app.use(cors(corsOptionsDelegate))
 app.use(express.json())
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
@@ -21,7 +33,7 @@ app.get('/', (req, res) => {
     if (CORS_URL === "http://localhost:3000") {
         res.send("MERN server - приветствует тебя!")
     }else {
-        res.redirect("https://leidtogi.ru")
+        res.redirect(CORS_URL)
     }    
 })
 app.get('/undefined', (req, res) => {
