@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Button, Form, Dropdown, Row, Col, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import { createProduct, fetchProducts, updateAllProduct } from '../../../http/productAPI'
+import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct } from '../../../http/productAPI'
 import { fetchAllCategories } from '../../../http/categoryAPI'
 import { fetchBrands } from '../../../http/brandAPI'
 import { Context } from '../../..'
@@ -17,7 +17,7 @@ const ProductService = observer((props) => {
     
     const {product, category, brand} = useContext(Context)
 
-    const action = props?.action // add or edit
+    const action = props?.action // add ,edit or del
     
     const [name, setName] = useState(props?.name || '')
     const [price, setPrice] = useState(props?.price || "")
@@ -65,14 +65,23 @@ const ProductService = observer((props) => {
     const addProduct = async () => {
         const formData = getFormData()
         await createProduct(formData).then(data => props?.back())
-        fetchProducts().then(data => product.setProducts(data))
+
+        fetchAllProducts().then(data => product.setAllProducts(data))
         category.setSelectedCategory({})
     }
 
     const editProduct = async (id) => {
         const formData = getFormData()
         await updateAllProduct(id, formData).then(data => props?.back())
-        fetchProducts().then(data => product.setProducts(data))
+
+        fetchAllProducts().then(data => product.setAllProducts(data))
+        category.setSelectedCategory({})
+    }
+
+    const delProduct = async (id) => {
+        await deleteProduct(id).then(data => props?.back())
+
+        fetchAllProducts().then(data => product.setAllProducts(data))
         category.setSelectedCategory({})
     }
 
@@ -111,7 +120,19 @@ const ProductService = observer((props) => {
         })
     }
 
-
+    if (action === "del") {
+        return (
+            <div
+                className="inputBox d-flex flex-column"
+            >
+                <label>Вы уверены в том что хотите удалить {name}?</label>
+                <div>
+                    <Button className="mr-2" variant="outline-danger" onClick={() => delProduct(props?.id)}>Да</Button>
+                    <Button className="mr-2" variant="outline-success" onClick={props?.back}>Нет</Button>
+                </div>
+            </div>
+        )
+    }
     return (
         <Form  className="mb-2">
             <div className="inputBox d-flex">
