@@ -34,6 +34,7 @@ const Cart = () => {
                     let newValue = 0
                     if (action === "plus") newValue = i.value + 1
                     else if (action === "minus") newValue = i.value - 1
+                    if (newValue === 0) newValue = 1
                     let newTotal = newValue * i.price
                     totalValue += newTotal
                     return {...i, value: newValue, total: newTotal}
