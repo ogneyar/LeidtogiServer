@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 
-import { createCategory, fetchAllCategories } from '../../http/categoryAPI'
-import { Input, Button, Form } from '../../components/myBootstrap'
-import translite from '../../utils/translite'
-import { Context } from '../../index'
+import { createCategory, fetchAllCategories } from '../../../http/categoryAPI'
+import { Input, Button, Form } from '../../../components/myBootstrap'
+import translite from '../../../utils/translite'
+import { Context } from '../../../index'
 
 
 const CategoryAddService = observer(({

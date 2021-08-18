@@ -1,0 +1,29 @@
+.CategoryService {
+
+}
+
+.CategoryServiceCheckboxIsProduct {
+    margin-top: 15px;
+}
+
+@media(max-width: 500px) {
+    .CategoryService {
+        font-size: 12px;
+    }
+    .CategoryServiceCheckboxIsProduct {
+        margin-top: 10px;
+    }
+}
+
+
+@media(max-width: 410px) {
+    .CategoryService {
+        font-size: 10px;
+    }
+}
+
+@media(max-width: 350px) {
+    .CategoryService {
+        font-size: 8px;
+    }
+}

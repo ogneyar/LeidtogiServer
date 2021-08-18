@@ -3,7 +3,8 @@ import {Modal, Button} from 'react-bootstrap'
 import { Context } from '../..'
 import { fetchCategories } from '../../http/categoryAPI'
 import { observer } from 'mobx-react-lite'
-import CategoryService from '../../service/admin/CategoryService'
+import CategoryService from '../../service/admin/category/CategoryService'
+import './Category.css'
 
 
 const Category = observer(({show, onHide}) => {
@@ -40,7 +41,7 @@ const Category = observer(({show, onHide}) => {
             </Modal.Header>
             <Modal.Body>
                 
-                <div className='d-flex flex-column'>
+                <div className='AdminCategoryTitle d-flex flex-column'>
                     <div className='d-flex flex-row'>
                         <div className='ml-2 mr-2'><p>1. Название категории</p></div>
                         <div className='ml-2 mr-2'><p>2. Изменить название</p></div>

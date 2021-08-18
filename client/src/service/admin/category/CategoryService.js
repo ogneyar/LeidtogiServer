@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Context } from '../../index'
-import { fetchAllCategories, fetchCategories, deleteCategory, updateCategory } from '../../http/categoryAPI'
+import { Context } from '../../../index'
+import { fetchAllCategories, fetchCategories, deleteCategory, updateCategory } from '../../../http/categoryAPI'
 import CategoryAddService from './CategoryAddService'
-import { Input, Button, Alert } from '../../components/myBootstrap'
-import translite from '../../utils/translite'
+import { Input, Button, Alert } from '../../../components/myBootstrap'
+import translite from '../../../utils/translite'
+import './CategoryService.css'
 
 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
@@ -213,7 +214,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     
     return (
     <div
-        className={offset === "null" ? "" : "ml-4"}
+        className={offset === "null" ? "CategoryService" : "CategoryService ml-4"}
     >
         <Alert 
             show={showAlert} 
@@ -223,6 +224,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
             background="rgb(131, 24, 24)"
             message={message} 
         />
+
         <div>
             {info && info.map((i, number) => {
 
@@ -294,7 +296,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                             
 							<Input 
 								type="checkbox" 
-								className='mt-3'
+								className='CategoryServiceCheckboxIsProduct'
 								checked={i.is_product}
 								title="Содержит ли продукцию?"
 								style={{cursor:"pointer"}}
