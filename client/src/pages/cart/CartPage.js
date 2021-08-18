@@ -81,7 +81,7 @@ const Cart = () => {
 
         return (
             <Container 
-                className="Cart"
+                className="CartPage"
             >
                 <Card 
                     className="Cart-card"
@@ -90,12 +90,12 @@ const Cart = () => {
                         Корзина / Оформление товара
                     </Card.Title>
 
-                    <table>
+                    <table className="CartTable">
                         <thead>
                             <tr>
                                 <th>№:</th>
                                 <th>Наим. товара:</th>
-                                <th>Фото:</th>
+                                <th className="CartHide">Фото:</th>
                                 <th>Цена:</th>
                                 <th>Кол-во:</th>
                                 <th>Итого:</th>
@@ -121,7 +121,7 @@ const Cart = () => {
                                                 {i.name}
                                             </div>
                                         </th>
-                                        <th>
+                                        <th className="CartHide">
                                             <div
                                                 className="CartThDivRow"
                                             >
@@ -137,7 +137,7 @@ const Cart = () => {
                                         </th>
                                         <th>
                                             <div
-                                                className="d-flex flex-column"
+                                                className="d-flex flex-column align-items-center"
                                             >
                                                 <div
                                                     className="CartThDivRow"
@@ -183,7 +183,7 @@ const Cart = () => {
                             <tr>
                                 <th></th>
                                 <th></th>
-                                <th></th>
+                                <th className="CartHide"></th>
                                 <th></th>
                                 <th>Итого:</th>
                                 <th>

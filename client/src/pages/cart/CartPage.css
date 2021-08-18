@@ -1,11 +1,14 @@
-.Cart {
+.CartPage {
     display:flex;
     justify-content:center; 
     align-items:center;
 }
 
+.CartTable {
+    font-size: 16px;
+}
+
 table  {
-    /* border: 1px solid black; */
     border-collapse: collapse; /* Убираем двойные линии между ячейками */
 }
 thead tr {
@@ -21,14 +24,8 @@ th {
     padding: 15px;
 }
 
-/* .Cart-card-title {
-    padding: 10px;
-} */
-
 .Card_title {
-    /* padding: 100px 0; */
     margin: 70px 0;
-    /* background-color: greenyellow; */
 }
 
 .Card_body {
@@ -48,5 +45,38 @@ th {
     padding: 0 10px; 
 }
 .CartButtonDelete {
-    margin: 5px 15px;
+    margin: 10px 15px;
+}
+
+@media(max-width:540px) {
+    .CartTable {
+        font-size: 14px;
+    }
+    .CartButtonDelete {
+        margin: 15px 5px 5px 5px;
+    }
+    .CartValue {
+        padding: 0 7px; 
+    }
+    th {
+        padding: 10px 5px;
+    }
+}
+
+@media(max-width:440px) {
+    .CartTable {
+        font-size: 12px;
+    }
+    .Cart-card {
+        padding: 5px;
+    }
+    th {
+        padding: 10px 2px;
+    }
+}
+
+@media(max-width:350px) {
+    .CartHide {
+        display:none;
+    }
 }
