@@ -3,7 +3,7 @@ import { Card, Row, Col } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { SHOP_ROUTE, API_URL } from '../../utils/consts'
 import { Container, Button } from '../../components/myBootstrap'
-import './Cart.css'
+import './CartPage.css'
 
 
 const Cart = () => {
@@ -15,54 +15,47 @@ const Cart = () => {
 
     useEffect(() => {
         cart = localStorage.getItem('cart')
-        cart = JSON.parse(cart)
-        setState(cart)
-        let totalValue = 0
-        cart.forEach(i => totalValue += i.total)
-        setTotal(totalValue)
+        if (cart) {
+            cart = JSON.parse(cart)
+            setState(cart)
+            let totalValue = 0
+            cart.forEach(i => totalValue += i.total)
+            setTotal(totalValue)
+        }
     }, [])
 
-    const onClickButtonPlus = (record) => {
+    const editValue = (action, item) => {
         cart = localStorage.getItem('cart')
-        cart = JSON.parse(cart)
-        let totalValue = 0
-        cart = cart.map(i => {
-            if (i.id === record.id) {
-                let newValue = i.value + 1
-                let newTotal = newValue * i.price
-                totalValue += newTotal
-                return {...i, value: newValue, total: newTotal}
-            }
-            totalValue += i.total
-            return i
-        })
-        setState(cart)
-        setTotal(totalValue)
-        localStorage.setItem('cart', JSON.stringify(cart))
-    }
-
-    const onClickButtonMinus = (record) => {
-        cart = localStorage.getItem('cart')
-        cart = JSON.parse(cart)
-        let totalValue = 0
-        cart = cart.map(i => {
-            if (i.id === record.id) {
-                if (i.value > 1) {
-                    let newValue = i.value - 1
+        if (cart) {
+            cart = JSON.parse(cart)
+            let totalValue = 0
+            cart = cart.map(i => {
+                if (i.id === item.id) {
+                    let newValue = 0
+                    if (action === "plus") newValue = i.value + 1
+                    else if (action === "minus") newValue = i.value - 1
                     let newTotal = newValue * i.price
                     totalValue += newTotal
                     return {...i, value: newValue, total: newTotal}
                 }
-            }
-            totalValue += i.total
-            return i
-        })
-        setState(cart)
-        setTotal(totalValue)
-        localStorage.setItem('cart', JSON.stringify(cart))
+                totalValue += i.total
+                return i
+            })
+            setState(cart)
+            setTotal(totalValue)
+            localStorage.setItem('cart', JSON.stringify(cart))
+        }
+    }
+
+    const onClickButtonPlus = (item) => {
+        editValue("plus",item)
+    }
+
+    const onClickButtonMinus = (item) => {
+        editValue("minus",item)
     }
     
-    const onClickButtonDelete = (record) => {
+    const onClickButtonDelete = (item) => {
         cart = localStorage.getItem('cart')
         cart = JSON.parse(cart)
         if (cart.length === 1) {
@@ -72,7 +65,7 @@ const Cart = () => {
         }else {
             let totalValue = 0
             cart = cart.filter(i => {
-                if (i.id !== record.id) {
+                if (i.id !== item.id) {
                     totalValue += i.total
                     return true
                 }
@@ -84,7 +77,7 @@ const Cart = () => {
         }
     }
 
-    if (state) {
+    if (state && Array.isArray(state) && state[0]?.id !== undefined) {
 
         return (
             <Container 
@@ -109,7 +102,7 @@ const Cart = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Array.isArray(state) && state.map((i,index) => {
+                            {state && Array.isArray(state) && state.map((i,index) => {
                                 return (
                                     <tr
                                         key={i.id}

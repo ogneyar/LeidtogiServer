@@ -1,5 +1,5 @@
 import Admin from '../pages/Admin'
-import Cart from '../pages/cart/Cart'
+import CartPage from '../pages/cart/CartPage'
 import Shop from '../pages/shop/Shop'
 import Auth from '../pages/Auth'
 import ProductPage from '../pages/product/ProductPage'
@@ -44,7 +44,7 @@ export const publicRoutes = [
     },
     {
         path: CART_ROUTE,
-        Component: Cart
+        Component: CartPage
     },
     {
         path: LOGIN_ROUTE,
