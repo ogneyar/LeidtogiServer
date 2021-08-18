@@ -1,17 +1,20 @@
 import React, { useContext, useState } from 'react'
-// import { Button, Form, Row, Col } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../../index'
 import { fetchAllCategories, fetchCategories, deleteCategory, updateCategory } from '../../http/categoryAPI'
 import CategoryAddService from './CategoryAddService'
-import { Input, Button } from '../../components/myBootstrap'
+import { Input, Button, Alert } from '../../components/myBootstrap'
 import translite from '../../utils/translite'
 
 
 const CategoryService = observer(({information, idName, offset, sub_id}) => {
     
-    const { category } = useContext(Context)
+    const { product, category } = useContext(Context)
     const [info, setInfo] = useState(information)
+
+    const [showAlert, setShowAlert] = useState(false)
+    const [message, setMessage] = useState("")
+
 
     const [state, setState] = useState(information.map(i => {
         let cursor
@@ -58,14 +61,37 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
     }
         
     const delCategory = async (id, name) => {
-        let yes = window.confirm(`Вы уверены, что хотите удалить категорию ${name}? Вместе с ней удалятся и подкатегории, если в ней таковые имеются! Будьте внимательны!!! Удаляем?!`)
-        if (yes) {
-            
-            reDelete(id)
-            
-            category.setCategories(reFilter(category.categories, id))
-            setInfo(reFilter(info, id))
+        function reSearch(itemId) {
+            let arrayCategory = []
+            category.allCategories.forEach(i => {
+                if (i.sub_category_id === itemId) 
+                    if (i.is_product) arrayCategory = [...arrayCategory,i.id]
+                    else arrayCategory = [...arrayCategory, ...reSearch(i.id)]
+            })
+            return arrayCategory
         }
+        let isProduct = false
+        let arrayCategoryIsProduct = reSearch(id)
+        product.allProducts.forEach(i => {
+            arrayCategoryIsProduct.forEach(k => {
+                if (i.categoryId === k) isProduct = true
+            })
+        })
+        if (isProduct) {
+            setMessage("Эта категория содержит продукцию (или содержит подкатегории, которые содержат продукцию)! Для удаления этой категории необходимо удалить всю содержащуюся продукцию (или переместить продукцию в другую категорию)!")
+            setShowAlert(true)
+        }else {
+            let yes = window.confirm(`Вы уверены, что хотите удалить категорию ${name}? Вместе с ней удалятся и подкатегории, если в ней таковые имеются! Будьте внимательны!!! Удаляем?!`)
+            if (yes) {
+                
+                reDelete(id)
+                
+                category.setCategories(reFilter(category.categories, id))
+                setInfo(reFilter(info, id))
+                fetchAllCategories().then(data => category.setAllCategories(data))
+            }
+        }
+        
         function reFilter(array, id) { // рекурсивная функция удаления вложеных состояний
             return array.filter(i => {
                 if (i.sub !== undefined) {
@@ -109,7 +135,9 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 : i 
             )
         )
-        fetchAllCategories().then(data => {
+        // fetchAllCategories().then(data => {
+        let data = category.allCategories
+
             let url = translite(name)
             let yes = false
             data.forEach(i => {
@@ -127,9 +155,9 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
                 }else url = url + "_too"
             }
             updateCategory(id, {name,url})
-        })
-        
-        
+
+        fetchAllCategories().then(data => category.setAllCategories(data))
+        // })
     }
 
     const openSubCategory = (id) => {
@@ -154,20 +182,47 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
             return i
         }))
     }
-
     
     const toggleIsProduct = async (id, checked) => {     
         setInfo(info.map(i => i.id === id ? {...i, is_product:checked} : i))
         await updateCategory(id, {is_product:checked})
-
+        fetchAllCategories().then(data => category.setAllCategories(data))
     }
-
-
+    
+    const onChangeIsProduct = (id, checked) => {
+        let yes = false
+        if (checked) {
+            category.allCategories.forEach(i => {
+                if (i.sub_category_id === id) yes = true
+            })
+            if (yes) {
+                setMessage("Эта категория содержит подкатегории, что бы её перевести в разряд категорий содержащих продукцию, необходимо удалить внутри неё все подкатегории!")
+                setShowAlert(true)
+            }else toggleIsProduct(id, checked)
+        }else {
+            product.allProducts.forEach(i => {
+                if (i.categoryId === id) yes = true
+            })
+            if (yes) {
+                setMessage("Эта категория содержит продукцию, что бы её перевести в разряд категорий содержащих подкатегории, необходимо удалить внутри неё (или переместить в другую категорию) всю продукцию!")
+                setShowAlert(true)
+            }else toggleIsProduct(id, checked)
+        }
+    }
+    
     
     return (
     <div
         className={offset === "null" ? "" : "ml-4"}
     >
+        <Alert 
+            show={showAlert} 
+            onHide={() => setShowAlert(false)} 
+            centered
+            opacity="0.97"
+            background="rgb(131, 24, 24)"
+            message={message} 
+        />
         <div>
             {info && info.map((i, number) => {
 
@@ -243,9 +298,7 @@ const CategoryService = observer(({information, idName, offset, sub_id}) => {
 								checked={i.is_product}
 								title="Содержит ли продукцию?"
 								style={{cursor:"pointer"}}
-                                onChange={e => {
-									toggleIsProduct(i.id, e.target.checked)
-								}}
+                                onChange={e => onChangeIsProduct(i.id, e.target.checked)}
 							/>
 						</div>
                         

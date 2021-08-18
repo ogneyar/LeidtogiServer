@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-// import { Form } from 'react-bootstrap'
+import React, { useState, useContext, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
+
 import { createCategory, fetchAllCategories } from '../../http/categoryAPI'
 import { Input, Button, Form } from '../../components/myBootstrap'
 import translite from '../../utils/translite'
+import { Context } from '../../index'
 
 
 const CategoryAddService = observer(({
@@ -12,12 +13,19 @@ const CategoryAddService = observer(({
         updateInfo  // передаваемая функция для применения изменений
     }) => {
     
-    const [name, setName] = useState('')
+    const { category } = useContext(Context)
 
+    const [name, setName] = useState('')
+    const [data, setData] = useState([])
+
+    useEffect(() => {
+        if(category.allCategories.length) setData(category.allCategories)
+    },[category.allCategories])
 
     const addCategory = () => {
-        if (name) {
-            fetchAllCategories().then(data => {
+        if (name && data[0]?.id !== undefined) {
+            // fetchAllCategories().then(data => {
+
                 let url = translite(name) 
                 let yes = false
                 data.forEach(i => {
@@ -34,8 +42,10 @@ const CategoryAddService = observer(({
                     setName('')
                     updateInfo(sub_id, data, "context", offset) 
                     updateInfo(sub_id, data, "state", offset)
+
+                    fetchAllCategories().then(data => category.setAllCategories(data))
                 })
-            })
+            // })
         }
     }
        
@@ -55,11 +65,11 @@ const CategoryAddService = observer(({
                 variant="outline-success" 
                 onClick={addCategory}
                 className='mt-4 ml-2 mr-2'
-                text="Добавить категорию"                
+                text="Добавить категорию"
             >
                 Добавить категорию
             </Button>
-        </Form>                
+        </Form>
     )
 })
 
