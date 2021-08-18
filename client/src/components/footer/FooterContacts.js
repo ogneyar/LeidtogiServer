@@ -11,7 +11,7 @@ const FooterContacts = () => {
 				<h3>Контакты</h3>
 			</div>
             <div className="footer-static-content">
-                <ul>
+                <ul className="FooterContactsUl">
                     <li>
                         <span className="fa fa-map-marker">&nbsp;</span>
                         <div className="media-body">
