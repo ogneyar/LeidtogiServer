@@ -1,11 +1,11 @@
-import Admin from '../pages/Admin'
+import AdminPage from '../pages/admin/AdminPage'
 import CartPage from '../pages/cart/CartPage'
-import Shop from '../pages/shop/Shop'
-import Auth from '../pages/Auth'
+import ShopPage from '../pages/shop/ShopPage'
+import AuthPage from '../pages/auth/AuthPage'
 import ProductPage from '../pages/product/ProductPage'
-import Lk from '../pages/lk/Lk'
+import LkPage from '../pages/lk/LkPage'
 import SearchPage from '../pages/search/SearchPage'
-import Error from '../components/Error'
+import ErrorPage from '../pages/error/ErrorPage'
 
 import AboutUs from '../pages/informations/AboutUs'
 import Delivery from '../pages/informations/Delivery'
@@ -17,7 +17,7 @@ import Warranty from '../pages/informations/Warranty'
 import Contacts from '../pages/informations/Contacts'
 import Specials from '../pages/informations/Specials'
 
-import Delete from '../pages/site/Delete'
+import DeletePage from '../pages/site/DeletePage'
 
 import {
     ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, 
@@ -29,18 +29,18 @@ import {
 export const authRoutes = [
     {
         path: ADMIN_ROUTE,
-        Component: Admin
+        Component: AdminPage
     },
     {
         path: LK_ROUTE,
-        Component: Lk
+        Component: LkPage
     }
 ]
 
 export const publicRoutes = [
     {
         path: SHOP_ROUTE,
-        Component: Shop
+        Component: ShopPage
     },
     {
         path: CART_ROUTE,
@@ -48,11 +48,11 @@ export const publicRoutes = [
     },
     {
         path: LOGIN_ROUTE,
-        Component: Auth
+        Component: AuthPage
     },
     {
         path: REGISTRATION_ROUTE,
-        Component: Auth
+        Component: AuthPage
     },
     {
         path: PRODUCT_ROUTE + '/:id',
@@ -64,7 +64,7 @@ export const publicRoutes = [
     },
     {
         path: ERROR_ROUTE,
-        Component: Error
+        Component: ErrorPage
     },
     
     // отдел Информация
@@ -108,12 +108,12 @@ export const publicRoutes = [
      // юмор It отдела
     {
         path: DELETE_ROUTE,
-        Component: Delete
+        Component: DeletePage
     },
 
     // роут категорий - /nazvanie-kategorii
     {
         path: '/:name',
-        Component: Shop
+        Component: ShopPage
     }
 ]

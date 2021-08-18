@@ -1,14 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Container, Button } from 'react-bootstrap'
-import Category from '../components/admin/Category'
-import Brand from '../components/admin/Brand'
-import Product from '../components/admin/Product'
-import DeleteSite from '../components/admin/DeleteSite'
+import Category from '../../components/admin/Category'
+import Brand from '../../components/admin/Brand'
+import Product from '../../components/admin/Product'
+import DeleteSite from '../../components/admin/DeleteSite'
 import { observer } from 'mobx-react-lite'
-import { Context } from '..'
-import {fetchProducts} from '../http/productAPI'
+import { Context } from '../..'
+import {fetchProducts} from '../../http/productAPI'
 
-import '../styles/Admin.css';
+import './AdminPage.css';
 
 
 const Admin = observer(() => {

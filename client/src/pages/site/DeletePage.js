@@ -1,7 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 
-import './Delete.css'
+import './DeletePage.css'
 
 
 const Delete = () => {

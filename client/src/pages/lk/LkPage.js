@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Card, Row, Col } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { SHOP_ROUTE } from '../../utils/consts'
-import './Lk.css'
+import './LkPage.css'
 
 
 const Lk = () => {

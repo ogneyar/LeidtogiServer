@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { Button, Card, Container, Form, Row } from 'react-bootstrap'
 import { NavLink, useHistory, useLocation } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import { login, registration } from '../http/userAPI'
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from '../utils/consts'
-import { Context } from '..'
-import { Alert } from '../components/myBootstrap'
+import { login, registration } from '../../http/userAPI'
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from '../../utils/consts'
+import { Context } from '../..'
+import { Alert } from '../../components/myBootstrap'
 
 const Auth = observer(() => {
     const { user } = useContext(Context)

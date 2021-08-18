@@ -11,7 +11,7 @@ import Filter from '../../components/filter/Filter'
 import Loading from '../../components/Loading'
 
 import { Context } from '../..'
-import './Shop.css'
+import './ShopPage.css'
 
 
 const Shop = observer(() => {
@@ -158,7 +158,7 @@ const Shop = observer(() => {
 
     return (
         <Container
-            className="Shop Mobile"
+            className="ShopPage Mobile"
         >
             <div className="ShopRow">
                 <div className="ShopColCategory">

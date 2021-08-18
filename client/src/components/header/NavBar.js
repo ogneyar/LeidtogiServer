@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Navbar, Nav, Button, Container, Image, Row, Col } from 'react-bootstrap'
+import { Navbar, Nav, Button, Container, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { useHistory } from 'react-router-dom'
 

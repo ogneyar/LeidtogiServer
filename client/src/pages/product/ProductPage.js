@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { fetchOneProduct } from '../../http/productAPI'
 
 import { API_URL } from '../../utils/consts'
-import Error from '../../components/Error'
+import Error from '../error/ErrorPage'
 import Loading from '../../components/Loading'
 import ButtonBuy from '../../components/cart/ButtonBuy'
 import Rating from '../../components/rating/Rating'
