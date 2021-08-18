@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import { observer } from 'mobx-react-lite'
 
 import { fetchAllProducts } from '../../http/productAPI';
 import { API_URL } from '../../utils/consts';
 
+import { Context } from '../..'
 import './Search.css'
 
 
-const Search = (props) => {
+const Search = observer((props) => {
+
+    const { product } = useContext(Context)
 
     const [value, setValue] = useState("")
     const [list, setList] = useState([])
@@ -15,9 +19,15 @@ const Search = (props) => {
 
     const history = useHistory()
 
+    // useEffect(() => {
+    //     fetchAllProducts().then(data => setArray(data)) 
+    // },[])
+
     useEffect(() => {
-        fetchAllProducts().then(data => setArray(data))
-    },[])
+        if (product.allProducts.length) {
+            setArray(product.allProducts)
+        }
+    },[product.allProducts])
 
     // useEffect(() => {
     //     setValue(props.value)
@@ -162,6 +172,6 @@ const Search = (props) => {
 
         </div>
     );
-}
+})
 
 export default Search;

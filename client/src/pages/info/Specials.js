@@ -7,7 +7,12 @@ const Specials = () => {
     return (
         <InfoPage>
             <div className="Specials">
-                <label>Акции!</label>
+                <label className="SpecialsTitle">Акции!</label>
+                <div className="SpecialsBody">
+                    <span>Лёгкий старт</span>
+                    -
+                    <label>скидка в 20%</label>
+                </div>
             </div>
         </InfoPage>
     )

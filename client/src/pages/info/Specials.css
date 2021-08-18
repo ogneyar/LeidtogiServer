@@ -1,3 +1,20 @@
 .Specials {
-    margin-bottom: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 100px;
+}
+.SpecialsTitle {
+    font-size: 24px;
+}
+.SpecialsBody {
+    font-size: 18px;
+}
+.SpecialsBody span {
+    margin-right: 10px;
+    font-weight: 600;
+}
+.SpecialsBody label {
+    margin-left: 10px;
 }

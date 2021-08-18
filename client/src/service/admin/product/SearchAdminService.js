@@ -55,7 +55,7 @@ const SearchAdminService = observer((props) => {
         }
         setSearch([])
         setArticle("")
-        category.categories.forEach(i => {
+        category.allCategories.forEach(i => {
             if (item.categoryId === i.id) category.setSelectedCategory(i)
         })
 

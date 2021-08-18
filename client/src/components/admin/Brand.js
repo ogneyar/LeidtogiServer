@@ -9,13 +9,11 @@ import { Context } from '../../index'
 const Brand = observer(({show, onHide}) => {
 
     const { brand } = useContext(Context)
-    // const [ info, setInfo ] = useState([])
 
     useEffect(() => {
-        fetchBrands().then(data => {
-            brand.setBrands(data)
-            // setInfo(brand.brands)
-        })        
+        // fetchBrands().then(data => {
+        //     brand.setBrands(data)
+        // })        
     },[])
 
     

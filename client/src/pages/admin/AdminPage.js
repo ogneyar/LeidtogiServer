@@ -12,28 +12,38 @@ import './AdminPage.css';
 
 
 const Admin = observer(() => {
-    const {product, category, brand} = useContext(Context)
+    
+    const { product, category, brand } = useContext(Context)
 
     useEffect(() => {
-        fetchProducts(null, null, 1, 2).then(data => {
-            product.setProducts(data.rows)
-            product.setTotalCount(data.count)
-            category.setSelectedCategory({})
-            brand.setSelectedBrand({})
-        })
+        // fetchProducts(null, null, 1, 2).then(data => {
+        //     product.setProducts(data.rows)
+        //     product.setTotalCount(data.count)
+        //     category.setSelectedCategory({})
+        //     brand.setSelectedBrand({})
+        // })
     },[])
 
-    // useEffect(() => {
-    //     if (product.allProducts.length) console.log("admin product.allProducts",product.allProducts.length)
-    // },[product.allProducts])
+    useEffect(() => {
+        if (product.allProducts.length) {
+            product.setProducts(product.allProducts)
+            product.setTotalCount(product.allProducts.length)
+        }
+    },[product.allProducts])
 
-    // useEffect(() => {
-    //     if (category.categories.length) console.log("admin category.categories",category.categories.length)
-    // },[category.categories])
+    useEffect(() => {
+        if (category.allCategories.length) {
+            category.setCategories(category.allCategories)
+            category.setSelectedCategory({})
+        }
+    },[category.allCategories])
 
-    // useEffect(() => {
-    //     if (brand.brands.length) console.log("admin brand.brands",brand.brands.length)
-    // },[brand.brands])
+    useEffect(() => {
+        if (brand.allBrands.length) {
+            brand.setBrands(brand.allBrands)
+            brand.setSelectedBrand({})
+        }
+    },[brand.allBrands])
 
     const [categoryVisible, setCategoryVisible] = useState(false)
     const [brandVisible, setBrandVisible] =  useState(false)

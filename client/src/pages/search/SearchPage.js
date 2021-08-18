@@ -62,7 +62,7 @@ const SearchPage = observer(() => {
 
     return (
         <Container
-            className="Shop Mobile"
+            className="ShopPage Mobile"
         >
         <div className="ShopRow">
             <div className="ShopColCategory">

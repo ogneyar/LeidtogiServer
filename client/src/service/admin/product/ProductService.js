@@ -33,17 +33,32 @@ const ProductService = observer((props) => {
     const [size, setSize] = useState({weight: "", volume: "", width: "", height: "", length: ""})
     const [info, setInfo] = useState({title: "Характеристики", description: ""})
 
-    const [allCategories, setAllCategories] = useState([])
+    // const [allCategories, setAllCategories] = useState([])
 
     useEffect(() => {
-        fetchAllCategories().then(data => {
-            setAllCategories(data)
-        })
-        fetchBrands().then(data => {
-            brand.setBrands(data)
-            brand.setSelectedBrand(data[0])
-        })
+        // fetchAllCategories().then(data => {
+        //     setAllCategories(data)
+        // })
+        // fetchBrands().then(data => {
+        //     brand.setBrands(data)
+        //     brand.setSelectedBrand(data[0])
+        // })
     },[])
+
+    useEffect(() => {
+        if (category.allCategories.length) {
+            // setAllCategories(category.allCategories)
+            category.setCategories(category.allCategories)
+        }
+    },[category.allCategories])
+
+    
+    useEffect(() => {
+        if (brand.allBrands.length) {
+            brand.setBrands(brand.allBrands)
+            brand.setSelectedBrand(brand.allBrands[0])
+        }
+    },[brand.allBrands])
 
     useEffect(() => {
         if (props.info?.title) setInfo(props?.info)
@@ -103,19 +118,20 @@ const ProductService = observer((props) => {
     }
 
     const reItemCategory = (sub = 0, offset = "") => { // рекурсивная функция, для получения списка категорий
-        return  allCategories.map(i => {
-            if (i.sub_category_id === sub)
+        return category.categories.map(i => {
+
+            if (i.sub_category_id === sub && i.id !== 1) // i.id = 1 - это отдельная категория АКЦИИ
                 return (
-                    <>
-                    <Dropdown.Item 
-                        onClick={() =>  category.setSelectedCategory(i)} 
-                        disabled={i.is_product ? false : true}
-                        key={i.id}
-                    >
-                        {offset + i.name}
-                    </Dropdown.Item>
-                    {reItemCategory(i.id, offset + "-- ")}
-                    </>
+                    <div key={i.id}>
+                        <Dropdown.Item 
+                            onClick={() =>  category.setSelectedCategory(i)} 
+                            disabled={i.is_product ? false : true} 
+                            
+                        >
+                            {offset + i.name}
+                        </Dropdown.Item>
+                        {reItemCategory(i.id, offset + "-- ")}
+                    </div>
                 )
         })
     }
@@ -134,14 +150,14 @@ const ProductService = observer((props) => {
         )
     }
     return (
-        <Form  className="mb-2">
-            <div className="inputBox d-flex">
+        <div  className="mb-2">
+            <div className="inputBox d-flex flex-wrap">
                 <div className=''>
                     <label>Категория:</label>
                     <Dropdown >
                         <Dropdown.Toggle>{category.selectedCategory.name || "Выберите категорию"}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {allCategories !== undefined 
+                            {category.categories !== undefined 
                             ? reItemCategory()
                             : null}
                         </Dropdown.Menu>
@@ -155,7 +171,7 @@ const ProductService = observer((props) => {
                             {brand.brands.map((br, index) => 
                                 <Dropdown.Item 
                                     onClick={() => brand.setSelectedBrand(br)} 
-                                    key={br.id}
+                                    key={br.name}
                                     active={br.id === brand.selectedBrand.id}
                                 >
                                     {br.name}
@@ -280,7 +296,7 @@ const ProductService = observer((props) => {
            
             <hr />
 
-        </Form>
+        </div>
     );
 })
 

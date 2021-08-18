@@ -9,13 +9,11 @@ import CategoryService from '../../service/admin/CategoryService'
 const Category = observer(({show, onHide}) => {
 
     const { category } = useContext(Context)
-    // const [info, setInfo] = useState([])
 
     useEffect(() => {
-        fetchCategories().then(data => {
-            category.setCategories(data)
-            // setInfo(category.categories)
-        })
+        // fetchCategories().then(data => {
+        //     category.setCategories(data)
+        // })
     },[])
    
 
