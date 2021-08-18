@@ -57,24 +57,27 @@ const Cart = () => {
     }
     
     const onClickButtonDelete = (item) => {
-        cart = localStorage.getItem('cart')
-        cart = JSON.parse(cart)
-        if (cart.length === 1) {
-            localStorage.removeItem('cart')
-            setState(null)
-            setTotal(0)
-        }else {
-            let totalValue = 0
-            cart = cart.filter(i => {
-                if (i.id !== item.id) {
-                    totalValue += i.total
-                    return true
-                }
-                return false
-            })
-            setState(cart)
-            setTotal(totalValue)
-            localStorage.setItem('cart', JSON.stringify(cart))
+        let yes = window.confirm(`Вы уверены, что хотите удалить товар из корзины?`)
+        if (yes) {
+            cart = localStorage.getItem('cart')
+            cart = JSON.parse(cart)
+            if (cart.length === 1) {
+                localStorage.removeItem('cart')
+                setState(null)
+                setTotal(0)
+            }else {
+                let totalValue = 0
+                cart = cart.filter(i => {
+                    if (i.id !== item.id) {
+                        totalValue += i.total
+                        return true
+                    }
+                    return false
+                })
+                setState(cart)
+                setTotal(totalValue)
+                localStorage.setItem('cart', JSON.stringify(cart))
+            }
         }
     }
 
