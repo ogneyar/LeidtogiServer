@@ -21,8 +21,8 @@ const FooterContacts = () => {
                     <li>
                         <span className="fa fa-mobile">&nbsp;</span>
                         <div className="media-body">
-                            <p>+7 (4712) 51-07-76</p>
-                            <p>+7 (931) 260-77-92</p>
+                            <p><a href="tel:+74712510776">+7 (4712) 51-07-76</a></p>
+                            <p><a href="tel:+79312607792">+7 (931) 260-77-92</a></p>
                         </div>
                     </li>
                     <li>
