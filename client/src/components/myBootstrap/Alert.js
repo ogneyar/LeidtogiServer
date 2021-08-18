@@ -1,13 +1,16 @@
 import React from 'react'
 import {Modal, Button} from 'react-bootstrap'
+import './Alert.css'
 
-
-const Alert = ({children, show, onHide, message}) => {
+const Alert = ({children, show, onHide, message, centered, background, opacity }) => {
     return (
         <Modal
             show={show}
             onHide={onHide}
+            centered
+            style={{background, opacity}}
             aria-labelledby="contained-modal-title-vcenter"
+            className="Alert"
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
