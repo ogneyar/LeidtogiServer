@@ -10,12 +10,20 @@ const Category = observer(({show, onHide}) => {
 
     const { category } = useContext(Context)
 
+    const [info, setInfo] = useState([])
+
     useEffect(() => {
         // fetchCategories().then(data => {
         //     category.setCategories(data)
         // })
     },[])
    
+    useEffect(() => {
+        if (category.allCategories.length) {
+            setInfo(category.allCategories.filter(i => i.sub_category_id === 0))
+        }
+    },[category.allCategories])
+
 
     return (
         <Modal
@@ -41,7 +49,7 @@ const Category = observer(({show, onHide}) => {
                     </div>
                 </div>
 
-                <CategoryService information={category.categories} idName={"category_"} offset={"null"} sub_id={0} />
+                <CategoryService information={info} idName={"category_"} offset={"null"} sub_id={0} />
 
             </Modal.Body>
             <Modal.Footer>
