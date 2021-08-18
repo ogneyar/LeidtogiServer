@@ -34,8 +34,7 @@ const NavBar = observer(() => {
                     className="NavBar_Row"
                 >
                     <div 
-                        className="NavBar_Col"
-                        md="auto"
+                        className="NavBar_Col_Logo"
                     >
                         <NavLink className="NavLink NavBar_NavLink"
                             to={SHOP_ROUTE}
@@ -53,17 +52,16 @@ const NavBar = observer(() => {
                     </div>
 
                     <div 
-                        className="NavBar_Col"
-                        md="auto"
+                        className="NavBar_Col_Buttons"
                     >
-                        <Nav>
+                        
 
                             <NavLink className="NavLink NavBar_Cart"
                                 to={CART_ROUTE}
                             >
                                 <Image className="NavBar_Cart_Image" src={cart} />
                             </NavLink>
-
+                        <Nav>
                             {user.isAuth ?
                             
                                 <>

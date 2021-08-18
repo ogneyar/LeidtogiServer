@@ -10,6 +10,9 @@
     align-items: center;
     justify-content:space-between;
 }
+.NavBar_Col_Buttons {
+    display:flex;
+}
 .NavBar_Cart {
     display:flex;
     align-items: center;
@@ -45,5 +48,22 @@
     .NavBar_Logo {
         padding: 5px;
         width: 125px;
+    }
+}
+
+@media(max-width:390px) {
+    .NavBar_Col_Buttons {
+        align-items: center;
+        flex-direction: column;
+    }
+    .NavBar_Cart{
+        margin-bottom: 10px;
+    }
+    .NavBar_Col_Logo {
+        margin-right: 5px;
+    }
+    .NavBar_Logo {
+        padding: 2px;
+        width: 115px;
     }
 }

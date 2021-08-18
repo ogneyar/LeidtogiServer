@@ -45,20 +45,20 @@ const Product =  observer(() => {
 
     return ( 
         <Container className="ProductPage">
-            <Row className="ProductName">
+            <div className="ProductName">
                 <h3>{product.name}</h3> 
                 <p>Артикул: {product.article}</p> 
-            </Row>
-            <Row>
-                <Col md={4} className="ProductImage">
+            </div>
+            <div className="ProductMainBox">
+                <div md={4} className="ProductImage">
                     <Image width={300} height={300} src={API_URL + product.img} />
-                </Col>
-                <Col md={4}>
+                </div>
+                <div md={4}>
                     <Row className="ProductRating">
                         <Rating product={product} rating={rating.rate} />
                     </Row>
-                </Col>
-                <Col md={4} className="ProductColCard">
+                </div>
+                <div md={4} className="ProductColCard">
                     <Card className="ProductCard">
                         <h3>Цена: {product.price} руб.</h3>
                         <div
@@ -69,23 +69,23 @@ const Product =  observer(() => {
                             </ButtonBuy>
                         </div>
                     </Card>
-                </Col>
-            </Row>
+                </div>
+            </div>
             
             {product.description
             ?
-            <Row className="ProductDescription">
+            <div className="ProductDescription">
                 <div className="ProductDescriptionDiv">
                     <label>
                         Описание: {product.description}
                     </label>
                 </div>
-            </Row>
+            </div>
             : null}
             
             {product.info && product.info.length > 0
             ?
-            <Row className="ProductInfo">
+            <div className="ProductInfo">
                 <h2>Характеристики</h2>
                 {product.info.map((info, index) =>
                     <Row 
@@ -99,19 +99,19 @@ const Product =  observer(() => {
                             : info.description}
                     </Row>    
                 )}
-            </Row>
+            </div>
             : null}
            
             {product.size && product.size.length > 0
             ?
-            <Row className="ProductSize">
+            <div className="ProductSize">
                 <h2>Габариты</h2>
                 <Row className={"ProductInfoRowLight"}>Вес: {product.size[0].weight}</Row>
                 <Row className={"ProductInfoRowtTansparent"}>Объём: {product.size[0].volume}</Row>
                 <Row className={"ProductInfoRowLight"}>Ширина: {product.size[0].width}</Row>
                 <Row className={"ProductInfoRowtTansparent"}>Высота: {product.size[0].height}</Row>
                 <Row className={"ProductInfoRowLight"}>Длина: {product.size[0].length}</Row>
-            </Row>
+            </div>
             : null}
             
         </Container>

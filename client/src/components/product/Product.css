@@ -1,23 +1,24 @@
 :root {
-    --product-width-min: 245px; 
-    --product-width-mid: 315px; 
-    --product-width-mid-max: 330px; 
+    --product-width-min: 251px; 
+    --product-width-mid: 320px; 
+    --product-width-mid-max: 340px; 
     --product-width-max: 500px; 
 }
 
 .ProductList {
     display:flex;
-    justify-content:center; 
+    justify-content:space-between; 
     align-items:center;
     flex-direction: row;
     flex-wrap: wrap;
+
 }
 
 .ProductItem {
     display:flex;
     justify-content:space-around; 
     align-items:center;
-    margin: 5px;
+    margin-bottom: 10px;
     background-color: #fff;
 }
 
@@ -61,7 +62,22 @@
     }
 }
 
-@media (max-width: 540px) { /* 574px */
+
+@media (max-width: 575px) {
+    .ProductList {
+        justify-content:space-around; 
+    }
+}
+@media (max-width: 550px) {
+    .ProductList {
+        justify-content:space-between; 
+    }
+}
+
+@media (max-width: 540px) {
+    .ProductList {
+        justify-content:center; 
+    }
     .product-card {
         width: 85vw;
     }    

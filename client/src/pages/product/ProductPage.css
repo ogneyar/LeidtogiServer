@@ -2,6 +2,11 @@
     background-color: var(--main-white-color);
     padding: 40px 20px 30px 20px;
 }
+.ProductMainBox {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
 
 .ProductName {
     padding: 0 20px;
@@ -53,4 +58,22 @@
 .ProductInfoRowtTansparent {
     background-color: transparent;
     padding: 10px;
+}
+
+@media(max-width:991px) {
+    .ProductMainBox {
+        padding: 0 90px;
+    }
+}
+
+@media(max-width:767px) {
+    .ProductMainBox {
+        padding: 0 30px;
+    }
+}
+
+@media(max-width:400px) {
+    .ProductMainBox {
+        padding: 0;
+    }
 }
