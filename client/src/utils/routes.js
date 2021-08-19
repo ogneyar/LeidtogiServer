@@ -6,6 +6,7 @@ import ProductPage from '../pages/product/ProductPage'
 import LkPage from '../pages/lk/LkPage'
 import SearchPage from '../pages/search/SearchPage'
 import ErrorPage from '../pages/error/ErrorPage'
+import ParserPage from '../pages/parser/ParserPage'
 
 import AboutUs from '../pages/info/AboutUs'
 import Delivery from '../pages/info/Delivery'
@@ -21,7 +22,7 @@ import DeletePage from '../pages/site/DeletePage'
 
 import {
     ADMIN_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, 
-    PRODUCT_ROUTE, LK_ROUTE, SEARCH_ROUTE, ERROR_ROUTE, ABOUT_US_ROUTE, 
+    PRODUCT_ROUTE, LK_ROUTE, SEARCH_ROUTE, ERROR_ROUTE, PARSER_ROUTE, ABOUT_US_ROUTE, 
     DELIVERY_ROUTE, PAYMENT_ROUTE, PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE, 
     TERMS_OF_USE_ROUTE, WARRANTY_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, DELETE_ROUTE
 } from './consts'
@@ -65,6 +66,10 @@ export const publicRoutes = [
     {
         path: ERROR_ROUTE,
         Component: ErrorPage
+    },
+    {
+        path: PARSER_ROUTE,
+        Component: ParserPage
     },
     
     // отдел Информация
