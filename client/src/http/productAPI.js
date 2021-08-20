@@ -9,20 +9,42 @@ export const createProduct = async (product) => {
 export const fetchProducts = async (categoryId, brandId, page, limit) => {
     const {data} = await $host.get('api/product', {params: {
         categoryId, brandId, page, limit
-    }})
-    return data
+    }})    
+    return data.map(i => { 
+        let img
+        try {
+            img = JSON.parse(i.img)
+        }catch(e) {
+            img = [{}]
+        }
+        return {...i, img} 
+    })
 }
 
 export const fetchAllProducts = async () => {
     const {data} = await $host.get('api/product', {params: {
         limit: "-1"
     }})
-    return data
+    return data.map(i => { 
+        let img
+        try {
+            img = JSON.parse(i.img)
+        }catch(e) {
+            img = [{}]
+        }
+        return {...i, img} 
+    })
 }
 
 export const fetchOneProduct = async (id) => {
     const {data} = await $host.get('api/product/' + id)
-    return data
+    let img
+    try {
+        img = JSON.parse(data.img)
+    }catch(e) {
+        img = [{}]
+    }
+    return {...data, img}
 }
 
 export const fetchProductInfos = async (id) => {

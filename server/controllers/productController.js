@@ -7,43 +7,48 @@ const fs = require('fs')
 
 class ProductController {
     async create(req, res, next) { 
-       try {
-        let {name, price, brandId, categoryId, info, have, article, description, promo, country, size} = req.body
-        const {img} = req.files
-        let fileName = uuid.v4() + '.jpg'
-        img.mv(path.resolve(__dirname, '..', 'static', fileName))
-
-        const product = await Product.create({name, price, have, article, description, promo, country, brandId, categoryId, img: fileName})
-
-        if (info) {
-            let inf = JSON.parse(info)
-            if (inf.title || inf.description) {
-                ProductInfo.create({
-                    title: inf.title,
-                    description: inf.description,
-                    productId: product.id 
-                })
+        try {
+            let {name, price, brandId, categoryId, info, have, article, description, promo, country, size} = req.body
+            let img
+            if (req.files && req.files.img) img = req.files.img
+            let fileName = "[{}]"
+            if (img) {
+                fileName = uuid.v4() + '.jpg'
+                img.mv(path.resolve(__dirname, '..', 'static', fileName))
             }
-        }
 
-        if (size) {
-            let s = JSON.parse(size)
-            if (s.weight || s.volume || s.width || s.height || s.length) {
-                ProductSize.create({
-                    weight: s.weight,
-                    volume: s.volume,
-                    width: s.width,
-                    height: s.height,
-                    length: s.length,
-                    productId: product.id 
-                })
+            const product = await Product.create({name, price, have, article, description, promo, country, brandId, categoryId, img: fileName})
+
+            if (info) {
+                let inf = JSON.parse(info)
+                if (inf.title || inf.description) {
+                    ProductInfo.create({
+                        title: inf.title,
+                        description: inf.description,
+                        productId: product.id 
+                    })
+                }
             }
-        }
 
-        return res.json(product)
-       }catch (e) {
-           return next(ApiError.badRequest(e.message))
-       }
+            if (size) {
+                let s = JSON.parse(size)
+                if (s.weight || s.volume || s.width || s.height || s.length) {
+                    ProductSize.create({
+                        weight: s.weight,
+                        volume: s.volume,
+                        width: s.width,
+                        height: s.height,
+                        length: s.length,
+                        productId: product.id 
+                    })
+                }
+            }
+
+            return res.json(product)
+
+        }catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
     }
 
     async getAll(req, res) {

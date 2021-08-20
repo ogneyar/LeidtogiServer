@@ -22,7 +22,7 @@ export const onClickButtonBuy = (e, product) => {
                 name: product.name,
                 article: product.article,
                 price: product.price,
-                img: product.img,
+                img: product.img[0].small,
                 total: product.price
             }]
         }
@@ -34,7 +34,7 @@ export const onClickButtonBuy = (e, product) => {
             name:product.name,
             article:product.article,
             price:product.price,
-            img:product.img,
+            img:product.img[0].small,
             total: product.price
         }]
     }

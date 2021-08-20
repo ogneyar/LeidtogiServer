@@ -53,13 +53,7 @@ const SearchAdminService = observer((props) => {
         category.allCategories.forEach(i => {
             if (item.categoryId === i.id) category.setSelectedCategory(i)
         })
-        let img
-        try {
-            img = JSON.parse(item.img)
-        }catch (e) {
-            img = item.img
-        }
-        setProductSearch({...item,img})
+        setProductSearch(item)
 
         setVisibleProductService(true)
         $('.modal').animate(
@@ -96,12 +90,6 @@ const SearchAdminService = observer((props) => {
             {search 
             ? 
                 search.map(i => {
-                    let img
-                    try {
-                        img = JSON.parse(i.img)
-                    }catch (e) {
-                        img = i.img
-                    }
                     return (
                         <div
                             className={"divArticle"} // этот класс из index.css
@@ -113,9 +101,9 @@ const SearchAdminService = observer((props) => {
                             >
                                 <img 
                                     className="SearchListItemImg" // этот класс из компонента Search
-                                    src={typeof(img) === "object"
-                                    ? API_URL + img[0].big
-                                    : API_URL + img
+                                    src={Array.isArray(i.img)  && i.img[0]?.small !== undefined
+                                    ? API_URL + i.img[0].small
+                                    : API_URL + "unknown.jpg"
                                     } 
                                     alt={i.name}
                                 />
@@ -161,9 +149,9 @@ const SearchAdminService = observer((props) => {
                     id={productSearch?.id}
                     name={productSearch.name}
                     price={productSearch.price}
-                    file={typeof(productSearch.img) === "object" && productSearch.img !== null
-                    ? API_URL + productSearch.img[0].big
-                    : API_URL + productSearch.img}
+                    file={Array.isArray(productSearch.img)  && productSearch.img[0]?.small !== undefined
+                    ? API_URL + productSearch.img[0].small
+                    : API_URL + "unknown.jpg"}
                     have={productSearch.have}
                     article={productSearch.article}
                     description={productSearch.description}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {  Image } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 import $ from 'jquery'
@@ -9,20 +9,10 @@ import { PRODUCT_ROUTE, API_URL } from '../../utils/consts'
 import ButtonBuy from '../cart/ButtonBuy'
 import './Product.css'
 
+
 const ProductItem = ({product}) => {
 
     const history = useHistory()
-
-    const [image, setImage] = useState(null)
-
-    useEffect(() => {
-        try {
-            setImage(JSON.parse(product.img))
-        }catch (e) {
-            setImage(product.img)
-        }
-        // if (typeof(image) === "object") console.log(image);
-    },[])
 
 
     return (
@@ -45,7 +35,9 @@ const ProductItem = ({product}) => {
 
                 <Image 
                     className="product-image" 
-                    src={API_URL + image[0].big} 
+                    src={product.img && Array.isArray(product.img)  && product.img[0]?.big !== undefined
+                        ? API_URL + product.img[0].big 
+                        : API_URL + "unknown.jpg"} 
                 />
 
                 <div className="product-body">

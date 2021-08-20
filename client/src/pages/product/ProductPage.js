@@ -27,16 +27,10 @@ const Product =  observer(() => {
     useEffect(() => {
         fetchOneProduct(id)
             .then(data => {
-                let img
-                try {
-                    img = JSON.parse(data.img)
-                }catch (e) {
-                    img = data.img
-                }
                 let info = data.info[0].description.split(";").map((i,index) => {
                     return  {id:index, description:i.trim()[0].toUpperCase() + i.trim().substring(1)} // создание массива характеристик
                 })
-                setProduct({...data, info, img})
+                setProduct({...data, info})
                 rating.setRate(data.rating)
             },err => {
                 setError(true)
@@ -60,20 +54,25 @@ const Product =  observer(() => {
                     {/* <Image width={300} height={300} src={API_URL + product.img} /> */}
                     <Image 
                         width={300} 
-                        src={API_URL + product.img[0].big} 
+                        src={product.img && Array.isArray(product.img) && product.img[0]?.big !== undefined
+                            ? API_URL + product.img[0].big 
+                            : API_URL + "unknown.jpg"} 
                     />
                     <div
                         className="ProductImageDiv" 
                     >
-                    {product.img.map(i => {
-                        return (
-                            <Image 
-                                className="ProductImageSmall" 
-                                width={80} 
-                                src={API_URL + i.small} 
-                            />
-                        )
-                    })}                    
+                        {product.img && Array.isArray(product.img) && product.img[0]?.big !== undefined
+                        ? product.img.map(i => {
+                            return (
+                                <Image 
+                                    key={i.small + new Date()}
+                                    className="ProductImageSmall" 
+                                    width={80} 
+                                    src={API_URL + i.small} 
+                                />
+                            )
+                        })
+                        : null}
                     </div>
                 </div>
                 <div md={4}>

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react-lite'
 
-import { fetchAllProducts } from '../../http/productAPI';
 import { API_URL } from '../../utils/consts';
 
 import { Context } from '../..'
@@ -19,19 +18,11 @@ const Search = observer((props) => {
 
     const history = useHistory()
 
-    // useEffect(() => {
-    //     fetchAllProducts().then(data => setArray(data)) 
-    // },[])
-
     useEffect(() => {
         if (product.allProducts.length) {
             setArray(product.allProducts)
         }
     },[product.allProducts])
-
-    // useEffect(() => {
-    //     setValue(props.value)
-    // },[props?.value])
 
     const onChangeSearchInputValue = (search) => {
         setValue(search)
@@ -109,8 +100,10 @@ const Search = observer((props) => {
                                     onClick={() => redirectOnSearch("article", i)}
                                 >
                                     <img 
-                                        className="SearchListItemImg"
-                                        src={API_URL + i.img} 
+                                        className="SearchListItemImg" 
+                                        src={Array.isArray(i.img)  && i.img[0]?.big !== undefined
+                                            ? API_URL + i.img[0].small
+                                            : API_URL + "unknown.jpg"} 
                                         alt={i.name}
                                     />
                                     <div
