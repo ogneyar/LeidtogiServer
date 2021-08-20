@@ -133,7 +133,7 @@ class ProductController {
     }
 
     async editAll(req, res, next) {
-        const {id} = req.params        
+        const {id} = req.params
         const product = await Product.findOne({
             where: {id}
         })
@@ -239,7 +239,7 @@ class ProductController {
         }
     }
 
-    async editRating(req, res) {
+    async editRating(req, res) { // для рейта отдельная функция из-за проверки роли юзера вместо администратора
         const {id} = req.params
         const {rating} = req.body
         const response = await Product.update({rating}, {

@@ -11,7 +11,7 @@ router.get('/size/:id', productController.getSize)
 router.delete('/:id', checkRole('ADMIN'), productController.delete)
 router.put('/edit/:id', checkRole('ADMIN'), productController.edit)
 router.put('/edit_all/:id', checkRole('ADMIN'), productController.editAll)
-router.put('/rating/:id', productController.editRating)
+router.put('/rating/:id', checkRole('USER'), productController.editRating)
 
 
 module.exports = router

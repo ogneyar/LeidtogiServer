@@ -2,7 +2,7 @@ const ApiError = require('../error/apiError')
 const jwt = require('jsonwebtoken')
 
 module.exports = function (role) {
-    return function (req, res, next) {        
+    return function (req, res, next) {
         if (req.method === "OPTIONS") {
             next()
         }
