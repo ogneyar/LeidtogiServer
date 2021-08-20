@@ -81,6 +81,13 @@ a:hover {
   padding: 5px;
 }
 
+.divArticle {
+  border: 1px solid lightgrey;
+  padding: 5px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
 .Mobile {}
 
 @media(max-width:991px) {

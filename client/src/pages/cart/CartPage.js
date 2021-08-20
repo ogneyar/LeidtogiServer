@@ -129,7 +129,7 @@ const Cart = () => {
                                             <div
                                                 className="CartThDivRow"
                                             >
-                                                <img src={API_URL + i.img} width="50" height="50" alt={i.name} />
+                                                <img src={API_URL + i.img} width="50" alt={i.name} />
                                             </div>
                                         </th>
                                         <th>

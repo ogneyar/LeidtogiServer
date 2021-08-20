@@ -1,12 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Container, Button } from 'react-bootstrap'
+
 import Category from '../../components/admin/Category'
 import Brand from '../../components/admin/Brand'
 import Product from '../../components/admin/Product'
 import DeleteSite from '../../components/admin/DeleteSite'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../..'
-import {fetchProducts} from '../../http/productAPI'
 
 import './AdminPage.css';
 
@@ -15,13 +16,9 @@ const Admin = observer(() => {
     
     const { product, category, brand } = useContext(Context)
 
+    const history = useHistory()
+
     useEffect(() => {
-        // fetchProducts(null, null, 1, 2).then(data => {
-        //     product.setProducts(data.rows)
-        //     product.setTotalCount(data.count)
-        //     category.setSelectedCategory({})
-        //     brand.setSelectedBrand({})
-        // })
     },[])
 
     useEffect(() => {
@@ -75,6 +72,14 @@ const Admin = observer(() => {
                 onClick={() => setBrandVisible(true)}
             >
                 Редактор брендов
+            </Button>
+
+            <Button 
+                variant={"outline-dark"} 
+                className="m-3 p-2 Admin_button"
+                onClick={() => history.push("/parser")}
+            >
+                Парсер
             </Button>
 
             <hr/>

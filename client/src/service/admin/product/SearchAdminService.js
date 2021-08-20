@@ -9,13 +9,8 @@ import { Context } from '../../..'
 import ProductService from './ProductService';
 import { API_URL } from '../../../utils/consts';
 
-import './ProductEditService.css'
-
-
-
 
 const SearchAdminService = observer((props) => {
-
 
     const {product, category} = useContext(Context)
 
@@ -58,8 +53,13 @@ const SearchAdminService = observer((props) => {
         category.allCategories.forEach(i => {
             if (item.categoryId === i.id) category.setSelectedCategory(i)
         })
-
-        setProductSearch(item)
+        let img
+        try {
+            img = JSON.parse(item.img)
+        }catch (e) {
+            img = item.img
+        }
+        setProductSearch({...item,img})
 
         setVisibleProductService(true)
         $('.modal').animate(
@@ -80,7 +80,9 @@ const SearchAdminService = observer((props) => {
             : 
                 !visibleProductService
                 ?
-                    <div className="inputBox">
+                    <div 
+                        className="inputBox" // этот класс из index.css
+                    >
                         <label>Поиск по артикулу: </label>
                         <Form.Control    
                             value={article}
@@ -94,40 +96,49 @@ const SearchAdminService = observer((props) => {
             {search 
             ? 
                 search.map(i => {
+                    let img
+                    try {
+                        img = JSON.parse(i.img)
+                    }catch (e) {
+                        img = i.img
+                    }
                     return (
                         <div
-                            className={"divArticle"}
+                            className={"divArticle"} // этот класс из index.css
                             key={i.id}
                         >
                             <div
-                                className="SearchListItem"
+                                className="SearchListItem" // этот класс из компонента Search
                                 onClick={() => onClickDivArticle(i)}
                             >
                                 <img 
-                                    className="SearchListItemImg"
-                                    src={API_URL + i.img} 
+                                    className="SearchListItemImg" // этот класс из компонента Search
+                                    src={typeof(img) === "object"
+                                    ? API_URL + img[0].big
+                                    : API_URL + img
+                                    } 
                                     alt={i.name}
                                 />
                                 <div
-                                    className="SearchListItemBody"
+                                    className="SearchListItemBody" // этот класс из компонента Search
                                 >
                                     <div
-                                        className="SearchListItemBodyBoxTitle"
+                                        className="SearchListItemBodyBoxTitle" // этот класс из компонента Search
                                     >
                                         <div
-                                            className="SearchListItemBodyName"
+                                            className="SearchListItemBodyName" // этот класс из компонента Search
                                         >
                                             {i.name}
                                         </div>
                                         <div
-                                            className="SearchListItemBodyArticle"
+                                            className="SearchListItemBodyArticle" // этот класс из компонента Search
                                         >
                                             артикул: {i.article}
                                         </div>
                                     </div>
 
                                     <div
-                                        className="SearchListItemBodyPrice"
+                                        className="SearchListItemBodyPrice" // этот класс из компонента Search
                                     >
                                         <div>
                                             {i.price} р.
@@ -150,7 +161,9 @@ const SearchAdminService = observer((props) => {
                     id={productSearch?.id}
                     name={productSearch.name}
                     price={productSearch.price}
-                    file={API_URL + productSearch.img}
+                    file={typeof(productSearch.img) === "object" && productSearch.img !== null
+                    ? API_URL + productSearch.img[0].big
+                    : API_URL + productSearch.img}
                     have={productSearch.have}
                     article={productSearch.article}
                     description={productSearch.description}

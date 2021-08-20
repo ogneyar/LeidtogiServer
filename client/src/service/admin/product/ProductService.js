@@ -22,16 +22,16 @@ const ProductService = observer((props) => {
     const [name, setName] = useState(props?.name || '')
     const [price, setPrice] = useState(props?.price || "")
     const [file, setFile] = useState(null)
-    const [fileReader, setFileReader] = useState(props?.file || null)
     
     const [have, setHave] = useState(props?.have || 1)
     const [article, setArticle] = useState(props?.article || "")
     const [description, setDescription] = useState(props?.description || "")
     const [promo, setPromo] = useState(props?.promo || "")
     const [country, setCountry] = useState(props?.country || "Германия")
-
+    
     const [size, setSize] = useState({weight: "", volume: "", width: "", height: "", length: ""})
     const [info, setInfo] = useState({title: "Характеристики", description: ""})
+    const [fileReader, setFileReader] = useState(null)
 
     // const [allCategories, setAllCategories] = useState([])
 
@@ -67,6 +67,13 @@ const ProductService = observer((props) => {
     useEffect(() => {
         if (props.size?.title) setSize(props?.size)
     },[props?.size])
+
+    useEffect(() => {
+        if (typeof(props.file) === "object" && props.file[0].small !== undefined) {
+            setFileReader(props.file[0].small)
+        }else if (typeof(props.file) === "string") setFileReader(props.file)
+    },[props?.file])
+
 
     const selectFile = e => {
         let reader = new FileReader()
@@ -206,11 +213,15 @@ const ProductService = observer((props) => {
                     <Form.Control 
                         className=''
                         type="file"
+                        disabled
                         onChange={selectFile}
                     />
                 </div>
                 <div>
-                    {fileReader ? <Image src={fileReader} width="100" height="100" /> : null}
+                    {fileReader 
+                    // ? <Image src={fileReader} width="100" height="100" /> 
+                    ? <Image src={fileReader} width="80" /> 
+                    : null}
                 </div>
                 
             </div>

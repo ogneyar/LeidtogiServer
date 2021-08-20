@@ -39,7 +39,7 @@ function reSearch(string, brand) {
 class parserController {
 
     async getArrayImages(req, res) {
-        let { brand, article } = req.query  // milwaukee, 4933471077
+        let { brand, article } = req.body  // milwaukee, 4933471077
         let response, Html, lengthHtml, serchString, lengthSerchString, number
 
         // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
@@ -118,6 +118,8 @@ class parserController {
             }
         })
 
+        // return res.json(JSON.stringify(arrayImages)) // return array 
+        // return res.send(JSON.stringify(arrayImages)) // return array 
         return res.json(arrayImages) // return array 
     }
 }
