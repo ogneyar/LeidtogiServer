@@ -24,6 +24,14 @@ const Search = observer((props) => {
         }
     },[product.allProducts])
 
+    // useEffect(() => {
+    //     if (list.length) {
+    //         document.addEventListener("click", () => {
+    //             setList([])
+    //         }, {once: true})
+    //     }
+    // },[list])
+
     const onChangeSearchInputValue = (search) => {
         setValue(search)
         if (search) {

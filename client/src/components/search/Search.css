@@ -96,8 +96,9 @@
     right: 0;
     bottom: 0;
     z-index: 999;
-
-    /* background-color: lightpink; */
+    /* pointer-events:none; */
+    background-color: lightgrey;
+    opacity: 0.6;
 }
 
 @media(max-width:1199px) {
