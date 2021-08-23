@@ -80,7 +80,7 @@ const ProductService = observer((props) => {
         if (prod) {
             props?.back()
             if (file === null) {
-                const images = await fetchParserImages(brand.selectedBrand.name, article)
+                const images = await fetchParserImages(brand.selectedBrand.name.toLowerCase(), article)
                 if (images) {
                     await updateProductOnArticle(article, {img:JSON.stringify(images)})
                 }

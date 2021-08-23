@@ -21,8 +21,8 @@ class ProductController {
                     where: {id:product.brandId}
                 })
                 fileName = uuid.v4() + '.jpg'
-                imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name, article, 'big', fileName))
-                imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name, article, 'small', fileName))
+                imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
+                imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
                 files = [{"big": fileName, "small": fileName}]
             }
 
