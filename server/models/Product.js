@@ -10,9 +10,10 @@ const Product = sequelize.define('product', {
     img: {type: DataTypes.STRING(1024), allowNull: false},
     have: {type: DataTypes.INTEGER, defaultValue: 0},
     article: {type: DataTypes.STRING, defaultValue: null},
-    description: {type: DataTypes.STRING, defaultValue: null},
+    description: {type: DataTypes.STRING(1024), defaultValue: null},
     promo: {type: DataTypes.STRING, defaultValue: null},
-    country: {type: DataTypes.STRING, defaultValue: null}
+    country: {type: DataTypes.STRING, defaultValue: null},
+    equipment: {type: DataTypes.STRING(1024), defaultValue: null}
 })
 
 module.exports = Product
