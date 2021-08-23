@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { fetchParserImages } from '../../http/paserAPI';
-import { updateProduct, fetchAllProducts } from '../../http/productAPI';
+import { updateProductOnArticle, fetchAllProducts } from '../../http/productAPI';
 import InfoPage from '../info/InfoPage';
 import { Context } from '../..'
 import Loading from '../../components/Loading';
@@ -19,19 +19,12 @@ const ParserPage = observer(() => {
 
     useEffect(() => {
         if (state[0]?.big !== undefined) {
-            console.log(state)
-            let id
-            product.allProducts.forEach(i => {
-                if (i.article === article) id = i.id
-            })
-            if (id) {
-                updateProduct(id, {img:JSON.stringify(state)})
-                    .then(data => {
-                        setMessage("Сохранено")
-                        fetchAllProducts().then(dat => product.setAllProducts(dat))
-                    })
-                    .finally(data => setLoading(false))
-            }else setLoading(false)
+            updateProductOnArticle(article, {img:JSON.stringify(state)})
+                .then(data => {
+                    setMessage("Сохранено")
+                    fetchAllProducts().then(dat => product.setAllProducts(dat))
+                })
+                .finally(data => setLoading(false))
         }
     },[state])
 
