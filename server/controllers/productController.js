@@ -1,23 +1,32 @@
-const {Product, ProductInfo, ProductSize} = require('../models/models')
+const {Product, ProductInfo, ProductSize, Brand} = require('../models/models')
 const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
+const deleteAllFiles = require('../utils/deleteAllFiles.js')
 
 
 class ProductController {
     async create(req, res, next) { 
         try {
             let {name, price, brandId, categoryId, info, have, article, description, promo, country, size} = req.body
-            let img
-            if (req.files && req.files.img) img = req.files.img
-            let fileName = "[{}]"
-            if (img) {
+            let imgBig, imgSmall, fileName
+            if (req.files && req.files.img_big && req.files.img_small) {
+                imgBig =req.files.img_big
+                imgSmall =req.files.img_small
+            }
+            let files = [{}]
+            if (imgBig && imgSmall) {
+                const brand = await Brand.findOne({
+                    where: {id:product.brandId}
+                })
                 fileName = uuid.v4() + '.jpg'
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name, article, 'big', fileName))
+                imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name, article, 'small', fileName))
+                files = [{"big": fileName, "small": fileName}]
             }
 
-            const product = await Product.create({name, price, have, article, description, promo, country, brandId, categoryId, img: fileName})
+            const product = await Product.create({name, price, have, article, description, promo, country, brandId, categoryId, img: JSON.stringify(files)})
 
             if (info) {
                 let inf = JSON.parse(info)
@@ -109,12 +118,12 @@ class ProductController {
         const product = await Product.findOne({
             where: {id}
         })
+
+        const brand = await Brand.findOne({
+            where: {id:product.brandId}
+        })
       
-        try {
-            fs.unlinkSync(path.resolve(__dirname, '..', 'static', product.img))
-        }catch(e) {
-            console.log("Удаляемый файл не найден.");
-        }
+        deleteAllFiles(brand.name, product.article)
 
         await ProductInfo.destroy({
             where: {productId: id}
@@ -133,6 +142,15 @@ class ProductController {
         const body = req.body
         const response = await Product.update(body, {
             where: { id }
+        })
+        return res.json(response) // return boolean
+    }
+
+    async editOnArticle(req, res) {
+        const {article} = req.params
+        const body = req.body
+        const response = await Product.update(body, {
+            where: { article }
         })
         return res.json(response) // return boolean
     }
