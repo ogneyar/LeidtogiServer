@@ -74,13 +74,13 @@ const Admin = observer(() => {
                 Редактор брендов
             </Button>
 
-            <Button 
+            {/* <Button 
                 variant={"outline-dark"} 
                 className="m-3 p-2 Admin_button"
                 onClick={() => history.push("/parser")}
             >
                 Парсер
-            </Button>
+            </Button> */}
 
             <hr/>
 
