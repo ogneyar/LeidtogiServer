@@ -1,14 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
 import ProductAddService from '../../service/admin/product/ProductAddService'
 import ProductEditService from '../../service/admin/product/ProductEditService'
 import ProductDeleteService from '../../service/admin/product/ProductDeleteService'
+import { Context } from '../..'
+
 import './Product.css'
 
 
 const Product = observer(({show, onHide}) => {
+
+    const { category } = useContext(Context)
 
     const [addProduct, setAddProduct] = useState(false)
     const [editProduct, setEditProduct] = useState(false)
@@ -26,6 +30,7 @@ const Product = observer(({show, onHide}) => {
     }
 
     const onClickButtonAdd = () => {
+        category.setSelectedCategory({})
         setAddProduct(true)
         setEditProduct(false)
         setDeleteProduct(false)

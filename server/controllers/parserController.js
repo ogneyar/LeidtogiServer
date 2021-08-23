@@ -5,7 +5,7 @@ const path = require('path')
 const https = require('https')
 const fs = require('fs')
 const XLSX = require('xlsx')
-const deleteAllFiles = require('../utils/deleteAllFiles.js')
+const createFoldersAndDeleteOldFiles = require('../utils/createFoldersAndDeleteOldFiles.js')
 const reSearch = require('../utils/reSearch.js')
 
 
@@ -49,21 +49,7 @@ class parserController {
 
         let arrayImages = []
 
-        if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand))){
-            fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand))
-        }
-        if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article))){
-            fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article))
-            if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article, 'big'))){
-                fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article, 'big'))
-            }
-            if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article, 'small'))){
-                fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article, 'small'))
-            }
-        }else {
-            deleteAllFiles(brand, article)
-        }
-        
+        createFoldersAndDeleteOldFiles(brand, article)
 
         response.carousel.productImages.forEach((i, index) => {
 

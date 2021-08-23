@@ -3,13 +3,13 @@ const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
-const deleteAllFiles = require('../utils/deleteAllFiles.js')
+const createFoldersAndDeleteOldFiles = require('../utils/createFoldersAndDeleteOldFiles.js')
 
 
 class ProductController {
     async create(req, res, next) { 
         try {
-            let {name, price, brandId, categoryId, info, have, article, description, promo, country, size} = req.body
+            let {name, price, brandId, categoryId, info, have, article, description, promo, country, equipment, size} = req.body
             let imgBig, imgSmall, fileName
             if (req.files && req.files.img_big && req.files.img_small) {
                 imgBig =req.files.img_big
@@ -21,12 +21,15 @@ class ProductController {
                     where: {id:product.brandId}
                 })
                 fileName = uuid.v4() + '.jpg'
+                
+                createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
+
                 imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
                 imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
                 files = [{"big": fileName, "small": fileName}]
             }
 
-            const product = await Product.create({name, price, have, article, description, promo, country, brandId, categoryId, img: JSON.stringify(files)})
+            const product = await Product.create({name, price, have, article, description, promo, country, equipment, brandId, categoryId, img: JSON.stringify(files)})
 
             if (info) {
                 let inf = JSON.parse(info)
@@ -123,7 +126,7 @@ class ProductController {
             where: {id:product.brandId}
         })
       
-        deleteAllFiles(brand.name, product.article)
+        createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), product.article)
 
         await ProductInfo.destroy({
             where: {productId: id}
@@ -157,28 +160,41 @@ class ProductController {
 
     async editAll(req, res, next) {
         const {id} = req.params
-        const product = await Product.findOne({
-            where: {id}
-        })
-        let deleteOldImage = product.img
         try {
-            let {name, price, brandId, categoryId, info, have, article, description, promo, country, size} = req.body
-            let img
-            
-            if (req.files) img = req.files.img
+            let {name, price, brandId, categoryId, info, have, article, description, promo, country, size, equipment} = req.body
 
-            let fileName = uuid.v4() + '.jpg'
-            if (img) {
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            }else {
-                fileName = deleteOldImage
-                deleteOldImage = null
+            let imgBig, imgSmall, fileName
+            if (req.files && req.files.img_big && req.files.img_small) {
+                imgBig =req.files.img_big
+                imgSmall =req.files.img_small
+            }
+            let files
+            if (imgBig && imgSmall) {
+                const brand = await Brand.findOne({
+                    where: {id:product.brandId}
+                })
+                fileName = uuid.v4() + '.jpg'
+
+                createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
+
+                imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
+                imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
+                files = [{"big": fileName, "small": fileName}]
             }
             
-            const product = await Product.update(
-                {name, price, have, article, description, promo, country, brandId, categoryId, img: fileName}, 
-                {where: { id }}
-            )
+            let product
+
+            if (files) {
+                product = await Product.update(
+                    {name, price, have, article, description, promo, equipment, country, brandId, categoryId, img: JSON.stringify(files)}, 
+                    {where: { id }}
+                )
+            }else {
+                product = await Product.update(
+                    {name, price, have, article, description, promo, equipment, country, brandId, categoryId}, 
+                    {where: { id }}
+                )
+            }
     
             if (info) {
                 let inf = JSON.parse(info)
@@ -245,15 +261,6 @@ class ProductController {
                     where: {productId: id}
                 })
             }  
-
-            if (deleteOldImage) {
-                try {
-                    fs.unlinkSync(path.resolve(__dirname, '..', 'static', deleteOldImage))
-                }catch(e) {
-                    console.log("Удаляемый файл не найден.");
-                    return res.json(product)
-                }
-            }
     
             return res.json(product)
 

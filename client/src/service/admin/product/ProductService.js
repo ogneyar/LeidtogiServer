@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Button, Form, Dropdown, Row, Col, Image } from 'react-bootstrap'
+import { Button, Form, Dropdown, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
 import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct, updateProductOnArticle } from '../../../http/productAPI'
@@ -27,10 +27,13 @@ const ProductService = observer((props) => {
     const [description, setDescription] = useState(props?.description || "")
     const [promo, setPromo] = useState(props?.promo || "")
     const [country, setCountry] = useState(props?.country || "Германия")
+    const [equipment, setEquipment] = useState(props?.equipment || "")
     
     const [size, setSize] = useState({weight: "", volume: "", width: "", height: "", length: ""})
     const [info, setInfo] = useState({title: "Характеристики", description: ""})
     const [fileReader, setFileReader] = useState(null)
+
+    const [fileVisible, setFileVisible] = useState(false)
 
     
     useEffect(() => {
@@ -114,6 +117,7 @@ const ProductService = observer((props) => {
         formData.append('article', article.trim())
         formData.append('description', description.trim())
         formData.append('promo', promo.trim())
+        formData.append('equipment', equipment.trim())
         formData.append('country', country.trim())
         formData.append('size', JSON.stringify(size))
         formData.append('brandId', brand.selectedBrand.id)
@@ -208,13 +212,23 @@ const ProductService = observer((props) => {
             <div className="inputBox fileBox">
                 <div>
                     <label>Изображение инструмента:</label>
-                    <Form.Control 
-                        className=''
-                        type="file"
-                        disabled
-                        onChange={selectFile}
-                    />
+                    <br />
+                    {fileVisible 
+                    ?
+                        <Form.Control 
+                            className=''
+                            type="file"
+                            disabled
+                            onChange={selectFile}
+                         />
+                    :
+                        <Button variant="outline-primary" onClick={() => setFileVisible(true)}>
+                            {action === "edit" && "Заменить фото"}
+                            {action === "add" && "Добавить самостоятельно"}
+                        </Button>
+                    }
                 </div>
+                
                 <div>
                     {fileReader 
                     // ? <Image src={fileReader} width="100" height="100" /> 
@@ -255,7 +269,7 @@ const ProductService = observer((props) => {
                 />
             </div>
             <div className="inputBox">
-                <label>Описание инструмента: (не обязательно)</label>
+                <label>Описание инструмента:</label>
                 <Form.Control 
                     value={description}
                     onChange={e => setDescription(e.target.value)}
@@ -273,6 +287,15 @@ const ProductService = observer((props) => {
                 />
             </div>
             <div className="inputBox">
+                <label>Комплектация:</label>
+                <Form.Control 
+                    value={equipment}
+                    onChange={e => setEquipment(e.target.value)}
+                    className=''
+                    placeholder={'Введите комплектацию инструмента'}
+                />
+            </div>
+            <div className="inputBox">
                 <label>Страна производителя:</label>
                 <Form.Control 
                     value={country}
@@ -283,14 +306,20 @@ const ProductService = observer((props) => {
             </div>
 
             <div className="inputBox">
-                <Size size={size} setSize={setSize} />
+                <Size // габариты
+                    size={size}
+                    setSize={setSize} 
+                    action={action}
+                />
             </div>
 
-            <hr />
+            {/* <hr /> */}
 
             <div className="inputBox">
                 <Characteristic info={info} setInfo={setInfo} />
             </div>
+
+            
 
             <hr />
 

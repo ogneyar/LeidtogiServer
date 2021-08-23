@@ -1,12 +1,26 @@
-import React from 'react';
-import { Form, Row, Col } from 'react-bootstrap'
+import React, { useState } from 'react';
+import { Button, Form, Row, Col } from 'react-bootstrap'
 
 
-const Size = ({size, setSize}) => {
+const Size = ({size, setSize, action}) => {
 
     const changeSize = (key, value) => {
         setSize({...size, [key]: value}) 
     }
+
+    const [visible, setVisible] = useState(false)
+
+    if (!visible) 
+        return (
+            <div>
+                <label>Габариты:</label>
+                <br />
+                <Button variant="outline-primary" onClick={() => setVisible(true)}>
+                    {action === "edit" && "Изменить данные"}
+                    {action === "add" && "Добавить самостоятельно"}
+                </Button>
+            </div>
+        )
 
     return (
         <Row

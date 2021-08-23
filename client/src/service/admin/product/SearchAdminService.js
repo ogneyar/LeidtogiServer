@@ -147,18 +147,19 @@ const SearchAdminService = observer((props) => {
                     action={props?.action}
                     back={props?.back}
                     id={productSearch?.id}
-                    name={productSearch.name}
-                    price={productSearch.price}
-                    file={Array.isArray(productSearch.img)  && productSearch.img[0]?.small !== undefined
+                    name={productSearch?.name}
+                    price={productSearch?.price}
+                    file={Array.isArray(productSearch?.img)  && productSearch?.img[0]?.small !== undefined
                     ? API_URL + productSearch.img[0].small
                     : API_URL + "unknown.jpg"}
-                    have={productSearch.have}
-                    article={productSearch.article}
-                    description={productSearch.description}
-                    promo={productSearch.promo}
-                    country={productSearch.country}
+                    have={productSearch?.have}
+                    article={productSearch?.article}
+                    description={productSearch?.description}
+                    promo={productSearch?.promo}
+                    country={productSearch?.country}
                     info={props?.action === "edit" ? info : null}
                     size={props?.action === "edit" ? size : null}
+                    equipment={productSearch?.equipment}
                 /> 
 
             : null}
