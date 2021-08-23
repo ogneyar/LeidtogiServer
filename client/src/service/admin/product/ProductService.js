@@ -2,9 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Button, Form, Dropdown, Row, Col, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct } from '../../../http/productAPI'
-import { fetchAllCategories } from '../../../http/categoryAPI'
-import { fetchBrands } from '../../../http/brandAPI'
+import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct, updateProductOnArticle } from '../../../http/productAPI'
+import { fetchParserImages } from '../../../http/paserAPI'
 import { Context } from '../../..'
 
 import Characteristic from './Characteristic'
@@ -33,21 +32,12 @@ const ProductService = observer((props) => {
     const [info, setInfo] = useState({title: "Характеристики", description: ""})
     const [fileReader, setFileReader] = useState(null)
 
-    // const [allCategories, setAllCategories] = useState([])
-
+    
     useEffect(() => {
-        // fetchAllCategories().then(data => {
-        //     setAllCategories(data)
-        // })
-        // fetchBrands().then(data => {
-        //     brand.setBrands(data)
-        //     brand.setSelectedBrand(data[0])
-        // })
     },[])
 
     useEffect(() => {
         if (category.allCategories.length) {
-            // setAllCategories(category.allCategories)
             category.setCategories(category.allCategories)
         }
     },[category.allCategories])
@@ -86,10 +76,18 @@ const ProductService = observer((props) => {
 
     const addProduct = async () => {
         const formData = getFormData()
-        await createProduct(formData).then(data => props?.back())
-
-        fetchAllProducts().then(data => product.setAllProducts(data))
-        category.setSelectedCategory({})
+        let prod = await createProduct(formData)
+        if (prod) {
+            props?.back()
+            if (file === null) {
+                const images = await fetchParserImages(brand.selectedBrand.name, article)
+                if (images) {
+                    await updateProductOnArticle(article, {img:JSON.stringify(images)})
+                }
+            }
+            fetchAllProducts().then(data => product.setAllProducts(data))
+            category.setSelectedCategory({})
+        }else console.log("Ошибка создания продукции")
     }
 
     const editProduct = async (id) => {
