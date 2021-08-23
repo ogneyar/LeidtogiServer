@@ -3,18 +3,21 @@ import { Button, Form, Dropdown, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
 import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct, updateProductOnArticle } from '../../../http/productAPI'
-import { fetchParserImages } from '../../../http/paserAPI'
+import { fetchParserImages, fetchParserSizes } from '../../../http/paserAPI'
 import { Context } from '../../..'
 
 import Characteristic from './Characteristic'
 import Size from './Size'
 
 import './ProductService.css'
+import Loading from '../../../components/Loading'
 
 
 const ProductService = observer((props) => {
     
     const {product, category, brand} = useContext(Context)
+
+    const [loading, setLoading] = useState(false)
 
     const action = props?.action // add ,edit or del
     
@@ -58,7 +61,7 @@ const ProductService = observer((props) => {
     },[props?.info])
 
     useEffect(() => {
-        if (props.size?.title) setSize(props?.size)
+        if (props.size?.weight || props.size?.volume || props.size?.width || props.size?.height || props.size?.length) setSize(props?.size)
     },[props?.size])
 
     useEffect(() => {
@@ -78,27 +81,24 @@ const ProductService = observer((props) => {
     }
 
     const addProduct = async () => {
-        const formData = getFormData()
-        let prod = await createProduct(formData)
-        if (prod) {
-            props?.back()
-            if (file === null) {
-                const images = await fetchParserImages(brand.selectedBrand.name.toLowerCase(), article)
-                if (images) {
-                    await updateProductOnArticle(article, {img:JSON.stringify(images)})
-                }
-            }
-            fetchAllProducts().then(data => product.setAllProducts(data))
-            category.setSelectedCategory({})
-        }else console.log("Ошибка создания продукции")
+        setLoading(true)
+        const formData = await getFormData()
+        
+        await createProduct(formData).then(data => props?.back())
+
+        fetchAllProducts().then(data => product.setAllProducts(data))
+        category.setSelectedCategory({})
+        setLoading(false)
     }
 
     const editProduct = async (id) => {
-        const formData = getFormData()
+        setLoading(true)
+        const formData = await getFormData()
         await updateAllProduct(id, formData).then(data => props?.back())
 
         fetchAllProducts().then(data => product.setAllProducts(data))
         category.setSelectedCategory({})
+        setLoading(false)
     }
 
     const delProduct = async (id) => {
@@ -108,7 +108,7 @@ const ProductService = observer((props) => {
         category.setSelectedCategory({})
     }
 
-    const getFormData = () => {
+    const getFormData = async () => {
         const formData = new FormData()
         formData.append('name', name.trim())
         formData.append('price', `${price}`)
@@ -119,10 +119,26 @@ const ProductService = observer((props) => {
         formData.append('promo', promo.trim())
         formData.append('equipment', equipment.trim())
         formData.append('country', country.trim())
-        formData.append('size', JSON.stringify(size))
         formData.append('brandId', brand.selectedBrand.id)
         formData.append('categoryId', category.selectedCategory.id)
         formData.append('info', JSON.stringify(info))
+
+        if (action === "add") {
+            if (file === null) {
+                await fetchParserImages(brand.selectedBrand.name.toLowerCase(), article)
+                    .then(images => {
+                        formData.append('files', JSON.stringify(images))
+                    })
+            }
+            if (size?.weight === "" && size?.volume === "" && size?.width === "" && size?.height === "" && size?.length === "") {
+                await fetchParserSizes(article).then(sizes => {
+                    formData.append('size', JSON.stringify({...sizes,weight:sizes.weight.replace(',', '.')}))
+                })
+            }else formData.append('size', JSON.stringify(size))
+        }else if (action === "edit") {
+            formData.append('size', JSON.stringify(size))
+        }
+
         return formData
     }
 
@@ -144,6 +160,8 @@ const ProductService = observer((props) => {
                 )
         })
     }
+
+    if (loading) return <Loading />
 
     if (action === "del") {
         return (
@@ -189,6 +207,15 @@ const ProductService = observer((props) => {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
+            </div>
+            <div className="inputBox">
+                <label>Артикул инструмента:</label>
+                <Form.Control 
+                    value={article}
+                    onChange={e => setArticle(e.target.value)}
+                    className=''
+                    placeholder={'Введите артикул инструмента'}
+                />
             </div>
             <div className="inputBox">
                 <label>Название инструмента: (модель)</label>
@@ -259,15 +286,7 @@ const ProductService = observer((props) => {
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
-            <div className="inputBox">
-                <label>Артикул инструмента:</label>
-                <Form.Control 
-                    value={article}
-                    onChange={e => setArticle(e.target.value)}
-                    className=''
-                    placeholder={'Введите артикул инструмента'}
-                />
-            </div>
+            
             <div className="inputBox">
                 <label>Описание инструмента:</label>
                 <Form.Control 

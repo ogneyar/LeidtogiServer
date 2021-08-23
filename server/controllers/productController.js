@@ -9,14 +9,11 @@ const createFoldersAndDeleteOldFiles = require('../utils/createFoldersAndDeleteO
 class ProductController {
     async create(req, res, next) { 
         try {
-            let {name, price, brandId, categoryId, info, have, article, description, promo, country, equipment, size} = req.body
+            let {name, price, brandId, categoryId, info, have, article, description, promo, country, equipment, size, files} = req.body
             let imgBig, imgSmall, fileName
             if (req.files && req.files.img_big && req.files.img_small) {
                 imgBig =req.files.img_big
                 imgSmall =req.files.img_small
-            }
-            let files = [{}]
-            if (imgBig && imgSmall) {
                 const brand = await Brand.findOne({
                     where: {id:product.brandId}
                 })
@@ -26,10 +23,12 @@ class ProductController {
 
                 imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
                 imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
-                files = [{"big": fileName, "small": fileName}]
-            }
+                files = `[{"big": "${fileName}", "small": "${fileName}"}]`
+            }else if (!files) {
+                files = "[{}]"
+            } 
 
-            const product = await Product.create({name, price, have, article, description, promo, country, equipment, brandId, categoryId, img: JSON.stringify(files)})
+            const product = await Product.create({name, price, have, article, description, promo, country, equipment, brandId, categoryId, img: files})
 
             if (info) {
                 let inf = JSON.parse(info)
@@ -46,11 +45,11 @@ class ProductController {
                 let s = JSON.parse(size)
                 if (s.weight || s.volume || s.width || s.height || s.length) {
                     ProductSize.create({
-                        weight: s.weight,
-                        volume: s.volume,
-                        width: s.width,
-                        height: s.height,
-                        length: s.length,
+                        weight: s.weight || 0,
+                        volume: s.volume || 0,
+                        width: s.width || 0,
+                        height: s.height || 0,
+                        length: s.length || 0,
                         productId: product.id 
                     })
                 }
