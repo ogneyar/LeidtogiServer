@@ -2,39 +2,12 @@ const ApiError = require('../error/apiError')
 const axios = require('axios')
 const uuid = require('uuid')
 const path = require('path')
-var https = require('https')
-var fs = require('fs')
+const https = require('https')
+const fs = require('fs')
+const XLSX = require('xlsx')
+const deleteAllFiles = require('../utils/deleteAllFiles.js')
+const reSearch = require('../utils/reSearch.js')
 
-
-function reSearch(string, brand) {
-    if (!string) return null
-    let saveString, lengthString, serchString, lengthSerchString, number
-
-    lengthString = string.length
-    serchString = `<div class="image">`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return null
-    string = string.substring(number, lengthString)
-
-    lengthString = string.length
-    serchString = `href="`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return null
-    string = string.substring(number + lengthSerchString, lengthString)
-
-    saveString = string
-
-    serchString = `"`
-    number = string.indexOf(serchString)
-    if (number === -1) return null
-    string = string.substring(0, number)
-
-    if (string.indexOf(brand) === -1) string = reSearch(saveString, brand)
-
-    return string
-}
 
 class parserController {
 
@@ -47,7 +20,7 @@ class parserController {
             what: article
         }}).then(res => Html = res.data)
         
-        Html = reSearch(Html, brand)
+        Html = reSearch(Html, article)
 
         if (!Html) return res.send(null)
         
@@ -76,6 +49,22 @@ class parserController {
 
         let arrayImages = []
 
+        if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand))){
+            fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand))
+        }
+        if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article))){
+            fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article))
+            if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article, 'big'))){
+                fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article, 'big'))
+            }
+            if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article, 'small'))){
+                fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article, 'small'))
+            }
+        }else {
+            deleteAllFiles(brand, article)
+        }
+        
+
         response.carousel.productImages.forEach((i, index) => {
 
             if (index < 4) {
@@ -88,19 +77,6 @@ class parserController {
                 
                 filePathBig = brand + '/' + article + '/big/' + fileName
                 filePathSmall = brand + '/' + article + '/small/' + fileName
-
-                if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand))){
-                    fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand))
-                }
-                if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article))){
-                    fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article))
-                }
-                if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article, 'big'))){
-                    fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article, 'big'))
-                }
-                if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand, article, 'small'))){
-                    fs.mkdirSync(path.resolve(__dirname, '..', 'static', brand, article, 'small'))
-                }
 
                 fileBig = fs.createWriteStream(path.resolve(__dirname, '..', 'static', brand, article, 'big', fileName));
         
@@ -118,9 +94,29 @@ class parserController {
             }
         })
 
-        // return res.json(JSON.stringify(arrayImages)) // return array 
-        // return res.send(JSON.stringify(arrayImages)) // return array 
         return res.json(arrayImages) // return array 
+    }
+
+    
+    async test(req, res) {
+        let { article } = req.query
+        
+        let workbook = XLSX.readFile('MILWAUKEE.xlsx')
+
+        var first_sheet_name = workbook.SheetNames[0];
+        var address_of_cell = 'J10';
+
+        /* Get worksheet */
+        var worksheet = workbook.Sheets[first_sheet_name];
+
+        /* Find desired cell */
+        var desired_cell = worksheet[address_of_cell];
+
+        /* Get the value */
+        var desired_value = (desired_cell ? desired_cell.v : undefined);
+
+
+        return res.json(desired_value)
     }
 }
 
