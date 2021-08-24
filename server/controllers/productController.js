@@ -3,7 +3,7 @@ const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
-const createFoldersAndDeleteOldFiles = require('../utils/createFoldersAndDeleteOldFiles.js')
+const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
 
 
 class ProductController {

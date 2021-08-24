@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import React, { useContext } from 'react'
 import { Pagination } from 'react-bootstrap'
+import $ from 'jquery'
 
 import { Context } from '..'
 
@@ -24,7 +25,22 @@ const Pages = observer(() => {
                 <Pagination.Item
                     key={page}
                     active={product.page === page}
-                    onClick={() => product.setPage(page)}
+                    onClick={() => {
+                        if (window.innerWidth > 991) {
+                            $('html, body').animate(
+                                {scrollTop: 240}, 
+                                700, 
+                                function(){}
+                            )
+                        }else {
+                            $('html, body').animate(
+                                {scrollTop: 130}, 
+                                700, 
+                                function(){}
+                            )
+                        }
+                        product.setPage(page)
+                    }}
                 >
                     {page}
                 </Pagination.Item>

@@ -14,7 +14,7 @@ import './AdminPage.css';
 
 const Admin = observer(() => {
     
-    const { product, category, brand } = useContext(Context)
+    const { user, product, category, brand } = useContext(Context)
 
     const history = useHistory()
 
@@ -74,13 +74,16 @@ const Admin = observer(() => {
                 Редактор брендов
             </Button>
 
-            {/* <Button 
-                variant={"outline-dark"} 
-                className="m-3 p-2 Admin_button"
-                onClick={() => history.push("/parser")}
-            >
-                Парсер
-            </Button> */}
+            {user.user.email === "ya13th@mail.ru" 
+            ?
+                <Button 
+                    variant={"outline-dark"} 
+                    className="m-3 p-2 Admin_button"
+                    onClick={() => history.push("/parser")}
+                >
+                    Парсер
+                </Button>
+            : null}
 
             <hr/>
 

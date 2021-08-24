@@ -3,7 +3,7 @@ import { Button, Form, Dropdown, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
 import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct, updateProductOnArticle } from '../../../http/productAPI'
-import { fetchParserImages, fetchParserSizes } from '../../../http/paserAPI'
+import { fetchParserImages, fetchParserSizes, fetchParserAll } from '../../../http/paserAPI'
 import { Context } from '../../..'
 
 import Characteristic from './Characteristic'
@@ -82,14 +82,20 @@ const ProductService = observer((props) => {
 
     const addProduct = async () => {
         if (category.selectedCategory?.name && brand.selectedBrand?.name && article && name && price) {
-            setLoading(true)
-            const formData = await getFormData()
-            
-            await createProduct(formData).then(data => props?.back())
-
-            fetchAllProducts().then(data => product.setAllProducts(data))
-            category.setSelectedCategory({})
-            setLoading(false)
+            let no = true
+            product.allProducts.forEach(i => {
+                if (i.article === article) no = false
+            })
+            if (no) { // если нет такого артикула в БД
+                setLoading(true)
+                const formData = await getFormData()
+                
+                await createProduct(formData).then(data => props?.back())
+    
+                fetchAllProducts().then(data => product.setAllProducts(data))
+                category.setSelectedCategory({})
+                setLoading(false)
+            }else alert("Такой артикул в базе данных уже есть.")
         }else alert("Надо выбрать категорию, бренд, ввести артикул, имя, цену и характеристики.")
     }
 
@@ -126,17 +132,25 @@ const ProductService = observer((props) => {
         formData.append('info', JSON.stringify(info))
 
         if (action === "add") {
-            if (file === null) {
-                await fetchParserImages(brand.selectedBrand.name.toLowerCase(), article)
-                    .then(images => {
-                        formData.append('files', JSON.stringify(images))
+            if (size?.weight === "" && size?.volume === "" && size?.width === "" && size?.height === "" && size?.length === "" && file === null) {
+                await fetchParserAll(brand.selectedBrand.name.toLowerCase(), article)
+                    .then(data => {
+                        formData.append('files', JSON.stringify(data?.images))
+                        formData.append('size', JSON.stringify(data?.sizes))
                     })
+            }else {
+                if (file === null) {
+                    await fetchParserImages(brand.selectedBrand.name.toLowerCase(), article)
+                        .then(images => {
+                            formData.append('files', JSON.stringify(images))
+                        })
+                }
+                if (size?.weight === "" && size?.volume === "" && size?.width === "" && size?.height === "" && size?.length === "") {
+                    await fetchParserSizes(article).then(sizes => {
+                        formData.append('size', JSON.stringify(sizes))
+                    })
+                }else formData.append('size', JSON.stringify(size))
             }
-            if (size?.weight === "" && size?.volume === "" && size?.width === "" && size?.height === "" && size?.length === "") {
-                await fetchParserSizes(article).then(sizes => {
-                    formData.append('size', JSON.stringify(sizes))
-                })
-            }else formData.append('size', JSON.stringify(size))
         }else if (action === "edit") {
             formData.append('size', JSON.stringify(size))
         }

@@ -14,3 +14,10 @@ export const fetchParserSizes = async (article) => {
     }})
     return data
 }
+
+export const fetchParserAll = async (brand, article) => {
+    const {data} = await $authHost.get('api/parser/all', {params: {
+        brand, article
+    }})
+    return data
+}
