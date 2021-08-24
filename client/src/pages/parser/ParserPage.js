@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { fetchParserImages, fetchParserSizes } from '../../http/paserAPI';
-import { updateProductOnArticle, fetchAllProducts } from '../../http/productAPI';
+import { updateProductOnArticle, fetchAllProducts, fetchProductSizes, updateProductSizes } from '../../http/productAPI';
 import InfoPage from '../info/InfoPage';
 import { Context } from '../..'
 import Loading from '../../components/Loading';
@@ -47,9 +47,23 @@ const ParserPage = observer(() => {
     const onClickButtonParserSizes = () => {
         setLoading(true)
         setMessage("")
-        fetchParserSizes(article).then(data => {
-            setStateSizes(data)
+        // fetchParserSizes(article).then(data => {
+        //     setStateSizes(data)
+        // })
+
+        product.allProducts.forEach(i => {
+            fetchProductSizes(i.id).then(data => {
+                if (!data?.weight) {
+                    fetchParserSizes(i.article).then(size => {
+                        console.log("article",i.article);
+                        console.log("size",size);
+                        updateProductSizes(i.id, {size:JSON.stringify(size)})
+                    })
+                }
+            })
         })
+
+        setLoading(false)
     }
     
 

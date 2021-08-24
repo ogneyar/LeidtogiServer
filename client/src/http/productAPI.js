@@ -72,7 +72,10 @@ export const updateProductOnArticle = async (article, body) => {
     return data
 }
 
-
+export const updateProductSizes = async (id, body) => {
+    const {data} = await $authHost.put('api/product/edit_sizes/' + id, body)
+    return data
+}
 
 export const updateAllProduct = async (id, body) => {   
     const {data} = await $authHost.put('api/product/edit_all/' + id, body)

@@ -1,6 +1,4 @@
-
-
-module.exports = function (string, article) {
+function reSearch(string, article) {
     if (!string) return null
     let saveString, lengthString, serchString, lengthSerchString, number
 
@@ -25,7 +23,9 @@ module.exports = function (string, article) {
     if (number === -1) return null
     string = string.substring(0, number)
 
-    if (string.indexOf(article) === -1) string = reSearch(saveString, brand)
+    if (string.indexOf(article) === -1) string = reSearch(saveString, article)
 
     return string
 }
+
+module.exports = reSearch

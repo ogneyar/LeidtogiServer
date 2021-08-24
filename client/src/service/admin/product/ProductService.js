@@ -21,12 +21,12 @@ const ProductService = observer((props) => {
 
     const action = props?.action // add ,edit or del
     
+    const [article, setArticle] = useState(props?.article || "")
     const [name, setName] = useState(props?.name || '')
     const [price, setPrice] = useState(props?.price || "")
     const [file, setFile] = useState(null)
     
     const [have, setHave] = useState(props?.have || 1)
-    const [article, setArticle] = useState(props?.article || "")
     const [description, setDescription] = useState(props?.description || "")
     const [promo, setPromo] = useState(props?.promo || "")
     const [country, setCountry] = useState(props?.country || "Германия")
@@ -81,14 +81,16 @@ const ProductService = observer((props) => {
     }
 
     const addProduct = async () => {
-        setLoading(true)
-        const formData = await getFormData()
-        
-        await createProduct(formData).then(data => props?.back())
+        if (category.selectedCategory?.name && brand.selectedBrand?.name && article && name && price) {
+            setLoading(true)
+            const formData = await getFormData()
+            
+            await createProduct(formData).then(data => props?.back())
 
-        fetchAllProducts().then(data => product.setAllProducts(data))
-        category.setSelectedCategory({})
-        setLoading(false)
+            fetchAllProducts().then(data => product.setAllProducts(data))
+            category.setSelectedCategory({})
+            setLoading(false)
+        }else alert("Надо выбрать категорию, бренд, ввести артикул, имя, цену и характеристики.")
     }
 
     const editProduct = async (id) => {
@@ -132,7 +134,7 @@ const ProductService = observer((props) => {
             }
             if (size?.weight === "" && size?.volume === "" && size?.width === "" && size?.height === "" && size?.length === "") {
                 await fetchParserSizes(article).then(sizes => {
-                    formData.append('size', JSON.stringify({...sizes,weight:sizes.weight.replace(',', '.')}))
+                    formData.append('size', JSON.stringify(sizes))
                 })
             }else formData.append('size', JSON.stringify(size))
         }else if (action === "edit") {

@@ -45,11 +45,11 @@ class ProductController {
                 let s = JSON.parse(size)
                 if (s.weight || s.volume || s.width || s.height || s.length) {
                     ProductSize.create({
-                        weight: s.weight || 0,
-                        volume: s.volume || 0,
-                        width: s.width || 0,
-                        height: s.height || 0,
-                        length: s.length || 0,
+                        weight: s.weight.replace(',', '.') || 0,
+                        volume: s.volume.replace(',', '.') || 0,
+                        width: s.width.replace(',', '.') || 0,
+                        height: s.height.replace(',', '.') || 0,
+                        length: s.length.replace(',', '.') || 0,
                         productId: product.id 
                     })
                 }
@@ -148,6 +148,45 @@ class ProductController {
         return res.json(response) // return boolean
     }
 
+    async editSizes(req, res) {
+        const {id} = req.params
+        const {size} = req.body
+        let response
+
+        if (size) {
+            let s = JSON.parse(size)
+            if (s.weight || s.volume || s.width || s.height || s.length) {
+                let yes = await ProductSize.findOne({
+                    where: {productId: id}
+                })
+                if (yes)  {
+                    response = ProductSize.update({
+                        weight: s.weight.replace(',', '.'),
+                        volume: s.volume.replace(',', '.'),
+                        width: s.width.replace(',', '.'),
+                        height: s.height.replace(',', '.'),
+                        length: s.length.replace(',', '.')
+                    }, {where: { productId: id }})
+                }else {
+                    response = ProductSize.create({
+                        weight: s.weight.replace(',', '.'),
+                        volume: s.volume.replace(',', '.'),
+                        width: s.width.replace(',', '.'),
+                        height: s.height.replace(',', '.'),
+                        length: s.length.replace(',', '.'),
+                        productId: id
+                    })
+                }
+            }else {
+                response = ProductSize.destroy({
+                    where: {productId: id}
+                })
+            }  
+        }
+
+        return res.json(response) // return boolean
+    }
+
     async editOnArticle(req, res) {
         const {article} = req.params
         const body = req.body
@@ -234,19 +273,19 @@ class ProductController {
                     })
                     if (yes)  {
                         ProductSize.update({
-                            weight: s.weight,
-                            volume: s.volume,
-                            width: s.width,
-                            height: s.height,
-                            length: s.length
+                            weight: s.weight.replace(',', '.'),
+                            volume: s.volume.replace(',', '.'),
+                            width: s.width.replace(',', '.'),
+                            height: s.height.replace(',', '.'),
+                            length: s.length.replace(',', '.')
                         }, {where: { productId: id }})
                     }else {
                         ProductSize.create({
-                            weight: s.weight,
-                            volume: s.volume,
-                            width: s.width,
-                            height: s.height,
-                            length: s.length,
+                            weight: s.weight.replace(',', '.'),
+                            volume: s.volume.replace(',', '.'),
+                            width: s.width.replace(',', '.'),
+                            height: s.height.replace(',', '.'),
+                            length: s.length.replace(',', '.'),
                             productId: id
                         })
                     }
