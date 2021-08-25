@@ -1,8 +1,12 @@
 class ApiError extends Error {
-    constructor(status, message) {
-        super()
+    status;
+    errors;
+
+    constructor(status, message, errors = []) {
+        super(message)
         this.status = status
-        this.message = message
+        // this.message = message
+        this.errors = errors
     }
 
      
@@ -10,8 +14,8 @@ class ApiError extends Error {
         return new ApiError(401, message)
     }
 
-    static badRequest(message) {
-        return new ApiError(404, message)
+    static badRequest(message, errors = []) {
+        return new ApiError(404, message, errors)
     }
 
     static internal(message) {
@@ -21,6 +25,7 @@ class ApiError extends Error {
     static forbidden(message) {
         return new ApiError(403, message)
     }
+
 }
 
 module.exports = ApiError
