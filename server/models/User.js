@@ -11,7 +11,7 @@ const User = sequelize.define('user', {
     address: {type: DataTypes.STRING(1024), defaultValue: null},
     password: {type: DataTypes.STRING},
     role: {type: DataTypes.STRING, defaultValue: "USER"},
-    isActivated: {type: DataTypes.BOOLEAN, defaultValue: false},
+    isActivated: {type: DataTypes.TINYINT, defaultValue: false},
     activationLink: {type: DataTypes.STRING, defaultValue: null},
     // дальнейшие данные для юр. лиц
     companyName: {type: DataTypes.STRING, defaultValue: null},

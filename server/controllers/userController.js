@@ -17,7 +17,7 @@ class UserController {
     async registration(req, res, next) {
         try {
             const body = req.body
-            const candidate = await User.findOne({where:{email}})
+            const candidate = await User.findOne({where:{email:body.email}})
             if (candidate) {
                 return next(ApiError.badRequest('Пользователь с таким email уже существует'))
             }
@@ -30,7 +30,7 @@ class UserController {
             return res.json({token})
 
         } catch (e) {
-            next(e);
+            next(ApiError.badRequest('Ошибка регистрации нового пользователя!!!'));
         }
     }
 
