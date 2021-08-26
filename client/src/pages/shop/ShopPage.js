@@ -165,7 +165,7 @@ const Shop = observer(() => {
                     {loadingCategory ? <Loading /> : <CategoryBar />}
                 </div>
                 <div className="ShopColContent">
-                    {loadingBrand ? <Loading /> : <BrandBar />}
+                    {/* {loadingBrand ? <Loading /> : <BrandBar />} */}
                     <Filter />
                     {loadingProduct 
                     ? <Loading /> 
