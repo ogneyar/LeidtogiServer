@@ -88,7 +88,7 @@ const CategoryItemService = observer((props) => {
                 className="ml-3"
             >
                 {open && category.categories.map(i => {
-                    if (i.sub_category_id === props?.item.id) // && props?.item?.open
+                    if (i.sub_category_id === props?.item.id)
                         return <CategoryItemService key={i.id} item={i} onHide={props?.onHide} funcOnClick={props?.funcOnClick}  />
                     return null
                 })}
