@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useHistory } from 'react-router-dom'
 import $ from 'jquery'
 
 import { Context } from '../..'
@@ -12,8 +12,13 @@ import './CategoryService.css'
 const CategoryItemService = observer((props) => {
     
     const { category } = useContext(Context)
+    const history = useHistory()
 
-    const [open, setOpen] = useState(props?.item?.open)
+    const [open, setOpen] = useState(false)
+
+    useEffect(() => {
+        setOpen(props.item.open)
+    },[props?.item?.open])
     
     const onClickListItem = () => {
         category.setCategories(category.categories.map(i => {
@@ -33,55 +38,57 @@ const CategoryItemService = observer((props) => {
     return (
         <div
             className="CategoryItemService"
-            // style={{borderLeft:"1px solid var(--main-white-color)"}}
         >
-            <NavLink className="CategoryNavLink"
-                to={props?.item?.url}
+            <ListGroup.Item 
+                active={props?.item?.id === category.selectedCategory.id}
+                onClick={(e) => {
+                    // console.log(e);
+                    props.funcOnClick(props?.item)
+                    history.push(props?.item?.url)
+                    onClickListItem()
+                    // if (props?.item?.is_product) {
+                        if (window.innerWidth > 991) {
+                            // window.scrollTo(0,260)
+                            $('html, body').animate(
+                                {
+                                    scrollTop: 240
+                                    // scrollTop: e.pageY
+                                    // scrollTop: e.screenY
+                                }, 
+                                700, 
+                                function(){}
+                            )
+                        }else if (props?.item?.is_product) props?.onHide()
+                    // }
+                }}
+                key={props?.item?.id}
+            >
+                
+                {props?.item?.is_product 
+                ? props.item.name 
+                : <div
+                    className="d-flex justify-content-between"
                 >
-                <ListGroup.Item 
-                    active={props?.item?.id === category.selectedCategory.id}
-                    onClick={() => {
-                        props.funcOnClick(props?.item)
-                        onClickListItem()
-                        if (props?.item?.is_product) {
-                            if (window.innerWidth > 991) {
-                                // window.scrollTo(0,260)
-                                $('html, body').animate(
-                                    {
-                                        scrollTop: 240
-                                    }, 
-                                    700, 
-                                    function(){}
-                                )
-                            }else props?.onHide()
-                        }
-                    }}
-                    key={props?.item?.id}
-                >
-                    
-                    {props?.item?.is_product 
-                    ? props.item.name 
-                    : <div
-                        className="d-flex justify-content-between"
+                    <div>{props?.item?.name}</div>
+                    <div
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            onClickListItem()
+                        }}
                     >
-                        <div>{props?.item?.name}</div>
-                        <div>
-                            {props?.item?.open 
-                            ? <i className="fa fa-minus-circle" aria-hidden="true"></i> 
-                            : <i className="fa fa-plus-circle" aria-hidden="true"></i>}
-                        </div>
-                        
-                    </div>}
-
+                        {props?.item?.open 
+                        ? <i className="fa fa-minus-circle" aria-hidden="true"></i> 
+                        : <i className="fa fa-plus-circle" aria-hidden="true"></i>}
+                    </div>
                     
-                </ListGroup.Item>
-            </NavLink>
+                </div>}
+            </ListGroup.Item>
 
             <div
                 className="ml-3"
             >
                 {open && category.categories.map(i => {
-                    if (i.sub_category_id === props?.item.id) 
+                    if (i.sub_category_id === props?.item.id) // && props?.item?.open
                         return <CategoryItemService key={i.id} item={i} onHide={props?.onHide} funcOnClick={props?.funcOnClick}  />
                     return null
                 })}

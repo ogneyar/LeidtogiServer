@@ -23,7 +23,6 @@ const CategoryService = observer((props) => {
     return (
         <ListGroup 
             className="CategoryService"
-            // style={{backgroundColor:"var(--main-orange-color)"}}
         >
             {/* <NavLink className="CategoryNavLink"
                 to={SHOP_ROUTE}
