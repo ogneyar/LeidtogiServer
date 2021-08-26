@@ -9,7 +9,7 @@ import './Limit'
 
 const Limit = observer(() => {
 
-    const { product } = useContext(Context)
+    const { user, product } = useContext(Context)
 
     let limit = localStorage.getItem('limit') || LIMIT
     const [state, setState] = useState(limit)
@@ -37,13 +37,32 @@ const Limit = observer(() => {
                 onChange={e => change(e)}
             >
                 {/* <option disabled>количество:</option> */}
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="6">6</option>
-                <option value="8">8</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
+                {user.user.email === "ya13th@mail.ru"
+                ?
+                <>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="12">12</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
+                    <option value="50">50</option>
+                    <option value="96">96</option>
+                    <option value="100">100</option>
+                </>
+                : 
+                <>
+                    <option value="12">12</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
+                    <option value="96">96</option>
+                </>
+                }
+                
+                
             </select>
         </div>
     )
