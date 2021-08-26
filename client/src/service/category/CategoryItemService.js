@@ -9,15 +9,15 @@ import { Context } from '../..'
 import './CategoryService.css'
 
 
-const CategoryItemService = observer(({ funcOnClick, item, onHide }) => {
+const CategoryItemService = observer((props) => {
     
     const { category } = useContext(Context)
 
-    const [open, setOpen] = useState(item?.open)
+    const [open, setOpen] = useState(props?.item?.open)
     
     const onClickListItem = () => {
         category.setCategories(category.categories.map(i => {
-            if (i.id === item.id) {
+            if (i.id === props?.item?.id) {
                 if (open) {
                     setOpen(false)
                     return {...i,open:false}
@@ -31,16 +31,19 @@ const CategoryItemService = observer(({ funcOnClick, item, onHide }) => {
     }
 
     return (
-        <>
+        <div
+            className="CategoryItemService"
+            // style={{borderLeft:"1px solid var(--main-white-color)"}}
+        >
             <NavLink className="CategoryNavLink"
-                to={item.url}
-            >
+                to={props?.item?.url}
+                >
                 <ListGroup.Item 
-                    active={item.id === category.selectedCategory.id}
+                    active={props?.item?.id === category.selectedCategory.id}
                     onClick={() => {
-                        funcOnClick(item)
+                        props.funcOnClick(props?.item)
                         onClickListItem()
-                        if (item.is_product) {
+                        if (props?.item?.is_product) {
                             if (window.innerWidth > 991) {
                                 // window.scrollTo(0,260)
                                 $('html, body').animate(
@@ -50,20 +53,20 @@ const CategoryItemService = observer(({ funcOnClick, item, onHide }) => {
                                     700, 
                                     function(){}
                                 )
-                            }else onHide()
+                            }else props?.onHide()
                         }
                     }}
-                    key={item.id}
+                    key={props?.item?.id}
                 >
                     
-                    {item.is_product 
-                    ? item.name 
+                    {props?.item?.is_product 
+                    ? props.item.name 
                     : <div
                         className="d-flex justify-content-between"
                     >
-                        <div>{item.name}</div>
+                        <div>{props?.item?.name}</div>
                         <div>
-                            {item.open 
+                            {props?.item?.open 
                             ? <i className="fa fa-minus-circle" aria-hidden="true"></i> 
                             : <i className="fa fa-plus-circle" aria-hidden="true"></i>}
                         </div>
@@ -75,15 +78,15 @@ const CategoryItemService = observer(({ funcOnClick, item, onHide }) => {
             </NavLink>
 
             <div
-                className="ml-2"
+                className="ml-3"
             >
                 {open && category.categories.map(i => {
-                    if (i.sub_category_id === item.id) 
-                        return <CategoryItemService key={i.id} item={i} onHide={onHide} funcOnClick={funcOnClick}  />
+                    if (i.sub_category_id === props?.item.id) 
+                        return <CategoryItemService key={i.id} item={i} onHide={props?.onHide} funcOnClick={props?.funcOnClick}  />
                     return null
                 })}
             </div>
-        </>
+        </div>
     )
 })
 

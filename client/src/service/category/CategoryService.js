@@ -23,8 +23,9 @@ const CategoryService = observer((props) => {
     return (
         <ListGroup 
             className="CategoryService"
+            // style={{backgroundColor:"var(--main-orange-color)"}}
         >
-            <NavLink className="CategoryNavLink"
+            {/* <NavLink className="CategoryNavLink"
                 to={SHOP_ROUTE}
             >
                 <ListGroup.Item 
@@ -34,10 +35,10 @@ const CategoryService = observer((props) => {
                 >
                     Все категории
                 </ListGroup.Item>
-            </NavLink>
+            </NavLink> */}
 
             {category.categories && Array.isArray(category.categories) && category.categories.map(i => {
-                if (i.sub_category_id === 0)
+                if (i.sub_category_id === 0 && i.id !== 1)
                     return <CategoryItemService key={i.id} item={i} onHide={props?.onHide} funcOnClick={onClickSelectedCategory} />
                 return null
             })}
