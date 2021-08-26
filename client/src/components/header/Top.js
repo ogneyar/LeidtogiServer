@@ -15,7 +15,7 @@ const Top = () => {
             <Container className="TopContainer">
                 <div className="TopRow">
                     <div 
-                        className="TopCol TopColLink hidden-mobile" 
+                        className="TopCol TopColLink _hidden-mobile" 
                         md={8}
                     >
                         <div className="TopDivLink">
