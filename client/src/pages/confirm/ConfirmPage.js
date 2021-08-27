@@ -47,6 +47,7 @@ const ConfirmPage = observer(() => {
                 <InfoPage>
                     <div className="ConfirmPage">
                         <label>{user.user?.name}</label>
+                        <br />
                         <label>Ваш почтовый ящик подтверждён!</label>
                         <hr />
                     </div>
