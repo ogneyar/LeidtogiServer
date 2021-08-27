@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken')
 
 const {User, Cart} = require('../models/models')
 
-const generateJwt = (id, email, role) => {
+const generateJwt = (id, email, role, isActivated) => {
     return jwt.sign(
-        {id, email, role}, 
+        {id, email, role, isActivated}, 
         process.env.SECRET_KEY,
         {expiresIn: '24h'}
     )
@@ -26,7 +26,7 @@ class UserController {
             const user = await User.create({...body, password: hashPassword})
 
             // const cart = await Cart.create({userId: user.id}) 
-            const token = generateJwt(user.id, user.email, user.role)
+            const token = generateJwt(user.id, user.email, user.role, user.isActivated)
             return res.json({token})
 
         } catch (e) {
@@ -35,22 +35,40 @@ class UserController {
     }
 
     async login(req, res, next) {
-        const {email, password} = req.body
-        const user = await User.findOne({where:{email}})
-        if (!user) {
-            return next(ApiError.internal('Пользователь не найден'))
-        }
-        let comparePassword = bcrypt.compareSync(password, user.password)
-        if (!comparePassword) {
-            return next(ApiError.internal('Указан неверный пароль'))
-        }
-        const token = generateJwt(user.id, user.email, user.role)
+        try {
+            const {email, password} = req.body
+            const user = await User.findOne({where:{email}})
+            if (!user) {
+                return next(ApiError.internal('Пользователь не найден'))
+            }
+            let comparePassword = bcrypt.compareSync(password, user.password)
+            if (!comparePassword) {
+                return next(ApiError.internal('Указан неверный пароль'))
+            }
+            const token = generateJwt(user.id, user.email, user.role, user.isActivated)
+            return res.json({token})
+        } catch (e) {
+            next(ApiError.badRequest('Ошибка входа!!!'));
+    }
+    }
+
+    async auth(req, res, next) {
+        const token = generateJwt(req.user.id, req.user.email, req.user.role, req.user.isActivated)
         return res.json({token})
     }
 
-    async check(req, res, next) {
-        const token = generateJwt(req.user.id, req.user.email, req.user.role)
-        return res.json({token})
+    async info(req, res, next) {
+        const user = await User.findOne({where:{email:req.user.email}})
+        return res.json(user)
+    }
+
+    async update(req, res, next) {
+        const {id} = req.params
+        const body = req.body
+        const response = await User.update(body, {
+            where: { id }
+        })
+        return res.json(response) // return boolean
     }
 }
 

@@ -11,7 +11,7 @@ const path = require('path')
 const PORT = process.env.PORT || 3000
 const CORS_URL = process.env.CORS_URL || "https://leidtogi.ru"
 
-let whitelist = [CORS_URL, 'http://web.pzmarket.ru', 'http://leidtogi.ru']
+let whitelist = [CORS_URL, 'http://192.168.0.244:3000', 'http://web.pzmarket.ru', 'http://leidtogi.ru']
 let corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (whitelist.indexOf(req.header('Origin')) !== -1) {

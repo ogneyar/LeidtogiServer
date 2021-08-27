@@ -13,7 +13,7 @@ router.delete('/:id', checkRole('ADMIN'), productController.delete)
 router.put('/edit/:id', checkRole('ADMIN'), productController.edit)
 router.put('/edit_on_article/:article', checkRole('ADMIN'), productController.editOnArticle)
 router.put('/edit_all/:id', checkRole('ADMIN'), productController.editAll)
-router.put('/rating/:id', checkRole('USER'), productController.editRating)
+router.put('/rating/:id', checkRole(['USER','CORP']), productController.editRating)
 
 
 module.exports = router
