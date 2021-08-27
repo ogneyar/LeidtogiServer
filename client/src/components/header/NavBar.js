@@ -18,7 +18,7 @@ const NavBar = observer(() => {
     const logOut = () => {
         user.setUser({})
         user.setIsAuth(false)
-        localStorage.setItem('token', {})
+        localStorage.removeItem('token')
         history.push(LOGIN_ROUTE)
     }
 
@@ -66,7 +66,7 @@ const NavBar = observer(() => {
                             {user.isAuth ?
                             
                                 <>
-                                    {user.user.role === 'ADMIN' ?
+                                    {user.user?.role === 'ADMIN' ?
                                         <Button 
                                             variant={'outline-light'} 
                                             onClick={() => history.push(ADMIN_ROUTE)}

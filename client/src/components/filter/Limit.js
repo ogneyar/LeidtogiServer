@@ -37,7 +37,7 @@ const Limit = observer(() => {
                 onChange={e => change(e)}
             >
                 {/* <option disabled>количество:</option> */}
-                {user.user.email === "ya13th@mail.ru"
+                {user.user?.id === 1
                 ?
                 <>
                     <option value="3">3</option>

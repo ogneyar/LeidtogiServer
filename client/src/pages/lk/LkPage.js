@@ -44,7 +44,7 @@ const Lk = observer(() => {
         return (
             <InfoPage>
                 <div className="Lk">
-                    <label>{info.name} добро пожаловать в личный кабинет!</label>
+                    <label>{info.name}, добро пожаловать в личный кабинет!</label>
                     <hr/>
 
                     <label>Фамилия: <span style={{color:"#f00"}}>*</span></label>
