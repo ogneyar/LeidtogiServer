@@ -15,19 +15,24 @@ class MailService {
     }
 
     async sendActivationMail(to, link) {
-        await this.transporter.sendMail({
-            from: process.env.SMTP_USER,
-            to,
-            subject: 'Активация аккаунта на ' + process.env.CORS_URL,
-            text: '',
-            html:
-                `
-                    <div>
-                        <h1>Для активации перейдите по ссылке</h1>
-                        <a href="${process.env.CORS_URL}/confirmation/${link}">${process.env.CORS_URL}/confirmation/${link}</a>
-                    </div>
-                `
-        })
+        try {
+            let response = await this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to,
+                subject: 'Активация аккаунта на ' + process.env.CORS_URL,
+                text: '',
+                html:
+                    `
+                        <div>
+                            <h1>Для активации перейдите по ссылке</h1>
+                            <a href="${process.env.CORS_URL}/confirmation/${link}">${process.env.CORS_URL}/confirmation/${link}</a>
+                        </div>
+                    `
+            })
+            return response
+        }catch(e) {
+            return e
+        }
     }
 }
 

@@ -27,6 +27,8 @@ class UserController {
             const user = await User.create({...body, password: hashPassword})
 
             mailService.sendActivationMail(user.email, user.activationLink)
+                .then(data => console.log(data))
+            
             // const cart = await Cart.create({userId: user.id}) 
             const token = generateJwt(user.id, user.email, user.role, user.isActivated)
             return res.json({token})
