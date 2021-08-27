@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const {User, Cart} = require('../models/models')
+const mailService = require('../service/mailService')
 
 const generateJwt = (id, email, role, isActivated) => {
     return jwt.sign(
@@ -25,6 +26,7 @@ class UserController {
 
             const user = await User.create({...body, password: hashPassword})
 
+            mailService.sendActivationMail(user.email, user.activationLink)
             // const cart = await Cart.create({userId: user.id}) 
             const token = generateJwt(user.id, user.email, user.role, user.isActivated)
             return res.json({token})
