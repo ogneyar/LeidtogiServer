@@ -10,6 +10,7 @@ export const LK_ROUTE = '/lk' // личный кабинет
 export const SEARCH_ROUTE = '/search' // поиск
 export const ERROR_ROUTE = '/error' // ошибка
 export const PARSER_ROUTE = '/parser' // парсер HTML
+export const CONFIRM_ROUTE = '/confirmation' // подтверждение почты пользователя
 
 // отдел Информация
 export const ABOUT_US_ROUTE = '/about_us' // о нас

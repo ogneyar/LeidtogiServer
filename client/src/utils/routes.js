@@ -2,7 +2,9 @@ import AdminPage from '../pages/admin/AdminPage'
 import ParserPage from '../pages/parser/ParserPage'
 import LkPage from '../pages/lk/LkPage'
 
-import AuthPage from '../pages/auth/AuthPage'
+import LoginPage from '../pages/login/LoginPage'
+import RegistrationPage from '../pages/registration/RegistrationPage'
+import ConfirmPage from '../pages/confirm/ConfirmPage'
 import ShopPage from '../pages/shop/ShopPage'
 import ProductPage from '../pages/product/ProductPage'
 import CartPage from '../pages/cart/CartPage'
@@ -23,7 +25,7 @@ import DeletePage from '../pages/site/DeletePage'
 
 import {
     ADMIN_ROUTE, PARSER_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, 
-    PRODUCT_ROUTE, LK_ROUTE, SEARCH_ROUTE, ERROR_ROUTE, ABOUT_US_ROUTE, 
+    PRODUCT_ROUTE, LK_ROUTE, CONFIRM_ROUTE, SEARCH_ROUTE, ERROR_ROUTE, ABOUT_US_ROUTE, 
     DELIVERY_ROUTE, PAYMENT_ROUTE, PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE, 
     TERMS_OF_USE_ROUTE, WARRANTY_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, DELETE_ROUTE
 } from './consts'
@@ -54,11 +56,15 @@ export const publicRoutes = [
     },
     {
         path: LOGIN_ROUTE,
-        Component: AuthPage
+        Component: LoginPage
     },
     {
         path: REGISTRATION_ROUTE,
-        Component: AuthPage
+        Component: RegistrationPage
+    },
+    {
+        path: CONFIRM_ROUTE + '/:url',
+        Component: ConfirmPage
     },
     {
         path: PRODUCT_ROUTE + '/:id',

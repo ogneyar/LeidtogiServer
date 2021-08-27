@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
-import { QueryParamProvider } from 'use-query-params';
+import { QueryParamProvider } from 'use-query-params'
 import { observer } from 'mobx-react-lite'
 
 import AppRouter from './components/AppRouter'
@@ -8,7 +8,7 @@ import Header from './components/header/Header'
 import Footer from './components/footer/Footer'
 import Loading from './components/Loading'
 import Error from './pages/error/ErrorPage'
-import { check } from './http/userAPI'
+import { auth, getUser } from './http/userAPI'
 import { fetchAllProducts } from './http/productAPI'
 import { fetchAllCategories } from './http/categoryAPI'
 import { fetchBrands } from './http/brandAPI'
@@ -25,16 +25,22 @@ const App = observer(() => {
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        check()
-            .then(
+        auth()
+            .then( 
                 data => {
-                    user.setUser(data)
-                    user.setIsAuth(true)},
+                    if (data?.id) {
+                        user.setIsAuth(true)
+                    }
+                },
                 err => {
-                    if (err.response?.status !== 401)
-                        setError(true)
+                    if (err.response?.status !== 401) setError(true)
+                    // console.log(err.response?.data?.message)
                 })
             .finally(() => setLoading(false))
+        getUser()
+            .then(
+                data => user.setUser(data),
+                err => console.log(err))
         fetchAllProducts()
             .then(
                 data => product.setAllProducts(data),
