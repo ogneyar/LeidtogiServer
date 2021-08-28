@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { fetchParserImages, fetchParserSizes, fetchParserAll } from '../../http/paserAPI';
+import { fetchParserImages, fetchParserSizes, fetchParserAll, fetchParserMailRu } from '../../http/paserAPI';
 import { updateProductOnArticle, fetchAllProducts, fetchProductSizes, updateProductSizes } from '../../http/productAPI';
 import InfoPage from '../info/InfoPage';
 import { Context } from '../..'
@@ -18,6 +18,10 @@ const ParserPage = observer(() => {
     const [brand, setBrand] = useState("milwaukee")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
+    
+    const [stateMailRu, setStateMailRu] = useState([])
+    const [email, setEmail] = useState("")
+    const [loadingEmail, setLoadingEmail] = useState(false)
 
     useEffect(() => {
         if (stateImages[0]?.big !== undefined) {
@@ -48,6 +52,13 @@ const ParserPage = observer(() => {
             // setLoading(false)
         }
     },[stateAll])
+
+    useEffect(() => {
+        if (stateMailRu?.status !== undefined) {
+            console.log(stateMailRu)
+            setMessage(JSON.stringify(stateMailRu))
+        }
+    },[stateMailRu])
 
     const onClickButtonParserImages = () => {
         if (article) {
@@ -92,6 +103,17 @@ const ParserPage = observer(() => {
             }).finally(data => setLoading(false))
         }
     }
+
+    const onClickButtonParserMailRu = () => {
+        if (email) {
+            setLoadingEmail(true)
+            setMessage("")
+
+            fetchParserMailRu(email).then(data => {
+                setStateMailRu(data)
+            }).finally(data => setLoadingEmail(false))
+        }
+    }
     
 
     return (
@@ -115,9 +137,27 @@ const ParserPage = observer(() => {
                     <input className="m-3" value={article} onChange={(e) => setArticle(e.target.value)} placeholder="Введите артикул" />
                     <input className="m-3" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Введите бренд" />
                     {loading ? <Loading /> 
-                    : <div><button className="m-3" onClick={onClickButtonParserImages}>Начать парсинг изображений</button>
-                            <button className="m-3" onClick={onClickButtonParserSizes}>Начать парсинг габаритов</button>
-                            <button className="m-3" onClick={onClickButtonParserAll}>Начать парсинг ВСЕГО</button></div>}
+                    : 
+                    <div
+                        className="d-flex flex-column justify-content-center align-items-center"
+                    >
+                        <button className="m-3" onClick={onClickButtonParserImages}>Начать парсинг изображений</button>
+                        <button className="m-3" onClick={onClickButtonParserSizes}>Начать парсинг габаритов</button>
+                        <button className="m-3" onClick={onClickButtonParserAll}>Начать парсинг ВСЕГО</button>
+
+                        <input className="m-3" value={article} onChange={(e) => setArticle(e.target.value)} placeholder="Введите артикул" />
+                        <button className="m-3" onClick={onClickButtonParserSizes}>Начать парсинг mail.ru</button>
+                    </div>}
+                </div>
+                <div className="inputBox d-flex flex-column justify-content-center align-items-center">
+                <input className="m-3" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Введите почту mail.ru" />
+                    {loadingEmail ? <Loading /> 
+                    : 
+                    <div
+                        className="d-flex flex-column justify-content-center align-items-center"
+                    >
+                        <button className="m-3" onClick={onClickButtonParserMailRu}>Начать парсинг mail.ru</button>
+                    </div>}
                 </div>
                 <div className="inputBox">
                     {message && message !== "" ? message : "пусто"}

@@ -74,7 +74,7 @@ const Admin = observer(() => {
                 Редактор брендов
             </Button>
 
-            {user.user.email === "ya13th@mail.ru" 
+            {user.user?.id === 1 
             ?
                 <Button 
                     variant={"outline-dark"} 

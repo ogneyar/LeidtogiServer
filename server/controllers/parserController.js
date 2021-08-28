@@ -125,6 +125,15 @@ class parserController {
         
         return res.json(response)
     }
+
+    async yaRu(req, res) {
+        let { email } = req.query
+        let response
+        await axios.post("https://passport.yandex.ru/registration-validations/auth/multi_step/start", { login:email })
+            .then(res => response = res.data)
+            .catch(err => response = err)
+        return res.json(response)
+    }
 }
 
 module.exports = new parserController()
