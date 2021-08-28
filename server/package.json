@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon --max-http-header-size=16384 index.js"
   },
   "keywords": [],
   "author": "",

@@ -28,6 +28,7 @@ class UserController {
 
             mailService.sendActivationMail(user.email, user.activationLink)
                 .then(data => console.log(data))
+                .catch(err => console.log(err))
             
             // const cart = await Cart.create({userId: user.id}) 
             const token = generateJwt(user.id, user.email, user.role, user.isActivated)

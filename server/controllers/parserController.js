@@ -36,7 +36,7 @@ class parserController {
     
     async getSizes(req, res) {
         let { article } = req.query  // milwaukee, 4933471077
-        let response, Html, lengthHtml, serchString, lengthSerchString, number, weight, length, width, height
+        let response, Html
 
         // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
         await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
@@ -86,7 +86,7 @@ class parserController {
     }
 
 
-    async test(req, res) {
+    async testXLSX(req, res) {
         let { article } = req.query
         
         let workbook = XLSX.readFile('MILWAUKEE.xlsx')
@@ -105,6 +105,25 @@ class parserController {
 
 
         return res.json(desired_value)
+    }
+
+    async mailRu(req, res) {
+        let { email } = req.query
+        let response
+        // let config = {
+        //     host: "e.mail.ru",
+        //     headers: {
+        //         "Cookie": "mrcu=615E6129F2B1975A5B53E64C3BB0",
+        //         "Origin": "https://e.mail.ru"
+        //     }
+        //   }
+
+        // await axios.post("https://e.mail.ru/api/v1/user/password/restore", { email }, config)
+        await axios.post("https://e.mail.ru/api/v1/user/password/restore", { email })
+            .then(res => response = res.data)
+            .catch(err => response = err)
+        
+        return res.json(response)
     }
 }
 
