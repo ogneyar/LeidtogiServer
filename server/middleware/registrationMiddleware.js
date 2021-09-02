@@ -58,10 +58,10 @@ module.exports = function (req, res, next) {
         if (!Number(phone)) {
             return next(ApiError.badRequest('Некорректный ввод номера телефона!'))
         }
-        if (phone.length < 5) {
+        if (phone.length < 11) {
             return next(ApiError.badRequest('Слишком короткий номера телефона!'))
         }
-        if (phone.length > 13) {
+        if (phone.length > 11) {
             return next(ApiError.badRequest('Слишком длинный номера телефона!'))
         }
         // проверка email
