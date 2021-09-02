@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Card, Container, Form, Row } from 'react-bootstrap'
 import { NavLink, useHistory } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
@@ -16,6 +16,8 @@ const RegistrationPage = observer(() => {
 
     const { user } = useContext(Context)
 
+    const refPhone = useRef()
+
     const history = useHistory()
 
     const [ alertVisible, setAlertVisible ] = useState(false)
@@ -23,7 +25,10 @@ const RegistrationPage = observer(() => {
     
     const [ info, setInfo ] = useState({
         role:"USER",isActivated:0,activationLink:uuid(),
-        surname: '', name: '', patronymic: '', phone: '',
+        surname: '', name: '', patronymic: '', 
+        // phone: '(   )    -  -  ', 
+        phone: '', 
+        phoneSelection: 0,
         email: '', address: '', password: '',  
         companyName: '', INN: '', KPP: '', OGRN: '',
         OKVED: '', juridicalAddress: '', bank: '', 
@@ -45,7 +50,11 @@ const RegistrationPage = observer(() => {
     const click = async () => {
         try {
             setLoading(true)
-            let data = await registration(info)
+            let data = await registration(
+                {...info,
+                    phone:"7" + info.phone.replace(/\D/g, "")
+                }
+            )
             if (data?.id) {
                 user.setIsAuth(true)
                 getUser().then(dat => user.setUser(dat))
@@ -69,6 +78,88 @@ const RegistrationPage = observer(() => {
             function(){}
         )
     }
+
+    const phone = (e) => {
+        let val = e.target.value
+        let offset = 0
+        let start = e.target.selectionStart
+        let end = e.target.selectionEnd
+        let length = val.length
+        let lastLength = info.phone.length
+
+        val = val.match(/\d/g).join('')
+
+        let numberLength = val.length
+
+        if (Number(val) || val === "") {
+
+            switch(numberLength) {
+              
+                case 4:
+                    val = "(" + val[0] + val[1] + val[2] + ") " + val[3]
+                    if (start === length) offset = 3
+                break
+
+                case 5:
+                    val = "(" + val[0] + val[1] + val[2] + ") " + val[3] + val[4]
+                break
+
+                case 6:
+                    val = "(" + val[0] + val[1] + val[2] + ") " + val[3] + val[4] + val[5]
+                break
+
+                case 7:
+                    val = "(" + val[0] + val[1] + val[2] + ") " + val[3] + val[4] + val[5] + "-" + val[6]
+                    if (start === length) offset = 1
+                break
+
+                case 8:
+                    val = "(" + val[0] + val[1] + val[2] + ") " + val[3] + val[4] + val[5] + "-" + val[6] + val[7]
+                break
+
+                case 9:
+                    val = "(" + val[0] + val[1] + val[2] + ") " + val[3] + val[4] + val[5] + "-" + val[6] + val[7] + "-" + val[8]
+                    if (start === length) offset = 1
+                break
+
+                case 10:
+                    val = "(" + val[0] + val[1] + val[2] + ") " + val[3] + val[4] + val[5] + "-" + val[6] + val[7] + "-" + val[8] + val[9]
+                break
+              
+                default:
+                break
+            }
+
+            if (start !== length) {
+                switch(start) {
+              
+                    case 1:
+                        if (lastLength < length) offset = 1
+                    case 2:
+                    case 3:
+                        if (lastLength > length && numberLength === 3) offset = -1
+                    break
+
+                    case 5:
+                        offset = 2
+                    break
+
+                    case 10:                        
+                    case 13:
+                        if (lastLength < length) offset = 1
+                    break
+                }
+            }
+
+            setInfo({...info,phone:val.toString(),phoneSelection:start + offset})
+        }else setInfo({...info,phoneSelection:start})
+    }
+
+    useEffect(() => {
+        refPhone.current.selectionStart = info.phoneSelection
+        refPhone.current.selectionEnd = info.phoneSelection
+    },[info.phone, info.phoneSelection])
+
 
     if (loading) return <Loading />
 
@@ -107,14 +198,18 @@ const RegistrationPage = observer(() => {
                             onChange={e => setInfo({...info,patronymic:e.target.value})}
                         />
                         <label>Телефон: <span style={{color:"#f00"}}>*</span></label>
+                        <div className="d-flex justify-content-center align-items-center">
+                        <label>+7&nbsp;</label>
                         <Form.Control 
+                            ref={refPhone}
                             className="mb-2"
-                            maxLength="13"
+                            maxLength="15"
                             placeholder="Введите номер телефона"
                             value={info?.phone}
-                            onChange={e => setInfo({...info,phone:e.target.value})}
+                            onChange={e => phone(e)}
                         />
-                        <label>Адрес: <span style={{color:"#f00"}}>*</span></label>
+                        </div>
+                        <label>{checked ? "Почтовый адрес: " : "Адрес: "}<span style={{color:"#f00"}}>*</span></label>
                         <Form.Control 
                             className="mb-2"
                             maxLength="1024"
@@ -170,35 +265,47 @@ const RegistrationPage = observer(() => {
                             />
                             <label>ИНН: <span style={{color:"#f00"}}>*</span></label>
                             <Form.Control 
+                                // type="number"
                                 className="mb-2"
                                 maxLength="10"
                                 placeholder="Введите ИНН"
                                 value={info?.INN}
-                                onChange={e => setInfo({...info,INN:e.target.value})}
+                                onChange={e => {
+                                    if (Number(e.target.value)) setInfo({...info,INN:e.target.value})
+                                }}
                             />
                             <label>КПП: <span style={{color:"#f00"}}>*</span></label>
                             <Form.Control 
+                                // type="number"
                                 className="mb-2"
                                 maxLength="9"
                                 placeholder="Введите КПП"
                                 value={info?.KPP}
-                                onChange={e => setInfo({...info,KPP:e.target.value})}
+                                onChange={e => {
+                                    if (Number(e.target.value)) setInfo({...info,KPP:e.target.value})
+                                }}
                             />
                             <label>ОГРН:</label>
                             <Form.Control 
+                                // type="number"
                                 className="mb-2"
                                 maxLength="15"
                                 placeholder="Введите ОГРН"
                                 value={info?.OGRN}
-                                onChange={e => setInfo({...info,OGRN:e.target.value})}
+                                onChange={e => {
+                                    if (Number(e.target.value)) setInfo({...info,OGRN:e.target.value})
+                                }}
                             />
                             <label>ОКВЭД:</label>
                             <Form.Control 
+                                // type="number"
                                 className="mb-2"
                                 maxLength="6"
                                 placeholder="Введите ОКВЭД"
                                 value={info?.OKVED}
-                                onChange={e => setInfo({...info,OKVED:e.target.value})}
+                                onChange={e => {
+                                    if (Number(e.target.value)) setInfo({...info,OKVED:e.target.value})
+                                }}
                             />
                             <label>Юр.адрес: <span style={{color:"#f00"}}>*</span></label>
                             <Form.Control 
@@ -218,27 +325,36 @@ const RegistrationPage = observer(() => {
                             />
                             <label>БИК: <span style={{color:"#f00"}}>*</span></label>
                             <Form.Control 
+                                // type="number"
                                 className="mb-2"
                                 maxLength="9"
                                 placeholder="Введите БИК"
                                 value={info?.BIK}
-                                onChange={e => setInfo({...info,BIK:e.target.value})}
+                                onChange={e => {
+                                    if (Number(e.target.value)) setInfo({...info,BIK:e.target.value})
+                                }}
                             />
                             <label>Кор.счёт: <span style={{color:"#f00"}}>*</span></label>
                             <Form.Control 
+                                // type="number"
                                 className="mb-2"
                                 maxLength="20"
                                 placeholder="Введите кор.счёт"
                                 value={info?.corAccount}
-                                onChange={e => setInfo({...info,corAccount:e.target.value})}
+                                onChange={e => {
+                                    if (Number(e.target.value)) setInfo({...info,corAccount:e.target.value})
+                                }}
                             />
                             <label>Расчетный счет: <span style={{color:"#f00"}}>*</span></label>
                             <Form.Control 
+                                // type="number"
                                 className="mb-2"
                                 maxLength="20"
                                 placeholder="Введите расчетный счет"
                                 value={info?.payAccount}
-                                onChange={e => setInfo({...info,payAccount:e.target.value})}
+                                onChange={e => {
+                                    if (Number(e.target.value)) setInfo({...info,payAccount:e.target.value})
+                                }}
                             />
                             <label>Должность: <span style={{color:"#f00"}}>*</span></label>
                             <Form.Control 
