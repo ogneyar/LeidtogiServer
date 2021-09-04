@@ -1,4 +1,4 @@
-function reSearch(string, article) {
+function getUrlVseinstrumenti(string, article) {
     if (!string) return null
     let saveString, lengthString, serchString, lengthSerchString, number
 
@@ -23,9 +23,9 @@ function reSearch(string, article) {
     if (number === -1) return null
     string = string.substring(0, number)
 
-    if (string.indexOf(article) === -1) string = reSearch(saveString, article)
+    if (string.indexOf(article) === -1) string = getUrlVseinstrumenti(saveString, article)
 
     return string
 }
 
-module.exports = reSearch
+module.exports = getUrlVseinstrumenti

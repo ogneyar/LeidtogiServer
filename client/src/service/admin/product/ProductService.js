@@ -6,7 +6,7 @@ import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct, updat
 import { fetchParserImages, fetchParserSizes, fetchParserAll } from '../../../http/paserAPI'
 import { Context } from '../../..'
 
-import Characteristic from './Characteristic'
+import Characteristics from './Characteristics'
 import Size from './Size'
 
 import './ProductService.css'
@@ -33,7 +33,8 @@ const ProductService = observer((props) => {
     const [equipment, setEquipment] = useState(props?.equipment || "")
     
     const [size, setSize] = useState({weight: "", volume: "", width: "", height: "", length: ""})
-    const [info, setInfo] = useState({title: "Характеристики", description: ""})
+    const [info, setInfo] = useState([])
+    const [characteristics, setCharacteristics] = useState("")
     const [fileReader, setFileReader] = useState(null)
 
     const [fileVisible, setFileVisible] = useState(false)
@@ -57,7 +58,13 @@ const ProductService = observer((props) => {
     },[brand.allBrands])
 
     useEffect(() => {
-        if (props.info?.title) setInfo(props?.info)
+        // console.log(props.info);
+        if (Array.isArray(props.info) && props.info[0]?.title !== undefined) {
+            props.info.forEach(i => {
+                if (i.title === "characteristics") setCharacteristics(i.body)
+            })
+            // setInfo(props?.info)
+        }
     },[props?.info])
 
     useEffect(() => {
@@ -65,10 +72,26 @@ const ProductService = observer((props) => {
     },[props?.size])
 
     useEffect(() => {
+        if (characteristics) {
+            let yes = false
+            let array = info.map(i => {
+                if (i.title === "characteristics") {
+                    yes = true
+                    return {title: "characteristics", body:characteristics}
+                }
+                return i
+            })
+            if (!yes) array.push({title: "characteristics", body:characteristics})
+            setInfo(array)
+        }
+    },[characteristics])
+    
+    useEffect(() => {
         if (typeof(props.file) === "object" && props.file[0].small !== undefined) {
             setFileReader(props.file[0].small)
         }else if (typeof(props.file) === "string") setFileReader(props.file)
     },[props?.file])
+
 
 
     const selectFile = e => {
@@ -89,12 +112,15 @@ const ProductService = observer((props) => {
             if (no) { // если нет такого артикула в БД
                 setLoading(true)
                 const formData = await getFormData()
-                
-                await createProduct(formData).then(data => props?.back())
-    
-                fetchAllProducts().then(data => product.setAllProducts(data))
-                category.setSelectedCategory({})
-                setLoading(false)
+                try{
+                    await createProduct(formData).then(data => props?.back())
+        
+                    fetchAllProducts().then(data => product.setAllProducts(data))
+                    category.setSelectedCategory({})
+                    setLoading(false)
+                }catch(e) {
+                    setLoading(false)
+                }
             }else alert("Такой артикул в базе данных уже есть.")
         }else alert("Надо выбрать категорию, бренд, ввести артикул, имя, цену и характеристики.")
     }
@@ -351,7 +377,7 @@ const ProductService = observer((props) => {
             {/* <hr /> */}
 
             <div className="inputBox">
-                <Characteristic info={info} setInfo={setInfo} />
+                <Characteristics characteristics={characteristics} setCharacteristics={setCharacteristics} />
             </div>
 
             

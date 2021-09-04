@@ -2,24 +2,20 @@ import React from 'react';
 import { Form } from 'react-bootstrap'
 
 
-const Characteristic = ({info, setInfo}) => {
-
-    const changeInfo = (description) => {
-        setInfo({...info, description}) 
-    }
+const Characteristics = ({characteristics, setCharacteristics}) => {
 
     return (
         <div
-            className='Characteristic'
+            className='Characteristics'
         >
             <label>Характеристики:</label>
             <Form.Control   
-                value={info.description}
-                onChange={(e) => changeInfo(e.target.value)}
+                value={characteristics}
+                onChange={(e) => setCharacteristics(e.target.value)}
                 placeholder={'Введите характеристики'}
             />
         </div>
     );
 }
 
-export default Characteristic;
+export default Characteristics;

@@ -2,10 +2,10 @@ const uuid = require('uuid')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
-const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
+const createFoldersAndDeleteOldFiles = require('../createFoldersAndDeleteOldFiles.js')
 
 
-function searchArrayImages(brand, article, Html) {
+function getArrayImages(brand, article, Html) {
     let response, lengthHtml, serchString, lengthSerchString, number
     
     lengthHtml = Html.length
@@ -43,13 +43,13 @@ function searchArrayImages(brand, article, Html) {
             filePathBig = brand + '/' + article + '/big/' + fileName
             filePathSmall = brand + '/' + article + '/small/' + fileName
 
-            fileBig = fs.createWriteStream(path.resolve(__dirname, '..', 'static', brand, article, 'big', fileName));
+            fileBig = fs.createWriteStream(path.resolve(__dirname, '../..', 'static', brand, article, 'big', fileName));
     
             https.get(urlBig, function(response) {
                 response.pipe(fileBig)
             })
     
-            fileSmall = fs.createWriteStream(path.resolve(__dirname, '..', 'static', brand, article, 'small', fileName));
+            fileSmall = fs.createWriteStream(path.resolve(__dirname, '../..', 'static', brand, article, 'small', fileName));
     
             https.get(urlSmall, function(response) {
                 response.pipe(fileSmall)
@@ -63,4 +63,4 @@ function searchArrayImages(brand, article, Html) {
     return arrayImages
 }
 
-module.exports = searchArrayImages
+module.exports = getArrayImages

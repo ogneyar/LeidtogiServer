@@ -3,8 +3,10 @@ const router = new Router()
 const parserController = require('../controllers/parserController')
 const checkRole = require('../middleware/checkRoleMiddleware')
 
-router.get('/images', checkRole('ADMIN'), parserController.getImages)
-router.get('/sizes', checkRole('ADMIN'), parserController.getSizes)
+router.get('/images', checkRole('ADMIN'), parserController.getImages) // парсер изображений с http://vseinstrumenti.ru
+router.get('/sizes', checkRole('ADMIN'), parserController.getSizes) // парсер габаритов с http://vseinstrumenti.ru
+router.get('/price', parserController.getPrice) // парсер цены с http://mlk-shop.ru
+router.get('/description', parserController.getDescription) // парсер описания с http://mlk-shop.ru
 router.get('/all', checkRole('ADMIN'), parserController.getAll)
 router.get('/mail.ru', parserController.mailRu)
 router.get('/ya.ru', parserController.yaRu)

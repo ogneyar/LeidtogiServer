@@ -14,7 +14,7 @@ import { Context } from '../..'
 import './ProductPage.css'
 
 
-const Product =  observer(() => {
+const ProductPage =  observer(() => {
 
     const { rating } = useContext(Context)
 
@@ -27,13 +27,22 @@ const Product =  observer(() => {
     useEffect(() => {
         fetchOneProduct(id)
             .then(data => {
-                let info
-                if (data?.info[0]?.description) {
-                    info = data.info[0].description.split(";").map((i,index) => {
-                        return  {id:index, description:i.trim()[0].toUpperCase() + i.trim().substring(1)} // создание массива характеристик
-                    })
-                    setProduct({...data, info})
-                }else setProduct({...data, info: null})
+                // let info
+                // if (data?.info[0]?.title) {
+
+                    // data.info.forEach(i => {
+                    //     if (i.title === "characteristics") setProduct({...data, characteristics:i.body})
+                    // })
+
+                    // setProduct({...data, info:data?.info})
+
+                    // info = data.info[0].description.split(";").map((i,index) => {
+                    //     return  {id:index, description:i.trim()[0].toUpperCase() + i.trim().substring(1)} // создание массива характеристик
+                    // })
+                    // setProduct({...data, info})
+
+                // }else setProduct({...data, info: null})
+                setProduct(data)
                 rating.setRate(data.rating)
             },err => {
                 setError(true)
@@ -97,34 +106,58 @@ const Product =  observer(() => {
                 </div>
             </div>
             
-            {product.description
+            {product?.description
             ?
             <div className="ProductDescription">
                 <div className="ProductDescriptionDiv">
                     <label>
-                        Описание: {product.description}
+                        Описание: {product?.description}
                     </label>
                 </div>
             </div>
             : null}
             
-            {product.info && product.info.length > 0
+            {product?.info && Array.isArray(product.info) && product.info[0]?.title !== undefined
             ?
-            <div className="ProductInfo">
-                <h2>Характеристики</h2>
-                {product.info.map((info, index) =>
-                    <Row 
-                        className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowtTansparent"}
-                        key={info.id}
-                    >
-                        {info.title && info.description 
-                        ? info.title+": "+info.description 
-                        : info.title 
-                            ? info.title
-                            : info.description}
-                    </Row>    
-                )}
-            </div>
+                product.info.map((info, index) =>
+                    <div className="ProductInfo">
+                        {info?.title === "characteristics" || info?.title === "Характеристики"
+                        ?
+                        <>
+                        <h2>Характеристики</h2>
+                        <table 
+                            key={info?.id}
+                        >
+                            {info?.body}
+                        </table>    
+                        </>
+                        : info?.title === "description" 
+                            ? 
+                            <>
+                            <h2>Описание</h2>
+                            <div 
+                                key={info?.id}
+                            >
+                                {info?.body}
+                            </div>    
+                            </>
+                            : info?.title === "equipment" 
+                                ? 
+                                <>
+                                <h2>Комплектация</h2>
+                                <div 
+                                    // className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowTansparent"}
+                                    key={info?.id}
+                                >
+                                    
+                                    {info?.body}
+                                </div>    
+                                </> 
+                                : null
+                        }
+                            
+                    </div>
+                )
             : null}
            
             {product.size && product.size.length > 0
@@ -143,4 +176,4 @@ const Product =  observer(() => {
     )
 })
 
-export default Product
+export default ProductPage

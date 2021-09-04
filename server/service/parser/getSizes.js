@@ -1,4 +1,4 @@
-function searchSizes(Html) {
+function getSizes(Html) {
     let response, lengthHtml, serchString, lengthSerchString, number, weight, length, width, height
     
     lengthHtml = Html.length
@@ -60,4 +60,4 @@ function searchSizes(Html) {
     return response
 }
 
-module.exports = searchSizes
+module.exports = getSizes

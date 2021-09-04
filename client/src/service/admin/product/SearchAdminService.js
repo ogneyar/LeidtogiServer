@@ -22,7 +22,7 @@ const SearchAdminService = observer((props) => {
 
     const [productSearch, setProductSearch] = useState({})
 
-    const [info, setInfo] = useState({})
+    const [info, setInfo] = useState([])
     const [size, setSize] = useState({})
 
     
@@ -42,7 +42,7 @@ const SearchAdminService = observer((props) => {
     const onClickDivArticle = (item) => {
         if (props?.action === "edit") {
             fetchProductInfos(item.id).then(data => {
-                if (data) setInfo(data)
+                if (data[0]?.title !== undefined) setInfo(data)
             })
             fetchProductSizes(item.id).then(data => {
                 if (data) setSize(data)

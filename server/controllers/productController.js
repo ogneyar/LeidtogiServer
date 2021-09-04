@@ -27,17 +27,19 @@ class ProductController {
             }else if (!files) {
                 files = "[{}]"
             } 
-
+            
             const product = await Product.create({name, price, have, article, description, promo, country, equipment, brandId, categoryId, img: files})
 
             if (info) {
                 let inf = JSON.parse(info)
-                if (inf.title || inf.description) {
-                    ProductInfo.create({
-                        title: inf.title,
-                        description: inf.description,
-                        productId: product.id 
-                    })
+                if (Array.isArray(inf)) {
+                    for (let i = 0; i < inf.length; i++) {
+                        ProductInfo.create({
+                            title: inf[i].title,
+                            body: inf[i].body,
+                            productId: product.id 
+                        })
+                    }
                 }
             }
 
@@ -66,8 +68,6 @@ class ProductController {
         let {brandId, categoryId, limit, page} = req.query
         page = Number(page) || 1
         limit = Number(limit) || 8
-        // categoryId = Number(categoryId)
-        // brandId = Number(brandId)
 
         let offset = page * limit - limit
         let products;
@@ -101,10 +101,10 @@ class ProductController {
 
     async getInfo(req, res) {
         const {id} = req.params
-        const info = await ProductInfo.findOne({
+        const info = await ProductInfo.findAll({
             where: {ProductId: id}
         })
-        return res.json(info)
+        return res.json(info) // return array
     }
 
     async getSize(req, res) {
@@ -234,58 +234,49 @@ class ProductController {
                 )
             }
     
+            await ProductInfo.destroy({
+                where: {productId: id}
+            })
+
             if (info) {
                 let inf = JSON.parse(info)
-                if (inf.title || inf.description) {
-                    let yes = await ProductInfo.findOne({
-                        where: {productId: id}
-                    })
-                    if (yes)  {
-                        console.log("yes");
-                        ProductInfo.update({
-                            title: inf.title,
-                            description: inf.description
-                        }, {where: { productId: id }})
-                    }else {
-                        console.log("no");
+                if (Array.isArray(inf)) {
+                    for (let i = 0; i < inf.length; i++) {
                         ProductInfo.create({
-                            title: inf.title,
-                            description: inf.description,
+                            title: inf[i].title,
+                            body: inf[i].body,
                             productId: id 
                         })
                     }
-                }else {
-                    ProductInfo.destroy({
-                        where: {productId: id}
-                    })
                 }
-            }else {
-                ProductInfo.destroy({
-                    where: {productId: id}
-                })
             }
     
             if (size) {
                 let s = JSON.parse(size)
                 if (s.weight || s.volume || s.width || s.height || s.length) {
+                    if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
+                    if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
+                    if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
+                    if (s.height !== 0) s.height = s.height.toString().replace(',', '.')
+                    if (s.length !== 0) s.length = s.length.toString().replace(',', '.')
                     let yes = await ProductSize.findOne({
                         where: {productId: id}
                     })
                     if (yes)  {
                         ProductSize.update({
-                            weight: s.weight.replace(',', '.'),
-                            volume: s.volume.replace(',', '.'),
-                            width: s.width.replace(',', '.'),
-                            height: s.height.replace(',', '.'),
-                            length: s.length.replace(',', '.')
+                            weight: s.weight,
+                            volume: s.volume,
+                            width: s.width,
+                            height: s.height,
+                            length: s.length
                         }, {where: { productId: id }})
                     }else {
                         ProductSize.create({
-                            weight: s.weight.replace(',', '.'),
-                            volume: s.volume.replace(',', '.'),
-                            width: s.width.replace(',', '.'),
-                            height: s.height.replace(',', '.'),
-                            length: s.length.replace(',', '.'),
+                            weight: s.weight,
+                            volume: s.volume,
+                            width: s.width,
+                            height: s.height,
+                            length: s.length,
                             productId: id
                         })
                     }

@@ -2,9 +2,13 @@ const ApiError = require('../error/apiError')
 const axios = require('axios')
 const XLSX = require('xlsx')
 
-const reSearch = require('../service/reSearch.js')
-const searchArrayImages = require('../service/searchArrayImages.js')
-const searchSizes = require('../service/searchSizes.js')
+const getUrlVseinstrumenti = require('../service/parser/getUrlVseinstrumenti.js')
+const getArrayImages = require('../service/parser/getArrayImages.js')
+const getSizes = require('../service/parser/getSizes.js')
+const getPrice = require('../service/parser/getPrice.js')
+const getUrlMlkShop = require('../service/parser/getUrlMlkShop.js')
+const getDescription = require('../service/parser/getDescription.js')
+const getCharacteristics = require('../service/parser/getDescription.js')
 
 
 class parserController {
@@ -18,7 +22,7 @@ class parserController {
             what: article
         }}).then(res => Html = res.data)
         
-        Html = reSearch(Html, article)
+        Html = getUrlVseinstrumenti(Html, article)
 
         if (!Html) return res.send(null)
         
@@ -28,7 +32,7 @@ class parserController {
         await axios.get(response)
             .then(res => Html = res.data)
         
-        response = searchArrayImages(brand, article, Html)
+        response = getArrayImages(brand, article, Html)
 
         return res.json(response) // return array 
     }
@@ -43,7 +47,7 @@ class parserController {
             what: article
         }}).then(res => Html = res.data)
         
-        Html = reSearch(Html, article)
+        Html = getUrlVseinstrumenti(Html, article)
 
         if (!Html) return res.send(null)
         
@@ -53,12 +57,55 @@ class parserController {
         await axios.get(response)
             .then(res => Html = res.data)
         
-        response = searchSizes(Html)
+        response = getSizes(Html)
         
         return res.json(response) // return array 
     }
-
     
+
+    async getPrice(req, res) {
+        let { article } = req.query  // milwaukee, 4933451439
+        let string
+
+        // https://mlk-shop.ru/search?search=4933451439
+        await axios.get('https://mlk-shop.ru/search', {params: {
+            search: article
+        }}).then(res => string = res.data)
+        
+        if (!string) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string}
+
+        string = getPrice(string)
+                
+        return res.json(string) 
+    }
+    
+
+    async getDescription(req, res) {
+        let { article } = req.query  // milwaukee, 4933451439
+        let string
+
+        // https://mlk-shop.ru/search?search=4933451439
+        await axios.get('https://mlk-shop.ru/search', {params: {
+            search: article
+        }}).then(res => string = res.data)
+        
+        if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
+
+        string = getUrlMlkShop(string)
+
+        if (string.error !== undefined) return res.send(string)
+
+        // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+        await axios.get(string.message).then(res => string = res.data)
+
+        if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
+        
+        string = getDescription(string)
+
+        return res.send(string)                
+    }
+
+
     async getAll(req, res) {
         let { brand, article } = req.query  // milwaukee, 4933471077
         let response, Html, images, sizes
@@ -68,7 +115,7 @@ class parserController {
             what: article
         }}).then(res => Html = res.data)
         
-        Html = reSearch(Html, article)
+        Html = getUrlVseinstrumenti(Html, article)
 
         if (!Html) return res.send(null)
         
@@ -78,9 +125,9 @@ class parserController {
         await axios.get(response)
         .then(res => Html = res.data)
                 
-        images = searchArrayImages(brand, article, Html)
+        images = getArrayImages(brand, article, Html)
 
-        sizes = searchSizes(Html)
+        sizes = getSizes(Html)
         
         return res.json({images, sizes}) // return array 
     }
