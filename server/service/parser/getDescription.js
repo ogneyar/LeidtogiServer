@@ -5,37 +5,37 @@ function getDescription(string) {
     lengthString = string.length
     serchString = `<div itemprop="description">`
     number = string.indexOf(serchString)
-    if (number === -1) return {error:'Не найден `<div itemprop="description">`',string}
+    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
     string = string.substring(number, lengthString)
     
-    if (!string) return {error:'Не сработал substring после найденого `<div itemprop="description">`'}
+    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
     
     serchString = `</div>`
     lengthSerchString = serchString.length
     number = string.indexOf(serchString)
-    if (number === -1) return {error:"Не найден `</div>`",string}
+    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
     
     string = string.substring(0, number)
     
-    if (!string) return {error:'Не сработал substring после найденого `</div>`'}
+    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
 
     saveString = string
 
     lengthString = string.length
     serchString = `<ul>`
     number = string.indexOf(serchString)
-    if (number === -1) return {error:"Не найден `<ul>`",string}
+    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
     string = string.substring(number, lengthString)
     
-    if (!string) return {error:'Не сработал substring после найденого `<ul>`'}
+    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
 
     serchString = `</ul>`
     lengthSerchString = serchString.length
     number = string.indexOf(serchString)
-    if (number === -1) return {error:"Не найден `</ul>`",string}
+    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
     string = string.substring(0, number + lengthSerchString)
 
-    if (!string) return {error:"Не сработал substring после найденого `</ul>`"}
+    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
 
     lengthString = saveString.length
     serchString = `<strong>`

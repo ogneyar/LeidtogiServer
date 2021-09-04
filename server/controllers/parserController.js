@@ -8,7 +8,8 @@ const getSizes = require('../service/parser/getSizes.js')
 const getPrice = require('../service/parser/getPrice.js')
 const getUrlMlkShop = require('../service/parser/getUrlMlkShop.js')
 const getDescription = require('../service/parser/getDescription.js')
-const getCharacteristics = require('../service/parser/getDescription.js')
+const getCharacteristics = require('../service/parser/getCharacteristics.js')
+const getEquipment = require('../service/parser/getEquipment.js')
 
 
 class parserController {
@@ -105,31 +106,124 @@ class parserController {
         return res.send(string)                
     }
 
+    async getCharacteristics(req, res) {
+        let { article } = req.query  // milwaukee, 4933451439
+        let string
+
+        // https://mlk-shop.ru/search?search=4933451439
+        await axios.get('https://mlk-shop.ru/search', {params: {
+            search: article
+        }}).then(res => string = res.data)
+        
+        if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
+
+        string = getUrlMlkShop(string)
+
+        if (string.error !== undefined) return res.send(string)
+
+        // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+        await axios.get(string.message).then(res => string = res.data)
+
+        if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
+        
+        string = getCharacteristics(string)
+
+        return res.send(string)                
+    }
+    
+
+    async getEquipment(req, res) {
+        let { article } = req.query  // milwaukee, 4933451439
+        let string
+
+        // https://mlk-shop.ru/search?search=4933451439
+        await axios.get('https://mlk-shop.ru/search', {params: {
+            search: article
+        }}).then(res => string = res.data)
+        
+        if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
+
+        string = getUrlMlkShop(string)
+
+        if (string.error !== undefined) return res.send(string)
+
+        // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+        await axios.get(string.message).then(res => string = res.data)
+
+        if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
+        
+        string = getEquipment(string)
+
+        return res.send(string)                
+    }
+
 
     async getAll(req, res) {
         let { brand, article } = req.query  // milwaukee, 4933471077
-        let response, Html, images, sizes
+        let response, Html, images, sizes, price, description, characteristics, equipment
+        let urlMlkShop, string
 
-        // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
-        await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
-            what: article
-        }}).then(res => Html = res.data)
-        
-        Html = getUrlVseinstrumenti(Html, article)
+        try{
 
-        if (!Html) return res.send(null)
-        
-        // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
-        response = "https://rostov.vseinstrumenti.ru" + Html
-        
-        await axios.get(response)
-        .then(res => Html = res.data)
-                
-        images = getArrayImages(brand, article, Html)
+            // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
+            await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
+                what: article
+            }}).then(res => Html = res.data)
+            
+            Html = getUrlVseinstrumenti(Html, article)
+    
+            if (!Html) return res.send({error:"Функция getUrlVseinstrumenti не вернула результат"})
+            
+            // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
+            response = "https://rostov.vseinstrumenti.ru" + Html
+            
+            await axios.get(response)
+            .then(res => Html = res.data)
 
-        sizes = getSizes(Html)
+            if (!Html) return res.send({error:"Запрос axios.get(https://rostov.vseinstrumenti.ru) не вернул результат"})
+                    
+            images = getArrayImages(brand, article, Html)
+    
+            sizes = getSizes(Html)
+
+            // https://mlk-shop.ru/search?search=4933451439
+            await axios.get('https://mlk-shop.ru/search', {params: {
+                search: article
+            }}).then(res => Html = res.data)
+            
+            if (!Html) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string:Html}
+
+            price = getPrice(Html)
+
+            string = getUrlMlkShop(Html)
+
+            if (string.error !== undefined) return res.send(string)
+            else urlMlkShop = string.message
+
+            // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+            await axios.get(urlMlkShop).then(res => string = res.data)
+
+            if (!string) return res.send({error:`Не сработал axios.get(${urlMlkShop})`})
+            
+            description = getDescription(string)
+
+            if (description.error) return res.json(description)
+            else description = description.message
+            
+            characteristics = getCharacteristics(string)
+            if (characteristics.error) return res.json(characteristics)
+            else characteristics = characteristics.message
+            
+            equipment = getEquipment(string)
+            if (equipment.error) return res.json(equipment)
+            else equipment = equipment.message
+            
+            return res.json({images, sizes, price, description, characteristics, equipment}) // return array 
+
+        }catch(e) {
+            return res.json({error:e})
+        }
         
-        return res.json({images, sizes}) // return array 
     }
 
 
