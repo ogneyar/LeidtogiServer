@@ -46,12 +46,17 @@ class ProductController {
             if (size) {
                 let s = JSON.parse(size)
                 if (s.weight || s.volume || s.width || s.height || s.length) {
+                    if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
+                    if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
+                    if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
+                    if (s.height !== 0) s.height = s.height.toString().replace(',', '.')
+                    if (s.length !== 0) s.length = s.length.toString().replace(',', '.')
                     ProductSize.create({
-                        weight: s.weight.replace(',', '.') || 0,
-                        volume: s.volume.replace(',', '.') || 0,
-                        width: s.width.replace(',', '.') || 0,
-                        height: s.height.replace(',', '.') || 0,
-                        length: s.length.replace(',', '.') || 0,
+                        weight: s.weight || 0,
+                        volume: s.volume || 0,
+                        width: s.width || 0,
+                        height: s.height || 0,
+                        length: s.length || 0,
                         productId: product.id 
                     })
                 }
@@ -156,24 +161,29 @@ class ProductController {
         if (size) {
             let s = JSON.parse(size)
             if (s.weight || s.volume || s.width || s.height || s.length) {
+                if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
+                if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
+                if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
+                if (s.height !== 0) s.height = s.height.toString().replace(',', '.')
+                if (s.length !== 0) s.length = s.length.toString().replace(',', '.')
                 let yes = await ProductSize.findOne({
                     where: {productId: id}
                 })
                 if (yes)  {
                     response = ProductSize.update({
-                        weight: s.weight.replace(',', '.'),
-                        volume: s.volume.replace(',', '.'),
-                        width: s.width.replace(',', '.'),
-                        height: s.height.replace(',', '.'),
-                        length: s.length.replace(',', '.')
+                        weight: s.weight,
+                        volume: s.volume,
+                        width: s.width,
+                        height: s.height,
+                        length: s.length
                     }, {where: { productId: id }})
                 }else {
                     response = ProductSize.create({
-                        weight: s.weight.replace(',', '.'),
-                        volume: s.volume.replace(',', '.'),
-                        width: s.width.replace(',', '.'),
-                        height: s.height.replace(',', '.'),
-                        length: s.length.replace(',', '.'),
+                        weight: s.weight,
+                        volume: s.volume,
+                        width: s.width,
+                        height: s.height,
+                        length: s.length,
                         productId: id
                     })
                 }

@@ -194,6 +194,8 @@ class parserController {
             if (!Html) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string:Html}
 
             price = getPrice(Html)
+            if (price.error) return res.json(price)
+            else price = price.message
 
             string = getUrlMlkShop(Html)
 
@@ -206,7 +208,6 @@ class parserController {
             if (!string) return res.send({error:`Не сработал axios.get(${urlMlkShop})`})
             
             description = getDescription(string)
-
             if (description.error) return res.json(description)
             else description = description.message
             

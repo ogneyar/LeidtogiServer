@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 
 
-const Characteristics = ({characteristics, setCharacteristics, action}) => {
-
+const Price = ({price, setPrice, action}) => {
+    
     const [visible, setVisible] = useState(false)
 
     if (!visible) 
         return (
             <div>
-                <label>Характеристики:</label>
+                <label>Стоимость инструмента:</label>
                 <br />
                 <Button variant="outline-primary" onClick={() => setVisible(true)}>
                     {action === "edit" && "Изменить данные"}
@@ -19,17 +19,17 @@ const Characteristics = ({characteristics, setCharacteristics, action}) => {
         )
 
     return (
-        <div
-            className='Characteristics'
-        >
-            <label>Характеристики:</label>
-            <Form.Control   
-                value={characteristics}
-                onChange={(e) => setCharacteristics(e.target.value)}
-                placeholder={'Введите характеристики'}
+        <div>
+            <label>Стоимость инструмента:</label>
+            <Form.Control 
+                value={price}
+                onChange={e => setPrice(Number(e.target.value))}
+                className=''
+                placeholder={'Введите стоимость инструмента'}
+                type="number"
             />
         </div>
-    );
+    )
 }
 
-export default Characteristics;
+export default Price;

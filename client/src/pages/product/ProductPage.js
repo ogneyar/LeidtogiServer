@@ -145,13 +145,13 @@ const ProductPage =  observer(() => {
                                 ? 
                                 <>
                                 <h2>Комплектация</h2>
-                                <div 
+                                <table 
                                     // className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowTansparent"}
                                     key={info?.id}
                                 >
                                     
                                     {info?.body}
-                                </div>    
+                                </table>
                                 </> 
                                 : null
                         }

@@ -154,12 +154,10 @@ const SearchAdminService = observer((props) => {
                     : API_URL + "unknown.jpg"}
                     have={productSearch?.have}
                     article={productSearch?.article}
-                    description={productSearch?.description}
                     promo={productSearch?.promo}
                     country={productSearch?.country}
                     info={props?.action === "edit" ? info : null}
                     size={props?.action === "edit" ? size : null}
-                    equipment={productSearch?.equipment}
                 /> 
 
             : null}
