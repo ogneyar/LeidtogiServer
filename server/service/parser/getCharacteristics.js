@@ -28,7 +28,7 @@ function getCharacteristics(string) {
     
     if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
 
-    return {message:string.replace(/\t|\n/g,"")}
+    return {message:string.replace(/\r|\t|\n/g,"")}
 }
 
 module.exports = getCharacteristics

@@ -50,7 +50,7 @@ function getDescription(string) {
         }
     }
 
-    return {message:string}
+    return {message:string.replace(/\r|\n|\t/g,"")}
 }
 
 module.exports = getDescription

@@ -10,6 +10,7 @@ const getUrlMlkShop = require('../service/parser/getUrlMlkShop.js')
 const getDescription = require('../service/parser/getDescription.js')
 const getCharacteristics = require('../service/parser/getCharacteristics.js')
 const getEquipment = require('../service/parser/getEquipment.js')
+const getAllData = require('../service/parser/getAllData.js')
 
 
 class parserController {
@@ -160,94 +161,56 @@ class parserController {
 
     async getAll(req, res) {
         let { brand, article } = req.query  // milwaukee, 4933471077
-        let response, Html, images, sizes, price, description, characteristics, equipment
-        let urlMlkShop, string
+        let response
 
         try{
+            response = getAllData(brand, article)
 
-            // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
-            await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
-                what: article
-            }}).then(res => Html = res.data)
-            
-            Html = getUrlVseinstrumenti(Html, article)
-    
-            if (!Html) return res.send({error:"Функция getUrlVseinstrumenti не вернула результат"})
-            
-            // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
-            response = "https://rostov.vseinstrumenti.ru" + Html
-            
-            await axios.get(response)
-            .then(res => Html = res.data)
-
-            if (!Html) return res.send({error:"Запрос axios.get(https://rostov.vseinstrumenti.ru) не вернул результат"})
-                    
-            images = getArrayImages(brand, article, Html)
-    
-            sizes = getSizes(Html)
-
-            // https://mlk-shop.ru/search?search=4933451439
-            await axios.get('https://mlk-shop.ru/search', {params: {
-                search: article
-            }}).then(res => Html = res.data)
-            
-            if (!Html) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string:Html}
-
-            price = getPrice(Html)
-            if (price.error) return res.json(price)
-            else price = price.message
-
-            string = getUrlMlkShop(Html)
-
-            if (string.error !== undefined) return res.send(string)
-            else urlMlkShop = string.message
-
-            // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
-            await axios.get(urlMlkShop).then(res => string = res.data)
-
-            if (!string) return res.send({error:`Не сработал axios.get(${urlMlkShop})`})
-            
-            description = getDescription(string)
-            if (description.error) return res.json(description)
-            else description = description.message
-            
-            characteristics = getCharacteristics(string)
-            if (characteristics.error) return res.json(characteristics)
-            else characteristics = characteristics.message
-            
-            equipment = getEquipment(string)
-            if (equipment.error) return res.json(equipment)
-            else equipment = equipment.message
-            
-            return res.json({images, sizes, price, description, characteristics, equipment}) // return array 
+            return res.json(response) // return array 
 
         }catch(e) {
             return res.json({error:e})
         }
-        
     }
 
 
     async testXLSX(req, res) {
-        let { article } = req.query
+        // let { brand } = req.query
+
+        let brand = "MILWAUKEE".toLowerCase()
+
+        // console.log(req.headers.host);
         
-        let workbook = XLSX.readFile('MILWAUKEE.xlsx')
+        let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
 
         var first_sheet_name = workbook.SheetNames[0];
-        var address_of_cell = 'J10';
+
+        var address_of_article = 'J11';
+        var address_of_name = 'K11';
+        var address_of_category = 'P11';
 
         /* Get worksheet */
         var worksheet = workbook.Sheets[first_sheet_name];
 
         /* Find desired cell */
-        var desired_cell = worksheet[address_of_cell];
+        var desired_article = worksheet[address_of_article];
+        var desired_name = worksheet[address_of_name];
+        var desired_category = worksheet[address_of_category];
 
         /* Get the value */
-        var desired_value = (desired_cell ? desired_cell.v : undefined);
+        var article = (desired_article ? desired_article.v : undefined);
+        var name = (desired_name ? desired_name.v : undefined);
+        var category = (desired_category ? desired_category.v : undefined);
 
 
-        return res.json(desired_value)
+        let response = await getAllData(brand, article)
+
+        if (response.error) return res.json(response)
+        
+        return res.json({article,name,category,...response})
     }
+
+
 
     async mailRu(req, res) {
         let { email } = req.query

@@ -1,3 +1,31 @@
+function searchTagA(str) {
+    let lengthStr, serchStr, num, before, after, saveStr
+
+    saveStr = str
+
+    lengthStr = str.length
+    serchStr = `<a `
+    num = str.indexOf(serchStr)
+
+    if (num !== -1) {
+        before = str.substring(0, num)
+        
+        str = str.substring(num, lengthStr)
+
+        serchStr = `>`
+        num = str.indexOf(serchStr)
+        if (num === -1) return saveStr
+
+        after = str.substring(num + 1, lengthStr)
+
+        str = before + after
+        str = str.replace(/<\/a>/,"")
+        str = searchTagA(str)
+    }
+
+    return str
+}
+
 function getEquipment(string) {
 
     let lengthString, serchString, lengthSerchString, number
@@ -28,7 +56,9 @@ function getEquipment(string) {
     
     if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
 
-    return {message:string.replace(/\t|\n/g,"")}
+    string = searchTagA(string)
+
+    return {message:string.replace(/\r|\t|\n/g,"")}
 }
 
 module.exports = getEquipment
