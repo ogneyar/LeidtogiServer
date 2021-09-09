@@ -1,16 +1,17 @@
 const XLSX = require('xlsx')
 
-const { Brand, Category } = require('../../models/models')
+const { Product, ProductInfo, Brand, Category } = require('../../models/models')
 
 const getAllData = require('../parser/getAllData.js')
 const createProduct = require('../product/createProduct.js')
 
 
-async function addNewProduct(number) {
+async function addNewProduct(workbook, number) {
     
     let brandName = "MILWAUKEE".toLowerCase()
     
-    let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
+    if (!workbook) workbook = XLSX.readFile('newMILWAUKEE.xlsx')
+
     let first_sheet_name = workbook.SheetNames[0];
     let worksheet = workbook.Sheets[first_sheet_name];
 
@@ -27,9 +28,22 @@ async function addNewProduct(number) {
     let name = (desired_name ? desired_name.v : undefined);
     let categoryUrl = (desired_category ? desired_category.v : undefined);
 
+
+    if (article) {
+        const oldProduct = await Product.findOne({
+            where: {article}
+        })
+        if (oldProduct) {
+            const productInfo = await ProductInfo.findOne({
+                where: {productId:oldProduct.id,title:"description"}
+            })
+            if (productInfo && oldProduct.price) return `Товар с артикулом ${article} уже существует!`
+        }
+    }
+
     let response = await getAllData(brandName, article)
 
-    if (response.error) return res.json(response)
+    if (response.error) return response.error
 
     let {images, sizes, price, description, characteristics, equipment} = response
 
@@ -49,26 +63,17 @@ async function addNewProduct(number) {
 
     let files = JSON.stringify(images)
 
-    let info = JSON.stringify([
-        {
-            "title":"description",
-            "body":description
-        },
-        {
-            "title":"characteristics",
-            "body":characteristics
-        },
-        {
-            "title":"equipment",
-            "body":equipment
-        }
-    ])
+    let desc, charac, equip = null
+    if (description) desc = {"title":"description","body":description}
+    if (characteristics) charac = {"title":"characteristics","body":characteristics}
+    if (equipment) equip = {"title":"equipment","body":equipment}
+
+    let info = JSON.stringify([desc,charac,equip])
 
     let size = JSON.stringify(sizes)
 
-    const product = await createProduct(name, price, have, article, promo, country, brandId, categoryId, files, info, size)
+    return await createProduct(name, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
-    return product
 }
 
 module.exports = addNewProduct

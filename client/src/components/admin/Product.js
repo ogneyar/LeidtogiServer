@@ -52,6 +52,7 @@ const Product = observer(({show, onHide}) => {
         <Modal
             show={show}
             // onHide={onHideAndBack}
+            onHide={() => null}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered

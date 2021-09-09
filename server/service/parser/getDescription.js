@@ -13,7 +13,7 @@ function getDescription(string) {
     serchString = `</div>`
     lengthSerchString = serchString.length
     number = string.indexOf(serchString)
-    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
+    if (number === -1) return {error:`Не найден '${serchString}'`,string}
     
     string = string.substring(0, number)
     

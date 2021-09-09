@@ -22,7 +22,7 @@ async function getAllData(brand, article) {
 
     Html = getUrlVseinstrumenti(Html, article)
 
-    if (!Html) return {error:"Функция getUrlVseinstrumenti не вернула результат"}
+    if (!Html) return {error:`getUrlVseinstrumenti не вернула результат поиска по артикулу ${article}`}
 
     // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
     response = "https://rostov.vseinstrumenti.ru" + Html
@@ -34,6 +34,8 @@ async function getAllData(brand, article) {
             
     images = getArrayImages(brand, article, Html)
 
+    if (!images[0]) return {error:'Нет фотографий товара',string:images}
+
     sizes = getSizes(Html)
 
     // https://mlk-shop.ru/search?search=4933451439
@@ -43,7 +45,7 @@ async function getAllData(brand, article) {
 
     if (!Html) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string:Html}
 
-    price = getPrice(Html)
+    price = getPrice(Html,article)
     if (price.error) return price
     else price = price.message
 
@@ -62,7 +64,8 @@ async function getAllData(brand, article) {
     else description = description.message
 
     characteristics = getCharacteristics(string)
-    if (characteristics.error) return characteristics
+    // if (characteristics.error) return characteristics
+    if (characteristics.error) characteristics = ""
     else characteristics = characteristics.message
 
     equipment = getEquipment(string)

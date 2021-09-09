@@ -24,11 +24,13 @@ async function createProduct(name, price, have, article, promo, country, brandId
         let inf = JSON.parse(info)
         if (Array.isArray(inf)) {
             for (let i = 0; i < inf.length; i++) {
-                ProductInfo.create({
-                    title: inf[i].title,
-                    body: inf[i].body,
-                    productId: product.id 
-                })
+                if (inf[i]) {
+                    ProductInfo.create({
+                        title: inf[i].title,
+                        body: inf[i].body,
+                        productId: product.id 
+                    })
+                }
             }
         }
     }
