@@ -3,13 +3,15 @@ const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
+
 const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
+const createProduct = require('../service/product/createProduct.js')
 
 
 class ProductController {
     async create(req, res, next) { 
         try {
-            let {name, price, brandId, categoryId, info, have, article, description, promo, country, equipment, size, files} = req.body
+            let {name, price, brandId, categoryId, have, article, promo, country, files, info, size} = req.body
             let imgBig, imgSmall, fileName
             if (req.files && req.files.img_big && req.files.img_small) {
                 imgBig =req.files.img_big
@@ -28,39 +30,7 @@ class ProductController {
                 files = "[{}]"
             } 
             
-            const product = await Product.create({name, price, have, article, description, promo, country, equipment, brandId, categoryId, img: files})
-
-            if (info) {
-                let inf = JSON.parse(info)
-                if (Array.isArray(inf)) {
-                    for (let i = 0; i < inf.length; i++) {
-                        ProductInfo.create({
-                            title: inf[i].title,
-                            body: inf[i].body,
-                            productId: product.id 
-                        })
-                    }
-                }
-            }
-
-            if (size) {
-                let s = JSON.parse(size)
-                if (s.weight || s.volume || s.width || s.height || s.length) {
-                    if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
-                    if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
-                    if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
-                    if (s.height !== 0) s.height = s.height.toString().replace(',', '.')
-                    if (s.length !== 0) s.length = s.length.toString().replace(',', '.')
-                    ProductSize.create({
-                        weight: s.weight || 0,
-                        volume: s.volume || 0,
-                        width: s.width || 0,
-                        height: s.height || 0,
-                        length: s.length || 0,
-                        productId: product.id 
-                    })
-                }
-            }
+            const product = await createProduct(name, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
             return res.json(product)
 

@@ -1,6 +1,8 @@
-const ApiError = require('../error/apiError')
 const axios = require('axios')
 const XLSX = require('xlsx')
+
+// const ApiError = require('../error/apiError')
+// const { Brand, Category } = require('../models/models')
 
 const getUrlVseinstrumenti = require('../service/parser/getUrlVseinstrumenti.js')
 const getArrayImages = require('../service/parser/getArrayImages.js')
@@ -11,6 +13,9 @@ const getDescription = require('../service/parser/getDescription.js')
 const getCharacteristics = require('../service/parser/getCharacteristics.js')
 const getEquipment = require('../service/parser/getEquipment.js')
 const getAllData = require('../service/parser/getAllData.js')
+
+// const createProduct = require('../service/product/createProduct.js')
+const addNewProduct = require('../service/xlsx/addNewProduct')
 
 
 class parserController {
@@ -174,40 +179,31 @@ class parserController {
     }
 
 
-    async testXLSX(req, res) {
+    async parseXLSX(req, res) {
         // let { brand } = req.query
+        let product, message, response
 
-        let brand = "MILWAUKEE".toLowerCase()
-
-        // console.log(req.headers.host);
+        for(let i = 19; i < 119; i++) {
+            try{
+                product = await addNewProduct(i)
+            }catch(e) {
+                product = e
+            }
         
-        let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
-
-        var first_sheet_name = workbook.SheetNames[0];
-
-        var address_of_article = 'J11';
-        var address_of_name = 'K11';
-        var address_of_category = 'P11';
-
-        /* Get worksheet */
-        var worksheet = workbook.Sheets[first_sheet_name];
-
-        /* Find desired cell */
-        var desired_article = worksheet[address_of_article];
-        var desired_name = worksheet[address_of_name];
-        var desired_category = worksheet[address_of_category];
-
-        /* Get the value */
-        var article = (desired_article ? desired_article.v : undefined);
-        var name = (desired_name ? desired_name.v : undefined);
-        var category = (desired_category ? desired_category.v : undefined);
-
-
-        let response = await getAllData(brand, article)
-
-        if (response.error) return res.json(response)
+            if (product.article) {
+                message = `Товар с артикулом ${product.article} добавлен.<br />`
+                console.log(message)
+            }else {
+                message = `Произошла какая-то ошибка, ${product}`
+                console.log(message)
+            }
+    
+            if (response) response = response + message
+            else response = message
+        }
         
-        return res.json({article,name,category,...response})
+
+        return res.send(response)
     }
 
 

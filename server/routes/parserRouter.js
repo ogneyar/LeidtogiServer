@@ -10,8 +10,10 @@ router.get('/description', checkRole('ADMIN'), parserController.getDescription) 
 router.get('/characteristics', checkRole('ADMIN'), parserController.getCharacteristics) // парсер характеристик с http://mlk-shop.ru
 router.get('/equipment', checkRole('ADMIN'), parserController.getEquipment) // парсер комплектации с http://mlk-shop.ru
 router.get('/all', checkRole('ADMIN'), parserController.getAll)
+
+router.get('/xlsx', parserController.parseXLSX)
+
 router.get('/mail.ru', parserController.mailRu)
 router.get('/ya.ru', parserController.yaRu)
-router.get('/xlsx', parserController.testXLSX)
 
 module.exports = router

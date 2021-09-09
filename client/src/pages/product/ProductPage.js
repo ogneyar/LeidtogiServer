@@ -110,14 +110,15 @@ const ProductPage =  observer(() => {
             {product?.info && Array.isArray(product.info) && product.info[0]?.title !== undefined
             ?
                 product.info.map((info, index) =>
-                    <div className="ProductInfo">
+                    <div 
+                        className="ProductInfo"
+                        key={info?.id}
+                    >
                         {info?.title === "characteristics" || info?.title === "Характеристики"
                         ?
                         <>
                         <h2>Характеристики</h2>
-                        <table 
-                            key={info?.id}
-                        >
+                        <table>
                             {ReactHtmlParser(info?.body)}
                         </table>    
                         </>
@@ -125,9 +126,7 @@ const ProductPage =  observer(() => {
                             ? 
                             <>
                             <h2>Описание</h2>
-                            <div 
-                                key={info?.id}
-                            >
+                            <div>
                                 {ReactHtmlParser(info?.body)}
                             </div>    
                             </>
@@ -137,7 +136,6 @@ const ProductPage =  observer(() => {
                                 <h2>Комплектация</h2>
                                 <table 
                                     // className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowTansparent"}
-                                    key={info?.id}
                                 >
                                     
                                     {ReactHtmlParser(info?.body)}
