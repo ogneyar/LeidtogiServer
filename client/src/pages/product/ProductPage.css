@@ -69,6 +69,13 @@
     padding: 10px;
 }
 
+.ProductInfo li,
+.ProductInfo td
+ {
+    border: 1px solid lightgrey;
+    padding: 10px;
+}
+
 @media(max-width:991px) {
     .ProductMainBox {
         padding: 0 90px;

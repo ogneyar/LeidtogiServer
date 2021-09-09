@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { Card, Col, Container, Image, Row } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
+import ReactHtmlParser from 'react-html-parser';
 
 import { fetchOneProduct } from '../../http/productAPI'
 
@@ -106,17 +107,6 @@ const ProductPage =  observer(() => {
                 </div>
             </div>
             
-            {product?.description
-            ?
-            <div className="ProductDescription">
-                <div className="ProductDescriptionDiv">
-                    <label>
-                        Описание: {product?.description}
-                    </label>
-                </div>
-            </div>
-            : null}
-            
             {product?.info && Array.isArray(product.info) && product.info[0]?.title !== undefined
             ?
                 product.info.map((info, index) =>
@@ -128,7 +118,7 @@ const ProductPage =  observer(() => {
                         <table 
                             key={info?.id}
                         >
-                            {info?.body}
+                            {ReactHtmlParser(info?.body)}
                         </table>    
                         </>
                         : info?.title === "description" 
@@ -138,7 +128,7 @@ const ProductPage =  observer(() => {
                             <div 
                                 key={info?.id}
                             >
-                                {info?.body}
+                                {ReactHtmlParser(info?.body)}
                             </div>    
                             </>
                             : info?.title === "equipment" 
@@ -150,7 +140,7 @@ const ProductPage =  observer(() => {
                                     key={info?.id}
                                 >
                                     
-                                    {info?.body}
+                                    {ReactHtmlParser(info?.body)}
                                 </table>
                                 </> 
                                 : null
@@ -164,11 +154,11 @@ const ProductPage =  observer(() => {
             ?
             <div className="ProductSize">
                 <h2>Габариты</h2>
-                <Row className={"ProductInfoRowLight"}>Вес: {product.size[0].weight}</Row>
-                <Row className={"ProductInfoRowtTansparent"}>Объём: {product.size[0].volume}</Row>
-                <Row className={"ProductInfoRowLight"}>Ширина: {product.size[0].width}</Row>
-                <Row className={"ProductInfoRowtTansparent"}>Высота: {product.size[0].height}</Row>
-                <Row className={"ProductInfoRowLight"}>Длина: {product.size[0].length}</Row>
+                <div className={"ProductInfoRowLight"}>Вес: {product.size[0].weight}</div>
+                <div className={"ProductInfoRowTansparent"}>Объём: {product.size[0].volume}</div>
+                <div className={"ProductInfoRowLight"}>Ширина: {product.size[0].width}</div>
+                <div className={"ProductInfoRowTansparent"}>Высота: {product.size[0].height}</div>
+                <div className={"ProductInfoRowLight"}>Длина: {product.size[0].length}</div>
             </div>
             : null}
             

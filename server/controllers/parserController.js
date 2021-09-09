@@ -164,7 +164,7 @@ class parserController {
         let response
 
         try{
-            response = getAllData(brand, article)
+            response = await getAllData(brand, article)
 
             return res.json(response) // return array 
 
