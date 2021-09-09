@@ -183,28 +183,65 @@ class parserController {
         // let { brand } = req.query
         let product, message, response
 
-        for(let i = 19; i < 119; i++) {
+        let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
+
+        for(let i = 101; i <= 200; i++) {
+
             try{
-                product = await addNewProduct(i)
+                product = await addNewProduct(workbook,i)
             }catch(e) {
                 product = e
             }
         
             if (product.article) {
-                message = `Товар с артикулом ${product.article} добавлен.<br />`
-                console.log(message)
+                message = `${i}. Товар с артикулом ${product.article} добавлен.`
+                console.log('\x1b[34m%s\x1b[0m', message)
             }else {
-                message = `Произошла какая-то ошибка, ${product}`
-                console.log(message)
+                message = `${i}. Ошибка: ${product}`
+                console.log('\x1b[33m%s\x1b[0m', message)
             }
     
+            message = message + "<br />"
             if (response) response = response + message
             else response = message
+
         }
-        
+
+        message = `Закончил.`
+        console.log('\x1b[32m%s\x1b[0m', message)
+        if (response) response = response + message
+        else response = message
 
         return res.send(response)
     }
+    
+// color text console
+
+// Reset = "\x1b[0m"
+// Bright = "\x1b[1m"
+// Dim = "\x1b[2m"
+// Underscore = "\x1b[4m"
+// Blink = "\x1b[5m"
+// Reverse = "\x1b[7m"
+// Hidden = "\x1b[8m"
+
+// FgBlack = "\x1b[30m"
+// FgRed = "\x1b[31m"
+// FgGreen = "\x1b[32m"
+// FgYellow = "\x1b[33m"
+// FgBlue = "\x1b[34m"
+// FgMagenta = "\x1b[35m"
+// FgCyan = "\x1b[36m"
+// FgWhite = "\x1b[37m"
+
+// BgBlack = "\x1b[40m"
+// BgRed = "\x1b[41m"
+// BgGreen = "\x1b[42m"
+// BgYellow = "\x1b[43m"
+// BgBlue = "\x1b[44m"
+// BgMagenta = "\x1b[45m"
+// BgCyan = "\x1b[46m"
+// BgWhite = "\x1b[47m"
 
 
 
