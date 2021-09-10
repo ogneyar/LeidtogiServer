@@ -185,7 +185,7 @@ class parserController {
 
         let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
 
-        for(let i = 101; i <= 200; i++) {
+        for(let i = 200; i < 300; i++) {
 
             try{
                 product = await addNewProduct(workbook,i)
