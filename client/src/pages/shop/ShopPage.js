@@ -170,6 +170,7 @@ const Shop = observer(() => {
                     {loadingProduct 
                     ? <Loading /> 
                     : <>
+                        <Pagination />
                         <ProductList />
                         <Pagination />
                     </>}

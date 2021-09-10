@@ -160,7 +160,7 @@ class parserController {
         
         string = getEquipment(string)
 
-        return res.send(string)                
+        return res.send(string)
     }
 
 
@@ -180,24 +180,29 @@ class parserController {
 
 
     async parseXLSX(req, res) {
-        // let { brand } = req.query
+        let { brand, number, party } = req.query
         let product, message, response
 
         let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
 
-        for(let i = 200; i < 300; i++) {
+        // for(let i = 200; i < 300; i++) {
+        for(let i = Number(number); i < Number(number)+Number(party); i++) {
 
             try{
-                product = await addNewProduct(workbook,i)
+                // product = await addNewProduct(workbook,i)
+                // product = await addNewProduct(workbook,brand,number)
+                product = await addNewProduct(workbook,brand,i)
             }catch(e) {
                 product = e
             }
         
             if (product.article) {
                 message = `${i}. Товар с артикулом ${product.article} добавлен.`
+                // message = `${number}. Товар с артикулом ${product.article} добавлен.`
                 console.log('\x1b[34m%s\x1b[0m', message)
             }else {
                 message = `${i}. Ошибка: ${product}`
+                // message = `${number}. Ошибка: ${product}`
                 console.log('\x1b[33m%s\x1b[0m', message)
             }
     
@@ -207,12 +212,13 @@ class parserController {
 
         }
 
-        message = `Закончил.`
-        console.log('\x1b[32m%s\x1b[0m', message)
-        if (response) response = response + message
-        else response = message
+        // message = `Закончил.`
+        // console.log('\x1b[32m%s\x1b[0m', message)
+        // if (response) response = response + message
+        // else response = message
 
         return res.send(response)
+        // return res.json(message)
     }
     
 // color text console

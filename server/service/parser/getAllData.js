@@ -60,7 +60,8 @@ async function getAllData(brand, article) {
     if (!string) return {error:`Не сработал axios.get(${urlMlkShop})`}
 
     description = getDescription(string)
-    if (description.error) return description
+    // if (description.error) return description
+    if (description.error) description = ""
     else description = description.message
 
     characteristics = getCharacteristics(string)
@@ -69,7 +70,8 @@ async function getAllData(brand, article) {
     else characteristics = characteristics.message
 
     equipment = getEquipment(string)
-    if (equipment.error) return equipment
+    // if (equipment.error) return equipment
+    if (equipment.error) equipment = ""
     else equipment = equipment.message
 
 

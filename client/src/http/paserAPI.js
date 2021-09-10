@@ -2,6 +2,13 @@ import axios from 'axios'
 import { $host, $authHost } from './index'
 
 
+export const fetchParser = async (brand, number, party) => {
+    const {data} = await $authHost.get('api/parser/xlsx', {params: {
+        brand, number, party
+    }})
+    return data
+}
+
 export const fetchParserImages = async (brand, article) => {
     const {data} = await $authHost.get('api/parser/images', {params: {
         brand, article

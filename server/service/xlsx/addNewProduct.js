@@ -6,9 +6,9 @@ const getAllData = require('../parser/getAllData.js')
 const createProduct = require('../product/createProduct.js')
 
 
-async function addNewProduct(workbook, number) {
+async function addNewProduct(workbook, brandName, number) {
     
-    let brandName = "MILWAUKEE".toLowerCase()
+    // let brandName = "MILWAUKEE".toLowerCase()
     
     if (!workbook) workbook = XLSX.readFile('newMILWAUKEE.xlsx')
 
