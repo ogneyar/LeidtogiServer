@@ -3,14 +3,14 @@ import InfoPage from './InfoPage'
 import './Delivery.css'
 
 
-const Delivery = () => {
+const DeliveryPages = () => {
     return (
         <InfoPage>
-            <div className="Delivery">
+            <div className="DeliveryPages">
                 <label>Информация о доставке!</label>
             </div>
         </InfoPage>
     )
 }
 
-export default Delivery
+export default DeliveryPages

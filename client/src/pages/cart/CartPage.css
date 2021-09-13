@@ -1,4 +1,7 @@
-.CartPage {
+
+.CartPage,
+.CardTitle,
+.CardBody {
     display:flex;
     justify-content:center; 
     align-items:center;
@@ -19,16 +22,16 @@ th {
     border: 1px solid rgb(173, 173, 173);
 }
 
-.Cart-card {
+.CartCard {
     width: 100vw;
     padding: 15px;
 }
 
-.Card_title {
-    margin: 70px 0;
+.CardTitle {
+    margin: 30px 0;
 }
 
-.Card_body {
+.CardBody {
     margin: 30px 0;
 }
 
@@ -67,7 +70,7 @@ th {
     .CartTable {
         font-size: 12px;
     }
-    .Cart-card {
+    .CartCard {
         padding: 5px;
     }
     th {
