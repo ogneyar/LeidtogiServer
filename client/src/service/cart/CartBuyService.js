@@ -1,8 +1,12 @@
 import Notification from "../../components/myBootstrap/Notification"
+import { fetchProductSizes } from "../../http/productAPI"
 
-export const onClickButtonBuy = (e, product) => {
+export const onClickButtonBuy = async (e, product) => {
     e.stopPropagation()
     e.preventDefault()
+
+    let size 
+
     let cart = localStorage.getItem('cart')
     if (cart) {
 
@@ -16,6 +20,7 @@ export const onClickButtonBuy = (e, product) => {
             } else return i
         })
         if (!yes) {
+            size = await fetchProductSizes(product.id)
             cart = [...cart, {
                 id: product.id,
                 value: 1,
@@ -23,11 +28,13 @@ export const onClickButtonBuy = (e, product) => {
                 article: product.article,
                 price: product.price,
                 img: product.img[0].small,
-                total: product.price
+                total: product.price,
+                size
             }]
         }
         
     }else {
+        size = await fetchProductSizes(product.id)
         cart = [{
             id:product.id,
             value:1,
@@ -35,7 +42,8 @@ export const onClickButtonBuy = (e, product) => {
             article:product.article,
             price:product.price,
             img:product.img[0].small,
-            total: product.price
+            total: product.price,
+            size
         }]
     }
     localStorage.setItem('cart', JSON.stringify(cart))

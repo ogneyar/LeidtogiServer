@@ -24,28 +24,70 @@ const DeliveryPochta = observer((props) => {
         }
     },[user?.user?.address])
 
-    const [info, setInfo] = useState({})
+    const [info, setInfo] = useState({name:"", transName:"", adName:"", payNds:"", deliveryMin:""})
     const [index, setIndex] = useState("")
 
+    // const [state, setState] = useState([])
+    // const [total, setTotal] = useState(0)
+
+    
+    useEffect(() => {
+        // let cart
+        // cart = localStorage.getItem('cart')
+        // if (cart) {
+        //     cart = JSON.parse(cart)
+        //     setState(cart)
+        //     console.log(cart)
+
+        //     // let totalWeight
+        //     // cart.forEach(i => totalValue += i.total)
+        //     // setTotal(totalValue)
+        // }
+    }, [])
+
     const onClickButton = async () => {
-        
-        const size = await fetchProductSizes(props?.id)
+        let cart
+        cart = localStorage.getItem('cart')
+        if (cart) {
+            cart = JSON.parse(cart)
+            // setState(cart)
+            // console.log(cart)
 
-        let weight = size?.weight * 1000
-        
-        let { pack } = getPack(size?.width, size?.height, size?.length)
+            let weight = 0
 
-        setInfo({name:"", transName:"", payNds:"", deliveryMin:""})
-        let { date, time } = getDateTime()
+            cart.forEach(i => {
+                weight += (Number(i.value) * Number(i.size.weight))
+            })
 
-        let dogovor = ""
-        let warning, nogabarit, sms = false
-        let { service } = getService(warning, nogabarit, sms)
-        
-        const response = await fetchPochta("101000", index, weight, pack, date, time, service, dogovor)
+            weight = weight * 1000
+            weight = Math.ceil(weight)
 
-        if (response?.errors) alert(response?.errors[0]?.msg)
-        else setInfo(response)
+            // console.log(weight)
+
+            // const size = cart[0]?.size
+            // const size = await fetchProductSizes(props?.id)
+
+            
+            // let { pack } = getPack(size?.width, size?.height, size?.length)
+            let pack = 0
+
+            setInfo({name:"", transName:"", adName:"", payNds:"", deliveryMin:""})
+            let { date, time } = getDateTime()
+
+            let dogovor = ""
+            let warning, nogabarit, sms = false
+            let { service } = getService(warning, nogabarit, sms)
+
+            let indexFrom
+            indexFrom = "101000" // Москва
+            // indexFrom = "390000" // Рязань
+            // indexFrom = "347056" // Углекаменный
+            
+            const response = await fetchPochta(indexFrom, index, weight, pack, date, time, service, dogovor)
+
+            if (response?.errors) alert(response?.errors[0]?.msg)
+            else setInfo(response)
+        }
     }
     
 
@@ -70,7 +112,7 @@ const DeliveryPochta = observer((props) => {
                     </div>
                 :null
                 }
-                <div className="d-flex flex-row align-items-center">
+                <div className="d-flex flex-row align-items-center flex-wrap">
                     <label  className="mr-2">Ваш индекс: </label>
                     <Form.Control 
                         value={index}
@@ -81,7 +123,9 @@ const DeliveryPochta = observer((props) => {
                         className='mb-2' 
                         placeholder="Индекс" 
                     />
-                    </div>
+                    <label className="ml-2">{info?.adName}</label>
+                    
+                </div>
                 <Button
                     onClick={onClickButton}
                 >

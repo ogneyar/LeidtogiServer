@@ -72,7 +72,7 @@ export default function Delivery(props) {
             >
                 {delivery === "pochta" 
                 ? 
-                    <DeliveryPochta id={props?.id} />
+                    <DeliveryPochta />
                 : null}
 
                 {delivery === "sdek" 

@@ -203,7 +203,7 @@ const Cart = () => {
                         </tbody>
                     </table>
 
-                <Delivery id={state[0].id} />
+                <Delivery />
 
                 </Card>
             </Container>
