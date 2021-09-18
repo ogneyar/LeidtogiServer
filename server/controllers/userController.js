@@ -142,7 +142,7 @@ class UserController {
             // const userData = await userService.refresh(refreshToken);
             if (!refreshToken) {
                 // throw ApiError.UnauthorizedError();
-                next(ApiError.unauthorized("Не авторизован!!!"));
+                next(ApiError.unauthorized("Нет refresh токена!"));
             }
 
             const userData = tokenService.validateRefreshToken(refreshToken);
