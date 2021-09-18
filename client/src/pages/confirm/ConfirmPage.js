@@ -6,7 +6,7 @@ import Loading from '../../components/Loading'
 import InfoPage from '../info/InfoPage'
 import LoginPage from '../login/LoginPage'
 import Error from '../error/ErrorPage'
-import { updateUser } from '../../http/userAPI'
+import { updateUser, activate } from '../../http/userAPI'
 import { Context } from '../..'
 
 import './ConfirmPage.css'
@@ -19,19 +19,28 @@ const ConfirmPage = observer(() => {
     const [ loading, setLoading ] = useState(false)
 
     useEffect(() => {
+        async function activateUser(id, url) {
+            await activate(id, url).then(data => {
+                user.setUser({...user.user, isActivated:1})
+            })
+        }
         if (user.user?.id) {
             if (!user.user?.isActivated) {
-                if (user.user?.activationLink === url) {
+                // if (user.user?.activationLink === url) {
                     setLoading(true)
-                    updateUser(user.user?.id, {isActivated:1}).then(data => {
-                        user.setUser({...user.user, isActivated:1})
-                    })
+
+                    // updateUser(user.user?.id, {isActivated:1}).then(data => {
+                    //     user.setUser({...user.user, isActivated:1})
+                    // })
+
+                    activateUser(user.user.id, url)
+
                     setLoading(false)
-                }
+                // }
             }
-            console.log("id", user.user?.id)
-            console.log("activationLink", user.user?.activationLink)
-            console.log("isActivated",user.user?.isActivated)
+            // console.log("id", user.user?.id)
+            // console.log("activationLink", user.user?.activationLink)
+            // console.log("isActivated",user.user?.isActivated)
         }
     },[user.user?.id])
 

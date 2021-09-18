@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 import uuid from 'react-uuid'
 import $ from 'jquery'
 
-import { getUser, registration } from '../../http/userAPI'
+import { getUserInfo, registration } from '../../http/userAPI'
 import { LOGIN_ROUTE, LK_ROUTE } from '../../utils/consts'
 import { Input, Alert } from '../../components/myBootstrap'
 import Loading from '../../components/Loading'
@@ -57,7 +57,7 @@ const RegistrationPage = observer(() => {
             )
             if (data?.id) {
                 user.setIsAuth(true)
-                getUser().then(dat => user.setUser(dat))
+                getUserInfo().then(dat => user.setUser(dat))
             }
             setLoading(false)
             // history.push(LOGIN_ROUTE)
@@ -147,6 +147,8 @@ const RegistrationPage = observer(() => {
                     case 10:                        
                     case 13:
                         if (lastLength < length) offset = 1
+                    break
+                    default:
                     break
                 }
             }

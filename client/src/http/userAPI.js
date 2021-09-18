@@ -13,8 +13,15 @@ export const login = async (email, password) => {
     return jwt_decode(data.token)
 }
 
+export const logout = async () => {
+    localStorage.removeItem('token')
+    const {data} = await $host.post('api/user/logout')
+    return data
+}
+
 export const auth = async () => {
-    const {data}  = await $authHost.get('api/user/auth')
+    // const {data}  = await $authHost.get('api/user/auth') 
+    const {data}  = await $authHost.get('api/user/refresh') 
     if (data?.token) {
         localStorage.setItem('token', data.token)
         return jwt_decode(data.token)
@@ -23,7 +30,7 @@ export const auth = async () => {
     }
 }
 
-export const getUser = async () => {
+export const getUserInfo = async () => {
     const {data}  = await $authHost.get('api/user/info')
     return data
 }
@@ -32,3 +39,10 @@ export const updateUser = async (id, body) => {
     const {data}  = await $authHost.put('api/user/update/'+ id, body)
     return data
 }
+
+export const activate = async (id, link) => {
+    const {data}  = await $authHost.get('api/user/activate/'+ link, {id})
+    return data
+}
+
+

@@ -4,7 +4,7 @@ import { NavLink, useHistory } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import $ from 'jquery'
 
-import { login, getUser } from '../../http/userAPI'
+import { login, getUserInfo } from '../../http/userAPI'
 import { REGISTRATION_ROUTE, SHOP_ROUTE, LK_ROUTE, CONFIRM_ROUTE } from '../../utils/consts'
 import { Alert } from '../../components/myBootstrap'
 import { Context } from '../..'
@@ -26,7 +26,7 @@ const LoginPage = observer((props) => {
         try {
             let data
             data = await login(email, password)
-            getUser().then(dat => user.setUser(dat))
+            getUserInfo().then(dat => user.setUser(dat))
             user.setIsAuth(true)
             if (props?.confirm) {
                 history.push(CONFIRM_ROUTE + "/" + props?.url)

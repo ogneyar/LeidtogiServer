@@ -16,7 +16,7 @@ import './ShopPage.css'
 
 const Shop = observer(() => {
 
-    const { product, category, brand } = useContext(Context)
+    const { product, category, brand, user } = useContext(Context)
 
     const [ loadingCategory, setLoadingCategory ] = useState(true)
     const [ loadingBrand, setLoadingBrand ] = useState(true)
@@ -154,6 +154,11 @@ const Shop = observer(() => {
             setLoadingBrand(false)
         }
     },[brand.allBrands])
+
+
+    // useEffect(() => {
+    //     console.log(user);
+    // },[user])
 
 
     return (

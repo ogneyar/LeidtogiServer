@@ -8,7 +8,7 @@ import Header from './components/header/Header'
 import Footer from './components/footer/Footer'
 import Loading from './components/Loading'
 import Error from './pages/error/ErrorPage'
-import { auth, getUser } from './http/userAPI'
+import { auth, getUserInfo } from './http/userAPI'
 import { fetchAllProducts } from './http/productAPI'
 import { fetchAllCategories } from './http/categoryAPI'
 import { fetchBrands } from './http/brandAPI'
@@ -21,26 +21,35 @@ import './styles/App.css'
 const App = observer(() => {
 
     const { user, product, category, brand } = useContext(Context)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        auth()
-            .then( 
-                data => {
-                    if (data?.id) {
-                        user.setIsAuth(true)
-                    }
-                },
-                err => {
-                    if (err.response?.status !== 401) setError(true)
-                    // console.log(err.response?.data?.message)
-                })
-            .finally(() => setLoading(false))
-        getUser()
-            .then(
-                data => user.setUser(data),
-                err => console.log(err))
+        if (localStorage.getItem('token')) {
+            setLoading(true)
+            // auth().then( 
+            //     data => {
+            //         if (data?.id) {
+            //             user.setIsAuth(true)
+            //         }
+            //     },
+            //     err => {
+            //         if (err.response?.status !== 401) setError(true)
+            //         // console.log(err.response?.data?.message)
+            //     })
+            //     .finally(() => setLoading(false))
+            getUserInfo()
+                .then(
+                    data => {
+                        if (data?.id) {
+                            user.setUser({...data,activationLink:null,password:null})
+                            user.setIsAuth(true)
+                        }
+                    },
+                    err => console.log(err))
+                .finally(() => setLoading(false))
+        }
+        
         fetchAllProducts()
             .then(
                 data => product.setAllProducts(data),

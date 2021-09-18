@@ -9,6 +9,7 @@ const createProduct = require('../service/product/createProduct.js')
 
 
 class ProductController {
+
     async create(req, res, next) { 
         try {
             let {name, price, brandId, categoryId, have, article, promo, country, files, info, size} = req.body
@@ -40,140 +41,172 @@ class ProductController {
     }
 
     async getAll(req, res) {
-        let {brandId, categoryId, limit, page} = req.query
-        page = Number(page) || 1
-        limit = Number(limit) || 8
-
-        let offset = page * limit - limit
-        let products;
-        if (limit === -1) {
-            products = await Product.findAll()
-        }else {
-            if (!brandId && !categoryId) {
-                products = await Product.findAndCountAll({limit, offset})
+        try {
+            let {brandId, categoryId, limit, page} = req.query
+            page = Number(page) || 1
+            limit = Number(limit) || 8
+    
+            let offset = page * limit - limit
+            let products;
+            if (limit === -1) {
+                products = await Product.findAll()
+            }else {
+                if (!brandId && !categoryId) {
+                    products = await Product.findAndCountAll({limit, offset})
+                }
+                if (brandId && !categoryId) {
+                    products = await Product.findAndCountAll({where:{brandId}, limit, offset})
+                }
+                if (!brandId && categoryId) {
+                    products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
+                }
+                if (brandId && categoryId) {
+                    products = await Product.findAndCountAll({where:{brandId, categoryId}, limit, offset})
+                }
             }
-            if (brandId && !categoryId) {
-                products = await Product.findAndCountAll({where:{brandId}, limit, offset})
-            }
-            if (!brandId && categoryId) {
-                products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
-            }
-            if (brandId && categoryId) {
-                products = await Product.findAndCountAll({where:{brandId, categoryId}, limit, offset})
-            }
+            return res.json(products)
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getAll!'));
         }
-        return res.json(products)
     }
 
     async getOne(req, res) {
-        const {id} = req.params
-        const product = await Product.findOne({
-            where: {id},
-            include: [{model: ProductInfo, as: 'info'},{model: ProductSize, as: 'size'}]
-        })
-        return res.json(product)
+        try {
+            const {id} = req.params
+            const product = await Product.findOne({
+                where: {id},
+                include: [{model: ProductInfo, as: 'info'},{model: ProductSize, as: 'size'}]
+            })
+            return res.json(product)
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getOne!'));
+        }
     }
 
     async getInfo(req, res) {
-        const {id} = req.params
-        const info = await ProductInfo.findAll({
-            where: {ProductId: id}
-        })
-        return res.json(info) // return array
+        try {
+            const {id} = req.params
+            const info = await ProductInfo.findAll({
+                where: {ProductId: id}
+            })
+            return res.json(info) // return array
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getInfo!'));
+        }
     }
 
     async getSize(req, res) {
-        const {id} = req.params
-        const size = await ProductSize.findOne({
-            where: {ProductId: id}
-        })
-        return res.json(size)
+        try {
+            const {id} = req.params
+            const size = await ProductSize.findOne({
+                where: {ProductId: id}
+            })
+            return res.json(size)
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getSize!'));
+        }
     }
 
     async delete(req, res) {
-        const {id} = req.params
-        const product = await Product.findOne({
-            where: {id}
-        })
-
-        const brand = await Brand.findOne({
-            where: {id:product.brandId}
-        })
-      
-        createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), product.article)
-
-        await ProductInfo.destroy({
-            where: {productId: id}
-        })
-        await ProductSize.destroy({
-            where: {productId: id}
-        })
-        const response = await Product.destroy({
-            where: {id}
-        })
-        return res.json(response)
+        try {
+            const {id} = req.params
+            const product = await Product.findOne({
+                where: {id}
+            })
+    
+            const brand = await Brand.findOne({
+                where: {id:product.brandId}
+            })
+          
+            createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), product.article)
+    
+            await ProductInfo.destroy({
+                where: {productId: id}
+            })
+            await ProductSize.destroy({
+                where: {productId: id}
+            })
+            const response = await Product.destroy({
+                where: {id}
+            })
+            return res.json(response)
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода delete!'));
+        }
     }
 
     async edit(req, res) {
-        const {id} = req.params
-        const body = req.body
-        const response = await Product.update(body, {
-            where: { id }
-        })
-        return res.json(response) // return boolean
+        try {
+            const {id} = req.params
+            const body = req.body
+            const response = await Product.update(body, {
+                where: { id }
+            })
+            return res.json(response) // return boolean
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода edit!'));
+        }
     }
 
     async editSizes(req, res) {
-        const {id} = req.params
-        const {size} = req.body
-        let response
-
-        if (size) {
-            let s = JSON.parse(size)
-            if (s.weight || s.volume || s.width || s.height || s.length) {
-                if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
-                if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
-                if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
-                if (s.height !== 0) s.height = s.height.toString().replace(',', '.')
-                if (s.length !== 0) s.length = s.length.toString().replace(',', '.')
-                let yes = await ProductSize.findOne({
-                    where: {productId: id}
-                })
-                if (yes)  {
-                    response = ProductSize.update({
-                        weight: s.weight,
-                        volume: s.volume,
-                        width: s.width,
-                        height: s.height,
-                        length: s.length
-                    }, {where: { productId: id }})
-                }else {
-                    response = ProductSize.create({
-                        weight: s.weight,
-                        volume: s.volume,
-                        width: s.width,
-                        height: s.height,
-                        length: s.length,
-                        productId: id
+        try {
+            const {id} = req.params
+            const {size} = req.body
+            let response
+    
+            if (size) {
+                let s = JSON.parse(size)
+                if (s.weight || s.volume || s.width || s.height || s.length) {
+                    if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
+                    if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
+                    if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
+                    if (s.height !== 0) s.height = s.height.toString().replace(',', '.')
+                    if (s.length !== 0) s.length = s.length.toString().replace(',', '.')
+                    let yes = await ProductSize.findOne({
+                        where: {productId: id}
                     })
-                }
-            }else {
-                response = ProductSize.destroy({
-                    where: {productId: id}
-                })
-            }  
+                    if (yes)  {
+                        response = ProductSize.update({
+                            weight: s.weight,
+                            volume: s.volume,
+                            width: s.width,
+                            height: s.height,
+                            length: s.length
+                        }, {where: { productId: id }})
+                    }else {
+                        response = ProductSize.create({
+                            weight: s.weight,
+                            volume: s.volume,
+                            width: s.width,
+                            height: s.height,
+                            length: s.length,
+                            productId: id
+                        })
+                    }
+                }else {
+                    response = ProductSize.destroy({
+                        where: {productId: id}
+                    })
+                }  
+            }
+    
+            return res.json(response) // return boolean
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода editSizes!'));
         }
-
-        return res.json(response) // return boolean
     }
 
     async editOnArticle(req, res) {
-        const {article} = req.params
-        const body = req.body
-        const response = await Product.update(body, {
-            where: { article }
-        })
-        return res.json(response) // return boolean
+        try {
+            const {article} = req.params
+            const body = req.body
+            const response = await Product.update(body, {
+                where: { article }
+            })
+            return res.json(response) // return boolean
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода editOnArticle!'));
+        }
     }
 
     async editAll(req, res, next) {
@@ -279,12 +312,16 @@ class ProductController {
     }
 
     async editRating(req, res) { // для рейта отдельная функция из-за проверки роли юзера вместо администратора
-        const {id} = req.params
-        const {rating} = req.body
-        const response = await Product.update({rating}, {
-            where: { id }
-        })
+        try {
+            const {id} = req.params
+            const {rating} = req.body
+            const response = await Product.update({rating}, {
+                where: { id }
+            })
         return res.json(response) // return boolean
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода editRating!'));
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 const axios = require('axios')
 const XLSX = require('xlsx')
 
-// const ApiError = require('../error/apiError')
+const ApiError = require('../error/apiError')
 // const { Brand, Category } = require('../models/models')
 
 const getUrlVseinstrumenti = require('../service/parser/getUrlVseinstrumenti.js')
@@ -21,6 +21,10 @@ const addNewProduct = require('../service/xlsx/addNewProduct')
 class parserController {
 
     async getImages(req, res) {
+        try {
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getImages!'));
+        }
         let { brand, article } = req.query  // milwaukee, 4933471077
         let response, Html
 
@@ -46,6 +50,10 @@ class parserController {
 
     
     async getSizes(req, res) {
+        try {
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getImages!'));
+        }
         let { article } = req.query  // milwaukee, 4933471077
         let response, Html
 
@@ -71,6 +79,10 @@ class parserController {
     
 
     async getPrice(req, res) {
+        try {
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getImages!'));
+        }
         let { article } = req.query  // milwaukee, 4933451439
         let string
 
@@ -88,6 +100,10 @@ class parserController {
     
 
     async getDescription(req, res) {
+        try {
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getImages!'));
+        }
         let { article } = req.query  // milwaukee, 4933451439
         let string
 
@@ -113,6 +129,10 @@ class parserController {
     }
 
     async getCharacteristics(req, res) {
+        try {
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getImages!'));
+        }
         let { article } = req.query  // milwaukee, 4933451439
         let string
 
@@ -139,6 +159,10 @@ class parserController {
     
 
     async getEquipment(req, res) {
+        try {
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getImages!'));
+        }
         let { article } = req.query  // milwaukee, 4933451439
         let string
 
@@ -185,12 +209,9 @@ class parserController {
 
         let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
 
-        // for(let i = 200; i < 300; i++) {
         for(let i = Number(number); i < Number(number)+Number(party); i++) {
 
             try{
-                // product = await addNewProduct(workbook,i)
-                // product = await addNewProduct(workbook,brand,number)
                 product = await addNewProduct(workbook,brand,i)
             }catch(e) {
                 product = e
@@ -198,11 +219,9 @@ class parserController {
         
             if (product.article) {
                 message = `${i}. Товар с артикулом ${product.article} добавлен.`
-                // message = `${number}. Товар с артикулом ${product.article} добавлен.`
                 console.log('\x1b[34m%s\x1b[0m', message)
             }else {
                 message = `${i}. Ошибка: ${product}`
-                // message = `${number}. Ошибка: ${product}`
                 console.log('\x1b[33m%s\x1b[0m', message)
             }
     
@@ -212,13 +231,7 @@ class parserController {
 
         }
 
-        // message = `Закончил.`
-        // console.log('\x1b[32m%s\x1b[0m', message)
-        // if (response) response = response + message
-        // else response = message
-
         return res.send(response)
-        // return res.json(message)
     }
     
 // color text console
@@ -252,31 +265,31 @@ class parserController {
 
 
     async mailRu(req, res) {
-        let { email } = req.query
-        let response
-        // let config = {
-        //     host: "e.mail.ru",
-        //     headers: {
-        //         "Cookie": "mrcu=615E6129F2B1975A5B53E64C3BB0",
-        //         "Origin": "https://e.mail.ru"
-        //     }
-        //   }
-
-        // await axios.post("https://e.mail.ru/api/v1/user/password/restore", { email }, config)
-        await axios.post("https://e.mail.ru/api/v1/user/password/restore", { email })
-            .then(res => response = res.data)
-            .catch(err => response = err)
-        
-        return res.json(response)
+        try {
+            let { email } = req.query
+            let response
+            
+            await axios.post("https://e.mail.ru/api/v1/user/password/restore", { email })
+                .then(res => response = res.data)
+                .catch(err => response = err)
+            
+            return res.json(response)
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода mailRu!'));
+        }
     }
 
     async yaRu(req, res) {
-        let { email } = req.query
-        let response
-        await axios.post("https://passport.yandex.ru/registration-validations/auth/multi_step/start", { login:email })
-            .then(res => response = res.data)
-            .catch(err => response = err)
-        return res.json(response)
+        try {
+            let { email } = req.query
+            let response
+            await axios.post("https://passport.yandex.ru/registration-validations/auth/multi_step/start", { login:email })
+                .then(res => response = res.data)
+                .catch(err => response = err)
+            return res.json(response)
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода yaRu!'));
+        }
     }
 }
 
