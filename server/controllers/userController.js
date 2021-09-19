@@ -77,7 +77,7 @@ class UserController {
 
             // return res.json({token})
         } catch (e) {
-            next(ApiError.badRequest('Ошибка входа!'));
+            next(ApiError.badRequest('Ошибка входа! ' + e));
         }
     }
 

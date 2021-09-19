@@ -1,7 +1,6 @@
-// const { Delivery } = require('../models/models')
-
 const axios  = require("axios")
-import qs from 'qs'
+const qs = require('qs')
+// const { Delivery } = require('../models/models')
 
 
 class DeliveryController {
@@ -16,20 +15,62 @@ class DeliveryController {
         //     client_secret: "PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG"
         // }})
 
-        const url = "https://api.edu.cdek.ru/v2/oauth/token?parameters"
-        const data = {
-            grant_type: "client_credentials",
-            client_id: "EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI",
-            client_secret: "PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG"
+        const url = "https://api.edu.cdek.ru/v2/oauth/token"
+        let data = {
+            "grant_type": "client_credentials",
+            "client_id": "EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI",
+            "client_secret": "PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG"
         }
-        const options = {
-            method: 'POST',
-            headers: { 'content-type': 'application/x-www-form-urlencoded' },
-            data: qs.stringify(data),
-            url,
-        };
-        // axios(options);
-        const response = await axios(options)
+        let headers = { 
+            // 'Accept': '*/*', 
+            'Content-Type': 'application/x-www-form-urlencoded', 
+            // 'Content-Length': data.toString().length, 
+            'Host': 'api.edu.cdek.ru', 
+            // 'Authorization': 'Bearer token', 
+            // 'User-Agent': 'PostmanRuntime/7.26.8', 
+        }
+        let method = 'POST'
+        let response //= 
+        try {
+            // data = qs.stringify(data,{
+            //     charset: 'utf-8',
+            //     charsetSentinel: true
+            // })
+        }catch(e) {
+            return res.json(e)
+        }
+        
+        try {
+            const options = { method, headers, data, url }
+            await axios(options)
+            .then(data => {
+                response = data
+            })
+            .catch(error => {
+                response = error
+            })
+            console.log("datadatadatadatadatadatadatadatadatadatadata")
+        }catch(e) { 
+            return res.json(e)
+        }
+        
+        // const $authHost = axios.create({
+        //     withCredentials: true,
+        //     baseURL: url
+        // })
+        // const authInterceptor = config => {
+        //     config.headers = { 
+        //         'Accept': '*/*', 
+        //         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8', 
+        //         // 'Host': 'api.edu.cdek.ru', 
+        //         // 'Authorization': 'Bearer token', 
+        //     }
+        //     return config
+        // }
+        // $authHost.interceptors.request.use(authInterceptor)
+        // await $authHost.post(url, {params:data})
+        //     .then(data => response = data)
+        //     .catch(error => response = error)
 
 
         return res.json(response) // return object
