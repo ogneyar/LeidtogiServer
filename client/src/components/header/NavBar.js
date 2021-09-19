@@ -8,6 +8,7 @@ import { Context } from '../..'
 import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, CART_ROUTE, LK_ROUTE } from '../../utils/consts'
 import logo from '../../assets/logo.png'
 import cart from '../../assets/cart.png'
+import { logout } from '../../http/userAPI'
 
 import './NavBar.css';
 
@@ -18,7 +19,8 @@ const NavBar = observer(() => {
     const logOut = () => {
         user.setUser({})
         user.setIsAuth(false)
-        localStorage.removeItem('token')
+        // localStorage.removeItem('token')
+        console.log(logout());
         history.push(LOGIN_ROUTE)
     }
 

@@ -11,6 +11,7 @@ const Rating = require('./Rating')
 const ProductInfo = require('./ProductInfo')
 const CategoryBrand = require('./CategoryBrand')
 const ProductSize = require('./ProductSize')
+const Token = require('./Token')
 
 
 User.hasOne(Cart)
@@ -43,6 +44,9 @@ ProductSize.belongsTo(Product)
 Category.belongsToMany(Brand, {through: CategoryBrand})
 Brand.belongsToMany(Category, {through: CategoryBrand})
 
+User.hasOne(Token)
+Token.belongsTo(User)
+
 
 module.exports = {
     User,
@@ -54,5 +58,6 @@ module.exports = {
     Rating,
     ProductInfo,
     CategoryBrand,
-    ProductSize
+    ProductSize,
+    Token
 }

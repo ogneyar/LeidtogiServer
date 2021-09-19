@@ -152,11 +152,11 @@ const ProductPage =  observer(() => {
             ?
             <div className="ProductSize">
                 <h2>Габариты</h2>
-                <div className={"ProductInfoRowLight"}>Вес: {product.size[0].weight}</div>
-                <div className={"ProductInfoRowTansparent"}>Объём: {product.size[0].volume}</div>
-                <div className={"ProductInfoRowLight"}>Ширина: {product.size[0].width}</div>
-                <div className={"ProductInfoRowTansparent"}>Высота: {product.size[0].height}</div>
-                <div className={"ProductInfoRowLight"}>Длина: {product.size[0].length}</div>
+                <div className={"ProductInfoRowLight"}>Вес: {product.size[0].weight} кг</div>
+                <div className={"ProductInfoRowTansparent"}>Объём: {product.size[0].volume} м.куб</div>
+                <div className={"ProductInfoRowLight"}>Ширина: {product.size[0].width} мм</div>
+                <div className={"ProductInfoRowTansparent"}>Высота: {product.size[0].height} мм</div>
+                <div className={"ProductInfoRowLight"}>Длина: {product.size[0].length} мм</div>
             </div>
             : null}
             

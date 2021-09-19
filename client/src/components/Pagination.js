@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Pagination } from 'react-bootstrap'
 import uuid from 'react-uuid'
@@ -13,14 +13,21 @@ const Pages = observer(() => {
 
     // const [ doted, setDoted ] = useState(false)
     let doted = false
-
+    
     const pageCount = Math.ceil(product.totalCount / product.limit)
     const pages = []
-
+    
     for (let i = 0; i < pageCount; i++) {
         pages.push(i + 1)
     }
+    
+    // const [ mobile, setMobile ] = useState(false)
 
+    // useEffect(() => {
+    //     if (window.innerWidth < 430) setMobile(true)
+    //     else setMobile(false)
+    // }, [window.innerWidth])
+    
     const onClick = (page) => {
         if (window.innerWidth > 991) {
             $('html, body').animate(
@@ -39,7 +46,10 @@ const Pages = observer(() => {
     }
 
     return (
-        <Pagination className="mt-2">
+        <Pagination 
+            size={window.innerWidth < 430 && "sm"} 
+            className="mt-2"
+        >
             {pages.length > 10 
             ? 
                 <Pagination.First

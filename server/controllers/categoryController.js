@@ -3,40 +3,61 @@ const ApiError = require('../error/apiError')
 
 
 class CategoryController {
+
     async create(req, res) {
-        const body = req.body
-        const category = await Category.create(body)
-        return res.json([category]) // return array
+        try {
+            const body = req.body
+            const category = await Category.create(body)
+            return res.json([category]) // return array
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода create!'));
+        }
     }
     
     async getAll(req, res) {
-        const categories = await Category.findAll()
-        return res.json(categories) // return array
+        try {
+            const categories = await Category.findAll()
+            return res.json(categories) // return array
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getAll!'));
+        }
     }
 
     async getCategories(req, res) {
-        const {sub_id} = req.params
-        const categories = await Category.findAll({
-            where: {sub_category_id: sub_id}
-        })
-        return res.json(categories) // return array
+        try {
+            const {sub_id} = req.params
+            const categories = await Category.findAll({
+                where: {sub_category_id: sub_id}
+            })
+            return res.json(categories) // return array
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода getCategories!'));
+        }
     }
 
     async delete(req, res) {
-        const {id} = req.params
-        const category = await Category.destroy({
-            where: {id}
-        })
-        return res.json(category) // return boolean
+        try {
+            const {id} = req.params
+            const category = await Category.destroy({
+                where: {id}
+            })
+            return res.json(category) // return boolean
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода delete!'));
+        }
     }
 
     async edit(req, res) {
-        const {id} = req.params
-        const body = req.body
-        const category = await Category.update(body, {
-            where: { id }
-        })
-        return res.json(category) // return boolean
+        try {
+            const {id} = req.params
+            const body = req.body
+            const category = await Category.update(body, {
+                where: { id }
+            })
+            return res.json(category) // return boolean
+        }catch(e) {
+            next(ApiError.badRequest('Ошибка метода edit!'));
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'
 import { SHOP_ROUTE, API_URL } from '../../utils/consts'
 import { Container, Button } from '../../components/myBootstrap'
 import './CartPage.css'
+import Delivery from '../../components/delivery/Delivery'
 
 
 const Cart = () => {
@@ -88,10 +89,10 @@ const Cart = () => {
                 className="CartPage"
             >
                 <Card 
-                    className="Cart-card"
+                    className="CartCard"
                 >
-                    <Card.Title className="Cart-card-title">
-                        Корзина / Оформление товара
+                    <Card.Title className="CardTitle">
+                        <h4>Корзина / Оформление товара</h4>
                     </Card.Title>
 
                     <table className="CartTable">
@@ -202,6 +203,8 @@ const Cart = () => {
                         </tbody>
                     </table>
 
+                <Delivery />
+
                 </Card>
             </Container>
         )
@@ -210,23 +213,23 @@ const Cart = () => {
 
     }else return (
         <Container 
-            className="Cart"
+            className="CartPage"
         >
-            <Card className="Cart-card">
+            <Card className="CartCard">
                 <Card.Title>
                         Корзина / Оформление товара
                 </Card.Title>
 
                 <Row>
                     <Col
-                        className="Card_title d-flex justify-content-center align-items-center"
+                        className="CardTitle"
                     >
                         <strong>Ваша корзина пуста.</strong>
                     </Col>
                 </Row>
                 <Row>
                     <Col
-                        className="Card_body d-flex justify-content-center align-items-center"
+                        className="CardBody"
                     >
                         
                             Поищите товар &nbsp;
