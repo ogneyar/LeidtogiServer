@@ -1,0 +1,7 @@
+Набор отверток PH Gedore
+3200
+[{"big":"gedore/55471786/big.jpg","small":"gedore/55471786/small.jpg"}]
+
+equipment
+
+<tbody><tr><td>Крестовые отвертки PH 0, 1, 2, 3, шт</td><td>4</td></tr></tbody>

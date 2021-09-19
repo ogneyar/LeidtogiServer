@@ -1,0 +1,9 @@
+Набор рожковых насадок Gedore SE
+
+42000
+
+[{"big":"gedore/10837565/big.jpg","small":"gedore/10837565/small.jpg"}]
+
+equipment
+
+<tbody><tr><td>Насадки для динамометрического ключа SE 14х18 (17-32 мм), шт</td><td>7</td></tr></tbody>
