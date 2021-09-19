@@ -6,6 +6,23 @@ const qs = require('qs')
 class DeliveryController {
 
     async sdek(req, res) {
+
+
+        const HTML = `
+            <form action="https://api.edu.cdek.ru/v2/oauth/token?parameters" method="POST">
+                <input type="hidden" name="grant_type" value="client_credentials"/>
+                <input type="hidden" name="client_id" value="EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI"/>
+                <input type="hidden" name="client_secret" value="PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG"/>
+                <button type="submit">Нажми, чтобы получить access_token</button>
+            </form>
+        `
+
+        return res.send(HTML)
+
+
+
+
+
         // let { article } = req.query  // milwaukee, 4933451439
         // const body = req.body
 
@@ -41,7 +58,7 @@ class DeliveryController {
         }
         
         try {
-            const options = { method, headers, data, url }
+            const options = { method, headers, data:{params:qs.stringify(data)}, url }
             await axios(options)
             .then(data => {
                 response = data
@@ -49,7 +66,6 @@ class DeliveryController {
             .catch(error => {
                 response = error
             })
-            console.log("datadatadatadatadatadatadatadatadatadatadata")
         }catch(e) { 
             return res.json(e)
         }
