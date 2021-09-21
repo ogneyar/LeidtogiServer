@@ -1,5 +1,6 @@
 const axios  = require("axios")
 const qs = require('qs')
+const Order = require("../service/delivery/sdek/Order")
 // const { Delivery } = require('../models/models')
 
 
@@ -7,123 +8,154 @@ class DeliveryController {
 
     async sdek(req, res) {
 
+        let url, data ,method, token, headers, response, options, requests, uuid, request_uuid
 
-        const HTML = `
-            <form action="https://api.edu.cdek.ru/v2/oauth/token?parameters" method="POST">
-                <input type="hidden" name="grant_type" value="client_credentials"/>
-                <input type="hidden" name="client_id" value="EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI"/>
-                <input type="hidden" name="client_secret" value="PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG"/>
-                <button type="submit">Нажми, чтобы получить access_token</button>
-            </form>
-        `
-
-        return res.send(HTML)
-
-
-
-
-
-        // let { article } = req.query  // milwaukee, 4933451439
-        // const body = req.body
-
-        // const response = await axios.post('https://api.edu.cdek.ru/v2/oauth/token?parameters', {params: {
-        //     grant_type: "client_credentials",
-        //     client_id: "EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI",
-        //     client_secret: "PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG"
-        // }})
-
-        const url = "https://api.edu.cdek.ru/v2/oauth/token"
-        let data = {
+        
+        method = 'post'
+        url = "https://api.edu.cdek.ru/v2/oauth/token?parameters"
+        headers = { 
+            'accept': '*/*', 
+            'host': 'api.edu.cdek.ru',
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        }
+        data = {
             "grant_type": "client_credentials",
             "client_id": "EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI",
             "client_secret": "PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG"
         }
-        let headers = { 
-            // 'Accept': '*/*', 
-            'Content-Type': 'application/x-www-form-urlencoded', 
-            // 'Content-Length': data.toString().length, 
-            'Host': 'api.edu.cdek.ru', 
-            // 'Authorization': 'Bearer token', 
-            // 'User-Agent': 'PostmanRuntime/7.26.8', 
-        }
-        let method = 'POST'
-        let response //= 
+        data = qs.stringify(data)
+
         try {
-            // data = qs.stringify(data,{
-            //     charset: 'utf-8',
-            //     charsetSentinel: true
-            // })
-        }catch(e) {
-            return res.json(e)
-        }
-        
-        try {
-            const options = { method, headers, data:{params:qs.stringify(data)}, url }
+            options = { method, headers, data, url }
             await axios(options)
-            .then(data => {
-                response = data
-            })
-            .catch(error => {
-                response = error
-            })
-        }catch(e) { 
+                .then(data => {
+                    token = data.data.access_token
+                })
+                .catch(error => {
+                    return res.json(error)
+                })
+        }catch(e) {  
+            return res.json(e)
+        }
+       
+        // return res.json(token) // return string
+
+        url = "https://api.edu.cdek.ru/v2/orders"
+        headers = { 
+            ...headers,
+            'content-type': 'application/json;charset=utf-8',
+            'authorization': 'Bearer ' + token, 
+        }
+       
+        data = {
+            tariff_code: 139,
+            comment: "Тестовый заказ", // необязательное поле 
+            // delivery_recipient_cost: { // необязательное поле
+            //     value: 50
+            // },
+            // delivery_recipient_cost_adv: [ // необязательное поле
+            //     {
+            //         threshold: 200,
+            //         sum: 3000
+            //     } 
+            // ],
+            recipient: {
+                name: "Тестер Петрович",
+                phones: [
+                    {
+                        number: "+79998887766"
+                    }
+                ]
+            },
+            from_location: { // обязательное поле, если заказ с тарифом "от двери"
+                postal_code: "101000", // необязательное поле
+                address: "г.Москва, ул.Садовая, д.26"
+            },
+            to_location: { // обязательное поле, если заказ с тарифом "до двери"
+                postal_code: "347056", // необязательное поле
+                address: "х.Западный, ул.Садовая, д.26"
+            },
+            // services: [ // необязательное поле
+            //     {
+            //         code: "SMS", // стоимость услуги 10р
+            //         parameter: "+79998887766"
+            //     }
+            // ],
+            packages: [
+                {
+                    number: "334445847", // уникальный номер в пределах заказа 
+                    weight: 3700, // общий вес в граммах
+                    length: 10, // длина упаковки в сантиметрах
+                    width: 8, // ширина упаковки в сантиметрах
+                    height: 6, // высота упаковки в сантиметрах
+                    items: [
+                        {
+                            name: "Название товара",
+                            ware_key: "44552854655", // артикул
+                            payment: { 
+                                value: 0 // оплата за товар при получении — наложенный платеж, в случае предоплаты значение = 0
+                            },
+                            cost: 0, // объявленая стоимость товара, с данного значения рассчитывается страховка
+                            weight: 3700,
+                            amount: 1, // количество единиц товара в штуках, от 1 до 999
+                            url: "leidtogi.ru" // необязательное поле
+                        }
+                    ]
+                }
+            ]
+        }
+
+        // return res.json(new Order(data)) // return string
+
+        try {
+            options = { method, headers, data, url }
+            // options = { method, headers, data:new Order(data), url }
+            await axios(options)
+                .then(data => {
+                    response = data.data
+                })
+                .catch(error => {
+                    return res.json(error)
+                })
+        }catch(e) {  
             return res.json(e)
         }
         
-        // const $authHost = axios.create({
-        //     withCredentials: true,
-        //     baseURL: url
-        // })
-        // const authInterceptor = config => {
-        //     config.headers = { 
-        //         'Accept': '*/*', 
-        //         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8', 
-        //         // 'Host': 'api.edu.cdek.ru', 
-        //         // 'Authorization': 'Bearer token', 
-        //     }
-        //     return config
-        // }
-        // $authHost.interceptors.request.use(authInterceptor)
-        // await $authHost.post(url, {params:data})
-        //     .then(data => response = data)
-        //     .catch(error => response = error)
+        // return res.json(response) // return string
+
+        requests = response.requests
+
+        uuid = response.entity.uuid // идентификатор заказа
+
+        // request_uuid = requests[0].request_uuid
+
+        if (requests[0].state !== 'ACCEPTED') {
+            return res.json(requests[0])
+        }
+
+        url = "https://api.edu.cdek.ru/v2/orders/" + uuid
+        method = "get"
+        try {
+            options = { method, headers, url }
+            await axios(options)
+                .then(data => {
+                    response = data.data
+                })
+                .catch(error => {
+                    return res.json(error)
+                })
+        }catch(e) {  
+            return res.json(e)
+        }
+
+        if (response.requests[0].state === "INVALID") {
+            return res.json({errors:response.requests[0].errors})
+        }
 
 
         return res.json(response) // return object
         
     }
-
-    // async getAll(req, res) { // рейтинг по одному товару
-    //     const {productId} = req.params 
-    //     const ratings = await Rating.findAll({
-    //         where: { productId }
-    //     })
-    //     return res.json(ratings) // return array
-    // }
-
-    // async getOne(req, res) { // рейтинг по одному товару одного клиента
-    //     const {productId, userId} = req.query 
-    //     const ratings = await Rating.findOne({
-    //         where: { productId, userId }
-    //     })
-    //     return res.json(ratings) // return Object
-    // }
-
-    // async delete(req, res) {
-    //     const {userId,productId} = req.body
-    //     const rating = await Rating.destroy({
-    //         where: { userId, productId }
-    //     })
-    //     return res.json(rating) // return boolean
-    // }
-    
-    // async edit(req, res) {
-    //     const {userId,productId,rate} = req.body
-    //     const rating = await Rating.update({rate}, {
-    //         where: { userId, productId }
-    //     })
-    //     return res.json(rating) // return boolean
-    // }
 
 
 }

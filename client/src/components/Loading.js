@@ -7,7 +7,7 @@ const Loading = () => {
         <Container
             className="d-flex justify-content-center align-items-center" 
         >
-            <div style={{width: 600}} className="p-5 m-5">
+            <div style={{width: 300}} className="p-5 m-5">
                 <Row>
                     <Col
                         className="d-flex justify-content-center align-items-center"

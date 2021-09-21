@@ -57,7 +57,11 @@ const App = observer(() => {
         fetchAllCategories()
             .then(
                 data => category.setAllCategories(data),
-                err => console.log(err))
+                err => {
+                    alert("Не удалось загрузить категории. "+err)
+                    console.log("Не удалось загрузить категории",err)
+                    category.setAllCategories([{}])
+                })
         fetchBrands()
             .then(data => brand.setAllBrands(data),
                 err => console.log(err))

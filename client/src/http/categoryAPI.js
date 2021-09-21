@@ -6,8 +6,15 @@ export const createCategory = async (name, url, sub_category_id = 0) => {
     return data  
 }
 
+// export const fetchAllCategories = async () => {
+//     const {data} = await $host.get('api/category')
+//     return data
+// }
+
 export const fetchAllCategories = async () => {
-    const {data} = await $host.get('api/category')
+    const {data} = await $host.get('api/category', {params: {
+        limit: "-1" // происходила какая-то херня с мобильной версией, добавил params с левым параметром limit и всё заработало
+    }})
     return data
 }
 
