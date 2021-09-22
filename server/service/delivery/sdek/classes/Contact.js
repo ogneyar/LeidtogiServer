@@ -1,4 +1,4 @@
-const Phones = require("./Phones")
+const Phone = require("./Phone")
 
 module.exports = class Contact {
     name
@@ -18,7 +18,7 @@ module.exports = class Contact {
         this.name = data.name
         if (data.phones !== undefined && Array.isArray(data.phones)) {
             data.phones.map((i,index) => {
-                this.phones[index] = new Phones(i)
+                this.phones[index] = new Phone(i)
             })
         }
 

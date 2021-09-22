@@ -1,5 +1,5 @@
 
-module.exports = class Phones {
+module.exports = class Phone {
     number
     // необязательные поля
     additional = undefined // Дополнительная информация (добавочный номер)
