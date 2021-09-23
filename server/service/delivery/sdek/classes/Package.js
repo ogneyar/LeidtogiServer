@@ -2,6 +2,8 @@ const Item = require("./Item")
 
 module.exports = class Package {
 
+    // в методе calculate обязательным является только weight
+
     number // Номер упаковки (можно использовать порядковый номер упаковки заказа или номер заказа), уникален в пределах заказа
     weight // Общий вес (в граммах)
     length // длина упаковки (в сантиметрах)
@@ -27,7 +29,7 @@ module.exports = class Package {
             data.items.map((i,index) => {
                 this.items[index] = new Item(i)
             })
-        }
+        }else this.items = undefined
 
         if (data.comment !== undefined) this.comment = data.comment
     }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import DeliveryPochta from './DeliveryPochta'
 import DeliverySdek from './DeliverySdek'
+import DeliveryPochta from './DeliveryPochta'
 import DeliveryBusinessLines from './DeliveryBusinessLines'
 import DeliveryPek from './DeliveryPek'
 import DeliveryBoxberry from './DeliveryBoxberry'
@@ -10,7 +10,7 @@ import './Delivery.css'
 
 export default function Delivery(props) {
 
-    const [delivery, setDelivery] = useState("pochta")
+    const [delivery, setDelivery] = useState("sdek")
 
     return (
         <div 
@@ -19,8 +19,8 @@ export default function Delivery(props) {
 
             <header className="DeliveryHeader">
                 <h4>Расчёт доставки&nbsp;
-                    {delivery === "pochta" && `"Почтой России"`}
                     {delivery === "sdek" && `"Службой Доставки Экспресс Курьер"`}
+                    {delivery === "pochta" && `"Почтой России"`}
                     {delivery === "businessLines" && `"Деловыми Линиями"`}
                     {delivery === "pek" && `"Первой Экспедиционной Компанией"`}
                     {delivery === "boxberry" && `"Боксберри"`}
@@ -31,18 +31,18 @@ export default function Delivery(props) {
                 className="DeliveryChoise"
             >
                 <button
-                    className={delivery === "pochta"  ? "DeliveryActionButton" : "DeliveryButton"}
-                    disabled={delivery === "pochta"}
-                    onClick={() => setDelivery("pochta")}
-                >
-                    Почта России
-                </button>
-                <button
                     className={delivery === "sdek" ? "DeliveryActionButton" : "DeliveryButton"}
                     disabled={delivery === "sdek"}
                     onClick={() => setDelivery("sdek")}
                 >
                     СДЭК
+                </button>
+                <button
+                    className={delivery === "pochta"  ? "DeliveryActionButton" : "DeliveryButton"}
+                    disabled={delivery === "pochta"}
+                    onClick={() => setDelivery("pochta")}
+                >
+                    Почта России
                 </button>
                 <button
                     className={delivery === "businessLines" ? "DeliveryActionButton" : "DeliveryButton"}
@@ -70,14 +70,14 @@ export default function Delivery(props) {
             <div
                 className="DeliveryCalculation"
             >
-                {delivery === "pochta" 
-                ? 
-                    <DeliveryPochta />
-                : null}
-
                 {delivery === "sdek" 
                 ? 
                     <DeliverySdek />
+                : null}
+
+                {delivery === "pochta" 
+                ? 
+                    <DeliveryPochta />
                 : null}
 
                 {delivery === "businessLines" 

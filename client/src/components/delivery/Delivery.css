@@ -24,3 +24,9 @@
     color:white;
     padding: 10px;
 }
+
+.DeliverySdekTariff {
+    border: 1px solid lightgray;
+    padding: 7px 10px;
+    border-radius: 5px;
+}

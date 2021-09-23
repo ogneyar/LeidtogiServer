@@ -1,1 +1,11 @@
 killall -2 node
+
+
+удалил запись
+SECRET_KEY=random_secret_key
+
+посмотри
+https://www.pochta.ru/support/business/api
+
+добавил
+SDEK_URL=https://api.edu.cdek.ru/v2/

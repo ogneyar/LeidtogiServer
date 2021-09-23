@@ -48,7 +48,7 @@ module.exports = class Sdek {
                 })
                 .catch(error => {
                     console.log("SDEK CURL ERROR: ",error);
-                    return { error }
+                    response = { error }
                 })
         }catch(e) {  
             console.log("SDEK CURL THROW: ",e);
@@ -69,6 +69,7 @@ module.exports = class Sdek {
                 client_secret: process.env.SDEK_CLIENT_SECRET
             }
         })
+        if (!response) return {error:"Запрос oauth/token?parameters вернул пустой ответ."}
         if (response.error !== undefined) return response
 
         this.token = response.access_token

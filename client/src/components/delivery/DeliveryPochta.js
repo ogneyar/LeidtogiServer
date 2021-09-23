@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import { fetchPochta } from '../../http/deliveryAPI'
+import { fetchPochta } from '../../http/delivery/prAPI'
 import { fetchProductSizes } from '../../http/productAPI'
 import getDateTime from '../../service/delivery/getDateTime'
 import getPack from '../../service/delivery/getPack'
@@ -26,32 +26,15 @@ const DeliveryPochta = observer((props) => {
 
     const [info, setInfo] = useState({name:"", transName:"", adName:"", payNds:"", deliveryMin:""})
     const [index, setIndex] = useState("")
-
-    // const [state, setState] = useState([])
-    // const [total, setTotal] = useState(0)
-
     
     useEffect(() => {
-        // let cart
-        // cart = localStorage.getItem('cart')
-        // if (cart) {
-        //     cart = JSON.parse(cart)
-        //     setState(cart)
-        //     console.log(cart)
-
-        //     // let totalWeight
-        //     // cart.forEach(i => totalValue += i.total)
-        //     // setTotal(totalValue)
-        // }
     }, [])
 
     const onClickButton = async () => {
         let cart
         cart = localStorage.getItem('cart')
-        if (cart) {
+        if (cart && index.length === 6) {
             cart = JSON.parse(cart)
-            // setState(cart)
-            // console.log(cart)
 
             let weight = 0
 
@@ -62,13 +45,6 @@ const DeliveryPochta = observer((props) => {
             weight = weight * 1000
             weight = Math.ceil(weight)
 
-            // console.log(weight)
-
-            // const size = cart[0]?.size
-            // const size = await fetchProductSizes(props?.id)
-
-            
-            // let { pack } = getPack(size?.width, size?.height, size?.length)
             let pack = 0
 
             setInfo({name:"", transName:"", adName:"", payNds:"", deliveryMin:""})
@@ -87,7 +63,7 @@ const DeliveryPochta = observer((props) => {
 
             if (response?.errors) alert(response?.errors[0]?.msg)
             else setInfo(response)
-        }
+        }else if (index.length < 6) alert("Введите правильный индекс!")
     }
     
 
@@ -112,7 +88,7 @@ const DeliveryPochta = observer((props) => {
                     </div>
                 :null
                 }
-                <div className="d-flex flex-row align-items-center flex-wrap">
+                <div className="d-flex flex-row align-items-center flex-wrap pb-2">
                     <label  className="mr-2">Ваш индекс: </label>
                     <Form.Control 
                         value={index}

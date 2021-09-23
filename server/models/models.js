@@ -12,6 +12,7 @@ const ProductInfo = require('./ProductInfo')
 const CategoryBrand = require('./CategoryBrand')
 const ProductSize = require('./ProductSize')
 const Token = require('./Token')
+const Delivery = require('./Delivery')
 
 
 User.hasOne(Cart)
@@ -47,6 +48,9 @@ Brand.belongsToMany(Category, {through: CategoryBrand})
 User.hasOne(Token)
 Token.belongsTo(User)
 
+User.hasMany(Delivery)
+Delivery.belongsTo(User)
+
 
 module.exports = {
     User,
@@ -59,5 +63,6 @@ module.exports = {
     ProductInfo,
     CategoryBrand,
     ProductSize,
-    Token
+    Token,
+    Delivery
 }

@@ -1,13 +1,7 @@
 const axios  = require("axios")
-const qs = require('qs')
-const Order = require("../../service/delivery/sdek/Order")
-const Contact = require("../../service/delivery/sdek/classes/Contact")
+
+const { Delivery } = require('../../models/models')
 const Sdek = require("../../service/delivery/sdek/Sdek")
-const Phone = require("../../service/delivery/sdek/classes/Phone")
-const Location = require("../../service/delivery/sdek/classes/Location")
-const Package = require("../../service/delivery/sdek/classes/Package")
-const Item = require("../../service/delivery/sdek/classes/Item")
-const Money = require("../../service/delivery/sdek/classes/Money")
 
 
 class SdekController {
@@ -19,7 +13,32 @@ class SdekController {
     
     async newOrder(req, res) {
 
-        return res.json(await Sdek.newOrder(req.body))
+        const {id} = req.params
+        let response = await Sdek.newOrder(req.body) 
+
+        if (!response) return res.json({error:"Отсутствует ответ от сервера"})
+
+        if (response.error !== undefined) return res.json(response)
+
+        let requests = response.requests || undefined
+
+        if (!requests) return res.json({error:"В ответе сервера отсутствует поле requests."})
+
+        if (Array.isArray(requests) && requests[0].state !== 'ACCEPTED') {
+            return res.json(requests[0])
+        }
+
+        let uuid = response.entity.uuid // идентификатор заказа
+
+        let delivery = await Delivery.create({
+            name:"sdek",
+            uuid,
+            userId: id
+        })
+
+        return res.json(delivery)
+
+        // return res.json(await Sdek.newOrder(req.body))
     }
     
     async test(req, res) {
