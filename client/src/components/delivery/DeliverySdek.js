@@ -27,6 +27,9 @@ const DeliverySdek = observer((props) => {
         total_sum:"", period_min:"", period_max:"", weight_calc:"", currency:"", delivery_sum:""
     })
     const [index, setIndex] = useState("")
+
+    const [alertVisible, setAlertVisible] = useState(false)
+    const [textAlert, setTextAlert] = useState("")
     
     const onClickButtonCalculate = async () => {
         let cart
@@ -73,68 +76,44 @@ const DeliverySdek = observer((props) => {
             cart = localStorage.getItem('cart')
             if (cart) {
                 cart = JSON.parse(cart)
-
                 weight = 0
-
                 cart.forEach(i => {
                     weight += (Number(i.value) * Number(i.size.weight))
                 })
-
                 weight = weight * 1000
                 weight = Math.ceil(weight)
             }else return
             
             let response = await sdekOrder(user?.user?.id, {
                 tariff_code: tariff,
-                recipient: {
+                recipient: { 
                     name: "Тестер Петрович",
-                    phones: [
-                        {
-                            number: "+79998887766"
-                        }
-                    ]
+                    phones: [ { number: "+79998887766" } ]
                 },
                 from_location: {
                     postal_code: "101000",
                     address: "г.Москва, ул.Садовая, д.26"
                 },
-                to_location: { 
-                    address: user?.user?.address
-                },
-                packages: [
-                    {
-                        number: "1", 
-                        weight,
-                        length: 10,
-                        width: 8,
-                        height: 6,
-                        items: [
-                            {
-                                name: "Название товара",
-                                ware_key: "44552854655",
-                                payment: { 
-                                    "value": 0
-                                },
-                                cost: 0,
-                                weight,
-                                amount: 1, 
-                                url: "leidtogi.ru"
-                            }
-                        ]
-                    }
-                ]
+                to_location: {  address: user?.user?.address },
+                packages: [ {
+                    number: "1", weight, length: 10, width: 8, height: 6,
+                    items: [ {
+                        name: "Название товара", ware_key: "44552854655",
+                        payment: {  "value": 0 },
+                        cost: 0, weight, amount: 1,  url: "leidtogi.ru"
+                    } ]
+                } ]
             })
             if (response?.id) {
-                // alert(`Номер вашего заказа: ${response?.id} (uuid=${response?.uuid})`)
-                Alert(`Номер вашего заказа: ${response?.id} (uuid=${response?.uuid})`)
+                setTextAlert(`Номер вашего заказа: ${response?.id} (uuid=${response?.uuid})`)
+                setAlertVisible(true)
             }else {
-                // console.log("Неудалось оформить заказ. Ответ сервера: ",response);
-                // alert(`Неудалось оформить заказ. Ответ сервера: ${response}`)
-                Alert(`Неудалось оформить заказ. Ответ сервера: ${response}`)
+                setTextAlert(`Неудалось оформить заказ. Ответ сервера: ${response}`)
+                setAlertVisible(true)
             }
         }else {
-            // alert(`Для заказа Вам необходимо зарегестрироваться (или войти со своим логином)`)
-            Alert(`Для заказа Вам необходимо зарегестрироваться (или войти со своим логином)`)
+            setTextAlert(`Для заказа Вам необходимо зарегестрироваться (или войти со своим логином)`)
+            setAlertVisible(true)
         }
     }
 
@@ -205,7 +184,16 @@ const DeliverySdek = observer((props) => {
                 </div>
 
             </div>
-            
+
+            <Alert 
+                show={alertVisible} 
+                onHide={() => {
+                    setAlertVisible(false)
+                    setTextAlert("")
+                }}
+            >
+                {textAlert}
+            </Alert>
         </div>
     )
 })
