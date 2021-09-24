@@ -6,7 +6,8 @@ const Order = require("./Order")
 
 module.exports = class Sdek {
     
-    static url = "https://api.edu.cdek.ru/v2/"
+    // static url = "https://api.edu.cdek.ru/v2/"
+    static url = process.env.SDEK_URL
     static tariff_code = 139
     static token = undefined
     
@@ -17,19 +18,11 @@ module.exports = class Sdek {
     static async curl(parameters) {
         console.log("SDEK CURL RUN");
         let { method, type, data, url } = parameters
+        if (!method) method = "get"
+        if (!type) type = "json"
         let response
 
-        // поиск хоста в url
-        let lengthString = url.length
-        let serchString = `://`
-        let lengthSerchString = serchString.length
-        let number = url.indexOf(serchString)
-        if (number === -1) return {error:`'Не найден '${serchString}' в '${url}'`}
-        let host = url.substring(number + lengthSerchString, lengthString)
-        lengthString = host.length
-        serchString = `/`
-        number = host.indexOf(serchString)
-        if (number !== -1) host = host.substring(0, number)
+        let host = await this.getHost(url)
 
         let headers = { host }
         if (type === "urlencoded") {
@@ -58,6 +51,23 @@ module.exports = class Sdek {
         return response
     }
 
+    // поиск хоста в url
+    static async getHost(url) {
+        let lengthString = url.length
+        let serchString = `://`
+        let lengthSerchString = serchString.length
+        let number = url.indexOf(serchString)
+        if (number === -1) return {error:`'Не найден '${serchString}' в '${url}'`}
+        let host = url.substring(number + lengthSerchString, lengthString)
+        lengthString = host.length
+        serchString = `/`
+        number = host.indexOf(serchString)
+        if (number !== -1) host = host.substring(0, number)
+
+        return host
+    }
+
+    // запрос токена с сервера СДЭК
     static async getToken() {
         let response = await this.curl({ 
             method: "post", 
@@ -123,5 +133,26 @@ module.exports = class Sdek {
 
         return response
     }
+
+
+    static async getOrder(uuid) {
+        console.log("SDEK GET_ORDER RUN");
+
+        if (!uuid) return {error: "Отсутствует объект recipient"}
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        let response = await this.curl({ url: this.url + "orders/" + uuid })
+
+        if (response.requests[0].state === "INVALID") {
+            return res.json({errors:response.requests[0].errors})
+        }
+
+        return response
+    }
+
 
 }
