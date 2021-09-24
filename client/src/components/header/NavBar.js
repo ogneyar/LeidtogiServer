@@ -69,12 +69,21 @@ const NavBar = observer(() => {
                             
                                 <>
                                     {user.user?.role === 'ADMIN' ?
+                                    <>
                                         <Button 
                                             variant={'outline-light'} 
                                             onClick={() => history.push(ADMIN_ROUTE)}
                                         >
-                                            Админ панель
+                                            АП
                                         </Button>
+                                        <Button 
+                                            variant={'outline-light'} 
+                                            onClick={() => history.push(LK_ROUTE)}
+                                            className="ml-2"
+                                        >
+                                            ЛК
+                                        </Button>
+                                    </>
                                     : 
                                         <Button 
                                             variant={'outline-light'} 
