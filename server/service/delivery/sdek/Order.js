@@ -99,7 +99,7 @@ module.exports = class Order {
         if (parameters.sender !== undefined) this.sender = new Contact(parameters.sender)
         if (parameters.seller !== undefined) this.seller = new Seller(parameters.seller)
         
-        this.recipient = new Contact(parameters.recipient)
+        this.recipient = parameters.recipient ? new Contact(parameters.recipient) : undefined
         
         if (parameters.from_location !== undefined) this.from_location = new Location(parameters.from_location)
         if (parameters.to_location !== undefined) this.to_location = new Location(parameters.to_location)

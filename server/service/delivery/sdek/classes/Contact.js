@@ -15,12 +15,12 @@ module.exports = class Contact {
     email = undefined // Эл. адрес, Должен соответствовать RFC 2822
 
     constructor(data) {
-        this.name = data.name
+        this.name = data.name || undefined
         if (data.phones !== undefined && Array.isArray(data.phones)) {
             data.phones.map((i,index) => {
                 this.phones[index] = new Phone(i)
             })
-        }
+        }else this.phones = undefined
 
         if (data.company !== undefined) this.company = data.company
         if (data.passport_series !== undefined) this.passport_series = data.passport_series

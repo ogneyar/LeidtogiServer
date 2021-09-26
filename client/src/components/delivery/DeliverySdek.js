@@ -2,7 +2,16 @@ import React, { useEffect, useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import { sdekCalculate, sdekOrder } from '../../http/delivery/sdekAPI'
+import { 
+    sdekCalculate, 
+    sdekOrder, 
+    sdekGetOrder, 
+    sdekEditOrder, 
+    sdekDeleteOrder, 
+    sdekRefusalOrder, 
+    sdekNewIntakes 
+} from '../../http/delivery/sdekAPI'
+
 import { Context } from '../..'
 import { Alert } from '../myBootstrap'
 
@@ -117,6 +126,137 @@ const DeliverySdek = observer((props) => {
         }
     }
 
+    
+    const onClickButtonGetOrder = async () => {
+        let number = 1
+        if (number) {
+
+            let response = await sdekGetOrder(number)
+
+            // console.log(response)
+
+            if (response?.entity) {
+                setTextAlert(`Данные о заказе: ${JSON.stringify(response?.entity)}`)
+                setAlertVisible(true)
+            }else if (response?.error) {
+                setTextAlert(`Ошибка: ${response?.error}`)
+                setAlertVisible(true)
+            }else {
+                setTextAlert(`Неудалось получить данные о Вашем заказе. Попробуйте позже.`)
+                setAlertVisible(true)
+            }
+
+        }else {
+            setTextAlert(`Заказ номер ${number} не найден.`)
+            setAlertVisible(true)
+        }
+    }
+    
+    const onClickButtonEditOrder = async () => {
+        let number = 1
+        if (number) {
+
+            let response = await sdekEditOrder(number, {recipient:{name:"НОВОЕ ТЕСТ ИМЯ!"}})
+
+            // console.log(response)
+
+            if (response?.entity) {
+                setTextAlert(`Ваш заказ изменён.`)
+                setAlertVisible(true)
+            }else if (response?.error) {
+                setTextAlert(`Ошибка: ${response?.error}`)
+                setAlertVisible(true)
+            }else {
+                setTextAlert(`Неудалось изменить Ваш заказ.`)
+                setAlertVisible(true)
+            }
+
+        }else {
+            setTextAlert(`Заказ номер ${number} не найден.`)
+            setAlertVisible(true)
+        }
+    }
+    
+    const onClickButtonDeleteOrder = async () => {
+        let number = 9
+        if (number) {
+
+            let response = await sdekDeleteOrder(number)
+
+            // console.log(response)
+
+            if (response?.entity) {
+                setTextAlert(`Ваш заказ удалён.`)
+                setAlertVisible(true)
+            }else if (response?.error) {
+                setTextAlert(`Ошибка: ${response?.error}`)
+                setAlertVisible(true)
+            }else {
+                setTextAlert(`Неудалось удалить Ваш заказ.`)
+                setAlertVisible(true)
+            }
+
+        }else {
+            setTextAlert(`Заказ номер ${number} не найден.`)
+            setAlertVisible(true)
+        }
+    }
+    
+    const onClickButtonRefusalOrder = async () => {
+        let number = 1
+        if (number) {
+
+            let response = await sdekRefusalOrder(number)
+
+            // console.log(response)
+
+            if (response?.entity) {
+                setTextAlert(`Ваш заказ помечен как 'отказ'.`)
+                setAlertVisible(true)
+            }else if (response?.error) {
+                setTextAlert(`Ошибка: ${response?.error}`)
+                setAlertVisible(true)
+            }else {
+                setTextAlert(`Неудалось оформить отказ от Вашего заказа.`)
+                setAlertVisible(true)
+            }
+
+        }else {
+            setTextAlert(`Заказ номер ${number} не найден.`)
+            setAlertVisible(true)
+        }
+    }
+
+    const onClickButtonNewIntakes = async () => {
+        let number = 1
+        if (number) {
+
+            let response = await sdekNewIntakes(number, {
+                intake_date: "2021-09-28",
+                intake_time_from: "09:28",
+                intake_time_to: "15:28"
+            })
+
+            // console.log(response)
+
+            if (response?.entity) {
+                setTextAlert(`Регистрация заявки на вызов курьера оформлена.`)
+                setAlertVisible(true)
+            }else if (response?.error) {
+                setTextAlert(`Ошибка: ${response?.error}`)
+                setAlertVisible(true)
+            }else {
+                setTextAlert(`Неудалось оформить заявку на вызов курьера.`)
+                setAlertVisible(true)
+            }
+
+        }else {
+            setTextAlert(`Заказ номер ${number} не найден.`)
+            setAlertVisible(true)
+        }
+    }
+
+
     return (
         <div className="mt-3 mb-3">
             <div>
@@ -181,6 +321,52 @@ const DeliverySdek = observer((props) => {
                     >
                         Заказать товар с доставкой
                     </Button>
+                </div>
+                
+                <hr />
+
+                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
+                    <Button
+                        variant="outline-primary"
+                        onClick={onClickButtonGetOrder}
+                    >
+                        Инфо о заказе
+                    </Button>
+                    <Button
+                        style={{"display":user?.user?.id === undefined ? "none" : "block"}}
+                        variant="success"
+                        onClick={onClickButtonEditOrder}
+                    >
+                        Изменить заказ
+                    </Button>
+                </div>
+
+                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
+                    <Button
+                        variant="warning"
+                        onClick={onClickButtonRefusalOrder}
+                    >
+                        Отказ от заказа
+                    </Button>
+                    <Button
+                        style={{"display":user?.user?.id === undefined ? "none" : "block"}}
+                        variant="danger"
+                        onClick={onClickButtonDeleteOrder}
+                    >
+                        Удалить заказ
+                    </Button>
+                </div>
+
+                <hr />
+
+                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
+                    <Button
+                        variant="outline-primary"
+                        onClick={onClickButtonNewIntakes}
+                    >
+                        Заявка на вызов курьера
+                    </Button>
+                    <div />
                 </div>
 
             </div>

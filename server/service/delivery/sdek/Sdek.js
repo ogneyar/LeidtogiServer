@@ -2,6 +2,8 @@ const axios  = require("axios")
 const qs = require('qs')
 const Calculator = require("./Calculator")
 const Order = require("./Order")
+const EditOrder = require("./EditOrder")
+const Intakes = require("./Intakes")
 
 
 module.exports = class Sdek {
@@ -12,11 +14,12 @@ module.exports = class Sdek {
     static token = undefined
     
     constructor() {
-        console.log("SDEK START");
+        // console.log("SDEK START");
     }
 
     static async curl(parameters) {
-        console.log("SDEK CURL RUN");
+        // console.log("SDEK CURL RUN");
+
         let { method, type, data, url } = parameters
         if (!method) method = "get"
         if (!type) type = "json"
@@ -40,14 +43,14 @@ module.exports = class Sdek {
                     response = data.data
                 })
                 .catch(error => {
-                    console.log("SDEK CURL ERROR: ",error);
+                    // console.log("SDEK CURL ERROR: ",error);
                     response = { error }
                 })
         }catch(e) {  
-            console.log("SDEK CURL THROW: ",e);
+            // console.log("SDEK CURL THROW: ",e);
             return { e }
         }
-        console.log("SDEK CURL RESPONSE: ",response);
+        // console.log("SDEK CURL RESPONSE: ",response);
         return response
     }
 
@@ -84,11 +87,13 @@ module.exports = class Sdek {
 
         this.token = response.access_token
 
+        // console.log("access_token:",response.access_token)
+
         return response.access_token
     }
 
     static async calculateByTariff(parameters) {
-        console.log("SDEK CALCULATOR RUN");
+        // console.log("SDEK CALCULATOR RUN");
        
         // три обязательных параметра
         if (!parameters.from_location) return {error: "Отсутствует объект from_location"}
@@ -111,7 +116,7 @@ module.exports = class Sdek {
     }
 
     static async newOrder(parameters) {
-        console.log("SDEK ORDER RUN");
+        // console.log("SDEK ORDER RUN");
 
         // четыре обязательных параметра
         if (!parameters.recipient) return {error: "Отсутствует объект recipient"}
@@ -136,9 +141,9 @@ module.exports = class Sdek {
 
 
     static async getOrder(uuid) {
-        console.log("SDEK GET_ORDER RUN");
+        // console.log("SDEK GET_ORDER RUN");
 
-        if (!uuid) return {error: "Отсутствует объект recipient"}
+        if (!uuid) return {error: "Отсутствует uuid"}
         
         if (!this.token) {
             let token = await this.getToken()
@@ -147,8 +152,104 @@ module.exports = class Sdek {
 
         let response = await this.curl({ url: this.url + "orders/" + uuid })
 
-        if (response.requests[0].state === "INVALID") {
-            return res.json({errors:response.requests[0].errors})
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {errors:response.requests[0].errors}
+        }
+
+        return response
+    }
+    
+
+    static async editOrder(uuid, data) {
+        // console.log("SDEK EDIT_ORDER RUN");
+
+        if (!uuid) return {error: "Отсутствует uuid"}
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        let response = await this.curl({ 
+            method: "patch",
+            url: this.url + "orders",
+            data: new EditOrder({uuid, ...data})
+        })
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {errors:response.requests[0].errors}
+        }
+
+        return response
+    }
+    
+    static async deleteOrder(uuid) {
+        // console.log("SDEK DELETE_ORDER RUN");
+
+        if (!uuid) return {error: "Отсутствует uuid"}
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        let response = await this.curl({ 
+            method: "delete",
+            url: this.url + "orders/" + uuid
+        })
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {errors:response.requests[0].errors}
+        }
+
+        return response
+    }
+    
+    static async refusalOrder(uuid) {
+        // console.log("SDEK REFUSAL_ORDER RUN");
+
+        if (!uuid) return {error: "Отсутствует uuid"}
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        let response = await this.curl({ 
+            method: "post",
+            url: this.url + "orders/" + uuid + "/refusal"
+        })
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {errors:response.requests[0].errors}
+        }
+
+        return response
+    }
+
+
+    static async newIntakes(parameters) {
+        // console.log("SDEK NEW_INTAKES RUN");
+
+       // три обязательных параметра + одно желательное (order_uuid)
+       if (!parameters.order_uuid) return {error: "Отсутствует параметр order_uuid"}
+       if (!parameters.intake_date) return {error: "Отсутствует параметр intake_date"}
+       if (!parameters.intake_time_from) return {error: "Отсутствует параметр intake_time_from"}
+       if (!parameters.intake_time_to) return {error: "Отсутствует параметр intake_time_to"}
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        let response = await this.curl({ 
+            method: "post",
+            url: this.url + "intakes",
+            data: new Intakes(parameters)
+        })
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {errors:response.requests[0].errors}
         }
 
         return response

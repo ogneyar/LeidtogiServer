@@ -51,20 +51,87 @@ class SdekController {
         }catch(error) {
             return res.json({error})
         }
-        if (!delivery) return res.json({error:"Отсутствует ответ от БД"})
+        if (!delivery) return res.json({error:`В базе данных нет заказа с номером ${order_id}`})
 
         return res.json(await Sdek.getOrder(delivery.uuid))
     }
 
     
-    async test(req, res) {
+    async editOrder(req, res) {
+        const {order_id} = req.params
+        let delivery
+        try{
+            delivery = await Delivery.findOne({where:{
+                id: order_id
+             }})
+        }catch(error) {
+            return res.json({error})
+        }
+        if (!delivery) return res.json({error:`В базе данных нет заказа с номером ${order_id}`})
 
-        let url, data ,method, token, headers, response, options, requests, uuid, request_uuid
-        
-
-        return res.json("response") 
+        return res.json(await Sdek.editOrder(delivery.uuid ,req.body))
     }
+    
+    async deleteOrder(req, res) {
+        const {order_id} = req.params
+        let delivery
+        try{
+            delivery = await Delivery.findOne({where:{
+                id: order_id
+             }})
+        }catch(error) {
+            return res.json({error})
+        }
+        if (!delivery) return res.json({error:`В базе данных нет заказа с номером ${order_id}`})
 
+        let response = await Sdek.deleteOrder(delivery.uuid)
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return res.json({errors:response.requests[0].errors})
+        }
+
+        try{
+            await Delivery.destroy({where:{
+                id: order_id
+             }})
+        }catch(error) {
+            console.log(error);
+            // return res.json({error})
+        }
+
+        return res.json(response)
+    }
+    
+    async refusalOrder(req, res) {
+        const {order_id} = req.params
+        let delivery
+        try{
+            delivery = await Delivery.findOne({where:{
+                id: order_id
+             }})
+        }catch(error) {
+            return res.json({error})
+        }
+        if (!delivery) return res.json({error:`В базе данных нет заказа с номером ${order_id}`})
+        
+        return res.json(await Sdek.refusalOrder(delivery.uuid))
+    }
+    
+
+    async newIntakes(req, res) {
+        const {order_id} = req.params
+        let delivery
+        try{
+            delivery = await Delivery.findOne({where:{
+                id: order_id
+             }})
+        }catch(error) {
+            return res.json({error})
+        }
+        if (!delivery) return res.json({error:`В базе данных нет заказа с номером ${order_id}`})
+        
+        return res.json(await Sdek.newIntakes({order_uuid:delivery.uuid, ...req.body}))
+    }
 
 }
 
