@@ -9,13 +9,13 @@ const tokenService = require('../service/tokenService')
 
 const UserDto = require('../dtos/userDto');
 
-const generateJwt = (id, email, role, isActivated) => {
-    return jwt.sign(
-        {id, email, role, isActivated}, 
-        process.env.SECRET_KEY,
-        {expiresIn: '24h'}
-    )
-}
+// const generateJwt = (id, email, role, isActivated) => {
+//     return jwt.sign(
+//         {id, email, role, isActivated}, 
+//         process.env.SECRET_KEY,
+//         {expiresIn: '24h'}
+//     )
+// }
 
 
 class UserController {
@@ -50,7 +50,7 @@ class UserController {
             // return res.json({token})
 
         } catch (e) {
-            next(ApiError.badRequest('Ошибка регистрации нового пользователя!!!'));
+            return next(ApiError.badRequest('Ошибка регистрации нового пользователя!!!'));
         }
     }
 
@@ -77,7 +77,7 @@ class UserController {
 
             // return res.json({token})
         } catch (e) {
-            next(ApiError.badRequest('Ошибка входа! ' + e));
+            return next(ApiError.badRequest('Ошибка входа! ' + e));
         }
     }
 
@@ -91,7 +91,7 @@ class UserController {
             return res.json(token);
 
         } catch (e) {
-            next(ApiError.badRequest('Ошибка выхода!'));
+            return next(ApiError.badRequest('Ошибка выхода!'));
         }
     }
 
@@ -118,7 +118,7 @@ class UserController {
             const user = await User.findOne({where:{email:req.user.email}})
             return res.json(user)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода info!'));
+            return next(ApiError.badRequest('Ошибка метода info!'));
         }
     }
     
@@ -131,7 +131,7 @@ class UserController {
             })
             return res.json(response) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода update!'));
+            return next(ApiError.badRequest('Ошибка метода update!'));
         }
     }
     
@@ -142,16 +142,16 @@ class UserController {
             // const userData = await userService.refresh(refreshToken);
             if (!refreshToken) {
                 // throw ApiError.UnauthorizedError();
-                next(ApiError.unauthorized("Нет refresh токена!"));
+                return next(ApiError.unauthorized("Нет refresh токена!"));
             }
 
             const userData = tokenService.validateRefreshToken(refreshToken);
             if (!userData) {
-                next(ApiError.unauthorized("Не валидный refresh токен!"));
+                return next(ApiError.unauthorized("Не валидный refresh токен!"));
             }
             const tokenFromDb = await tokenService.findToken(refreshToken);
             if (!tokenFromDb) {
-                next(ApiError.unauthorized("Не найден refresh токен в БД!"));
+                return next(ApiError.unauthorized("Не найден refresh токен в БД!"));
             }
             const user = await User.findOne({where:{id:userData.id}});
             const userDto = new UserDto(user);
@@ -166,7 +166,7 @@ class UserController {
             return res.json({token: tokens.accessToken})
 
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода refresh!'));
+            return next(ApiError.badRequest('Ошибка метода refresh!'));
         }
     }
 
@@ -176,10 +176,10 @@ class UserController {
             const id = req.body.id
             const user = await User.findOne({where:{activationLink:link}})
             if (!user) {
-                next(ApiError.badRequest('Неккоректная ссылка активации!'))
+                return next(ApiError.badRequest('Неккоректная ссылка активации!'))
             }
             if (id !== user.id) {
-                next(ApiError.badRequest('Неккоректный id пользователя!'))
+                return next(ApiError.badRequest('Неккоректный id пользователя!'))
             }
             
             user.isActivated = 1
@@ -187,7 +187,7 @@ class UserController {
 
             return res.json({ok:true}) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода refresh!'));
+            return next(ApiError.badRequest('Ошибка метода refresh!'));
         }
     }
 

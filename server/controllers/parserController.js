@@ -20,175 +20,180 @@ const addNewProduct = require('../service/xlsx/addNewProduct')
 
 class parserController {
 
-    async getImages(req, res) {
+    async getImages(req, res, next) {
         try {
+            let { brand, article } = req.query  // milwaukee, 4933471077
+            let response, Html
+
+            // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
+            await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
+                what: article
+            }}).then(res => Html = res.data)
+            
+            Html = getUrlVseinstrumenti(Html, article)
+
+            if (!Html) return res.send(null)
+            
+            // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
+            response = "https://rostov.vseinstrumenti.ru" + Html
+
+            await axios.get(response)
+                .then(res => Html = res.data)
+            
+            response = getArrayImages(brand, article, Html)
+            
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getImages!'));
+            return next(ApiError.badRequest('Ошибка метода getImages!'));
         }
-        let { brand, article } = req.query  // milwaukee, 4933471077
-        let response, Html
-
-        // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
-        await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
-            what: article
-        }}).then(res => Html = res.data)
-        
-        Html = getUrlVseinstrumenti(Html, article)
-
-        if (!Html) return res.send(null)
-        
-        // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
-        response = "https://rostov.vseinstrumenti.ru" + Html
-
-        await axios.get(response)
-            .then(res => Html = res.data)
-        
-        response = getArrayImages(brand, article, Html)
 
         return res.json(response) // return array 
     }
 
     
-    async getSizes(req, res) {
+    async getSizes(req, res, next) {
         try {
+            let { article } = req.query  // milwaukee, 4933471077
+            let response, Html
+
+            // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
+            await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
+                what: article
+            }}).then(res => Html = res.data)
+            
+            Html = getUrlVseinstrumenti(Html, article)
+
+            if (!Html) return res.send(null)
+            
+            // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
+            response = "https://rostov.vseinstrumenti.ru" + Html
+
+            await axios.get(response)
+                .then(res => Html = res.data)
+            
+            response = getSizes(Html)
+            
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getImages!'));
+            return next(ApiError.badRequest('Ошибка метода getSizes!'));
         }
-        let { article } = req.query  // milwaukee, 4933471077
-        let response, Html
-
-        // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
-        await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
-            what: article
-        }}).then(res => Html = res.data)
-        
-        Html = getUrlVseinstrumenti(Html, article)
-
-        if (!Html) return res.send(null)
-        
-        // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
-        response = "https://rostov.vseinstrumenti.ru" + Html
-
-        await axios.get(response)
-            .then(res => Html = res.data)
-        
-        response = getSizes(Html)
         
         return res.json(response) // return array 
     }
     
 
-    async getPrice(req, res) {
+    async getPrice(req, res, next) {
         try {
+            let { article } = req.query  // milwaukee, 4933451439
+            let string
+
+            // https://mlk-shop.ru/search?search=4933451439
+            await axios.get('https://mlk-shop.ru/search', {params: {
+                search: article
+            }}).then(res => string = res.data)
+            
+            if (!string) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string}
+
+            string = getPrice(string)
+            
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getImages!'));
+            return next(ApiError.badRequest('Ошибка метода getPrice!'));
         }
-        let { article } = req.query  // milwaukee, 4933451439
-        let string
-
-        // https://mlk-shop.ru/search?search=4933451439
-        await axios.get('https://mlk-shop.ru/search', {params: {
-            search: article
-        }}).then(res => string = res.data)
-        
-        if (!string) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string}
-
-        string = getPrice(string)
                 
         return res.json(string) 
     }
     
 
-    async getDescription(req, res) {
+    async getDescription(req, res, next) {
         try {
+            let { article } = req.query  // milwaukee, 4933451439
+            let string
+
+            // https://mlk-shop.ru/search?search=4933451439
+            await axios.get('https://mlk-shop.ru/search', {params: {
+                search: article
+            }}).then(res => string = res.data)
+            
+            if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
+
+            string = getUrlMlkShop(string)
+
+            if (string.error !== undefined) return res.send(string)
+
+            // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+            await axios.get(string.message).then(res => string = res.data)
+
+            if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
+            
+            string = getDescription(string)
+            
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getImages!'));
+            return next(ApiError.badRequest('Ошибка метода getDescription!'));
         }
-        let { article } = req.query  // milwaukee, 4933451439
-        let string
-
-        // https://mlk-shop.ru/search?search=4933451439
-        await axios.get('https://mlk-shop.ru/search', {params: {
-            search: article
-        }}).then(res => string = res.data)
-        
-        if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
-
-        string = getUrlMlkShop(string)
-
-        if (string.error !== undefined) return res.send(string)
-
-        // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
-        await axios.get(string.message).then(res => string = res.data)
-
-        if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
-        
-        string = getDescription(string)
 
         return res.send(string)                
     }
 
-    async getCharacteristics(req, res) {
+    async getCharacteristics(req, res, next) {
         try {
+            let { article } = req.query  // milwaukee, 4933451439
+            let string
+
+            // https://mlk-shop.ru/search?search=4933451439
+            await axios.get('https://mlk-shop.ru/search', {params: {
+                search: article
+            }}).then(res => string = res.data)
+            
+            if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
+
+            string = getUrlMlkShop(string)
+
+            if (string.error !== undefined) return res.send(string)
+
+            // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+            await axios.get(string.message).then(res => string = res.data)
+
+            if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
+            
+            string = getCharacteristics(string)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getImages!'));
+            return next(ApiError.badRequest('Ошибка метода getCharacteristics!'));
         }
-        let { article } = req.query  // milwaukee, 4933451439
-        let string
-
-        // https://mlk-shop.ru/search?search=4933451439
-        await axios.get('https://mlk-shop.ru/search', {params: {
-            search: article
-        }}).then(res => string = res.data)
-        
-        if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
-
-        string = getUrlMlkShop(string)
-
-        if (string.error !== undefined) return res.send(string)
-
-        // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
-        await axios.get(string.message).then(res => string = res.data)
-
-        if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
-        
-        string = getCharacteristics(string)
 
         return res.send(string)                
     }
     
 
-    async getEquipment(req, res) {
+    async getEquipment(req, res, next) {
         try {
+            let { article } = req.query  // milwaukee, 4933451439
+            let string
+
+            // https://mlk-shop.ru/search?search=4933451439
+            await axios.get('https://mlk-shop.ru/search', {params: {
+                search: article
+            }}).then(res => string = res.data)
+            
+            if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
+
+            string = getUrlMlkShop(string)
+
+            if (string.error !== undefined) return res.send(string)
+
+            // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+            await axios.get(string.message).then(res => string = res.data)
+
+            if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
+            
+            string = getEquipment(string)
+
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getImages!'));
+            return next(ApiError.badRequest('Ошибка метода getEquipment!'));
         }
-        let { article } = req.query  // milwaukee, 4933451439
-        let string
-
-        // https://mlk-shop.ru/search?search=4933451439
-        await axios.get('https://mlk-shop.ru/search', {params: {
-            search: article
-        }}).then(res => string = res.data)
-        
-        if (!string) return res.send({error:"Не сработал axios.get(https://mlk-shop.ru/search)"})
-
-        string = getUrlMlkShop(string)
-
-        if (string.error !== undefined) return res.send(string)
-
-        // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
-        await axios.get(string.message).then(res => string = res.data)
-
-        if (!string) return res.send({error:"Не сработал axios.get(string.message), не найден string.message"})
-        
-        string = getEquipment(string)
 
         return res.send(string)
     }
 
 
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         let { brand, article } = req.query  // milwaukee, 4933471077
         let response
 
@@ -203,7 +208,7 @@ class parserController {
     }
 
 
-    async parseXLSX(req, res) {
+    async parseXLSX(req, res, next) {
         let { brand, number, party } = req.query
         let product, message, response
 
@@ -264,7 +269,7 @@ class parserController {
 
 
 
-    async mailRu(req, res) {
+    async mailRu(req, res, next) {
         try {
             let { email } = req.query
             let response
@@ -275,11 +280,11 @@ class parserController {
             
             return res.json(response)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода mailRu!'));
+            return next(ApiError.badRequest('Ошибка метода mailRu!'));
         }
     }
 
-    async yaRu(req, res) {
+    async yaRu(req, res, next) {
         try {
             let { email } = req.query
             let response
@@ -288,7 +293,7 @@ class parserController {
                 .catch(err => response = err)
             return res.json(response)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода yaRu!'));
+            return next(ApiError.badRequest('Ошибка метода yaRu!'));
         }
     }
 }

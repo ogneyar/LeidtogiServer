@@ -4,17 +4,17 @@ const ApiError = require('../error/apiError')
 
 class RatingController {
     
-    async create(req, res) {
+    async create(req, res, next) {
         try {
             const body = req.body
             const rating = await Rating.create(body)
             return res.json([rating]) // return array
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода create!'));
+            return next(ApiError.badRequest('Ошибка метода create!'));
         }
     }
 
-    async getAll(req, res) { // рейтинг по одному товару
+    async getAll(req, res, next) { // рейтинг по одному товару
         try {
             const {productId} = req.params 
             const ratings = await Rating.findAll({
@@ -22,11 +22,11 @@ class RatingController {
             })
             return res.json(ratings) // return array
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getAll!'));
+            return next(ApiError.badRequest('Ошибка метода getAll!'));
         }
     }
 
-    async getOne(req, res) { // рейтинг по одному товару одного клиента
+    async getOne(req, res, next) { // рейтинг по одному товару одного клиента
         try {
             const {productId, userId} = req.query 
             const ratings = await Rating.findOne({
@@ -34,11 +34,11 @@ class RatingController {
             })
             return res.json(ratings) // return Object
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getOne!'));
+            return next(ApiError.badRequest('Ошибка метода getOne!'))
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const {userId,productId} = req.body
             const rating = await Rating.destroy({
@@ -46,11 +46,11 @@ class RatingController {
             })
             return res.json(rating) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода delete!'));
+            return next(ApiError.badRequest('Ошибка метода delete!'));
         }
     }
     
-    async edit(req, res) {
+    async edit(req, res, next) {
         try {
             const {userId,productId,rate} = req.body
             const rating = await Rating.update({rate}, {
@@ -58,7 +58,7 @@ class RatingController {
             })
             return res.json(rating) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода edit!'));
+            return next(ApiError.badRequest('Ошибка метода edit!'));
         }
     }
 

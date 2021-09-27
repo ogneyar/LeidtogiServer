@@ -4,26 +4,26 @@ const ApiError = require('../error/apiError')
 
 class CategoryController {
 
-    async create(req, res) {
+    async create(req, res, next) {
         try {
             const body = req.body
             const category = await Category.create(body)
             return res.json([category]) // return array
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода create!'));
+            return next(ApiError.badRequest('Ошибка метода create!'));
         }
     }
     
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         try {
             const categories = await Category.findAll()
             return res.json(categories) // return array
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getAll!'));
+            return next(ApiError.badRequest('Ошибка метода getAll!'));
         }
     }
 
-    async getCategories(req, res) {
+    async getCategories(req, res, next) {
         try {
             const {sub_id} = req.params
             const categories = await Category.findAll({
@@ -31,11 +31,11 @@ class CategoryController {
             })
             return res.json(categories) // return array
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getCategories!'));
+            return next(ApiError.badRequest('Ошибка метода getCategories!'));
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const {id} = req.params
             const category = await Category.destroy({
@@ -43,11 +43,11 @@ class CategoryController {
             })
             return res.json(category) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода delete!'));
+            return next(ApiError.badRequest('Ошибка метода delete!'));
         }
     }
 
-    async edit(req, res) {
+    async edit(req, res, next) {
         try {
             const {id} = req.params
             const body = req.body
@@ -56,7 +56,7 @@ class CategoryController {
             })
             return res.json(category) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода edit!'));
+            return next(ApiError.badRequest('Ошибка метода edit!'));
         }
     }
 
