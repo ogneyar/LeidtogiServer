@@ -52,3 +52,17 @@ export const sdekNewIntakes = async (id, body) => {
     const {data} = await $authHost.post('api/delivery/sdek/intakes/' + id, body)
     return data
 }
+
+// Формирование квитанции к заказу
+export const sdekPrintOrders = async (arrayId, body) => {
+    // arrayId - массив id номеров заказа в таблице deliveries
+    const {data} = await $authHost.post('api/delivery/sdek/print_orders', {...body,orders:arrayId})
+    return data
+}
+
+// Получение квитанции к заказу
+export const sdekGetPrintOrders = async (uuid) => {
+    // uuid - идентификатор квитанции, ссылку на которую необходимо получить
+    const {data} = await $authHost.get('api/delivery/sdek/print_orders/' + uuid)
+    return data
+}

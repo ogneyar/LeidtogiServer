@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Card, Col, Container, Image, Row } from 'react-bootstrap'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import ReactHtmlParser from 'react-html-parser';
+import ReactHtmlParser from 'react-html-parser'
 
 import { fetchOneProduct } from '../../http/productAPI'
 
@@ -20,6 +20,8 @@ const ProductPage =  observer(() => {
     const { rating } = useContext(Context)
 
     const { id } = useParams()
+
+    const history = useHistory()
     
     const [product, setProduct] = useState({info: [],size: []})
     const [loading, setLoading] = useState(true)
@@ -43,7 +45,11 @@ const ProductPage =  observer(() => {
                     // setProduct({...data, info})
 
                 // }else setProduct({...data, info: null})
+
+                if (!data?.id) history.push("/error")
+
                 setProduct(data)
+                // console.log(data);
                 rating.setRate(data.rating)
             },err => {
                 setError(true)

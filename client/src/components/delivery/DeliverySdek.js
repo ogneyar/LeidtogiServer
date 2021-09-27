@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
+import ReactHtmlParser from 'react-html-parser'
 
 import { 
     sdekCalculate, 
@@ -9,7 +10,9 @@ import {
     sdekEditOrder, 
     sdekDeleteOrder, 
     sdekRefusalOrder, 
-    sdekNewIntakes 
+    sdekNewIntakes,
+    sdekPrintOrders,
+    sdekGetPrintOrders
 } from '../../http/delivery/sdekAPI'
 
 import { Context } from '../..'
@@ -255,6 +258,55 @@ const DeliverySdek = observer((props) => {
             setAlertVisible(true)
         }
     }
+    
+
+    const onClickButtonPrintOrders = async () => {
+        let numbers = [1]
+        if (numbers) {
+
+            let response = await sdekPrintOrders(numbers, {
+                copy_count: 2
+            })
+
+            console.log(response)
+
+            // response = await sdekGetPrintOrders(response?.entity?.uuid)
+
+            if (response?.entity) {
+                setTextAlert(`Квитанция к заказу оформлена. (uuid = ${response?.entity?.uuid})`)
+                setAlertVisible(true)
+            }else if (response?.error) {
+                setTextAlert(`Ошибка: ${response?.error}`)
+                setAlertVisible(true)
+            }else {
+                setTextAlert(`Неудалось оформить квитанцию к заказу.`)
+                setAlertVisible(true)
+            }
+
+        }else {
+            setTextAlert(`Заказы не найдены.`)
+            setAlertVisible(true)
+        }
+    }
+    
+    const onClickButtonGetPrintOrders = async () => {
+
+            let response = await sdekGetPrintOrders("72753031-0488-439e-80d0-b5c3ef1d5400")
+
+            console.log(response)
+
+            if (response?.errors) {
+                setTextAlert("Ошибка: " + response.errors)
+                setAlertVisible(true)
+            }else {
+
+                setTextAlert(`
+                <a href="${response}">${response}</a>
+                `)
+                setAlertVisible(true)
+            }
+
+    }
 
 
     return (
@@ -369,6 +421,23 @@ const DeliverySdek = observer((props) => {
                     <div />
                 </div>
 
+                <hr />
+
+                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
+                    <Button
+                        variant="outline-primary"
+                        onClick={onClickButtonPrintOrders}
+                    >
+                        Формирование квитанции
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={onClickButtonGetPrintOrders}
+                    >
+                        Получение квитанции
+                    </Button>
+                </div>
+
             </div>
 
             <Alert 
@@ -378,7 +447,7 @@ const DeliverySdek = observer((props) => {
                     setTextAlert("")
                 }}
             >
-                {textAlert}
+                {ReactHtmlParser(textAlert)}
             </Alert>
         </div>
     )

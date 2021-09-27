@@ -1,4 +1,8 @@
 const axios  = require("axios")
+const https = require("https")
+const pdfreader = require("pdfreader")
+const fs = require('fs')
+const path = require('path')
 
 const { Delivery } = require('../../models/models')
 const Sdek = require("../../service/delivery/sdek/Sdek")
@@ -132,6 +136,46 @@ class SdekController {
         
         return res.json(await Sdek.newIntakes({order_uuid:delivery.uuid, ...req.body}))
     }
+    
+
+    async printOrders(req, res) {
+        let body = req.body // пример: { orders: [ 1, 2, 3 ] }
+        // в body.orders массив [ 1, 3, 6, ... ] необходимо преобразовать в массив [ {order_uuid:...}, {order_uuid:...}, ...  ] 
+        // достав данные из таблицы deliveries
+        let orders = body.orders
+        let delivery 
+        let array_order_uuid = []
+        try{
+            if (orders && Array.isArray(orders)) {
+                orders.forEach(async(i, index) => {
+                    // console.log("i:",i)                
+                    delivery = await Delivery.findOne({
+                        where:{ id: i }
+                    })
+                    if (delivery) array_order_uuid[index] = {order_uuid:delivery.uuid}
+                })
+                // console.log("delivery:",delivery)                
+            }
+            // console.log("orders:",orders[0])
+        }catch(error) {
+            return res.json({error})
+        }
+        // if (!delivery) return res.json({error:`В базе данных нет заказа с номером ${order_id}`})
+        return res.json(await Sdek.printOrders({...req.body, orders:array_order_uuid}))
+    }
+
+    async getPrintOrders(req, res) {
+        const {uuid} = req.params
+        // 72753031-5181-4889-865a-6d94fb13a6e5
+        return res.send(await Sdek.getPrintOrders(uuid))
+    }
+    
+
+    async test(req, res) {
+
+        return res.send("Какой-то ответ...")  
+    }
+
 
 }
 
