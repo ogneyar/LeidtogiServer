@@ -40,7 +40,7 @@ class ProductController {
         }
     }
 
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         try {
             let {brandId, categoryId, limit, page} = req.query
             page = Number(page) || 1
@@ -66,11 +66,11 @@ class ProductController {
             }
             return res.json(products)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getAll!'));
+            return next(ApiError.badRequest('Ошибка метода getAll!'));
         }
     }
 
-    async getOne(req, res) {
+    async getOne(req, res, next) {
         try {
             const {id} = req.params
             const product = await Product.findOne({
@@ -79,11 +79,11 @@ class ProductController {
             })
             return res.json(product)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getOne!'));
+            return next(ApiError.badRequest('Ошибка метода getOne!'));
         }
     }
 
-    async getInfo(req, res) {
+    async getInfo(req, res, next) {
         try {
             const {id} = req.params
             const info = await ProductInfo.findAll({
@@ -91,11 +91,11 @@ class ProductController {
             })
             return res.json(info) // return array
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getInfo!'));
+            return next(ApiError.badRequest('Ошибка метода getInfo!'));
         }
     }
 
-    async getSize(req, res) {
+    async getSize(req, res, next) {
         try {
             const {id} = req.params
             const size = await ProductSize.findOne({
@@ -103,11 +103,11 @@ class ProductController {
             })
             return res.json(size)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода getSize!'));
+            return next(ApiError.badRequest('Ошибка метода getSize!'));
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const {id} = req.params
             const product = await Product.findOne({
@@ -131,11 +131,11 @@ class ProductController {
             })
             return res.json(response)
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода delete!'));
+            return next(ApiError.badRequest('Ошибка метода delete!'));
         }
     }
 
-    async edit(req, res) {
+    async edit(req, res, next) {
         try {
             const {id} = req.params
             const body = req.body
@@ -144,11 +144,11 @@ class ProductController {
             })
             return res.json(response) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода edit!'));
+            return next(ApiError.badRequest('Ошибка метода edit!'));
         }
     }
 
-    async editSizes(req, res) {
+    async editSizes(req, res, next) {
         try {
             const {id} = req.params
             const {size} = req.body
@@ -192,11 +192,11 @@ class ProductController {
     
             return res.json(response) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода editSizes!'));
+            return next(ApiError.badRequest('Ошибка метода editSizes!'));
         }
     }
 
-    async editOnArticle(req, res) {
+    async editOnArticle(req, res, next) {
         try {
             const {article} = req.params
             const body = req.body
@@ -205,7 +205,7 @@ class ProductController {
             })
             return res.json(response) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода editOnArticle!'));
+            return next(ApiError.badRequest('Ошибка метода editOnArticle!'));
         }
     }
 
@@ -311,7 +311,7 @@ class ProductController {
         }
     }
 
-    async editRating(req, res) { // для рейта отдельная функция из-за проверки роли юзера вместо администратора
+    async editRating(req, res, next) { // для рейта отдельная функция из-за проверки роли юзера вместо администратора
         try {
             const {id} = req.params
             const {rating} = req.body
@@ -320,7 +320,28 @@ class ProductController {
             })
         return res.json(response) // return boolean
         }catch(e) {
-            next(ApiError.badRequest('Ошибка метода editRating!'));
+            return next(ApiError.badRequest('Ошибка метода editRating!'));
+        }
+    }
+
+
+    async temp(req, res, next) {
+        try {
+            
+            // const products = await ProductSize.findAll({
+            //     where: {productId: null}
+            // })
+    
+            // await ProductSize.destroy({
+            //     where: {productId: null}
+            // })
+
+            // return res.json(products)
+            
+            return res.json("temp")
+
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода temp!'));
         }
     }
 
