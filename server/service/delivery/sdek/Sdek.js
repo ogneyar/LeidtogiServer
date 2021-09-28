@@ -324,7 +324,7 @@ module.exports = class Sdek {
 
 
     static async getPdfFileUrl(uuid, url) {
-        response = await this.bufferize(url)
+        let response = await this.bufferize(url)
         let my_url = path.resolve(__dirname, '../../..', 'static', 'deliveries', uuid + '.pdf')
         if (response) {
            fs.writeFileSync(my_url, response)   

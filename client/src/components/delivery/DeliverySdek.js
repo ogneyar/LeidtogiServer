@@ -273,6 +273,7 @@ const DeliverySdek = observer((props) => {
             // response = await sdekGetPrintOrders(response?.entity?.uuid)
 
             if (response?.entity) {
+                localStorage.setItem('uuid_print',response.entity?.uuid)
                 setTextAlert(`Квитанция к заказу оформлена. (uuid = ${response?.entity?.uuid})`)
                 setAlertVisible(true)
             }else if (response?.error) {
@@ -291,7 +292,9 @@ const DeliverySdek = observer((props) => {
     
     const onClickButtonGetPrintOrders = async () => {
 
-            let response = await sdekGetPrintOrders("72753031-0488-439e-80d0-b5c3ef1d5400")
+        let uuid = localStorage.getItem('uuid_print')
+        if (uuid) {
+            let response = await sdekGetPrintOrders(uuid)
 
             console.log(response)
 
@@ -301,11 +304,14 @@ const DeliverySdek = observer((props) => {
             }else {
 
                 setTextAlert(`
-                <a href="${response}">${response}</a>
+                <a href="${response}" target="_blank">${uuid}.pdf</a>
                 `)
                 setAlertVisible(true)
             }
-
+        }else {
+            setTextAlert(`Необходимо сначала оформить квитанцию!`)
+            setAlertVisible(true)
+        }
     }
 
 
