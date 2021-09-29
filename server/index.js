@@ -8,6 +8,7 @@ const models = require('./models/models')
 const router = require('./routes/index')
 const errorHandler = require('./middleware/errorHandlingMiddleware')
 const path = require('path')
+const favicon = require('serve-favicon');
 
 const PORT = process.env.PORT || 3000
 const CORS_URL = process.env.CORS_URL || "https://leidtogi.ru"
@@ -29,11 +30,13 @@ app.use(cors(corsOptionsDelegate))
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static(path.resolve(__dirname, 'static')))
+app.use(favicon(path.join(__dirname,'static','favicon.ico')))
 app.use(fileUpload({}))
 app.use('/api', router)
 app.get('/', (req, res) => {
     if (CORS_URL === "http://localhost:3000") {
-        res.send("MERN server - приветствует тебя!")
+        // res.send("MERN server - приветствует тебя!")
+        res.sendFile(path.join(__dirname,'static','welcome.html'))
     }else {
         res.redirect(CORS_URL)
     }    

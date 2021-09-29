@@ -24,6 +24,7 @@
     "pdfreader": "^1.2.11",
     "qs": "^6.10.1",
     "sequelize": "^6.5.0",
+    "serve-favicon": "^2.5.0",
     "uuid": "^8.3.2",
     "xlsx": "^0.17.1"
   },
