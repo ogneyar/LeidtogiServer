@@ -4,4 +4,3 @@ killall -2 node
 https://pay.alfabank.ru/ecommerce/instructions/merchantManual/pages/site_req.html
 
 
-URL=http://localhost:5000

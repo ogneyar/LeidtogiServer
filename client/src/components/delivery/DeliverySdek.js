@@ -48,43 +48,33 @@ const DeliverySdek = observer((props) => {
         cart = localStorage.getItem('cart')
         if (cart && index.length === 6) {
             cart = JSON.parse(cart)
-
             let weight = 0
-
-            cart.forEach(i => {
-                weight += (Number(i.value) * Number(i.size.weight))
-            })
-
+            cart.forEach( i => weight += (Number(i.value) * Number(i.size.weight)) )
             weight = weight * 1000
             weight = Math.ceil(weight)
-
-            setInfo({
-                total_sum:"", period_min:"", period_max:"", weight_calc:"", currency:"", delivery_sum:""
-            })
-
+            setInfo({ total_sum:"", period_min:"", period_max:"", weight_calc:"", currency:"", delivery_sum:"" })
             let indexFrom
             indexFrom = "101000" // Москва
             // indexFrom = "390000" // Рязань
             // indexFrom = "347056" // Углекаменный
-            
             let response = await sdekCalculate({
                 tariff_code: tariff,
                 from_location: { postal_code: indexFrom }, 
                 to_location: { postal_code: index }, 
                 packages: [{ weight }] 
             })
-
             if (response?.error) alert(response.error)
             else setInfo(response)
 
-        }else if (index.length < 6) alert("Введите правильный индекс!")
+        }else if (index.length < 6) {
+            setTextAlert(`Введите правильный индекс!`)
+            setAlertVisible(true)
+        }
     }
 
     const onClickButtonOrder = async () => {
         if (user?.user?.address) {
-
             let cart, weight
-
             cart = localStorage.getItem('cart')
             if (cart) {
                 cart = JSON.parse(cart)
@@ -95,7 +85,6 @@ const DeliverySdek = observer((props) => {
                 weight = weight * 1000
                 weight = Math.ceil(weight)
             }else return
-            
             let response = await sdekOrder(user?.user?.id, {
                 tariff_code: tariff,
                 recipient: { 
@@ -117,7 +106,8 @@ const DeliverySdek = observer((props) => {
                 } ]
             })
             if (response?.id) {
-                setTextAlert(`Номер вашего заказа: ${response?.id} (uuid=${response?.uuid})`)
+                localStorage.setItem('id_order',response.id)
+                setTextAlert(`Номер вашего заказа: ${response.id} (uuid=${response?.uuid})`)
                 setAlertVisible(true)
             }else {
                 setTextAlert(`Неудалось оформить заказ. Ответ сервера: ${response}`)
@@ -131,13 +121,10 @@ const DeliverySdek = observer((props) => {
 
     
     const onClickButtonGetOrder = async () => {
-        let number = 1
+        let number = localStorage.getItem('id_order')
         if (number) {
-
             let response = await sdekGetOrder(number)
-
             // console.log(response)
-
             if (response?.entity) {
                 setTextAlert(`Данные о заказе: ${JSON.stringify(response?.entity)}`)
                 setAlertVisible(true)
@@ -148,7 +135,6 @@ const DeliverySdek = observer((props) => {
                 setTextAlert(`Неудалось получить данные о Вашем заказе. Попробуйте позже.`)
                 setAlertVisible(true)
             }
-
         }else {
             setTextAlert(`Заказ номер ${number} не найден.`)
             setAlertVisible(true)
@@ -156,13 +142,10 @@ const DeliverySdek = observer((props) => {
     }
     
     const onClickButtonEditOrder = async () => {
-        let number = 1
+        let number = localStorage.getItem('id_order')
         if (number) {
-
             let response = await sdekEditOrder(number, {recipient:{name:"НОВОЕ ТЕСТ ИМЯ!"}})
-
             // console.log(response)
-
             if (response?.entity) {
                 setTextAlert(`Ваш заказ изменён.`)
                 setAlertVisible(true)
@@ -173,7 +156,6 @@ const DeliverySdek = observer((props) => {
                 setTextAlert(`Неудалось изменить Ваш заказ.`)
                 setAlertVisible(true)
             }
-
         }else {
             setTextAlert(`Заказ номер ${number} не найден.`)
             setAlertVisible(true)
@@ -181,14 +163,12 @@ const DeliverySdek = observer((props) => {
     }
     
     const onClickButtonDeleteOrder = async () => {
-        let number = 9
+        let number = localStorage.getItem('id_order')
         if (number) {
-
             let response = await sdekDeleteOrder(number)
-
             // console.log(response)
-
             if (response?.entity) {
+                localStorage.removeItem('id_order')
                 setTextAlert(`Ваш заказ удалён.`)
                 setAlertVisible(true)
             }else if (response?.error) {
@@ -206,12 +186,11 @@ const DeliverySdek = observer((props) => {
     }
     
     const onClickButtonRefusalOrder = async () => {
-        let number = 1
+        let number = localStorage.getItem('id_order')
         if (number) {
-
             let response = await sdekRefusalOrder(number)
 
-            // console.log(response)
+            console.log(response)
 
             if (response?.entity) {
                 setTextAlert(`Ваш заказ помечен как 'отказ'.`)
@@ -231,19 +210,16 @@ const DeliverySdek = observer((props) => {
     }
 
     const onClickButtonNewIntakes = async () => {
-        let number = 1
+        let number = localStorage.getItem('id_order')
         if (number) {
-
             let response = await sdekNewIntakes(number, {
                 intake_date: "2021-09-28",
                 intake_time_from: "09:28",
                 intake_time_to: "15:28"
             })
-
-            // console.log(response)
-
+            console.log(response)
             if (response?.entity) {
-                setTextAlert(`Регистрация заявки на вызов курьера оформлена.`)
+                setTextAlert(`Регистрация заявки на вызов курьера оформлена. (uuid=${response.entity?.uuid})`)
                 setAlertVisible(true)
             }else if (response?.error) {
                 setTextAlert(`Ошибка: ${response?.error}`)
@@ -252,7 +228,6 @@ const DeliverySdek = observer((props) => {
                 setTextAlert(`Неудалось оформить заявку на вызов курьера.`)
                 setAlertVisible(true)
             }
-
         }else {
             setTextAlert(`Заказ номер ${number} не найден.`)
             setAlertVisible(true)
@@ -261,28 +236,25 @@ const DeliverySdek = observer((props) => {
     
 
     const onClickButtonPrintOrders = async () => {
-        let numbers = [1]
-        if (numbers) {
-
+        let numbers = [localStorage.getItem('id_order') * 1]
+        if (numbers[0]) {
             let response = await sdekPrintOrders(numbers, {
                 copy_count: 2
             })
-
             console.log(response)
-
             // response = await sdekGetPrintOrders(response?.entity?.uuid)
-
             if (response?.entity) {
+                localStorage.setItem('uuid_print',response.entity?.uuid)
                 setTextAlert(`Квитанция к заказу оформлена. (uuid = ${response?.entity?.uuid})`)
                 setAlertVisible(true)
             }else if (response?.error) {
-                setTextAlert(`Ошибка: ${response?.error}`)
+                let error = response.error?.message || response.error
+                setTextAlert(`Ошибка: ${error}`)
                 setAlertVisible(true)
             }else {
                 setTextAlert(`Неудалось оформить квитанцию к заказу.`)
                 setAlertVisible(true)
             }
-
         }else {
             setTextAlert(`Заказы не найдены.`)
             setAlertVisible(true)
@@ -291,7 +263,9 @@ const DeliverySdek = observer((props) => {
     
     const onClickButtonGetPrintOrders = async () => {
 
-            let response = await sdekGetPrintOrders("72753031-0488-439e-80d0-b5c3ef1d5400")
+        let uuid = localStorage.getItem('uuid_print')
+        if (uuid) {
+            let response = await sdekGetPrintOrders(uuid)
 
             console.log(response)
 
@@ -301,11 +275,14 @@ const DeliverySdek = observer((props) => {
             }else {
 
                 setTextAlert(`
-                <a href="${response}">${response}</a>
+                <a href="${response}" target="_blank">${uuid}.pdf</a>
                 `)
                 setAlertVisible(true)
             }
-
+        }else {
+            setTextAlert(`Необходимо сначала оформить квитанцию!`)
+            setAlertVisible(true)
+        }
     }
 
 
@@ -367,7 +344,7 @@ const DeliverySdek = observer((props) => {
                         Расчитать доставку
                     </Button>
                     <Button
-                        style={{"display":user?.user?.id === undefined ? "none" : "block"}}
+                        style={{"display":(user?.user?.id === undefined || user?.user?.id !== 1) ? "none" : "block"}}
                         variant="success"
                         onClick={onClickButtonOrder}
                     >
@@ -375,67 +352,80 @@ const DeliverySdek = observer((props) => {
                     </Button>
                 </div>
                 
-                <hr />
+                
+                <div 
+                    style={{"display":(user?.user?.id === undefined || user?.user?.id !== 1) ? "none" : "block"}}
+                >
 
-                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
-                    <Button
-                        variant="outline-primary"
-                        onClick={onClickButtonGetOrder}
-                    >
-                        Инфо о заказе
-                    </Button>
-                    <Button
-                        style={{"display":user?.user?.id === undefined ? "none" : "block"}}
-                        variant="success"
-                        onClick={onClickButtonEditOrder}
-                    >
-                        Изменить заказ
-                    </Button>
-                </div>
+                    <hr />
 
-                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
-                    <Button
-                        variant="warning"
-                        onClick={onClickButtonRefusalOrder}
+                    <div 
+                        className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
                     >
-                        Отказ от заказа
-                    </Button>
-                    <Button
-                        style={{"display":user?.user?.id === undefined ? "none" : "block"}}
-                        variant="danger"
-                        onClick={onClickButtonDeleteOrder}
-                    >
-                        Удалить заказ
-                    </Button>
-                </div>
+                        <Button
+                            variant="outline-primary"
+                            onClick={onClickButtonGetOrder}
+                        >
+                            Инфо о заказе
+                        </Button>
+                        <Button
+                            variant="success"
+                            onClick={onClickButtonEditOrder}
+                        >
+                            Изменить заказ
+                        </Button>
+                    </div>
 
-                <hr />
-
-                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
-                    <Button
-                        variant="outline-primary"
-                        onClick={onClickButtonNewIntakes}
+                    <div
+                        className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
                     >
-                        Заявка на вызов курьера
-                    </Button>
-                    <div />
-                </div>
+                        <Button
+                            variant="warning"
+                            onClick={onClickButtonRefusalOrder}
+                        >
+                            Отказ от заказа
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={onClickButtonDeleteOrder}
+                        >
+                            Удалить заказ
+                        </Button>
+                    </div>
 
-                <hr />
+                    <hr />
 
-                <div className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap">
-                    <Button
-                        variant="outline-primary"
-                        onClick={onClickButtonPrintOrders}
+                    <div 
+                        className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
                     >
-                        Формирование квитанции
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={onClickButtonGetPrintOrders}
+                        <Button
+                            variant="outline-primary"
+                            onClick={onClickButtonNewIntakes}
+                        >
+                            Заявка на вызов курьера
+                        </Button>
+                        <div />
+                    </div>
+
+                    <hr />
+
+                    <div 
+                        className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
                     >
-                        Получение квитанции
-                    </Button>
+                        <Button
+                            variant="outline-primary"
+                            onClick={onClickButtonPrintOrders}
+                        >
+                            Формирование квитанции
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={onClickButtonGetPrintOrders}
+                        >
+                            Получение квитанции
+                        </Button>
+                    </div>
+
                 </div>
 
             </div>

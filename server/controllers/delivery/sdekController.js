@@ -154,7 +154,7 @@ class SdekController {
                     })
                     if (delivery) array_order_uuid[index] = {order_uuid:delivery.uuid}
                 })
-                // console.log("delivery:",delivery)                
+                // console.log("delivery:",delivery)
             }
             // console.log("orders:",orders[0])
         }catch(error) {
