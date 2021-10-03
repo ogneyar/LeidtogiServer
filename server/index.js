@@ -11,10 +11,10 @@ const path = require('path')
 const favicon = require('serve-favicon');
 
 const PORT = process.env.PORT || 3000
-const CORS_URL = process.env.CORS_URL || "https://leidtogi.ru"
+const CORS_URL = process.env.CORS_URL || "http://leidtogi.ru"
 const CORS_URL_SECURE = process.env.CORS_URL_SECURE || "https://leidtogi.ru"
 
-let whitelist = [CORS_URL, CORS_URL_SECURE, 'http://192.168.0.244:3000']
+let whitelist = [CORS_URL, CORS_URL_SECURE, 'http://web.pzmarket.ru', 'https://web.pzmarket.ru']
 let corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (whitelist.indexOf(req.header('Origin')) !== -1) {
