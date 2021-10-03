@@ -1,5 +1,5 @@
 SetEnv GHOST_NODE_VERSION_CHECK false
-PassengerStartupFile server.js
+PassengerStartupFile index.js
 PassengerResolveSymlinksInDocumentRoot on
 Require all granted
 PassengerAppType node
