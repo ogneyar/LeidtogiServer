@@ -7,10 +7,23 @@ const Contacts = () => {
     return (
         <InfoPage>
             <div className="Contacts">
-                <label className="ContactsTitle">Наши контакты!</label>
+                <header>Контактная информация!</header>
+                {/* <label className="ContactsTitle">Контактная информация!</label> */}
                 <div
                     className="ContactsBody"
                 >
+                    <name className="ContactsBodyDiv">
+                        <span>Название компании:</span>
+                        <label>ООО "Леидтоги"</label>
+                    </name>
+                    <div className="ContactsBodyDiv">
+                        <span>ИНН / КПП:</span>
+                        <label>0000000000 / 00000000000</label>
+                    </div>
+                    <div className="ContactsBodyDiv">
+                        <span>ОГРН:</span>
+                        <label>000000000000</label>
+                    </div>
                     <adress className="ContactsBodyDiv">
                         <span>Адрес:</span>
                         <label>г. Курск, ул. Дмитрова, д. 33</label>
