@@ -9,23 +9,11 @@ const tokenService = require('../service/tokenService')
 
 const UserDto = require('../dtos/userDto');
 
-// const generateJwt = (id, email, role, isActivated) => {
-//     return jwt.sign(
-//         {id, email, role, isActivated}, 
-//         process.env.SECRET_KEY,
-//         {expiresIn: '24h'}
-//     )
-// }
-
 const maxAge = 90 * 24 * 60 * 60 * 1000 // 90 дней
+const oldHost = "pzmarket.ru" // игнорировать этот хост при сохранении токена
+
 
 class UserController {
-    
-    // public maxAge = 90 * 24 * 60 * 60 * 1000
-
-    // constructor() {
-    //     this.maxAge = 90 * 24 * 60 * 60 * 1000 // 90 дней
-    // }
 
     async registration(req, res, next) {
         try {
@@ -43,18 +31,16 @@ class UserController {
                 .then(data => console.log(data))
                 .catch(err => console.log(err))
             
-            // const token = generateJwt(user.id, user.email, user.role, user.isActivated)
-            
             const userDto = new UserDto(user); // id, email, role, isActivated
             const tokens = tokenService.generateTokens({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
-            
-            res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true})
+
+            // если домен сервера сделавшего запрос !не содержит имя старого хоста
+            if (req.headers.origin.indexOf(oldHost) === -1) { 
+                await tokenService.saveToken(userDto.id, tokens.refreshToken);
+                res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true})
+            }
             
             return res.json({token: tokens.accessToken})
-            
-            // return res.json({...tokens, user: userDto})
-            // return res.json({token})
 
         } catch (e) {
             return next(ApiError.badRequest('Ошибка регистрации нового пользователя!!!'));
@@ -72,17 +58,18 @@ class UserController {
             if (!comparePassword) {
                 return next(ApiError.internal('Указан неверный пароль'))
             }
-            // const token = generateJwt(user.id, user.email, user.role, user.isActivated)
 
             const userDto = new UserDto(user); // id, email, role, isActivated
             const tokens = tokenService.generateTokens({...userDto});
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
-            res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true}) 
+            
+            // если домен сервера сделавшего запрос !не содержит имя старого хоста
+            if (req.headers.origin.indexOf(oldHost) === -1) { 
+                await tokenService.saveToken(userDto.id, tokens.refreshToken);
+                res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true}) 
+            }
             
             return res.json({token: tokens.accessToken})
 
-            // return res.json({token})
         } catch (e) {
             return next(ApiError.badRequest('Ошибка входа! ' + e));
         }
@@ -129,9 +116,7 @@ class UserController {
         try {
             const {refreshToken} = req.cookies;
 
-            // const userData = await userService.refresh(refreshToken);
             if (!refreshToken) {
-                // throw ApiError.UnauthorizedError();
                 return next(ApiError.unauthorized("Нет refresh токена!"));
             }
 
@@ -149,12 +134,12 @@ class UserController {
     
             await tokenService.removeToken(refreshToken);
 
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
-            // return {...tokens, user: userDto}
+            // если домен сервера сделавшего запрос !не содержит имя старого хоста
+            if (req.headers.origin.indexOf(oldHost) === -1) { 
+                await tokenService.saveToken(userDto.id, tokens.refreshToken)
+                res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true})
+            }
 
-            res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true})
-
-            // return res.json(userData);
             return res.json({token: tokens.accessToken})
 
         }catch(e) {
