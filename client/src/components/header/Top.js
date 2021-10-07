@@ -1,9 +1,10 @@
 import React from 'react'
-import { Row, Col } from 'react-bootstrap'
-// import { NavLink } from 'react-router-dom'
 
 import { Container, NavLink } from '../myBootstrap'
-import { ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, WARRANTY_ROUTE } from '../../utils/consts'
+import { 
+    ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, 
+    CONTACTS_ROUTE, SPECIALS_ROUTE, SUPPORT_ROUTE 
+} from '../../utils/consts'
 
 import './Top.css'
 import Search from '../search/Search'
@@ -45,10 +46,10 @@ const Top = () => {
                             </strong>
                             <strong className="TopLinkStrong">
                                 <NavLink
-                                    className="NavLink NavLink_Top"
-                                    to={WARRANTY_ROUTE}
+                                    className="NavLink NavLink_Top_Specials"
+                                    to={SPECIALS_ROUTE}
                                 >
-                                    Гарантия и сервис
+                                    Акции
                                 </NavLink>
                             </strong>
                             <strong className="TopLinkStrong">
@@ -61,10 +62,10 @@ const Top = () => {
                             </strong>
                             <strong className="TopLinkStrong">
                                 <NavLink
-                                    className="NavLink NavLink_Top_Specials"
-                                    to={SPECIALS_ROUTE}
+                                    className="NavLink NavLink_Top"
+                                    to={SUPPORT_ROUTE}
                                 >
-                                    Акции
+                                    Тех. поддержка
                                 </NavLink>
                             </strong>
 					    </div>

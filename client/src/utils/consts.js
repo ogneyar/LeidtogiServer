@@ -11,6 +11,7 @@ export const SEARCH_ROUTE = '/search' // поиск
 export const ERROR_ROUTE = '/error' // ошибка
 export const PARSER_ROUTE = '/parser' // парсер HTML
 export const CONFIRM_ROUTE = '/confirmation' // подтверждение почты пользователя
+export const SUPPORT_ROUTE = '/support' // тех.поддержка
 
 // отдел Информация
 export const ABOUT_US_ROUTE = '/about_us' // о нас

@@ -4,7 +4,7 @@ import React from 'react'
 import { NavLink } from '../myBootstrap'
 import {    
     ABOUT_US_ROUTE, DELIVERY_ROUTE, PAYMENT_ROUTE, PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE,
-    TERMS_OF_USE_ROUTE, WARRANTY_ROUTE
+    TERMS_OF_USE_ROUTE, WARRANTY_ROUTE, SPECIALS_ROUTE, SUPPORT_ROUTE
 } from '../../utils/consts'
 
 import './FooterInformation.css'
@@ -19,20 +19,12 @@ const FooterInformation = () => {
 			</div>
             <div className="footer-static-content">
                 <ul className="togle-footer">
-                    <li>   
-                        <NavLink
-                            className="NavLink Footer_NavLink Footer_NavLink_Info"
-                            to={ABOUT_US_ROUTE}
-                        >
-                            О нас
-                        </NavLink>
-                    </li>
                     <li>
                         <NavLink
                             className="NavLink Footer_NavLink Footer_NavLink_Info"
-                            to={DELIVERY_ROUTE}
+                            to={SPECIALS_ROUTE}
                         >
-                            Доставка
+                            Акции
                         </NavLink>
                     </li>
                     <li>
@@ -46,9 +38,25 @@ const FooterInformation = () => {
                     <li>
                         <NavLink
                             className="NavLink Footer_NavLink Footer_NavLink_Info"
-                            to={PRIVACY_POLICY_ROUTE}
+                            to={DELIVERY_ROUTE}
                         >
-                            Политика конфиденциальности
+                            Доставка
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            className="NavLink Footer_NavLink Footer_NavLink_Info"
+                            to={ABOUT_US_ROUTE}
+                        >
+                            О компании
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            className="NavLink Footer_NavLink Footer_NavLink_Info"
+                            to={SUPPORT_ROUTE}
+                        >
+                            Тех. поддержка
                         </NavLink>
                     </li>
                     <li>
@@ -62,17 +70,25 @@ const FooterInformation = () => {
                     <li>
                         <NavLink
                             className="NavLink Footer_NavLink Footer_NavLink_Info"
-                            to={TERMS_OF_USE_ROUTE}
+                            to={WARRANTY_ROUTE}
                         >
-                            Пользовательское соглашение
+                            Гарантия и Сервис
                         </NavLink>
                     </li>
                     <li>
                         <NavLink
                             className="NavLink Footer_NavLink Footer_NavLink_Info"
-                            to={WARRANTY_ROUTE}
+                            to={PRIVACY_POLICY_ROUTE}
                         >
-                            Гарантия и Сервисы
+                            Политика конфиденциальности
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            className="NavLink Footer_NavLink Footer_NavLink_Info"
+                            to={TERMS_OF_USE_ROUTE}
+                        >
+                            Пользовательское соглашение
                         </NavLink>
                     </li>
                 </ul>
