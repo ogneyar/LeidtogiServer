@@ -23,6 +23,9 @@ module.exports = function (req, res, next) {
         // const decoded = jwt.verify(token, process.env.SECRET_KEY)
         // const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
 
+        // const { exp } = jwt.decode(token)
+        // console.log(exp * 1000 - Date.now());
+
         const userData = tokenService.validateAccessToken(token);
         if (!userData) {
             return next(ApiError.unauthorized("Не авторизован!!"));

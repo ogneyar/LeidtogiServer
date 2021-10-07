@@ -45,7 +45,7 @@ ProductSize.belongsTo(Product)
 Category.belongsToMany(Brand, {through: CategoryBrand})
 Brand.belongsToMany(Category, {through: CategoryBrand})
 
-User.hasOne(Token)
+User.hasMany(Token)
 Token.belongsTo(User)
 
 User.hasMany(Delivery)

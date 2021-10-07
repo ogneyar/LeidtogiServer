@@ -16,11 +16,11 @@ const NavBar = observer(() => {
     const { user } = useContext(Context)
     const history = useHistory()
 
-    const logOut = () => {
+    const onClickLogoutButton = () => {
         user.setUser({})
         user.setIsAuth(false)
-        // localStorage.removeItem('token')
-        console.log(logout());
+        // localStorage.removeItem('token') 
+        logout()
         history.push(LOGIN_ROUTE)
     }
 
@@ -95,7 +95,7 @@ const NavBar = observer(() => {
                                     
                                     <Button 
                                         variant={'outline-light'} 
-                                        onClick={logOut} 
+                                        onClick={onClickLogoutButton} 
                                         className="ml-2"
                                     >
                                         Выйти

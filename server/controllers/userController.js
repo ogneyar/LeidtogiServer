@@ -17,8 +17,15 @@ const UserDto = require('../dtos/userDto');
 //     )
 // }
 
+const maxAge = 90 * 24 * 60 * 60 * 1000 // 90 дней
 
 class UserController {
+    
+    // public maxAge = 90 * 24 * 60 * 60 * 1000
+
+    // constructor() {
+    //     this.maxAge = 90 * 24 * 60 * 60 * 1000 // 90 дней
+    // }
 
     async registration(req, res, next) {
         try {
@@ -42,7 +49,7 @@ class UserController {
             const tokens = tokenService.generateTokens({...userDto});
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
             
-            res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true}) // 30 дней
+            res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true})
             
             return res.json({token: tokens.accessToken})
             
@@ -71,7 +78,7 @@ class UserController {
             const tokens = tokenService.generateTokens({...userDto});
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
-            res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true}) // 30 дней
+            res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true}) 
             
             return res.json({token: tokens.accessToken})
 
@@ -85,7 +92,7 @@ class UserController {
         try {
             const {refreshToken} = req.cookies;
             // console.log("refreshToken",refreshToken);
-            const token = await tokenService.removeToken(refreshToken);
+            const token = await tokenService.removeToken(refreshToken); 
 
             res.clearCookie('refreshToken');
             return res.json(token);
@@ -95,23 +102,6 @@ class UserController {
         }
     }
 
-    // async auth(req, res, next) {
-    //     try {
-    //         // const token = generateJwt(req.user.id, req.user.email, req.user.role, req.user.isActivated)
-
-    //         const userDto = new UserDto(req.user); // id, email, role, isActivated
-    //         const tokens = tokenService.generateTokens({...userDto});
-    //         await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
-    //         res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true}) // 30 дней
-            
-    //         return res.json({token: tokens.accessToken})
-
-    //         // return res.json({token})
-    //     }catch(e) {
-    //         next(ApiError.badRequest('Ошибка аутентификации!'));
-    //     }
-    // }
 
     async info(req, res, next) {
         try {
@@ -157,10 +147,12 @@ class UserController {
             const userDto = new UserDto(user);
             const tokens = tokenService.generateTokens({...userDto});
     
+            await tokenService.removeToken(refreshToken);
+
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
             // return {...tokens, user: userDto}
 
-            res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+            res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true})
 
             // return res.json(userData);
             return res.json({token: tokens.accessToken})
