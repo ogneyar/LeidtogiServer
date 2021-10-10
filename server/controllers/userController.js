@@ -63,7 +63,7 @@ class UserController {
             const tokens = tokenService.generateTokens({...userDto});
             
             // если домен сервера сделавшего запрос !не содержит имя старого хоста
-            if (req.headers.origin.indexOf(oldHost) === -1) { 
+            if (req.headers.origin !== undefined && req.headers.origin.indexOf(oldHost) === -1) { 
                 await tokenService.saveToken(userDto.id, tokens.refreshToken);
                 res.cookie('refreshToken', tokens.refreshToken, {maxAge, httpOnly: true}) 
             }

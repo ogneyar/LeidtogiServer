@@ -7,6 +7,7 @@ const userRouter = require('./userRouter')
 const ratingRouter = require('./ratingRouter')
 const parserRouter = require('./parserRouter')
 const deliveryRouter = require('./deliveryRouter')
+const testRouter = require('./testRouter')
 
 
 router.use('/user', userRouter)
@@ -16,5 +17,8 @@ router.use('/product', productRouter)
 router.use('/rating', ratingRouter)
 router.use('/parser', parserRouter)
 router.use('/delivery', deliveryRouter)
+
+router.use('/test', testRouter)
+
 
 module.exports = router
