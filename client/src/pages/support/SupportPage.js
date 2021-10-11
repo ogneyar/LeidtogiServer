@@ -35,22 +35,25 @@ const SupportPage = observer(() => {
 
                 {!info.name
                 ?
-                <div>
-                    <p>Для обращения в тех. поддержку необходимо&nbsp;
-                    <NavLink
-                        className="NavLink"
-                        to={LOGIN_ROUTE}
-                    >
-                        войти
-                    </NavLink>
-                    &nbsp;или&nbsp;
-                    <NavLink
-                        className="NavLink"
-                        to={REGISTRATION_ROUTE}
-                    >
-                        зарегистрироваться
-                    </NavLink>
-                    !</p>
+                <div className="SupportPageBody">
+                    <p>Для обращения в тех. поддержку</p>
+                    <p>необходимо&nbsp;
+                        <NavLink
+                            className="NavLink"
+                            to={LOGIN_ROUTE}
+                        >
+                            войти
+                        </NavLink>
+                    </p>
+                    <p>&nbsp;или&nbsp;
+                        <NavLink
+                            className="NavLink"
+                            to={REGISTRATION_ROUTE}
+                        >
+                            зарегистрироваться
+                        </NavLink>
+                        !
+                    </p>
                 </div>
                 :
                     <div>Здравствуйте {info.name}!</div>
