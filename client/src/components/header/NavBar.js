@@ -65,7 +65,7 @@ const NavBar = observer(() => {
                                 <Image className="NavBar_Cart_Image" src={cart} />
                             </NavLink>
                         <Nav>
-                            {user.isAuth ?
+                            {user.isAuth && user.user?.role ?
                             
                                 <>
                                     {user.user?.role === 'ADMIN' ?

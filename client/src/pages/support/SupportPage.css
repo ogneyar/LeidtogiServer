@@ -12,6 +12,22 @@
     text-align: center;
 }
 
-.SupportPageBody {
-    /* margin: 0 15px; */
+.SupportPageBody p {
+    font-size: 20px;
+}
+
+.SupportPageBody textarea {
+    padding: 0 5px;
+}
+
+@media(max-width: 600px) {
+    .SupportPageBody textarea {
+        width: 300px;
+    }
+}
+
+@media(max-width: 400px) {
+    .SupportPageBody textarea {
+        width: 250px;
+    }
 }

@@ -18,17 +18,19 @@ const Button = (props) => {
 
     return (
         <button 
-            type={props?.type}			
-            checked={props?.checked}
+            {...props}
+            // type={props?.type}			
+            // checked={props?.checked}
             className={className}
-            style={props?.style}
-            value={props?.value}
-            readOnly={props?.readOnly}
-            id={props?.id}
-            onChange={props?.onChange}
-            onClick={props?.onClick}
-            title={props?.title}
-            placeholder={props?.placeholder}
+            // style={props?.style}
+            // value={props?.value}
+            // readOnly={props?.readOnly}
+            // id={props?.id}
+            // onChange={props?.onChange}
+            // onClick={props?.onClick}
+            // title={props?.title}
+            // placeholder={props?.placeholder}
+            
         >
 
             {props?.children}
