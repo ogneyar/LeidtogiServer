@@ -1,5 +1,6 @@
 import AdminPage from '../pages/admin/AdminPage'
 import ParserPage from '../pages/parser/ParserPage'
+import TesterPage from '../pages/tester/TesterPage'
 import LkPage from '../pages/lk/LkPage'
 
 import LoginPage from '../pages/login/LoginPage'
@@ -25,7 +26,7 @@ import Specials from '../pages/info/Specials'
 import DeletePage from '../pages/site/DeletePage'
 
 import {
-    ADMIN_ROUTE, PARSER_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, 
+    ADMIN_ROUTE, PARSER_ROUTE, TESTER_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, 
     PRODUCT_ROUTE, LK_ROUTE, CONFIRM_ROUTE, SEARCH_ROUTE, ERROR_ROUTE, ABOUT_US_ROUTE, 
     DELIVERY_ROUTE, PAYMENT_ROUTE, PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE, 
     TERMS_OF_USE_ROUTE, WARRANTY_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, DELETE_ROUTE,
@@ -40,6 +41,10 @@ export const authRoutes = [
     {
         path: PARSER_ROUTE,
         Component: ParserPage
+    },
+    {
+        path: TESTER_ROUTE,
+        Component: TesterPage
     },
     {
         path: LK_ROUTE,

@@ -16,4 +16,8 @@ router.get('/xlsx', parserController.parseXLSX)
 router.get('/mail.ru', parserController.mailRu)
 router.get('/ya.ru', parserController.yaRu)
 
+router.get('/husqvarna_get_image', parserController.husqvarnaGetImage)
+router.get('/husqvarna_get_charcteristic', parserController.husqvarnaGetCharcteristic)
+
+
 module.exports = router

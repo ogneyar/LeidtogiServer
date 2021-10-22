@@ -34,3 +34,13 @@ export const fetchParserMailRu = async (email) => {
     const {data} = await $host.get('api/parser/mail.ru', {params: {email}})
     return data
 }
+
+export const fetchHusqvarnaGetImage = async (article) => {
+    const {data} = await $host.get('api/parser/husqvarna_get_image', {params: {article}})
+    return data
+}
+
+export const fetchHusqvarnaGetCharcteristic = async (article) => {
+    const {data} = await $host.get('api/parser/husqvarna_get_charcteristic', {params: {article}})
+    return data
+}

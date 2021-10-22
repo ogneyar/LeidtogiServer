@@ -17,6 +17,9 @@ const getAllData = require('../service/parser/getAllData.js')
 // const createProduct = require('../service/product/createProduct.js')
 const addNewProduct = require('../service/xlsx/addNewProduct')
 
+const getLink = require('../service/parser/husqvarna/getLink')
+const getImage = require('../service/parser/husqvarna/getImage')
+
 
 class parserController {
 
@@ -296,6 +299,66 @@ class parserController {
             return next(ApiError.badRequest('Ошибка метода yaRu!'));
         }
     }
+    
+    async husqvarnaGetImage(req, res, next) {
+        try {
+            let { article } = req.query // 9678968-01
+            let response, link
+            await axios.get("http://shop.plus-kpd.ru/search/index.php", { params: { q: article } })
+                .then(res => response = res.data)
+                .catch(err => response = {error:err})
+            
+            if (response.error !== undefined) return res.json(response.error)
+            
+            link = getLink(response)
+            if (link.message !== undefined) {
+                await axios.get("http://shop.plus-kpd.ru" + link.message)
+                .then(res => response = res.data)
+                .catch(err => response = err)
+            }
+            
+            if (response.error !== undefined) return res.json(response.error)
+
+            link = getImage(response)
+            if (link.message !== undefined) return res.json("http://shop.plus-kpd.ru" + link.message)
+
+            return res.json(response)
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода husqvarna!'));
+        }
+    }
+
+    async husqvarnaGetCharcteristic(req, res, next) {
+        try {
+            let { article } = req.query // 9678968-01
+            let response, link
+            await axios.get("http://shop.plus-kpd.ru/search/index.php", { params: { q: article } })
+                .then(res => response = res.data)
+                .catch(err => response = {error:err})
+            
+            if (response.error !== undefined) return res.json(response.error)
+            
+            return res.json(response)
+            
+            link = getLink(response)
+            if (link.message !== undefined) {
+                await axios.get("http://shop.plus-kpd.ru" + link.message)
+                .then(res => response = res.data)
+                .catch(err => response = err)
+            }
+            
+            if (response.error !== undefined) return res.json(response.error)
+
+            link = getImage(response)
+            if (link.message !== undefined) return res.json("http://shop.plus-kpd.ru" + link.message)
+
+            return res.json(response)
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода husqvarna!'));
+        }
+    }
+
+
 }
 
 module.exports = new parserController()

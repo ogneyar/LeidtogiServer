@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import env from 'react-dotenv'
+// import env from 'react-dotenv'
 import axios from 'axios'
 import $ from 'jquery'
 
@@ -24,6 +24,8 @@ const SupportPage = observer(() => {
     const [ loading, setLoading ] = useState(true)
     const [ showAlert, setShowAlert ] = useState(false)
 
+    const BOT_TOKEN = process.env.REACT_APP_BOT_TOKEN
+
     useEffect(() => {
         if (user.user?.id) {
             setInfo(user.user)
@@ -38,7 +40,7 @@ const SupportPage = observer(() => {
             $('html, body').animate({scrollTop: 0}, 700, function(){})
             // текст сообщения
             let text = encodeURI(`${info?.email}\n\n${value}`)
-            let url = `https://api.telegram.org/bot${env?.BOT_TOKEN}/sendMessage?chat_id=1038937592&text=${text}`
+            let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=1038937592&text=${text}`
             axios.get(url).then(data => {
                 if (data?.data?.ok) {
                     setLoading(false)

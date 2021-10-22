@@ -74,6 +74,8 @@ const Admin = observer(() => {
                 Редактор брендов
             </Button>
 
+            {user.user?.id === 1 && <hr/>}
+            
             {user.user?.id === 1 
             ?
                 <Button 
@@ -82,6 +84,19 @@ const Admin = observer(() => {
                     onClick={() => history.push("/parser")}
                 >
                     Парсер
+                </Button>
+            : null}
+
+            {user.user?.id === 1 && <hr/>}
+
+            {user.user?.id === 1 
+            ?
+                <Button 
+                    variant={"outline-dark"} 
+                    className="m-3 p-2 Admin_button"
+                    onClick={() => history.push("/tester")}
+                >
+                    Тестер
                 </Button>
             : null}
 
