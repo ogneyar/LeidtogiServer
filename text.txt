@@ -1,5 +1,3 @@
 killall -2 node
 
 killall -2 "Passenger NodeApp"
-
-REACT_APP_BOT_TOKEN
