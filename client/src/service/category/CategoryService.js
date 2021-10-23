@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react-lite'
 import { ListGroup } from 'react-bootstrap'
-import { NavLink } from 'react-router-dom'
+// import { NavLink } from 'react-router-dom'
 
 import CategoryItemService from './CategoryItemService'
-import { SHOP_ROUTE } from '../../utils/consts'
+// import { SHOP_ROUTE } from '../../utils/consts'
 // import { NavLink } from '../myBootstrap'
 
 import { Context } from '../..'

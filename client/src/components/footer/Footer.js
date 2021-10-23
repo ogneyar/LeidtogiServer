@@ -1,8 +1,7 @@
 import React from 'react'
-import { Container, Navbar, Row, Col } from 'react-bootstrap'
+import { Container, Navbar } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-// import { Container } from '../myBootstrap'
 import FooterLogo from './FooterLogo'
 import FooterInformation from './FooterInformation'
 import FooterSocialNetwork from './FooterSocialNetwork'

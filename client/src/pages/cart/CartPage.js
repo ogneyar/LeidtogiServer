@@ -15,6 +15,7 @@ const Cart = () => {
     let cart
 
     useEffect(() => {
+        // eslint-disable-next-line
         cart = localStorage.getItem('cart')
         if (cart) {
             cart = JSON.parse(cart)

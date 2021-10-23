@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Pagination } from 'react-bootstrap'
 import uuid from 'react-uuid'

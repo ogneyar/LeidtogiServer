@@ -8,7 +8,7 @@ import Header from './components/header/Header'
 import Footer from './components/footer/Footer'
 import Loading from './components/Loading'
 import Error from './pages/error/ErrorPage'
-import { auth, getUserInfo } from './http/userAPI'
+import { getUserInfo } from './http/userAPI'
 import { fetchAllProducts } from './http/productAPI'
 import { fetchAllCategories } from './http/categoryAPI'
 import { fetchBrands } from './http/brandAPI'
@@ -22,22 +22,12 @@ const App = observer(() => {
 
     const { user, product, category, brand } = useContext(Context)
     const [loading, setLoading] = useState(false)
+    // eslint-disable-next-line
     const [error, setError] = useState(false)
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
             setLoading(true)
-            // auth().then( 
-            //     data => {
-            //         if (data?.id) {
-            //             user.setIsAuth(true)
-            //         }
-            //     },
-            //     err => {
-            //         if (err.response?.status !== 401) setError(true)
-            //         // console.log(err.response?.data?.message)
-            //     })
-            //     .finally(() => setLoading(false))
             getUserInfo()
                 .then(
                     data => {
@@ -65,7 +55,7 @@ const App = observer(() => {
         fetchBrands()
             .then(data => brand.setAllBrands(data),
                 err => console.log(err))
-  }, [])
+  }, [brand, category, product, user])
 
   
   if (loading) return <Loading />

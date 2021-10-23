@@ -2,8 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { Button, Form, Dropdown, Image } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct, updateProductOnArticle } from '../../../http/productAPI'
-import { fetchParserImages, fetchParserSizes, fetchParserAll } from '../../../http/paserAPI'
+import { createProduct, fetchAllProducts, updateAllProduct, deleteProduct } from '../../../http/productAPI'
+import { fetchParserAll } from '../../../http/paserAPI'
 import { Context } from '../../..'
 
 import Size from './Size'
@@ -51,6 +51,7 @@ const ProductService = observer((props) => {
         if (category.allCategories.length) {
             category.setCategories(category.allCategories)
         }
+        // eslint-disable-next-line
     },[category.allCategories])
 
     
@@ -59,6 +60,7 @@ const ProductService = observer((props) => {
             brand.setBrands(brand.allBrands)
             brand.setSelectedBrand(brand.allBrands[0])
         }
+        // eslint-disable-next-line
     },[brand.allBrands])
 
     useEffect(() => {
@@ -88,6 +90,7 @@ const ProductService = observer((props) => {
             if (!yes) array.push({title: "description", body:description})
             setInfo(array)
         }
+        // eslint-disable-next-line
     },[description])
 
     useEffect(() => {
@@ -103,6 +106,7 @@ const ProductService = observer((props) => {
             if (!yes) array.push({title: "characteristics", body:characteristics})
             setInfo(array)
         }
+        // eslint-disable-next-line
     },[characteristics])
 
     useEffect(() => {
@@ -118,6 +122,7 @@ const ProductService = observer((props) => {
             if (!yes) array.push({title: "equipment", body:equipment})
             setInfo(array)
         }
+        // eslint-disable-next-line
     },[equipment])
     
     useEffect(() => {
@@ -238,6 +243,7 @@ const ProductService = observer((props) => {
                         {reItemCategory(i.id, offset + "-- ")}
                     </div>
                 )
+            else return null
         })
     }
 

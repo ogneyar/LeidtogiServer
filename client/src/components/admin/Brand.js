@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import {Modal, Button} from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { fetchBrands } from '../../http/brandAPI'
+// import { fetchBrands } from '../../http/brandAPI'
 import BrandService from '../../service/admin/BrandService'
 import { Context } from '../../index'
 

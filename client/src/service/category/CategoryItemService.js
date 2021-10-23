@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
-import { NavLink, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import $ from 'jquery'
 
 import { Context } from '../..'
-// import { NavLink } from '../myBootstrap'
 import './CategoryService.css'
 
 
@@ -46,20 +45,16 @@ const CategoryItemService = observer((props) => {
                     props.funcOnClick(props?.item)
                     history.push(props?.item?.url)
                     onClickListItem()
-                    // if (props?.item?.is_product) {
-                        if (window.innerWidth > 991) {
-                            // window.scrollTo(0,260)
-                            $('html, body').animate(
-                                {
-                                    scrollTop: 240
-                                    // scrollTop: e.pageY
-                                    // scrollTop: e.screenY
-                                }, 
-                                700, 
-                                function(){}
-                            )
-                        }else if (props?.item?.is_product) props?.onHide()
-                    // }
+                    if (window.innerWidth > 991) {
+                        // window.scrollTo(0,260)
+                        $('html, body').animate(
+                            {
+                                scrollTop: 240
+                            }, 
+                            700, 
+                            function(){}
+                        )
+                    }else if (props?.item?.is_product) props?.onHide()
                 }}
                 key={props?.item?.id}
             >

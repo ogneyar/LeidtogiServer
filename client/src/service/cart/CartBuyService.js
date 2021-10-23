@@ -1,4 +1,4 @@
-import Notification from "../../components/myBootstrap/Notification"
+// import Notification from "../../components/myBootstrap/Notification"
 import { fetchProductSizes } from "../../http/productAPI"
 
 export const onClickButtonBuy = async (e, product) => {

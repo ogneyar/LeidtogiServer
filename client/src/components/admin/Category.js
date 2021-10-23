@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {Modal, Button} from 'react-bootstrap'
 import { Context } from '../..'
-import { fetchCategories } from '../../http/categoryAPI'
+// import { fetchCategories } from '../../http/categoryAPI'
 import { observer } from 'mobx-react-lite'
 import CategoryService from '../../service/admin/category/CategoryService'
 import './Category.css'

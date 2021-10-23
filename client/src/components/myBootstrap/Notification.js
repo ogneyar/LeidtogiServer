@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import {Modal, Button} from 'react-bootstrap'
+import React, { useEffect } from 'react'
+import { Modal } from 'react-bootstrap'
 
 
 const Notification = (props) => {
@@ -13,6 +13,7 @@ const Notification = (props) => {
                 props.onHide()
             },time)
         }
+    // eslint-disable-next-line
     },[props.show])
 
 

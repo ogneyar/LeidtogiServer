@@ -1,8 +1,8 @@
-import React, { useEffect, useContext, useState, useMemo } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Container } from 'react-bootstrap'
-import { useHistory, useParams } from 'react-router-dom'
+// import { useHistory, useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import { useQueryParam, NumberParam, StringParam } from 'use-query-params';
+import { useQueryParam, StringParam } from 'use-query-params';
 
 import BrandBar from '../../components/brand/BrandBar'
 import CategoryBar from '../../components/category/CategoryBar'
@@ -10,7 +10,7 @@ import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/Pagination'
 import Filter from '../../components/filter/Filter'
 import Loading from '../../components/Loading'
-import Search from '../../components/search/Search'
+// import Search from '../../components/search/Search'
 
 import { Context } from '../..'
 
@@ -22,7 +22,7 @@ const SearchPage = observer(() => {
     const [ loadingCategory, setLoadingCategory ] = useState(true)
     const [ loadingBrand, setLoadingBrand ] = useState(true)
     const [ loadingProduct, setLoadingProduct ] = useState(false)
-
+    // eslint-disable-next-line
     const [value, setValue] = useQueryParam('value', StringParam)
 
     // const history = useHistory()
@@ -42,6 +42,7 @@ const SearchPage = observer(() => {
             product.setTotalCount(length)
             setLoadingProduct(false)
         }
+        // eslint-disable-next-line
     },[product.allProducts, value])
 
     useEffect(() => {
@@ -50,6 +51,7 @@ const SearchPage = observer(() => {
             category.setSelectedCategory({})
             setLoadingCategory(false)
         }
+        // eslint-disable-next-line
     },[category.allCategories])
 
     useEffect(() => {
@@ -57,6 +59,7 @@ const SearchPage = observer(() => {
             brand.setBrands(brand.allBrands)
             setLoadingBrand(false)
         }
+        // eslint-disable-next-line
     },[brand.allBrands])
 
 

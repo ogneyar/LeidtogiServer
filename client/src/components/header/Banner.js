@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
+
 import './Banner.css'
 
-
 const $ = require( "jquery" )
-
 
 const Banner = () => {
 
@@ -16,6 +15,7 @@ const Banner = () => {
     
     }, [])
 
+    // eslint-disable-next-line
     function jqueryNivoSlider() {
         $('#oc-inivoslider').nivoSlider({
             effect: 'sliceDown',

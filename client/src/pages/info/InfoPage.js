@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Card, Row, Col } from 'react-bootstrap'
+import { Container, Card } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { SHOP_ROUTE } from '../../utils/consts'
 import './InfoPage.css'

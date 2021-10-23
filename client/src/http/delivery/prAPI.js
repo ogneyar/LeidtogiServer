@@ -3,7 +3,9 @@ import axios from 'axios'
 
 export const fetchPochta = async (from, to, weight, pack, date, time, service) => {
 
+    // eslint-disable-next-line
     let urlTariff = "https://delivery.pochta.ru/v2/calculate/tariff" // расчёт тарифа
+    // eslint-disable-next-line
     let urlDelivery = "https://delivery.pochta.ru/v2/calculate/delivery" // расчёт срока доставки
     let url = "https://delivery.pochta.ru/v2/calculate/tariff/delivery" // расчёт тарифа и срока доставки
 

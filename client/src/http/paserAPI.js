@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { $host, $authHost } from './index'
 
 

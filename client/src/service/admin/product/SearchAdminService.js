@@ -36,6 +36,7 @@ const SearchAdminService = observer((props) => {
         if (!loading && article !== "") {
             setSearch(product.allProducts.filter(i => i.article.includes(article)))
         }else setSearch([])
+        // eslint-disable-next-line
     },[article])
 
     

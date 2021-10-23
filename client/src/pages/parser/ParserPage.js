@@ -1,11 +1,14 @@
+// eslint-disable-next-line
 import React, { useEffect, useState, useContext } from 'react'
 import ReactHtmlParser from 'react-html-parser'
-import uuid from 'react-uuid'
+// import uuid from 'react-uuid'
 
-import { fetchParserImages, fetchParserSizes, fetchParserAll, fetchParserMailRu, fetchParser } from '../../http/paserAPI';
-import { updateProductOnArticle, fetchAllProducts, fetchProductSizes, updateProductSizes } from '../../http/productAPI';
-import InfoPage from '../info/InfoPage';
-import { Context } from '../..'
+import { 
+    // fetchParserImages, fetchParserSizes, fetchParserAll, fetchParserMailRu, 
+    fetchParser } from '../../http/paserAPI';
+// import { updateProductOnArticle, fetchAllProducts, fetchProductSizes, updateProductSizes } from '../../http/productAPI';
+// import InfoPage from '../info/InfoPage';
+// import { Context } from '../..'
 import Loading from '../../components/Loading';
 import { observer } from 'mobx-react-lite';
 
@@ -109,10 +112,12 @@ const ParserPage = observer(() => {
         let mess = ""
         for(let i = Number(valueBefore); i < Number(valueAfter); i=i+Number(value)) {
             await fetchParser(brand, i, value)
+                // eslint-disable-next-line
                 .then(data => {
                     mess += data
                 })
-                .finally(data => {
+                // eslint-disable-next-line
+                .finally(() => {
                     setMessage(mess)
                 })
         }

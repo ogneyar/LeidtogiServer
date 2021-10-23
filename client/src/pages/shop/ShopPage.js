@@ -1,10 +1,10 @@
-import React, { useEffect, useContext, useState, useMemo } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
 import CategoryBar from '../../components/category/CategoryBar'
-import BrandBar from '../../components/brand/BrandBar'
+// import BrandBar from '../../components/brand/BrandBar'
 import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/Pagination'
 import Filter from '../../components/filter/Filter'
@@ -16,10 +16,10 @@ import './ShopPage.css'
 
 const Shop = observer(() => {
 
-    const { product, category, brand, user } = useContext(Context)
+    const { product, category, brand } = useContext(Context)
 
     const [ loadingCategory, setLoadingCategory ] = useState(true)
-    const [ loadingBrand, setLoadingBrand ] = useState(true)
+    // const [ loadingBrand, setLoadingBrand ] = useState(true)
     const [ loadingProduct, setLoadingProduct ] = useState(true)
 
     const { name } = useParams()
@@ -145,20 +145,17 @@ const Shop = observer(() => {
     
             }
         }
-
+    // eslint-disable-next-line
     },[product.allProducts, category.allCategories, name])
 
     useEffect(() => {
         if (brand.allBrands.length) {
             brand.setBrands(brand.allBrands)
-            setLoadingBrand(false)
+            // setLoadingBrand(false)
         }
+        // eslint-disable-next-line
     },[brand.allBrands])
 
-
-    // useEffect(() => {
-    //     console.log(user);
-    // },[user])
 
 
     return (

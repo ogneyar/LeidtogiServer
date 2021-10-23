@@ -45,6 +45,7 @@ const RegistrationPage = observer(() => {
         }else {
             setInfo({...info,role:"USER"})
         }
+    // eslint-disable-next-line
     },[checked])
 
     const click = async () => {
@@ -83,7 +84,7 @@ const RegistrationPage = observer(() => {
         let val = e.target.value
         let offset = 0
         let start = e.target.selectionStart
-        let end = e.target.selectionEnd
+        // let end = e.target.selectionEnd
         let length = val.length
         let lastLength = info.phone.length
 
@@ -135,6 +136,7 @@ const RegistrationPage = observer(() => {
               
                     case 1:
                         if (lastLength < length) offset = 1
+                    // eslint-disable-next-line
                     case 2:
                     case 3:
                         if (lastLength > length && numberLength === 3) offset = -1

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Card, Col, Container, Image, Row } from 'react-bootstrap'
+import { Card, Container, Image, Row } from 'react-bootstrap'
 import { useParams, useHistory } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import ReactHtmlParser from 'react-html-parser'
@@ -55,6 +55,7 @@ const ProductPage =  observer(() => {
                 setError(true)
             })
             .finally(() => setLoading(false))
+    // eslint-disable-next-line
     },[id])
     
 

@@ -6,7 +6,7 @@ import Loading from '../../components/Loading'
 import InfoPage from '../info/InfoPage'
 import LoginPage from '../login/LoginPage'
 import Error from '../error/ErrorPage'
-import { updateUser, activate } from '../../http/userAPI'
+import { activate } from '../../http/userAPI'
 import { Context } from '../..'
 
 import './ConfirmPage.css'
@@ -42,6 +42,7 @@ const ConfirmPage = observer(() => {
             // console.log("activationLink", user.user?.activationLink)
             // console.log("isActivated",user.user?.isActivated)
         }
+    // eslint-disable-next-line
     },[user.user?.id])
 
 

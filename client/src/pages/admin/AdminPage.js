@@ -26,6 +26,7 @@ const Admin = observer(() => {
             product.setProducts(product.allProducts)
             product.setTotalCount(product.allProducts.length)
         }
+    // eslint-disable-next-line
     },[product.allProducts])
 
     useEffect(() => {
@@ -33,6 +34,7 @@ const Admin = observer(() => {
             category.setCategories(category.allCategories)
             category.setSelectedCategory({})
         }
+    // eslint-disable-next-line
     },[category.allCategories])
 
     useEffect(() => {
@@ -40,6 +42,7 @@ const Admin = observer(() => {
             brand.setBrands(brand.allBrands)
             brand.setSelectedBrand({})
         }
+    // eslint-disable-next-line
     },[brand.allBrands])
 
     const [categoryVisible, setCategoryVisible] = useState(false)

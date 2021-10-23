@@ -24,6 +24,7 @@ const Rating = observer((props) => {
         fetchRating(user.user.id, props?.product.id).then(data => {
             if (data?.rate) setRate(data?.rate)
         })
+    // eslint-disable-next-line
     },[])
 
 

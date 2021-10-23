@@ -3,9 +3,9 @@ import { Form, Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
 import { fetchPochta } from '../../http/delivery/prAPI'
-import { fetchProductSizes } from '../../http/productAPI'
+// import { fetchProductSizes } from '../../http/productAPI'
 import getDateTime from '../../service/delivery/getDateTime'
-import getPack from '../../service/delivery/getPack'
+// import getPack from '../../service/delivery/getPack'
 import getService from '../../service/delivery/getService'
 import { Context } from '../..'
 
