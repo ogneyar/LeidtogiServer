@@ -37,13 +37,8 @@ const App = observer(() => {
                         }
                     },
                     err => console.log(err))
-                .finally(() => setLoading(false))
         }
-        
-        fetchAllProducts()
-            .then(
-                data => product.setAllProducts(data),
-                err => console.log(err))
+
         fetchAllCategories()
             .then(
                 data => category.setAllCategories(data),
@@ -52,10 +47,20 @@ const App = observer(() => {
                     console.log("Не удалось загрузить категории",err)
                     category.setAllCategories([{}])
                 })
+            .finally(() => setLoading(false))
+
+        fetchAllProducts()
+            .then(
+                data => product.setAllProducts(data),
+                err => console.log(err))
+        
         fetchBrands()
             .then(data => brand.setAllBrands(data),
                 err => console.log(err))
-  }, [brand, category, product, user])
+                
+    // eslint-disable-next-line
+    }, [])
+    // }, [brand, category, product, user])
 
   
   if (loading) return <Loading />

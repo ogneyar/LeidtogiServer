@@ -4,7 +4,8 @@ import { Pagination } from 'react-bootstrap'
 import uuid from 'react-uuid'
 import $ from 'jquery'
 
-import { Context } from '..'
+import { Context } from '../..'
+import './Pagination.css'
 
 
 const Pages = observer(() => {
@@ -48,7 +49,7 @@ const Pages = observer(() => {
     return (
         <Pagination 
             size={window.innerWidth < 430 && "sm"} 
-            className="mt-2"
+            className="Pagination mt-2"
         >
             {pages.length > 10 
             ? 

@@ -7,7 +7,7 @@ import { useQueryParam, StringParam } from 'use-query-params';
 import BrandBar from '../../components/brand/BrandBar'
 import CategoryBar from '../../components/category/CategoryBar'
 import ProductList from '../../components/product/ProductList'
-import Pagination from '../../components/Pagination'
+import Pagination from '../../components/pagination/Pagination'
 import Filter from '../../components/filter/Filter'
 import Loading from '../../components/Loading'
 // import Search from '../../components/search/Search'

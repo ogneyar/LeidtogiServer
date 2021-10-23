@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import CategoryBar from '../../components/category/CategoryBar'
 // import BrandBar from '../../components/brand/BrandBar'
 import ProductList from '../../components/product/ProductList'
-import Pagination from '../../components/Pagination'
+import Pagination from '../../components/pagination/Pagination'
 import Filter from '../../components/filter/Filter'
 import Loading from '../../components/Loading'
 

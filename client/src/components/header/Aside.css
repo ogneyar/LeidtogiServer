@@ -1,11 +1,44 @@
 .Aside {
     background-color: var(--main-orange-color);
-    width:100%;
-    height: 45px;
+    
+    /* height: 45px; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+    margin: 5px 0;
+    /* color: var(--main-white-color); */
 }
 
-@media(max-width:991px) {
+.AsideDiv {
+    width:100vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    /* background-color: green; */
+}
+
+.AsideDivNavLink {
+    border: 1px solid white;
+    padding: 0 5px;
+    border-radius: 10px;
+    margin-right: 3px;
+}
+
+@media(max-width: 575px) {
+    .Aside {
+        padding: 0 15px;
+    }
+}
+
+@media(min-width: 991px) {
+    .Aside {
+        margin: 10px 0;
+    }
+}
+
+/* @media(max-width: 991px) {
     .Aside {
         height: 15px;
     }
-}
+} */
