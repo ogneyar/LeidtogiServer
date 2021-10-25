@@ -12,10 +12,10 @@ const Contacts = () => {
                 <div
                     className="ContactsBody"
                 >
-                    <name className="ContactsBodyDiv">
+                    <div className="ContactsBodyDiv">
                         <span>Название компании:</span>
                         <label>ООО "Леидтоги"</label>
-                    </name>
+                    </div>
                     <div className="ContactsBodyDiv">
                         <span>ИНН / КПП:</span>
                         <label>0000000000 / 00000000000</label>
@@ -24,19 +24,19 @@ const Contacts = () => {
                         <span>ОГРН:</span>
                         <label>000000000000</label>
                     </div>
-                    <adress className="ContactsBodyDiv">
+                    <div className="ContactsBodyDiv">
                         <span>Адрес:</span>
                         <label>г. Курск, ул. Дмитрова, д. 33</label>
-                    </adress>
-                    <phone className="ContactsBodyDiv">
+                    </div>
+                    <div className="ContactsBodyDiv">
                         <span>Телефоны:</span>
                         <label><a href="tel:+74712510776">+7 (4712) 51-07-76</a></label>
                         <label><a href="tel:+79312607792">+7 (931) 260-77-92</a></label>
-                    </phone>
-                    <mail className="ContactsBodyDiv">
+                    </div>
+                    <div className="ContactsBodyDiv">
                         <span>Эл.Почта:</span>
                         <label><a href="mailto:info@leidtogi.ru">info@leidtogi.ru</a></label>
-                    </mail>
+                    </div>
                     <div className="ContactsBodyDiv">
                         <span>Время работы:</span>
                         <label>пн - пт: 09:00 - 20:00</label>

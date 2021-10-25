@@ -32,10 +32,19 @@ const Search = observer((props) => {
     //     }
     // },[list])
 
+    function isNumber(n){
+        // eslint-disable-next-line
+        return Number(n) == n;
+    }
+
     const onChangeSearchInputValue = (search) => {
         setValue(search)
         if (search) {
-            setList(array.filter(i => i.article.includes(search)))
+            if (isNumber(search)) {
+                setList(array.filter(i => i.article.includes(search)))
+            }else {
+                setList(array.filter(i => i.name.toLowerCase().includes(search.toLowerCase())))
+            }
         }else setList([])
     }
 

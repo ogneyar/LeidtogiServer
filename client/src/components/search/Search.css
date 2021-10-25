@@ -1,3 +1,4 @@
+
 .SearchComponent {
     display:flex; 
     justify-content:center; 
@@ -124,6 +125,7 @@
 
 @media(max-width:575px) {
     .SearchDiv {
-        width: 100vw;
+        width: 90vw;
+        /* width: 300px; */
     }
 }

@@ -1,17 +1,18 @@
 .Aside {
     background-color: var(--main-orange-color);
+    /* background-color: green; */
     
     /* height: 45px; */
     display: flex;
     flex-direction: row;
     align-items: center;
     color: white;
-    margin: 5px 0;
+    /* margin: 5px 0; */
     /* color: var(--main-white-color); */
 }
 
 .AsideDiv {
-    width:100vw;
+    /* width:100vw; */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -22,7 +23,9 @@
     border: 1px solid white;
     padding: 0 5px;
     border-radius: 10px;
-    margin-right: 3px;
+    /* margin-right: 3px; */
+    
+    margin: 5px 3px 5px 0;
 }
 
 @media(max-width: 575px) {

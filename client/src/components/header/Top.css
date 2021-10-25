@@ -1,5 +1,6 @@
 .Top {
     background-color: var(--main-silver-color);
+    /* background-color: yellow; */
 }
 
 .TopContainer {}
@@ -11,11 +12,12 @@
     
 }
 .TopCol {
-    padding: 5px 0;
+    padding: 5px 0; 
 }
 
 .TopColLink {
     width:100%;
+    margin-right: 10px;
 }
 
 .TopDivLink {
@@ -30,7 +32,7 @@
 .NavLink_Top,
 .NavLink_Top_Specials {    
     padding: 7px 5px;
-    margin-right: 10px;
+    /* margin-right: 10px; */
     border-radius: 5px;
 }
 .NavLink_Top:hover,
@@ -50,13 +52,14 @@
 
 @media(max-width: 991px) {
     .NavLink_Top_Specials {
-        margin-right: 0;
+        /* margin-right: 0; */
     }
     .TopRow {
         flex-direction: column;
     }
     .TopColLink {
         margin-top: 5px;
+        margin-right: 0;
     }
 }
 @media(max-width: 767px) {  
@@ -72,6 +75,9 @@
     .TopRow {
         padding: 0 5px;
     }
+    .TopCol {
+        padding: 5px 10px; 
+    }
     .TopColLink {
         font-size: 14px;
     }
@@ -81,7 +87,7 @@
         font-size: 13px;
     }
     .NavLink_Top,
-    .NavLink_Top_Specials {    
+    .NavLink_Top_Specials {
         padding: 5px 1px;
     }
 }

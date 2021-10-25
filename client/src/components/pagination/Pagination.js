@@ -6,6 +6,7 @@ import $ from 'jquery'
 
 import { Context } from '../..'
 import './Pagination.css'
+import { SCROLL_TOP, SCROLL_TOP_MOBILE } from '../../utils/consts'
 
 
 const Pages = observer(() => {
@@ -32,13 +33,13 @@ const Pages = observer(() => {
     const onClick = (page) => {
         if (window.innerWidth > 991) {
             $('html, body').animate(
-                {scrollTop: 240}, 
+                {scrollTop: SCROLL_TOP}, 
                 700, 
                 function(){}
             )
         }else {
             $('html, body').animate(
-                {scrollTop: 130}, 
+                {scrollTop: SCROLL_TOP_MOBILE}, 
                 700, 
                 function(){}
             )

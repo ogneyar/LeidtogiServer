@@ -23,7 +23,7 @@ const ProductPage =  observer(() => {
 
     const history = useHistory()
     
-    const [product, setProduct] = useState({info: [],size: []})
+    const [product, setProduct] = useState({name: "", article: "", img: "", price: "", info: [], size: []})
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
@@ -126,7 +126,9 @@ const ProductPage =  observer(() => {
                         <>
                         <h2>Характеристики</h2>
                         <table>
-                            {ReactHtmlParser(info?.body)}
+                            {
+                            ReactHtmlParser(info?.body)
+                            }
                         </table>    
                         </>
                         : info?.title === "description" 
@@ -134,7 +136,9 @@ const ProductPage =  observer(() => {
                             <>
                             <h2>Описание</h2>
                             <div>
-                                {ReactHtmlParser(info?.body)}
+                                {
+                                ReactHtmlParser(info?.body)
+                                }
                             </div>    
                             </>
                             : info?.title === "equipment" 
@@ -145,7 +149,9 @@ const ProductPage =  observer(() => {
                                     // className={index % 2 === 0 ? "ProductInfoRowLight" : "ProductInfoRowTansparent"}
                                 >
                                     
-                                    {ReactHtmlParser(info?.body)}
+                                    {
+                                    ReactHtmlParser(info?.body)
+                                    }
                                 </table>
                                 </> 
                                 : null

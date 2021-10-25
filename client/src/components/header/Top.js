@@ -17,7 +17,6 @@ const Top = () => {
                 <div className="TopRow">
                     <div 
                         className="TopCol TopColLink _hidden-mobile" 
-                        md={8}
                     >
                         <div className="TopDivLink">
                             <strong className="TopLinkStrong">

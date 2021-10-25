@@ -4,7 +4,9 @@ import { observer } from 'mobx-react-lite'
 import { useHistory } from 'react-router-dom'
 import $ from 'jquery'
 
+import { SCROLL_TOP } from '../../utils/consts'
 import { Context } from '../..'
+
 import './CategoryService.css'
 
 
@@ -49,7 +51,7 @@ const CategoryItemService = observer((props) => {
                         // window.scrollTo(0,260)
                         $('html, body').animate(
                             {
-                                scrollTop: 240
+                                scrollTop: SCROLL_TOP
                             }, 
                             700, 
                             function(){}

@@ -35,3 +35,8 @@ export const API_URL =
         process.env.REACT_APP_API_URL_PRODUCTION 
     : 
         process.env.REACT_APP_API_URL
+
+
+// прокрутка страницы при нажатии на категорию
+export const SCROLL_TOP = 205 // до aside
+export const SCROLL_TOP_MOBILE = 160 // для мобильной версии сайта

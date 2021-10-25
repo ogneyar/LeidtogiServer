@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import { useQueryParam, StringParam } from 'use-query-params';
 
-import BrandBar from '../../components/brand/BrandBar'
+// import BrandBar from '../../components/brand/BrandBar'
 import CategoryBar from '../../components/category/CategoryBar'
 import ProductList from '../../components/product/ProductList'
 import Pagination from '../../components/pagination/Pagination'
@@ -16,25 +16,39 @@ import { Context } from '../..'
 
 
 const SearchPage = observer(() => {
-
+    // eslint-disable-next-line
     const { product, category, brand } = useContext(Context)
     
     const [ loadingCategory, setLoadingCategory ] = useState(true)
-    const [ loadingBrand, setLoadingBrand ] = useState(true)
-    const [ loadingProduct, setLoadingProduct ] = useState(false)
+    // const [ loadingBrand, setLoadingBrand ] = useState(true)
+    const [ loadingProduct, setLoadingProduct ] = useState(true)
     // eslint-disable-next-line
     const [value, setValue] = useQueryParam('value', StringParam)
+
+    function isNumber(n){
+        // eslint-disable-next-line
+        return Number(n) == n;
+    }
 
     // const history = useHistory()
 
     useEffect(() => {
         if (product.allProducts.length) {
+            product.setPage(1)
+            // setLoadingProduct(true)
             let length = 0
             product.setProducts(product.allProducts.filter(i => {
                 if (value) {
-                    if (i.article.includes(value)) {
-                        length++
-                        return true
+                    if (isNumber(value)) {
+                        if (i.article.includes(value)) {
+                            length++
+                            return true
+                        }
+                    }else {
+                        if (i.name.toLowerCase().includes(value.toLowerCase())) {
+                            length++
+                            return true
+                        }
                     }
                 }
                 return false
@@ -54,13 +68,13 @@ const SearchPage = observer(() => {
         // eslint-disable-next-line
     },[category.allCategories])
 
-    useEffect(() => {
-        if (brand.allBrands.length) {
-            brand.setBrands(brand.allBrands)
-            setLoadingBrand(false)
-        }
-        // eslint-disable-next-line
-    },[brand.allBrands])
+    // useEffect(() => {
+    //     if (brand.allBrands.length) {
+    //         brand.setBrands(brand.allBrands)
+    //         setLoadingBrand(false)
+    //     }
+    //     // eslint-disable-next-line
+    // },[brand.allBrands])
 
 
     return (
@@ -72,7 +86,7 @@ const SearchPage = observer(() => {
                 {loadingCategory ? <Loading /> : <CategoryBar search />}
             </div>
             <div className="ShopColContent">
-                {loadingBrand ? <Loading /> : <BrandBar search />}
+                {/* {loadingBrand ? <Loading /> : <BrandBar search />} */}
                 <Filter />
                 {loadingProduct 
                 ? <Loading />
@@ -89,6 +103,7 @@ const SearchPage = observer(() => {
                         Товары, соответствующие критериям поиска
                     </h5>
                     <br />
+                    <Pagination />
                     <ProductList search />
                     <Pagination />
                 </>}
