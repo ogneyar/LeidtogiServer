@@ -2,7 +2,7 @@ const XLSX = require('xlsx')
 
 const { Product, ProductInfo, Brand, Category } = require('../../models/models')
 
-const getAllData = require('../parser/getAllData.js')
+const getAllData = require('../parser/milwaukee/getAllData.js')
 const createProduct = require('../product/createProduct.js')
 
 

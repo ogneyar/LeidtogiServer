@@ -2,7 +2,7 @@ const uuid = require('uuid')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
-const createFoldersAndDeleteOldFiles = require('../createFoldersAndDeleteOldFiles.js')
+const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 
 
 function getArrayImages(brand, article, Html) {
