@@ -184,7 +184,9 @@ const ProductService = observer((props) => {
     const getFormData = async () => {
         const formData = new FormData()
         formData.append('name', name.trim())
+
         formData.append('img', file)
+
         formData.append('have', have)
         formData.append('article', article.trim())
         formData.append('promo', promo.trim())
@@ -357,7 +359,8 @@ const ProductService = observer((props) => {
                 />
             </div>
 
-            
+            {brand.selectedBrand.name.toLowerCase() !== "milwaukee" 
+            ?
             <div className="inputBox fileBox">
                 <div>
                     <label>Изображение инструмента:</label>
@@ -386,9 +389,11 @@ const ProductService = observer((props) => {
                 </div>
                 
             </div>
+            : null}
+            
 
             <div className="inputBox">
-                <Price // габариты
+                <Price // цена
                     price={price}
                     setPrice={setPrice} 
                     action={action}
@@ -416,7 +421,7 @@ const ProductService = observer((props) => {
                 />
             </div>
             <div className="inputBox">
-                <Equipment 
+                <Equipment // комплектация
                     equipment={equipment} 
                     setEquipment={setEquipment}
                     action={action}
