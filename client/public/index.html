@@ -33,5 +33,40 @@
 
     <!-- <script src="%PUBLIC_URL%/jquery/jquery.min.js"></script> -->
     <!-- <script src="%PUBLIC_URL%/jquery/jquery.nivo.slider.pack.js"></script> -->
+
+    <input type="hidden" value="9897,35" class="amount" />
+    <input type="hidden" value="0002" class="order" />
+    <input type="hidden" value="описание" class="description" />
+    <input type="hidden" value="информация о клиенте" class="clientInfo" />
+    <input type="hidden" value="client@leidtogi.ru" class="clientEmail" />
+    <input type="hidden" value="тест" class="test" />
+    <div
+        style="display: none;"
+        id="alfa-payment-button"
+        data-token="a3rd28arc978uabudoqr0c164h"
+        data-return-url="https://leidtogi.site"
+        data-fail-url="https://leidtogi.site/error"
+        data-redirect="true"
+        data-language="ru"
+        data-stages="1"
+        data-amount-format="rubli"
+        data-amount-selector=".amount" 
+        data-order-number-selector='.order'
+        data-description-selector='.description'
+        data-button-text='текст на кнопке'
+        data-client-info-selector='.clientInfo'
+        data-email-selector='.clientEmail'
+
+        data-add-test-selector='.test'
+    ></div>
+
+    <!-- Платёжный виджет Альфа Банка -->
+    <!-- подключил в компоненте Payment.js -->
+    <script
+      id="alfa-payment-script"
+      type="text/javascript"
+      src="https://testpay.alfabank.ru/assets/alfa-payment.js">
+    </script>
+
   </body>
 </html>

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Row, Col } from 'react-bootstrap'
-import { NavLink } from 'react-router-dom'
-import { SHOP_ROUTE, API_URL } from '../../utils/consts'
+import { Card } from 'react-bootstrap'
+
+import { API_URL } from '../../utils/consts'
 import { Container, Button } from '../../components/myBootstrap'
-import './CartPage.css'
 import Delivery from '../../components/delivery/Delivery'
+import Payment from '../../components/payment/Payment'
+import NullCart from './NullCart'
+
+import './CartPage.css'
 
 
 const Cart = () => {
@@ -83,171 +86,135 @@ const Cart = () => {
         }
     }
 
-    if (state && Array.isArray(state) && state[0]?.id !== undefined) {
+    if (!state || !Array.isArray(state) || state[0]?.id === undefined) return <NullCart /> 
 
-        return (
-            <Container 
-                className="CartPage"
-            >
-                <Card 
-                    className="CartCard"
-                >
-                    <Card.Title className="CardTitle">
-                        <h4>Корзина / Оформление товара</h4>
-                    </Card.Title>
-
-                    <table className="CartTable">
-                        <thead>
-                            <tr>
-                                <th>№:</th>
-                                <th>Наим. товара:</th>
-                                <th className="CartHide">Фото:</th>
-                                <th>Цена:</th>
-                                <th>Кол-во:</th>
-                                <th>Итого:</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {state && Array.isArray(state) && state.map((i,index) => {
-                                return (
-                                    <tr
-                                        key={i.id}
-                                    >
-                                        <th>
-                                            <div
-                                                className="CartThDivRow"
-                                            >
-                                                {index+1}
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div
-                                                className="CartThDivRow"
-                                            >
-                                                {i.name}
-                                            </div>
-                                        </th>
-                                        <th className="CartHide">
-                                            <div
-                                                className="CartThDivRow"
-                                            >
-                                                <img src={API_URL + i.img} width="50" alt={i.name} />
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div
-                                                className="CartThDivRow"
-                                            >
-                                                {i.price}
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div
-                                                className="d-flex flex-column align-items-center"
-                                            >
-                                                <div
-                                                    className="CartThDivRow"
-                                                >
-                                                    <Button
-                                                        className="CartButtonValue"
-                                                        onClick={() => onClickButtonMinus(i)}
-                                                    >
-                                                        -
-                                                    </Button>
-                                                    <div
-                                                        className="CartValue"
-                                                    >
-                                                        {i.value}
-                                                    </div>
-
-                                                    <Button
-                                                        className="CartButtonValue"
-                                                        onClick={() => onClickButtonPlus(i)}
-                                                    >
-                                                        +
-                                                    </Button>
-                                                </div>
-                                                <Button
-                                                    className="CartButtonDelete"
-                                                    onClick={() => onClickButtonDelete(i)}
-                                                    variant="danger"
-                                                >
-                                                    Удалить
-                                            </Button>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div
-                                                className="CartThDivRow"
-                                            >
-                                                {i.total}
-                                            </div>
-                                        </th>
-                                    </tr>
-                                )
-                            })}
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th className="CartHide"></th>
-                                <th></th>
-                                <th>Итого:</th>
-                                <th>
-                                    <div
-                                        className="CartThDivRow"
-                                    >
-                                        {total}
-                                    </div>
-                                    
-                                </th>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                <Delivery />
-
-                </Card>
-            </Container>
-        )
-
-
-
-    }else return (
+    return (
         <Container 
             className="CartPage"
         >
-            <Card className="CartCard">
-                <Card.Title>
-                        Корзина / Оформление товара
+            <Card 
+                className="CartCard"
+            >
+                <Card.Title className="CardTitle">
+                    <h4>Корзина / Оформление товара</h4>
                 </Card.Title>
 
-                <Row>
-                    <Col
-                        className="CardTitle"
-                    >
-                        <strong>Ваша корзина пуста.</strong>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col
-                        className="CardBody"
-                    >
-                        
-                            Поищите товар &nbsp;
-                            <NavLink
-                                className="NavLink"
-                                to={SHOP_ROUTE}
-                            >
-                                здесь!
-                            </NavLink>
-                        
-                    </Col>
-                </Row>
-                
+                <table className="CartTable">
+                    <thead>
+                        <tr>
+                            <th>№:</th>
+                            <th>Наим. товара:</th>
+                            <th className="CartHide">Фото:</th>
+                            <th>Цена:</th>
+                            <th>Кол-во:</th>
+                            <th>Итого:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {state && Array.isArray(state) && state.map((i,index) => {
+                            return (
+                                <tr
+                                    key={i.id}
+                                >
+                                    <th>
+                                        <div
+                                            className="CartThDivRow"
+                                        >
+                                            {index+1}
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div
+                                            className="CartThDivRow"
+                                        >
+                                            {i.name}
+                                        </div>
+                                    </th>
+                                    <th className="CartHide">
+                                        <div
+                                            className="CartThDivRow"
+                                        >
+                                            <img src={API_URL + i.img} width="50" alt={i.name} />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div
+                                            className="CartThDivRow"
+                                        >
+                                            {i.price}
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div
+                                            className="d-flex flex-column align-items-center"
+                                        >
+                                            <div
+                                                className="CartThDivRow"
+                                            >
+                                                <Button
+                                                    className="CartButtonValue"
+                                                    onClick={() => onClickButtonMinus(i)}
+                                                >
+                                                    -
+                                                </Button>
+                                                <div
+                                                    className="CartValue"
+                                                >
+                                                    {i.value}
+                                                </div>
+
+                                                <Button
+                                                    className="CartButtonValue"
+                                                    onClick={() => onClickButtonPlus(i)}
+                                                >
+                                                    +
+                                                </Button>
+                                            </div>
+                                            <Button
+                                                className="CartButtonDelete"
+                                                onClick={() => onClickButtonDelete(i)}
+                                                variant="danger"
+                                            >
+                                                Удалить
+                                        </Button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div
+                                            className="CartThDivRow"
+                                        >
+                                            {i.total}
+                                        </div>
+                                    </th>
+                                </tr>
+                            )
+                        })}
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th className="CartHide"></th>
+                            <th></th>
+                            <th>Итого:</th>
+                            <th>
+                                <div
+                                    className="CartThDivRow"
+                                >
+                                    {total}
+                                </div>
+                                
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <Delivery />
+
+                <Payment amount={total} />
+
             </Card>
-           
         </Container>
     )
+
 }
 
 export default Cart
