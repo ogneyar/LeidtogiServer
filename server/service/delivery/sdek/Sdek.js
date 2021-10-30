@@ -1,7 +1,7 @@
 const axios  = require("axios")
 const qs = require('qs')
 const https = require("https")
-const pdfreader = require("pdfreader")
+// const pdfreader = require("pdfreader")
 const fs = require('fs')
 const path = require('path')
 const http = require('http')

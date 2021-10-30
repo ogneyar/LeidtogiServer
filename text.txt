@@ -1,3 +1,4 @@
 killall -2 node
 
-killall -2 "Passenger NodeApp"
+// задаём пароль пользователю root при первом запуске mysql
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'this_password';

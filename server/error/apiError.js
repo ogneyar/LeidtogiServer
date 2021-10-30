@@ -1,6 +1,6 @@
 class ApiError extends Error {
-    status;
-    errors;
+    // status;
+    // errors;
 
     constructor(status, message, errors = []) {
         super(message)
