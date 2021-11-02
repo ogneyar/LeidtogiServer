@@ -206,10 +206,10 @@ const Cart = () => {
                         </tr>
                     </tbody>
                 </table>
+                
+                <Payment amount={total} />
 
                 <Delivery />
-
-                <Payment amount={total} />
 
             </Card>
         </Container>

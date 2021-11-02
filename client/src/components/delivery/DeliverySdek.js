@@ -286,8 +286,54 @@ const DeliverySdek = observer((props) => {
     }
 
 
+    // тест виджета SDEK
+    function OnScrollMapSDEK() {
+        let forpvz = document.getElementById("forpvz")
+        let boxForMapSDEK = document.getElementById("boxForMapSDEK")
+        if (boxForMapSDEK) {
+            let bound = boxForMapSDEK.getBoundingClientRect()
+            forpvz.style.top = bound.top + "px"
+            forpvz.style.left = bound.left + "px"
+            // forpvz.style.left = "0px"
+        }else {
+            forpvz.style.display = "none"
+            document.removeEventListener("scroll", OnScrollMapSDEK)
+        }
+    }
+    useEffect(() => {
+        let forpvz = document.getElementById("forpvz")
+        let boxForMapSDEK = document.getElementById("boxForMapSDEK")
+        
+        console.log(boxForMapSDEK.clientWidth)
+
+        if (boxForMapSDEK) {
+            let bound = boxForMapSDEK.getBoundingClientRect()
+            if (forpvz) {
+                forpvz.style.display = "block"
+                forpvz.style.position = "fixed"
+                forpvz.style.top = bound.top + "px"
+                forpvz.style.left = bound.left + "px"
+                // forpvz.style.left = "0px"
+                
+                forpvz.style.width = boxForMapSDEK.clientWidth + "px"
+
+                document.addEventListener("scroll", OnScrollMapSDEK)
+            }
+        }
+    // eslint-disable-next-line
+    },[])
+    // тест виджета SDEK
+    // return (<div id="boxForMapSDEK" style={{width:"100%", height:"600px"}} />)
+
+
+    // eslint-disable-next-line
     return (
         <div className="mt-3 mb-3">
+
+            <div id="boxForMapSDEK" style={{width:"100%", height:"600px"}} />
+
+            <hr /><br />
+
             <div>
                 {info?.total_sum
                 ?
@@ -314,9 +360,10 @@ const DeliverySdek = observer((props) => {
                         value={tariff} 
                         onChange={e => setTariff(e.target.value)}
                     >
+                        {/* Доставка до двери предполагает заказ курьера */}
                         <option value="139">Доставка до Двери</option>
                         <option value="138">До склада СДЭК</option>
-                        <option value="ххх" disabled>Доставка курьером</option>
+                        {/* <option value="ххх" disabled>Доставка курьером</option> */}
                     </select>
                 </div>
 
@@ -438,7 +485,7 @@ const DeliverySdek = observer((props) => {
                 }}
             >
                 {ReactHtmlParser(textAlert)}
-            </Alert>
+            </Alert> 
         </div>
     )
 })
