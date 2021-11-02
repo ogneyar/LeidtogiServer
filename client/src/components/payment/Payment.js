@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import React, { useState, useEffect } from 'react'
 
 import './Payment.css'
@@ -38,7 +39,7 @@ const Payment = (props) => {
             }
         }
 
-        
+    // eslint-disable-next-line
     },[])
 
 
@@ -46,6 +47,9 @@ const Payment = (props) => {
         <div
             className="Payment"
         >
+            <input type="hidden" value="0003" className="order" />
+            <br />
+            <br />
 
             <div id="boxForButtonAlfaBank" />
 
