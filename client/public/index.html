@@ -21,7 +21,6 @@
     <!-- <link rel="stylesheet" href="%PUBLIC_URL%/jquery/nivo-slider.css"> -->
 
     <title>ЛеидТоги - интернет-магазин электроинструментов</title>
-    <script id="react-dotenv" src="./env.js"></script>
 
     <script id="ISDEKscript" type="text/javascript" src="https://widget.cdek.ru/widget/widjet.js" charset="utf-8"></script>
 
@@ -34,57 +33,27 @@
 
     <div id="root"></div>
 
-    <!-- <script src="%PUBLIC_URL%/jquery/jquery.min.js"></script> -->
-    <!-- <script src="%PUBLIC_URL%/jquery/jquery.nivo.slider.pack.js"></script> -->
-
-    <input type="hidden" value="9897,35" class="amount" />
-    <!-- <input type="hidden" value="0002" class="order" /> -->
-    <input type="hidden" value="описание" class="description" />
-    <input type="hidden" value="информация о клиенте" class="clientInfo" />
-    <input type="hidden" value="client@leidtogi.ru" class="clientEmail" />
-    <input type="hidden" value="тест" class="test" />
-    <div
-        style="display: none;"
-        id="alfa-payment-button"
-        data-token="a3rd28arc978uabudoqr0c164h"
-        data-return-url="https://leidtogi.site"
-        data-fail-url="https://leidtogi.site/error"
-        data-redirect="true"
-        data-language="ru"
-        data-stages="1"
-        data-amount-format="rubli"
-        data-amount-selector=".amount" 
-        data-order-number-selector='.order'
-        data-description-selector='.description'
-        data-button-text='Оплатить картой'
-        data-client-info-selector='.clientInfo'
-        data-email-selector='.clientEmail'
-
-        data-add-test-selector='.test'
-    ></div>
-
+    
     <!-- Платёжный виджет Альфа Банка -->
     <!-- подключил в компоненте Payment.js -->
-    <script
-      id="alfa-payment-script"
-      type="text/javascript"
-      src="https://testpay.alfabank.ru/assets/alfa-payment.js">
-    </script>
-
-
+    <div style="display: none;" id="alfa-payment-button"></div>
+    <script id="alfa-payment-script" type="text/javascript" src="https://testpay.alfabank.ru/assets/alfa-payment.js"></script>
+    
+    
     <!-- Виджет СДЕК -->
-    <script type="text/javascript">
+    <!-- <script type="text/javascript" type="text/javascript" src="/js/sdek_widjet.js"></script> -->
+    <script type="text/javascript"> 
       var ourWidjet = new ISDEKWidjet ({
-          defaultCity: 'Белая Калитва', //какой город отображается по умолчанию
-          cityFrom: 'Москва', // из какого города будет идти доставка
+        defaultCity: 'Белая Калитва', //какой город отображается по умолчанию
+        cityFrom: 'Москва', // из какого города будет идти доставка
           country: 'Россия', // можно выбрать страну, для которой отображать список ПВЗ
           link: 'forpvz', // id элемента страницы, в который будет вписан виджет
           path: 'https://widget.cdek.ru/widget/scripts/', //директория с библиотеками
           // servicepath: '%PUBLIC_URL%/service.php' //ссылка на файл service.php на вашем сайте
-          servicepath: 'http://testinger.uxp.ru/service.php', //ссылка на файл service.php на вашем сайте
+          servicepath: 'https://media.prizmarket.ru/service.php', //ссылка на файл service.php на вашем сайте
 
           // showWarns: true,
-
+          
           // showErrors: true,
           // showLogs: true,
           // hideMessages: false,
@@ -109,7 +78,7 @@
           onChooseProfile: onChooseProfile,
           // onCalculate: onCalculate
       });
-
+      
       function onReady() {
         alert('Виджет загружен');
       }
@@ -121,23 +90,25 @@
               'срок ' + wat.term + " дн.\n" +
               'город ' + wat.cityName + ', код города ' + wat.city
           );
-      }
+        }
 
-      function onChooseProfile(wat) {
+        function onChooseProfile(wat) {
           alert(
               'Выбрана доставка курьером в город ' + wat.cityName + ', код города ' + wat.city + "\n" +
               'цена ' + wat.price + "\n" +
               'срок ' + wat.term + ' дн.'
           );
-      }
+        }
 
-      function onCalculate(wat) {
+        function onCalculate(wat) {
           alert('Расчет стоимости доставки произведен');
       }
     </script>
-
+    
 
     <div id="forpvz" style="display: none; width:100%; height:600px;"></div>
 
+    <!-- <script src="%PUBLIC_URL%/jquery/jquery.nivo.slider.pack.js"></script> -->
+    
   </body>
-</html>
+  </html>
