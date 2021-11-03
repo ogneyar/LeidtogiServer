@@ -8,12 +8,14 @@ import Payment from '../../components/payment/Payment'
 import NullCart from './NullCart'
 
 import './CartPage.css'
+import Loading from '../../components/Loading'
 
 
 const Cart = () => {
 
     const [state, setState] = useState([])
     const [total, setTotal] = useState(0)
+    const [loading, setLoading] = useState(true)
 
     let cart
 
@@ -27,6 +29,7 @@ const Cart = () => {
             cart.forEach(i => totalValue += i.total)
             setTotal(totalValue)
         }
+        setLoading(false)
     }, [])
 
     const editValue = (action, item) => {
@@ -85,6 +88,8 @@ const Cart = () => {
             }
         }
     }
+
+    if (loading) return <Loading />
 
     if (!state || !Array.isArray(state) || state[0]?.id === undefined) return <NullCart /> 
 
@@ -207,7 +212,7 @@ const Cart = () => {
                     </tbody>
                 </table>
                 
-                <Payment amount={total} />
+                <Payment amount={total} /> 
 
                 <Delivery />
 
