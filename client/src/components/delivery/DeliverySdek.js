@@ -304,7 +304,7 @@ const DeliverySdek = observer((props) => {
         let forpvz = document.getElementById("forpvz")
         let boxForMapSDEK = document.getElementById("boxForMapSDEK")
         
-        console.log(boxForMapSDEK.clientWidth)
+        // console.log(boxForMapSDEK.clientWidth)
 
         if (boxForMapSDEK) {
             let bound = boxForMapSDEK.getBoundingClientRect()
