@@ -40,3 +40,9 @@ export const API_URL =
 // прокрутка страницы при нажатии на категорию
 export const SCROLL_TOP = 205 // до aside
 export const SCROLL_TOP_MOBILE = 160 // для мобильной версии сайта
+
+
+export const MAIL = `<a href="mailto:info@leidtogi.ru">info@leidtogi.ru</a>` // основной почтовый ящик
+export const ADDRESS = "г. Курск, ул. Соловьиная, д. 51, оф. 2" // адресс нахождения офиса
+export const PHONE_ONE = `<a href="tel:+79312607792">+7 (931) 260-77-92</a>` // основной телефон
+export const TIME_TO_WORK = `<div><p>пн - пт: 09:00 - 18:00</p><p>сб - вс: выходной</p></div>` // время работы

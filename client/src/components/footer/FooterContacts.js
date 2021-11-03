@@ -1,5 +1,7 @@
 import React from 'react'
-// import { Container, Row } from 'react-bootstrap'
+import ReactHtmlParser from 'react-html-parser'
+
+import { MAIL, ADDRESS, PHONE_ONE, TIME_TO_WORK } from '../../utils/consts'
 import './FooterContacts.css'
 
 const FooterContacts = () => {
@@ -15,29 +17,27 @@ const FooterContacts = () => {
                     <li>
                         <span className="fa fa-map-marker">&nbsp;</span>
                         <div className="media-body">
-                            <p>г. Курск, ул. Дмитрова, д. 33</p>
+                            <p>{ADDRESS}</p>
                         </div>
                     </li>
                     <li>
                         <span className="fa fa-mobile">&nbsp;</span>
                         <div className="media-body">
-                            <p><a href="tel:+74712510776">+7 (4712) 51-07-76</a></p>
-                            <p><a href="tel:+79312607792">+7 (931) 260-77-92</a></p>
+                            <p>{ReactHtmlParser(PHONE_ONE)}</p>
                         </div>
                     </li>
                     <li>
                         <span className="fa fa-envelope-o">&nbsp;</span>
                         <div className="media-body">
                             <address>
-                                <a href="mailto:info@leidtogi.ru">info@leidtogi.ru</a>
+                                {ReactHtmlParser(MAIL)}
                             </address>
                         </div>
                     </li>
                     <li className="last">
                         <span className="fa fa-clock-o">&nbsp;</span>
                         <div className="media-body">
-                            <p>пн - пт: 09:00 - 20:00</p>
-                            <p>сб - вс: 09:00 - 18:00</p>
+                            {ReactHtmlParser(TIME_TO_WORK)}
                         </div>
                     </li>
                 </ul>

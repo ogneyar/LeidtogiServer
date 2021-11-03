@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite'
 
 import FooterLogo from './FooterLogo'
 import FooterInformation from './FooterInformation'
+// eslint-disable-next-line
 import FooterSocialNetwork from './FooterSocialNetwork'
 import FooterContacts from './FooterContacts'
 import End from './End'
@@ -32,7 +33,7 @@ const Footer = observer(() => {
                             <FooterInformation />
                         </div>
                         <div className="FooterCol" md={3}>
-                            <FooterSocialNetwork />
+                            {/* <FooterSocialNetwork /> */}
                         </div>
                         <div className="FooterCol" md={3}>
                             <FooterContacts />

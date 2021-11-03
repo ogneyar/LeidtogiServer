@@ -1,20 +1,29 @@
 .Specials {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: 100px;
+    margin-bottom: 10px;
 }
-.SpecialsTitle {
+
+.Specials header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 32px;
+}
+.Specials label {
+    margin-bottom: 10px;
+    margin-left: 20px;
     font-size: 24px;
+    font-weight: 700;
 }
-.SpecialsBody {
-    font-size: 18px;
+
+.Specials p,
+.Specials strong,
+.Specials span,
+.Specials li {
+    margin-bottom: 10px;
+    font-size: 20px;
 }
-.SpecialsBody span {
-    margin-right: 10px;
-    font-weight: 600;
-}
-.SpecialsBody label {
+
+.Specials li {
+    list-style-type: circle;
+    padding-left: 10px;
     margin-left: 10px;
 }

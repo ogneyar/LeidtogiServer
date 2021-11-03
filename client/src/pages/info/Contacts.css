@@ -27,6 +27,8 @@
     display: flex;
     flex-direction: column;
 }
-.ContactsBodyDiv label {
+.ContactsBodyDiv label,
+.ContactsBodyDiv p
+{
     margin-left: 20px;
 }

@@ -1,4 +1,7 @@
 import React from 'react'
+import ReactHtmlParser from 'react-html-parser'
+
+import { MAIL, ADDRESS, PHONE_ONE, TIME_TO_WORK } from '../../utils/consts'
 import InfoPage from './InfoPage'
 import './Contacts.css'
 
@@ -14,33 +17,35 @@ const Contacts = () => {
                 >
                     <div className="ContactsBodyDiv">
                         <span>Название компании:</span>
-                        <label>ООО "Леидтоги"</label>
+                        <label>ООО "ЛЕИДТОГИ"</label>
                     </div>
+                    {/* <div className="ContactsBodyDiv">
+                        <span>Генеральный директор:</span>
+                        <label>Пухкало Александр Андреевич</label>
+                    </div> */}
                     <div className="ContactsBodyDiv">
                         <span>ИНН / КПП:</span>
-                        <label>0000000000 / 00000000000</label>
+                        <label>4632267704/ 463201001</label>
                     </div>
                     <div className="ContactsBodyDiv">
                         <span>ОГРН:</span>
-                        <label>000000000000</label>
+                        <label>1204600005830</label>
                     </div>
                     <div className="ContactsBodyDiv">
                         <span>Адрес:</span>
-                        <label>г. Курск, ул. Дмитрова, д. 33</label>
+                        <label>{ADDRESS}</label>
                     </div>
                     <div className="ContactsBodyDiv">
-                        <span>Телефоны:</span>
-                        <label><a href="tel:+74712510776">+7 (4712) 51-07-76</a></label>
-                        <label><a href="tel:+79312607792">+7 (931) 260-77-92</a></label>
+                        <span>Телефон:</span>
+                        <label>{ReactHtmlParser(PHONE_ONE)}</label>
                     </div>
                     <div className="ContactsBodyDiv">
                         <span>Эл.Почта:</span>
-                        <label><a href="mailto:info@leidtogi.ru">info@leidtogi.ru</a></label>
+                        <label>{ReactHtmlParser(MAIL)}</label>
                     </div>
                     <div className="ContactsBodyDiv">
                         <span>Время работы:</span>
-                        <label>пн - пт: 09:00 - 20:00</label>
-                        <label>сб - вс: 09:00 - 18:00</label>
+                        {ReactHtmlParser(TIME_TO_WORK)}
                     </div>
                 </div>
             </div>
