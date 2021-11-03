@@ -10,6 +10,7 @@ import ShopPage from '../pages/shop/ShopPage'
 import ProductPage from '../pages/product/ProductPage'
 import CartPage from '../pages/cart/CartPage'
 import SearchPage from '../pages/search/SearchPage'
+import SuccessPage from '../pages/success/SuccessPage'
 import ErrorPage from '../pages/error/ErrorPage'
 import SupportPage from '../pages/support/SupportPage'
 
@@ -27,7 +28,7 @@ import DeletePage from '../pages/site/DeletePage'
 
 import {
     ADMIN_ROUTE, PARSER_ROUTE, TESTER_ROUTE, CART_ROUTE, SHOP_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, 
-    PRODUCT_ROUTE, LK_ROUTE, CONFIRM_ROUTE, SEARCH_ROUTE, ERROR_ROUTE, ABOUT_US_ROUTE, 
+    PRODUCT_ROUTE, LK_ROUTE, CONFIRM_ROUTE, SEARCH_ROUTE, SUCCESS_ROUTE, ERROR_ROUTE, ABOUT_US_ROUTE, 
     DELIVERY_ROUTE, PAYMENT_ROUTE, PRIVACY_POLICY_ROUTE, RETURNS_POLICY_ROUTE, 
     TERMS_OF_USE_ROUTE, WARRANTY_ROUTE, CONTACTS_ROUTE, SPECIALS_ROUTE, DELETE_ROUTE,
     SUPPORT_ROUTE
@@ -84,6 +85,10 @@ export const publicRoutes = [
     {
         path: SUPPORT_ROUTE,
         Component: SupportPage
+    },
+    {
+        path: SUCCESS_ROUTE,
+        Component: SuccessPage
     },
     {
         path: ERROR_ROUTE,

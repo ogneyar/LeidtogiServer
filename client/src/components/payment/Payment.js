@@ -23,6 +23,25 @@ const Payment = (props) => {
 
     useEffect(() => {
         let alfaPaymentButton = document.getElementById("alfa-payment-button")
+        alfaPaymentButton.setAttribute("data-token", "a3rd28arc978uabudoqr0c164h")
+        if (process.env.REACT_APP_ENV === "production") {
+            alfaPaymentButton.setAttribute("data-return-url", process.env.REACT_APP_URL_PRODUCTION + "success")
+            alfaPaymentButton.setAttribute("data-fail-url", process.env.REACT_APP_URL_PRODUCTION + "error")
+        }else {
+            alfaPaymentButton.setAttribute("data-return-url", process.env.REACT_APP_URL + "success")
+            alfaPaymentButton.setAttribute("data-fail-url", process.env.REACT_APP_URL + "error")
+        }
+        alfaPaymentButton.setAttribute("data-redirect", "true")
+        alfaPaymentButton.setAttribute("data-language", "ru")
+        alfaPaymentButton.setAttribute("data-stages", "1")
+        alfaPaymentButton.setAttribute("data-amount-format", "rubli")
+        alfaPaymentButton.setAttribute("data-amount-selector", ".amount")
+        alfaPaymentButton.setAttribute("data-order-number-selector", ".order")
+        alfaPaymentButton.setAttribute("data-description-selector", ".description")
+        alfaPaymentButton.setAttribute("data-button-text", "Оплатить картой")
+        // alfaPaymentButton.setAttribute("data-client-info-selector", ".clientInfo")
+        // alfaPaymentButton.setAttribute("data-email-selector", ".clientEmail")
+
         let boxForButton = document.getElementById("boxForButtonAlfaBank")
         if (boxForButton) {
             let bound = boxForButton.getBoundingClientRect()
@@ -47,7 +66,12 @@ const Payment = (props) => {
         <div
             className="Payment"
         >
-            <input type="hidden" value="0003" className="order" />
+            <input type="hidden" value="0008" className="order" />
+            <input type="hidden" value={props?.amount} className="amount" />
+            <input type="hidden" value="описание" className="description" />
+            {/* <input type="hidden" value="информация о клиенте" className="clientInfo" />
+            <input type="hidden" value="client@leidtogi.ru" className="clientEmail" /> */}
+
             <br />
             <br />
 
@@ -56,41 +80,6 @@ const Payment = (props) => {
             <br />
             <br />
             <br />
-
-            {/* Это всё перенесено в index.html */}
-
-            {/* <input type="hidden" value="9897,35" className="amount" />
-            <input type="hidden" value="0002" className="order" />
-            <input type="hidden" value="описание" className="description" />
-            <input type="hidden" value="информация о клиенте" className="clientInfo" />
-            <input type="hidden" value="client@leidtogi.ru" className="clientEmail" />
-            <input type="hidden" value="тест" className="test" />
-            <div
-                id="alfa-payment-button"
-                data-token="a3rd28arc978uabudoqr0c164h"
-                data-return-url="https://leidtogi.site"
-                data-fail-url="https://leidtogi.site/error"
-                data-redirect="true"
-                data-language="ru"
-                data-stages="1"
-                data-amount-format="rubli"
-                data-amount-selector=".amount" 
-                data-order-number-selector='.order'
-                data-description-selector='.description'
-                // data-button-text='текст на кнопке'
-                data-client-info-selector='.clientInfo'
-                data-email-selector='.clientEmail'
-                // data-version= '1.0'
-                data-add-test-selector='.test'
-            ></div> */}
-
-            {/* <div>
-                <script
-                    id="alfa-payment-script"
-                    type="text/javascript"
-                    src="https://testpay.alfabank.ru/assets/alfa-payment.js">
-                </script>
-            </div> */}
 
         </div>
     )

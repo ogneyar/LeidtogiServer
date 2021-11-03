@@ -8,6 +8,7 @@ export const CART_ROUTE = '/cart' // корзина
 export const PRODUCT_ROUTE = '/product' // товар
 export const LK_ROUTE = '/lk' // личный кабинет
 export const SEARCH_ROUTE = '/search' // поиск
+export const SUCCESS_ROUTE = '/success' // успех
 export const ERROR_ROUTE = '/error' // ошибка
 export const PARSER_ROUTE = '/parser' // парсер HTML
 export const TESTER_ROUTE = '/tester' // парсер HTML
