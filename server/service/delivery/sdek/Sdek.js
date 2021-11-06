@@ -43,6 +43,7 @@ module.exports = class Sdek {
         }
         
         try {
+            if (method === "get" && type === "json") url = url + "?" + qs.stringify(data)
             let options = { method, headers, data, url }
             await axios(options)
                 .then(data => {
@@ -252,6 +253,75 @@ module.exports = class Sdek {
             method: "post",
             url: this.url + "intakes",
             data: new Intakes(parameters)
+        })
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {error:response.requests[0].errors}
+        }
+
+        return response
+    }
+
+
+    static async deliveryPoints(parameters) {
+        // console.log("SDEK NEW_INTAKES RUN");
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        // console.log("token",this.token);
+        
+        let response = await this.curl({ 
+            method: "get",
+            url: this.url + "deliverypoints",
+            // data: new DeliveryPoints(parameters)
+            data: parameters
+        })
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {error:response.requests[0].errors}
+        }
+
+        return response
+    }
+
+    static async locationRegions(parameters) {
+        // console.log("SDEK NEW_INTAKES RUN");
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        let response = await this.curl({ 
+            method: "get",
+            url: this.url + "location/regions",
+            // data: new Regions(parameters)
+            data: parameters
+        })
+
+        if (response.requests && response.requests[0].state === "INVALID") {
+            return {error:response.requests[0].errors}
+        }
+
+        return response
+    }
+
+    static async locationSities(parameters) {
+        // console.log("SDEK NEW_INTAKES RUN");
+        
+        if (!this.token) {
+            let token = await this.getToken()
+            if (token.error !== undefined) return token
+        }
+
+        let response = await this.curl({ 
+            method: "get",
+            url: this.url + "location/cities",
+            // data: new Cities(parameters)
+            data: parameters
         })
 
         if (response.requests && response.requests[0].state === "INVALID") {

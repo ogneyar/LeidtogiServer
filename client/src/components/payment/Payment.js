@@ -46,6 +46,8 @@ const Payment = (props) => {
         if (boxForButton) {
             let bound = boxForButton.getBoundingClientRect()
             if (alfaPaymentButton) {
+                // boxForButton.style.width = alfaPaymentButton.offsetWidth
+                // boxForButton.style.width = getComputedStyle(alfaPaymentButton).width
                 alfaPaymentButton.style.display = "block"
                 alfaPaymentButton.style.position = "fixed"
                 alfaPaymentButton.style.top = bound.top + "px"
@@ -63,9 +65,8 @@ const Payment = (props) => {
 
 
     return (
-        <div
-            className="Payment"
-        >
+        <div className="Payment">
+
             <input type="hidden" value="0008" className="order" />
             <input type="hidden" value={props?.amount} className="amount" />
             <input type="hidden" value="описание" className="description" />

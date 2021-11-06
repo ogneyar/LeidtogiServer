@@ -1,3 +1,5 @@
+.CartPage {
+}
 
 .CartPage,
 .CardTitle,
@@ -25,6 +27,7 @@ th {
 .CartCard {
     width: 100vw;
     padding: 15px;
+    padding-bottom: 40px;
 }
 
 .CardTitle {

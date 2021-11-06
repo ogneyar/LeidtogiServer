@@ -135,6 +135,19 @@ class SdekController {
         if (!delivery) return res.json({error:`В базе данных нет заказа с номером ${order_id}`})
         
         return res.json(await Sdek.newIntakes({order_uuid:delivery.uuid, ...req.body}))
+    }    
+
+    
+    async deliveryPoints(req, res) {
+        return res.json(await Sdek.deliveryPoints(req.body))
+    }
+
+    async locationRegions(req, res) {
+        return res.json(await Sdek.locationRegions(req.body))
+    }
+    
+    async locationSities(req, res) {
+        return res.json(await Sdek.locationSities(req.body))
     }
     
 

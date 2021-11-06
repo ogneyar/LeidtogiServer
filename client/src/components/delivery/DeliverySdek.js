@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 import ReactHtmlParser from 'react-html-parser'
+// eslint-disable-next-line
+import { YMaps, Map, Placemark } from 'react-yandex-maps'
 
 import { 
     sdekCalculate, 
@@ -11,6 +13,9 @@ import {
     sdekDeleteOrder, 
     sdekRefusalOrder, 
     sdekNewIntakes,
+    sdekDeliveryPoints,
+    sdekLocationRegions,
+    sdekLocationSities,
     sdekPrintOrders,
     sdekGetPrintOrders
 } from '../../http/delivery/sdekAPI'
@@ -33,7 +38,7 @@ const DeliverySdek = observer((props) => {
         }
     },[user?.user?.address])
 
-    const [tariff, setTariff] = useState("139")
+    const [tariff, setTariff] = useState("138")
 
     const [info, setInfo] = useState({
         total_sum:"", period_min:"", period_max:"", weight_calc:"", currency:"", delivery_sum:""
@@ -42,6 +47,13 @@ const DeliverySdek = observer((props) => {
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [textAlert, setTextAlert] = useState("")
+
+    
+    const [ latitude, setLatitude ] = useState(55.75) // Долгота Белой Калитвы - 48.177645
+    const [ longitude, setLongitude ] = useState(37.57) // Широта Белой Калитвы - 48.177645
+    // 55.75, 37.57 Москва
+    const [ placemark, setPlacemark ] = useState([]) //
+
     
     const onClickButtonCalculate = async () => {
         let cart
@@ -190,7 +202,7 @@ const DeliverySdek = observer((props) => {
         if (number) {
             let response = await sdekRefusalOrder(number)
 
-            console.log(response)
+            // console.log(response)
 
             if (response?.entity) {
                 setTextAlert(`Ваш заказ помечен как 'отказ'.`)
@@ -217,7 +229,7 @@ const DeliverySdek = observer((props) => {
                 intake_time_from: "09:28",
                 intake_time_to: "15:28"
             })
-            console.log(response)
+            // console.log(response)
             if (response?.entity) {
                 setTextAlert(`Регистрация заявки на вызов курьера оформлена. (uuid=${response.entity?.uuid})`)
                 setAlertVisible(true)
@@ -230,6 +242,79 @@ const DeliverySdek = observer((props) => {
             }
         }else {
             setTextAlert(`Заказ номер ${number} не найден.`)
+            setAlertVisible(true)
+        }
+    }
+
+    const onClickButtonDeliveryPoints = async () => {
+        
+        let response = await sdekDeliveryPoints({
+            postal_code: index,
+        })
+
+        console.log(response)
+
+       if (response?.error) {
+            setTextAlert(`Ошибка: ${response?.error?.message}`)
+            setAlertVisible(true)
+        }else {
+            if (response && Array.isArray(response) && response.length === 1) {
+                setTextAlert(`Ближайший офис СДЭК находится по адресу: 
+                ${
+                    response[0].location.address_full
+                }
+                `)
+                setLatitude(response[0].location.latitude)
+                setLongitude(response[0].location.longitude)
+
+                setPlacemark([{latitude: response[0].location.latitude, longitude: response[0].location.longitude, code: response[0].code}])
+            }else {
+                setTextAlert(`Необходимо выбрать удобный/ближайший для вас офис.`)
+                setLatitude(response[0].location.latitude)
+                setLongitude(response[0].location.longitude)
+
+                setPlacemark(
+                    response.map(i => {
+                        return {latitude: i.location.latitude, longitude: i.location.longitude, code: i.code}
+                    })
+                )
+            }
+            setAlertVisible(true)
+        }
+    }
+
+    const onClickButtonLocationRegions = async () => {
+        
+        let response = await sdekLocationRegions({})
+
+        console.log(response)
+
+       if (response?.error) {
+            setTextAlert(`Ошибка: ${response?.error?.message}`)
+            setAlertVisible(true)
+        }else {
+            setTextAlert(`${response.map(i => i?.region).join(' ')}`)
+            // response.map(i => i?.city).join(' ')
+            setAlertVisible(true)
+        }
+    }
+
+    const onClickButtonLocationSities = async () => {
+        
+        let response = await sdekLocationSities({
+            // postal_code: index,
+            size: 34243,
+            page: 0
+        })
+
+        console.log(response)
+
+        if (response?.error) {
+            setTextAlert(`Ошибка: ${response.error?.message}`)
+            setAlertVisible(true)
+        }else {
+            setTextAlert(`${response.map(i => i?.city).join(' ')}`)
+            // response.map(i => i?.city).join(' ')
             setAlertVisible(true)
         }
     }
@@ -330,9 +415,9 @@ const DeliverySdek = observer((props) => {
     return (
         <div className="mt-3 mb-3">
 
-            <div id="boxForMapSDEK" style={{width:"100%", height:"600px"}} />
+            {/* <div id="boxForMapSDEK" style={{width:"100%", height:"600px"}} /> */}
 
-            <hr /><br />
+            {/* <hr /><br /> */}
 
             <div>
                 {info?.total_sum
@@ -355,14 +440,16 @@ const DeliverySdek = observer((props) => {
                     </div>
                 :null
                 }
+
                 <div className="mb-3">
                     <select className="DeliverySdekTariff"
                         value={tariff} 
                         onChange={e => setTariff(e.target.value)}
+                        disabled
                     >
                         {/* Доставка до двери предполагает заказ курьера */}
-                        <option value="139">Доставка до Двери</option>
                         <option value="138">До склада СДЭК</option>
+                        <option value="139">Доставка до Двери</option>
                         {/* <option value="ххх" disabled>Доставка курьером</option> */}
                     </select>
                 </div>
@@ -451,42 +538,100 @@ const DeliverySdek = observer((props) => {
                         >
                             Заявка на вызов курьера
                         </Button>
-                        <div />
-                    </div>
-
-                    <hr />
-
-                    <div 
-                        className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
-                    >
                         <Button
                             variant="outline-primary"
-                            onClick={onClickButtonPrintOrders}
+                            onClick={onClickButtonDeliveryPoints}
                         >
-                            Формирование квитанции
+                            Список офисов
                         </Button>
                         <Button
-                            variant="primary"
-                            onClick={onClickButtonGetPrintOrders}
+                            variant="outline-primary"
+                            onClick={onClickButtonLocationRegions}
                         >
-                            Получение квитанции
+                            Список регионов
                         </Button>
-                    </div>
+                        <Button
+                            variant="outline-primary"
+                            onClick={onClickButtonLocationSities}
+                        >
+                            Список населенных пунктов
+                        </Button>
+                    <div />
+                </div>
 
+                <hr />
+
+                <div 
+                    className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
+                >
+                    <Button
+                        variant="outline-primary"
+                        onClick={onClickButtonPrintOrders}
+                    >
+                        Формирование квитанции
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={onClickButtonGetPrintOrders}
+                    >
+                        Получение квитанции
+                    </Button>
                 </div>
 
             </div>
 
-            <Alert 
-                show={alertVisible} 
-                onHide={() => {
-                    setAlertVisible(false)
-                    setTextAlert("")
-                }}
-            >
-                {ReactHtmlParser(textAlert)}
-            </Alert> 
+
         </div>
+
+        <br />
+        <hr />
+        
+        <YMaps>
+            <Map 
+                // defaultState={{ 
+                state={{ 
+                    // Широта (latitude), Долгота (longitude)
+                    // center: [55.75, 37.57], // Москва
+                    // center: [48.177645, 40.802384], // Белая Калитва
+                    center: [latitude, longitude], 
+                    // type: 'yandex#hybrid',
+                    type: 'yandex#map',
+                    zoom: 10
+                }} 
+                // width="1080px" 
+                width="100%" 
+                height="400px" >
+            
+                {placemark && Array.isArray(placemark) && placemark[0]?.latitude !== undefined
+                ?
+                    placemark.map(i => 
+                        <Placemark 
+                            key={i?.latitude + i?.longitude}
+                            // geometry={[55.684758, 37.738521]} 
+                            geometry={[i?.latitude, i?.longitude]} 
+                            options={{
+                                // preset: "islands#yellowStretchyIcon"
+                                preset: "islands#dotIcon"
+                            }} 
+                            onClick={()=> console.log("код ПВЗ",i?.code)}
+                        />
+                    )
+                :null}
+
+            
+            </Map>
+        </YMaps>
+
+        <Alert 
+            show={alertVisible} 
+            onHide={() => {
+                setAlertVisible(false)
+                setTextAlert("")
+            }}
+        >
+            {ReactHtmlParser(textAlert)}
+        </Alert> 
+    </div>
     )
 })
 

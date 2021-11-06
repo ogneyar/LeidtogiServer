@@ -3,12 +3,15 @@ import { Card } from 'react-bootstrap'
 
 import { API_URL } from '../../utils/consts'
 import { Container, Button } from '../../components/myBootstrap'
+// eslint-disable-next-line
 import Delivery from '../../components/delivery/Delivery'
+// eslint-disable-next-line
 import Payment from '../../components/payment/Payment'
 import NullCart from './NullCart'
 
 import './CartPage.css'
 import Loading from '../../components/Loading'
+import CreateOrder from '../../components/order/CreateOrder'
 
 
 const Cart = () => {
@@ -212,9 +215,14 @@ const Cart = () => {
                     </tbody>
                 </table>
                 
-                <Payment amount={total} /> 
+                {/* <Payment amount={total} />  */}
 
-                <Delivery />
+                {/* <Delivery /> */}
+
+                <br />
+                <hr />
+
+                <CreateOrder />
 
             </Card>
         </Container>

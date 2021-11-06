@@ -53,6 +53,24 @@ export const sdekNewIntakes = async (id, body) => {
     return data
 }
 
+//
+export const sdekDeliveryPoints = async (body) => {
+    const {data} = await $authHost.post('api/delivery/sdek/delivery_points/', {country_code: "RU", type: "PVZ", ...body})
+    return data
+}
+
+//
+export const sdekLocationRegions = async (body) => {
+    const {data} = await $authHost.post('api/delivery/sdek/location_regions/', {country_codes: "RU", ...body})
+    return data
+}
+
+//
+export const sdekLocationSities = async (body) => {
+    const {data} = await $authHost.post('api/delivery/sdek/location_cities/', {country_codes: "RU", ...body})
+    return data
+}
+
 // Формирование квитанции к заказу
 export const sdekPrintOrders = async (arrayId, body) => {
     // arrayId - массив id номеров заказа в таблице deliveries
