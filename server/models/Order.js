@@ -4,6 +4,7 @@ const {DataTypes} = require('sequelize')
 
 const Order = sequelize.define('order', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    uuid: {type: DataTypes.STRING, allowNull: false},
     cart: {type: DataTypes.STRING(1024), allowNull: false},
     delivery: {type: DataTypes.STRING, defaultValue: "pickup"},
     address: {type: DataTypes.STRING, allowNull: true},

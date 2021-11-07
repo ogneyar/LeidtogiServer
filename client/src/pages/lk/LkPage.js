@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { useHistory } from 'react-router'
 import { Form } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
@@ -7,21 +8,32 @@ import Loading from '../../components/Loading'
 import Error from '../error/ErrorPage'
 import { Context } from '../..'
 import './LkPage.css'
+import { LOGIN_ROUTE } from '../../utils/consts'
 
 
 const Lk = observer(() => {
 
     const { user } = useContext(Context)
 
+    const history = useHistory()
+
     const [ info, setInfo ] = useState({})
     const [ loading, setLoading ] = useState(true)
+    const [ redirect, setRedirect ] = useState(false)
+
+    useEffect(() => {
+        let token = localStorage.getItem("token")
+        if (!token) setRedirect(true)
+    },[])
 
     useEffect(() => {
         if (user.user?.id) {
             setInfo(user.user)
             setLoading(false)
         }
-    },[user.user])
+    },[user?.user])
+
+    if (redirect) history.push(LOGIN_ROUTE)
 
     if (loading) return <Loading />
 

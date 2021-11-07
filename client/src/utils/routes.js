@@ -46,10 +46,6 @@ export const authRoutes = [
     {
         path: TESTER_ROUTE,
         Component: TesterPage
-    },
-    {
-        path: LK_ROUTE,
-        Component: LkPage
     }
 ]
 
@@ -57,6 +53,10 @@ export const publicRoutes = [
     {
         path: SHOP_ROUTE,
         Component: ShopPage
+    },
+    {
+        path: LK_ROUTE,
+        Component: LkPage
     },
     {
         path: CART_ROUTE,
@@ -87,7 +87,7 @@ export const publicRoutes = [
         Component: SupportPage
     },
     {
-        path: SUCCESS_ROUTE,
+        path: SUCCESS_ROUTE + '/:uuid/:id',
         Component: SuccessPage
     },
     {

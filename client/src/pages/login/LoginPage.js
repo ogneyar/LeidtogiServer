@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite'
 import $ from 'jquery'
 
 import { login, getUserInfo } from '../../http/userAPI'
+// eslint-disable-next-line
 import { REGISTRATION_ROUTE, SHOP_ROUTE, LK_ROUTE, CONFIRM_ROUTE } from '../../utils/consts'
 import { Alert } from '../../components/myBootstrap'
 import { Context } from '../..'
@@ -25,17 +26,19 @@ const LoginPage = observer((props) => {
     const click = async () => {
         try {
             let data
+            // eslint-disable-next-line
             data = await login(email, password)
             getUserInfo().then(dat => user.setUser(dat))
             user.setIsAuth(true)
             if (props?.confirm) {
                 history.push(CONFIRM_ROUTE + "/" + props?.url)
             }else {
-                if (data?.isActivated) {
-                    history.push(SHOP_ROUTE)
-                }else {
-                    history.push(LK_ROUTE)
-                }
+                // if (data?.isActivated) {
+                //     history.push(SHOP_ROUTE)
+                // }else {
+                //     history.push(LK_ROUTE)
+                // }
+                history.push(LK_ROUTE)
             }
             scrollUp()
             
