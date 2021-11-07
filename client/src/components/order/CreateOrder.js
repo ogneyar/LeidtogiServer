@@ -1,22 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Button, Modal } from 'react-bootstrap'
+import { observer } from 'mobx-react-lite'
 
 import DeliverySdek from '../delivery/DeliverySdek'
 import Payment from '../payment/Payment'
+import {Context} from '../..'
 import './CreateOrder.css'
+import { Input } from '../myBootstrap'
 
 
-const CreateOrder = () => {
+const CreateOrder = observer((props) => {
+
+    const { user } = useContext(Context)
 
     const [ choiseDelivery, setСhoiseDelivery ] = useState(true)
     const [ payment, setPayment ] = useState(false)
     const [ visibleModal, setVisibleModal ] = useState(false)
+    const [ email, setEmail ] = useState("")
+    const [ newEmail, setNewEmail ] = useState("")
 
     const onHideModal = () => {
         let alfaPaymentButton = document.getElementById("alfa-payment-button")
         alfaPaymentButton.style.display = "none"
         setVisibleModal(false)
     }
+
+    useEffect(() => {
+        if (user?.user) {
+            // console.log(user.user.id);
+            setEmail(user.user?.email)
+        }
+    }, [user?.user])
 
     return (
         <div
@@ -44,29 +58,31 @@ const CreateOrder = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-
-                    {choiseDelivery 
+                    {!email
                     ?
-                        <div
-                            className="mt-3 d-flex flex-row align-items-end justify-content-around flex-wrap"
-                        >
-                            <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(true)}}>Самовывоз</Button>
-                            <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(false)}}>С доставкой</Button>
+                        <div className="CreateOrderInputEmail" >
+                            <label>Нам нужен Ваш Email</label>
+                            <Input value={newEmail} onChange={e => setNewEmail(e.target.value)} />
+                            <span>чтобы мы могли отправить на него чек, как того требует ФЗ №54</span>
+                            <Button size="lg" onClick={()=>{newEmail && setEmail(newEmail)}}>Далее</Button>
                         </div>
                     :
-                        payment
-                        ? 
-                            <div
-                                // className="d-flex justify-content-center"
-                            >
-                                <Payment />
+                        choiseDelivery 
+                        ?
+                            <div className="CreateOrderChoiseDelivery" >
+                                <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(true)}}>Самовывоз</Button>
+                                <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(false)}}>С доставкой</Button>
                             </div>
-                        : 
-                            <div
-                                className="mt-3 d-flex flex-row justify-content-center flex-wrap"
-                            >
-                                <DeliverySdek />
-                            </div>
+                        :
+                            payment
+                            ? 
+                                <div className="CreateOrderPayment" >
+                                    <Payment amount={props?.amount} email={email} />
+                                </div>
+                            : 
+                                <div className="CreateOrderDeliverySdek" >
+                                    <DeliverySdek />
+                                </div>
                     }
 
                 </Modal.Body>
@@ -76,6 +92,6 @@ const CreateOrder = () => {
             </Modal>
         </div>
     )
-}
+})
 
 export default CreateOrder

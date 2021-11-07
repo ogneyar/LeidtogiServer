@@ -7,6 +7,7 @@ const userRouter = require('./userRouter')
 const ratingRouter = require('./ratingRouter')
 const parserRouter = require('./parserRouter')
 const deliveryRouter = require('./deliveryRouter')
+const orderRouter = require('./orderRouter')
 const testRouter = require('./testRouter')
 
 
@@ -17,6 +18,7 @@ router.use('/product', productRouter)
 router.use('/rating', ratingRouter)
 router.use('/parser', parserRouter)
 router.use('/delivery', deliveryRouter)
+router.use('/order', orderRouter)
 
 router.use('/test', testRouter)
 

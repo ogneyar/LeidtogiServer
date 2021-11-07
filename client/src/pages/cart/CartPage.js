@@ -222,7 +222,7 @@ const Cart = () => {
                 <br />
                 <hr />
 
-                <CreateOrder />
+                <CreateOrder  amount={total} />
 
             </Card>
         </Container>

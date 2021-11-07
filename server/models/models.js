@@ -13,6 +13,7 @@ const CategoryBrand = require('./CategoryBrand')
 const ProductSize = require('./ProductSize')
 const Token = require('./Token')
 const Delivery = require('./Delivery')
+const Order = require('./Order')
 
 
 User.hasOne(Cart)
@@ -64,5 +65,6 @@ module.exports = {
     CategoryBrand,
     ProductSize,
     Token,
-    Delivery
+    Delivery,
+    Order
 }

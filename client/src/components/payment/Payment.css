@@ -1,4 +1,17 @@
-.Payment div {
-    /* margin-top: 15px;
-    margin-bottom: 20px; */
+.Payment {
+    width: 100%;
+    height: 100%;
+    /* background-color: blueviolet; */
+    display:flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
+#boxForButtonAlfaBank {
+    width: 235px;
+    height: 62px;
+}
+
+#alfa-payment-button {
+    /* color: yellowgreen; */
 }
