@@ -25,7 +25,7 @@ const Contacts = () => {
                     </div> */}
                     <div className="ContactsBodyDiv">
                         <span>ИНН / КПП:</span>
-                        <label>4632267704/ 463201001</label>
+                        <label>4632267704 / 463201001</label>
                     </div>
                     <div className="ContactsBodyDiv">
                         <span>ОГРН:</span>

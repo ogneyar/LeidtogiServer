@@ -70,7 +70,10 @@ const CreateOrder = observer((props) => {
                         choiseDelivery 
                         ?
                             <div className="CreateOrderChoiseDelivery" >
-                                <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(true)}}>Самовывоз</Button>
+                                <lable style={{position:"relative"}}>
+                                    <p style={{position:"absolute",bottom:"-40px",left:"10px"}}>Из города Курск</p>
+                                    <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(true)}}>Самовывоз</Button>
+                                </lable>
                                 <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(false)}}>С доставкой</Button>
                             </div>
                         :

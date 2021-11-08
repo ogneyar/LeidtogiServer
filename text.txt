@@ -2,3 +2,6 @@ killall -2 node
 
 // задаём пароль пользователю root при первом запуске mysql
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'this_password';
+
+
+ALFA_BANK_API_URL=https://web.rbsuat.com/ab/rest/

@@ -23,6 +23,10 @@ const Notification = (props) => {
             onHide={props.onHide}
             aria-labelledby="contained-modal-title-vcenter"
             // className="d-flex justify-content-center align-items-center"
+            onClick={e => {
+                e.stopPropagation()
+                e.preventDefault()
+            }}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">

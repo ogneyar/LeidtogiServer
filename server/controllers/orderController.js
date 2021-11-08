@@ -3,17 +3,73 @@ const qs = require('qs')
 
 const { Order } = require('../models/models')
 const ApiError = require('../error/apiError')
+const AlfaBank = require('../service/payment/AlfaBank')
 
 
 class OrderController {
 
     async create(req, res, next) {
         try {
-            // const {uuid, cart, email} = req.body
-            const order = await Order.create(req.body)
-            return res.json(order) 
+            const body = req.body
+
+            if (!body) return res.json({error: "Отсутствует тело запроса"}) 
+            if (!body.cart) return res.json({error: "Отсутствует корзина в теле запроса"}) 
+            if (!body.uuid) return res.json({error: "Отсутствует uuid в теле запроса"}) 
+            if (!body.email) return res.json({error: "Отсутствует email в теле запроса"})
+            if (!body.url) return res.json({error: "Отсутствует url в теле запроса"}) 
+            let items = JSON.parse(body.cart).map((item, index) => {
+                return {
+                    positionId: index + 1,
+                    name: item.name,
+                    quantity: { value: item.value, measure: "штук" },
+                    itemCode: item.article,
+                    tax: { taxType: 6 }, 
+                    itemPrice: item.price * 100 // перевод в копейки
+                }
+            })
+            let cart = JSON.stringify(items)
+            let uuid = body.uuid
+            let email = body.email
+            let url = body.url
+            
+            let create = { cart, uuid, email }
+            // client - user_id
+            if (body.client) create = {...create, client: body.client}
+            if (body.phone) create = {...create, phone: body.phone}
+            if (body.role) create = {...create, role: body.role}
+            if (body.address) create = {...create, address: body.address}
+            if (body.delivery) create = {...create, delivery: body.delivery}
+
+            const order = await Order.create(create)
+
+            if (!order.id) return res.json({error: "Отсутствует номер заказа (order.id) в ответе от БД"}) 
+            let orderNumber = order.id
+
+            let returnUrl = url + "success/" + uuid + "/" + orderNumber
+
+            let failUrl = url + "error"
+
+            let orderBundle = {
+                customerDetails: { email },
+                cartItems: { items }
+            }
+
+            let data = {
+                orderNumber,
+                returnUrl,
+                failUrl,
+                orderBundle
+            }
+
+            if (body.description) data = {...data, description: body.description}
+            if (body.sessionTimeoutSecs) data = {...data, sessionTimeoutSecs: body.sessionTimeoutSecs}
+
+            let response = await AlfaBank.register(data)
+
+            return res.json(response) // return 
+
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода create!'));
+            return next(ApiError.badRequest('Ошибка метода create! ' + "Error: " + e.message));
         }
     }
 
@@ -28,62 +84,16 @@ class OrderController {
             }
             return res.json(null) // return 
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода getOrder!'));
+            return next(ApiError.badRequest('Ошибка метода getOrder! ' + "Error: " + e.message));
         }
     }
 
     async test(req, res, next) {
         try {
-            let response
-            let token = "a3rd28arc978uabudoqr0c164h"
-            let amount = 16000 
-            let orderNumber = "0029"
-            let returnUrl = "https://web.rbsuat.com/ab/finish.html"
-            let orderBundle = { 
-                "cartItems": { 
-                    "items": [ 
-                        {
-                            "positionId": "1", 
-                            "name": "Warm Grips", 
-                            "quantity": { "value": 1.0, "measure": "штук" }, 
-                            "itemAmount": 8000, 
-                            "itemCode": "G-16",
-                            "tax": {"taxType": 1,"taxSum": 111}, 
-                            "itemPrice": 8000 
-                        },
-                        {
-                            "positionId": "2", 
-                            "name": "Warm Grips", 
-                            "quantity": { "value": 1.0, "measure": "штук" }, 
-                            "itemAmount": 8000, 
-                            "itemCode": "G-16",
-                            "tax": {"taxType": 1,"taxSum": 111}, 
-                            "itemPrice": 8000 
-                        }
-                    ] 
-                } 
-            }
-
-            let data = {
-                token,
-                amount,
-                orderNumber,
-                returnUrl,
-                orderBundle: JSON.stringify(orderBundle)
-            }
-
-            let url = "https://web.rbsuat.com/ab/rest/register.do" + "?" + qs.stringify(data)
-
-            let method = "post"
-            let headers = {'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
-
-            await axios({method, data, url, headers})
-                .then(res => response = res.data)
-            
-            return res.json(response) // return 
+            return res.json("response") // return 
             
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода test!'));
+            return next(ApiError.badRequest('Ошибка метода test! ' + "Error: " + e.message));
         }
     }
 

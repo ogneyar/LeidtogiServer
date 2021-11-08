@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Button } from '../myBootstrap'
+
 import { onClickButtonBuy } from '../../service/cart/CartBuyService'
-import './ButtonBuy.css'
 import Notification from '../myBootstrap/Notification'
+import { Button, NavLink } from '../myBootstrap'
+import { CART_ROUTE } from '../../utils/consts'
+import './ButtonBuy.css'
 
 
 const ButtonBuy = (props) => {
@@ -29,7 +31,11 @@ const ButtonBuy = (props) => {
             show={notificationVisible} 
             onHide={() => setNotificationVisible(false)}
         >
-            Товар добавлен в корзину
+            <div
+                className="d-flex justify-content-center m-4"
+            >
+                Товар добавлен в&nbsp;<NavLink to={CART_ROUTE}>корзину</NavLink>!
+            </div>
         </Notification>
         </>
     )
