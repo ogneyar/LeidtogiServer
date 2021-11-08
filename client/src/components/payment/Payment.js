@@ -49,7 +49,7 @@ const Payment = (props) => {
                 <Loading />
             :
                 <Button 
-                    variant="outline-danger"
+                    variant="danger"
                     size="lg"
                     onClick={onClickButtonPay}
                 >

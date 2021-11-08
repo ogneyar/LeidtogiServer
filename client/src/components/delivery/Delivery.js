@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import DeliverySdek from './DeliverySdek'
+import DeliverySdek from './sdek/DeliverySdek'
 import DeliveryPochta from './DeliveryPochta'
 import DeliveryBusinessLines from './DeliveryBusinessLines'
 import DeliveryPek from './DeliveryPek'

@@ -107,10 +107,10 @@ module.exports = class Sdek {
         if (!parameters.to_location) return {error: "Отсутствует объект to_location"}
         if (!parameters.packages) return {error: "Отсутствует объект packages"}
 
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "post", 
@@ -131,10 +131,10 @@ module.exports = class Sdek {
         if (!parameters.to_location) return {error: "Отсутствует объект to_location"}
         if (!parameters.packages) return {error: "Отсутствует объект packages"}
 
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "post", 
@@ -152,10 +152,10 @@ module.exports = class Sdek {
 
         if (!uuid) return {error: "Отсутствует uuid"}
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ url: this.url + "orders/" + uuid })
 
@@ -172,10 +172,10 @@ module.exports = class Sdek {
 
         if (!uuid) return {error: "Отсутствует uuid"}
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "patch",
@@ -195,10 +195,10 @@ module.exports = class Sdek {
 
         if (!uuid) return {error: "Отсутствует uuid"}
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "delete",
@@ -217,10 +217,10 @@ module.exports = class Sdek {
 
         if (!uuid) return {error: "Отсутствует uuid"}
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "post",
@@ -244,10 +244,10 @@ module.exports = class Sdek {
        if (!parameters.intake_time_from) return {error: "Отсутствует параметр intake_time_from"}
        if (!parameters.intake_time_to) return {error: "Отсутствует параметр intake_time_to"}
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "post",
@@ -266,10 +266,10 @@ module.exports = class Sdek {
     static async deliveryPoints(parameters) {
         // console.log("SDEK NEW_INTAKES RUN");
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         // console.log("token",this.token);
         
@@ -290,10 +290,10 @@ module.exports = class Sdek {
     static async locationRegions(parameters) {
         // console.log("SDEK NEW_INTAKES RUN");
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "get",
@@ -312,10 +312,10 @@ module.exports = class Sdek {
     static async locationSities(parameters) {
         // console.log("SDEK NEW_INTAKES RUN");
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "get",
@@ -340,10 +340,10 @@ module.exports = class Sdek {
             
         // console.log("parameters.orders")
 
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             method: "post",
@@ -363,10 +363,10 @@ module.exports = class Sdek {
 
        if (!uuid) return {error: "Отсутствует параметр uuid"}
         
-        if (!this.token) {
+        // if (!this.token) {
             let token = await this.getToken()
             if (token.error !== undefined) return token
-        }
+        // }
 
         let response = await this.curl({ 
             url: this.url + "print/orders/" + uuid

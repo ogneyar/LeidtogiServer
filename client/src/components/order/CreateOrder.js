@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { observer } from 'mobx-react-lite'
 
-import DeliverySdek from '../delivery/DeliverySdek'
+import DeliverySdek from '../delivery/sdek/DeliverySdek'
 import Payment from '../payment/Payment'
 import {Context} from '../..'
 import './CreateOrder.css'
@@ -20,8 +20,8 @@ const CreateOrder = observer((props) => {
     const [ newEmail, setNewEmail ] = useState("")
 
     const onHideModal = () => {
-        let alfaPaymentButton = document.getElementById("alfa-payment-button")
-        alfaPaymentButton.style.display = "none"
+        // let alfaPaymentButton = document.getElementById("alfa-payment-button")
+        // alfaPaymentButton.style.display = "none"
         setVisibleModal(false)
     }
 
@@ -70,10 +70,10 @@ const CreateOrder = observer((props) => {
                         choiseDelivery 
                         ?
                             <div className="CreateOrderChoiseDelivery" >
-                                <lable style={{position:"relative"}}>
+                                <label style={{position:"relative"}}>
                                     <p style={{position:"absolute",bottom:"-40px",left:"10px"}}>Из города Курск</p>
                                     <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(true)}}>Самовывоз</Button>
-                                </lable>
+                                </label>
                                 <Button size="lg" onClick={()=>{setСhoiseDelivery(false);setPayment(false)}}>С доставкой</Button>
                             </div>
                         :

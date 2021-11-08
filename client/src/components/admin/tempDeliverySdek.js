@@ -18,10 +18,11 @@ import {
     sdekLocationSities,
     sdekPrintOrders,
     sdekGetPrintOrders
-} from '../../http/delivery/sdekAPI'
+} from '../../../http/delivery/sdekAPI'
 
-import { Context } from '../..'
-import { Alert } from '../myBootstrap'
+import { Context } from '../../..'
+import { Alert } from '../../myBootstrap'
+import './DeliverySdek.css'
 
 
 const DeliverySdek = observer((props) => {
@@ -372,41 +373,41 @@ const DeliverySdek = observer((props) => {
 
 
     // тест виджета SDEK
-    function OnScrollMapSDEK() {
-        let forpvz = document.getElementById("forpvz")
-        let boxForMapSDEK = document.getElementById("boxForMapSDEK")
-        if (boxForMapSDEK) {
-            let bound = boxForMapSDEK.getBoundingClientRect()
-            forpvz.style.top = bound.top + "px"
-            forpvz.style.left = bound.left + "px"
-            // forpvz.style.left = "0px"
-        }else {
-            forpvz.style.display = "none"
-            document.removeEventListener("scroll", OnScrollMapSDEK)
-        }
-    }
-    useEffect(() => {
-        let forpvz = document.getElementById("forpvz")
-        let boxForMapSDEK = document.getElementById("boxForMapSDEK")
+    // function OnScrollMapSDEK() {
+    //     let forpvz = document.getElementById("forpvz")
+    //     let boxForMapSDEK = document.getElementById("boxForMapSDEK")
+    //     if (boxForMapSDEK) {
+    //         let bound = boxForMapSDEK.getBoundingClientRect()
+    //         forpvz.style.top = bound.top + "px"
+    //         forpvz.style.left = bound.left + "px"
+    //         // forpvz.style.left = "0px"
+    //     }else {
+    //         forpvz.style.display = "none"
+    //         document.removeEventListener("scroll", OnScrollMapSDEK)
+    //     }
+    // }
+    // useEffect(() => {
+    //     let forpvz = document.getElementById("forpvz")
+    //     let boxForMapSDEK = document.getElementById("boxForMapSDEK")
         
-        // console.log(boxForMapSDEK.clientWidth)
+    //     // console.log(boxForMapSDEK.clientWidth)
 
-        if (boxForMapSDEK) {
-            let bound = boxForMapSDEK.getBoundingClientRect()
-            if (forpvz) {
-                forpvz.style.display = "block"
-                forpvz.style.position = "fixed"
-                forpvz.style.top = bound.top + "px"
-                forpvz.style.left = bound.left + "px"
-                // forpvz.style.left = "0px"
+    //     if (boxForMapSDEK) {
+    //         let bound = boxForMapSDEK.getBoundingClientRect()
+    //         if (forpvz) {
+    //             forpvz.style.display = "block"
+    //             forpvz.style.position = "fixed"
+    //             forpvz.style.top = bound.top + "px"
+    //             forpvz.style.left = bound.left + "px"
+    //             // forpvz.style.left = "0px"
                 
-                forpvz.style.width = boxForMapSDEK.clientWidth + "px"
+    //             forpvz.style.width = boxForMapSDEK.clientWidth + "px"
 
-                document.addEventListener("scroll", OnScrollMapSDEK)
-            }
-        }
-    // eslint-disable-next-line
-    },[])
+    //             document.addEventListener("scroll", OnScrollMapSDEK)
+    //         }
+    //     }
+    // // eslint-disable-next-line
+    // },[])
     // тест виджета SDEK
     // return (<div id="boxForMapSDEK" style={{width:"100%", height:"600px"}} />)
 
@@ -419,7 +420,9 @@ const DeliverySdek = observer((props) => {
 
             {/* <hr /><br /> */}
 
-            <div>
+            <div
+                style={{position:"absolute",display:"none"}}
+            >
                 {info?.total_sum
                 ?
                     <div className="mt-3 mb-3">
@@ -441,18 +444,16 @@ const DeliverySdek = observer((props) => {
                 :null
                 }
 
-                <div className="mb-3">
+                {/* <div className="mb-3">
                     <select className="DeliverySdekTariff"
                         value={tariff} 
                         onChange={e => setTariff(e.target.value)}
                         disabled
                     >
-                        {/* Доставка до двери предполагает заказ курьера */}
                         <option value="138">До склада СДЭК</option>
                         <option value="139">Доставка до Двери</option>
-                        {/* <option value="ххх" disabled>Доставка курьером</option> */}
                     </select>
-                </div>
+                </div> */}
 
                 <div className="d-flex flex-row align-items-center flex-wrap pb-2">
                     
@@ -556,82 +557,83 @@ const DeliverySdek = observer((props) => {
                         >
                             Список населенных пунктов
                         </Button>
-                    <div />
+                        
+                    </div>
+
+                    <hr />
+
+                    <div 
+                        className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
+                    >
+                        <Button
+                            variant="outline-primary"
+                            onClick={onClickButtonPrintOrders}
+                        >
+                            Формирование квитанции
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={onClickButtonGetPrintOrders}
+                        >
+                            Получение квитанции
+                        </Button>
+                    </div>
+
                 </div>
 
-                <hr />
-
-                <div 
-                    className="mt-3 d-flex flex-row align-items-end justify-content-between flex-wrap"
-                >
-                    <Button
-                        variant="outline-primary"
-                        onClick={onClickButtonPrintOrders}
-                    >
-                        Формирование квитанции
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={onClickButtonGetPrintOrders}
-                    >
-                        Получение квитанции
-                    </Button>
-                </div>
 
             </div>
 
+            {/* <br />
+            <hr /> */}
+            
+            <YMaps>
+                <Map 
+                    // defaultState={{ 
+                    state={{ 
+                        // Широта (latitude), Долгота (longitude)
+                        // center: [55.75, 37.57], // Москва
+                        // center: [48.177645, 40.802384], // Белая Калитва
+                        center: [latitude, longitude], 
+                        // type: 'yandex#hybrid',
+                        type: 'yandex#map',
+                        zoom: 10
+                    }} 
+                    // width="1080px" 
+                    width="100%" 
+                    height="400px" >
+                
+                    {placemark && Array.isArray(placemark) && placemark[0]?.latitude !== undefined
+                    ?
+                        placemark.map(i => 
+                            <Placemark 
+                                key={i?.latitude + i?.longitude}
+                                // geometry={[55.684758, 37.738521]} 
+                                geometry={[i?.latitude, i?.longitude]} 
+                                options={{
+                                    // preset: "islands#yellowStretchyIcon"
+                                    preset: "islands#dotIcon"
+                                }} 
+                                onClick={()=> console.log("код ПВЗ",i?.code)}
+                            />
+                        )
+                    :null}
+
+                
+                </Map>
+            </YMaps>
+
+            <Alert 
+                show={alertVisible} 
+                onHide={() => {
+                    setAlertVisible(false)
+                    setTextAlert("")
+                }}
+            >
+                {ReactHtmlParser(textAlert)}
+            </Alert> 
 
         </div>
-
-        <br />
-        <hr />
-        
-        <YMaps>
-            <Map 
-                // defaultState={{ 
-                state={{ 
-                    // Широта (latitude), Долгота (longitude)
-                    // center: [55.75, 37.57], // Москва
-                    // center: [48.177645, 40.802384], // Белая Калитва
-                    center: [latitude, longitude], 
-                    // type: 'yandex#hybrid',
-                    type: 'yandex#map',
-                    zoom: 10
-                }} 
-                // width="1080px" 
-                width="100%" 
-                height="400px" >
-            
-                {placemark && Array.isArray(placemark) && placemark[0]?.latitude !== undefined
-                ?
-                    placemark.map(i => 
-                        <Placemark 
-                            key={i?.latitude + i?.longitude}
-                            // geometry={[55.684758, 37.738521]} 
-                            geometry={[i?.latitude, i?.longitude]} 
-                            options={{
-                                // preset: "islands#yellowStretchyIcon"
-                                preset: "islands#dotIcon"
-                            }} 
-                            onClick={()=> console.log("код ПВЗ",i?.code)}
-                        />
-                    )
-                :null}
-
-            
-            </Map>
-        </YMaps>
-
-        <Alert 
-            show={alertVisible} 
-            onHide={() => {
-                setAlertVisible(false)
-                setTextAlert("")
-            }}
-        >
-            {ReactHtmlParser(textAlert)}
-        </Alert> 
-    </div>
     )
 })
 
