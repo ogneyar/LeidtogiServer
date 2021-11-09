@@ -1,5 +1,7 @@
-### сайт - https://leidtogi.ru
+### Сайт - https://leidtogi.ru
 
 ## Стек - M.E.R.N.
 
 ### MySQL Express React NodeJS
+
+## Серверная часть
