@@ -8,7 +8,7 @@ const models = require('./models/models')
 const router = require('./routes/index')
 const errorHandler = require('./middleware/errorHandlingMiddleware')
 const path = require('path')
-const favicon = require('serve-favicon');
+const favicon = require('serve-favicon')
 
 const PORT = process.env.PORT || 3000
 const CORS_URL = process.env.CORS_URL || "http://leidtogi.ru"
