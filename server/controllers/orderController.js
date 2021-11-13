@@ -102,9 +102,9 @@ class OrderController {
     
     async setPay(req, res, next) {
         try {
-            const { id } = req.params
+            const { uuid } = req.params
             const order = await Order.update({pay:true},{
-                where: { id }
+                where: { uuid }
             })
             if (order) {
                 return res.json(order) // return 

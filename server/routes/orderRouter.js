@@ -6,7 +6,7 @@ const checkRole = require('../middleware/checkRoleMiddleware')
 router.post('/', orderController.create) // создание новой записи
 // router.get('/', orderController.getAll) // получение всех записей
 
-router.put('/pay/:id', orderController.setPay) // редактирование записей
+router.put('/pay/:uuid', orderController.setPay) // редактирование записей
 
 router.get('/test', orderController.test) // 
 
