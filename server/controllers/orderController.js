@@ -17,9 +17,11 @@ class OrderController {
             if (!body.uuid) return res.json({error: "Отсутствует uuid в теле запроса"}) 
             if (!body.email) return res.json({error: "Отсутствует email в теле запроса"})
             if (!body.url) return res.json({error: "Отсутствует url в теле запроса"}) 
+            let lastIndex
             let items = JSON.parse(body.cart).map((item, index) => {
+                lastIndex = index + 1
                 return {
-                    positionId: index + 1,
+                    positionId: lastIndex,
                     name: item.name,
                     quantity: { value: item.value, measure: "штук" },
                     itemCode: item.article,
@@ -27,6 +29,16 @@ class OrderController {
                     itemPrice: item.price * 100 // перевод в копейки
                 }
             })
+            if (body.deliverySum !== undefined) {
+                items = [ ...items, {
+                    positionId: lastIndex + 1,
+                    name: "Доставка",
+                    quantity: { value: 1, measure: "штук" },
+                    itemCode: "0001",
+                    tax: { taxType: 6 }, 
+                    itemPrice: body.deliverySum * 100 // перевод в копейки
+                }]
+            }
             let cart = JSON.stringify(items)
             let uuid = body.uuid
             let email = body.email
@@ -34,11 +46,11 @@ class OrderController {
             
             let create = { cart, uuid, email }
             // client - user_id
-            if (body.client) create = {...create, client: body.client}
-            if (body.phone) create = {...create, phone: body.phone}
-            if (body.role) create = {...create, role: body.role}
-            if (body.address) create = {...create, address: body.address}
-            if (body.delivery) create = {...create, delivery: body.delivery}
+            if (body.client !== undefined) create = {...create, client: body.client}
+            if (body.phone !== undefined) create = {...create, phone: body.phone}
+            if (body.role !== undefined) create = {...create, role: body.role}
+            if (body.address !== undefined) create = {...create, address: body.address}
+            if (body.delivery !== undefined) create = {...create, delivery: body.delivery} 
 
             const order = await Order.create(create)
 
@@ -80,11 +92,26 @@ class OrderController {
                 where: { id }
             })
             if (order) {
-                res.json(order) // return 
+                return res.json(order) // return 
             }
             return res.json(null) // return 
         }catch(e) {
             return next(ApiError.badRequest('Ошибка метода getOrder! ' + "Error: " + e.message));
+        }
+    }
+    
+    async setPay(req, res, next) {
+        try {
+            const { id } = req.params
+            const order = await Order.update({pay:true},{
+                where: { id }
+            })
+            if (order) {
+                return res.json(order) // return 
+            }
+            return res.json(null) // return 
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода setPay! ' + "Error: " + e.message));
         }
     }
 
