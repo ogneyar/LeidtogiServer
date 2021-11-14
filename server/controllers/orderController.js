@@ -13,10 +13,10 @@ class OrderController {
     async create(req, res, next) {
         try {
             const body = req.body
-            if (!body) return res.json({error: "Отсутствует тело запроса"}) 
-            if (!body.cart) return res.json({error: "Отсутствует корзина в теле запроса"}) 
-            if (!body.email) return res.json({error: "Отсутствует email в теле запроса"})
-            if (!body.url) return res.json({error: "Отсутствует url в теле запроса"})
+            if (body === undefined) return res.json({error: "Отсутствует тело запроса"}) 
+            if (body.cart === undefined) return res.json({error: "Отсутствует корзина в теле запроса"}) 
+            if (body.email === undefined) return res.json({error: "Отсутствует email в теле запроса"})
+            if (body.url === undefined) return res.json({error: "Отсутствует url в теле запроса"})
             let lastIndex
             let items = JSON.parse(body.cart).map((item, index) => {
                 lastIndex = index + 1
