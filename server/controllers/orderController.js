@@ -1,9 +1,11 @@
 const axios = require('axios')
+const { v4 } = require('uuid')
 const qs = require('qs')
 
 const { Order } = require('../models/models')
 const ApiError = require('../error/apiError')
 const AlfaBank = require('../service/payment/AlfaBank')
+const sendMessage = require('../service/telegram/sendMessage')
 
 
 class OrderController {
@@ -11,12 +13,10 @@ class OrderController {
     async create(req, res, next) {
         try {
             const body = req.body
-
             if (!body) return res.json({error: "Отсутствует тело запроса"}) 
             if (!body.cart) return res.json({error: "Отсутствует корзина в теле запроса"}) 
-            if (!body.uuid) return res.json({error: "Отсутствует uuid в теле запроса"}) 
             if (!body.email) return res.json({error: "Отсутствует email в теле запроса"})
-            if (!body.url) return res.json({error: "Отсутствует url в теле запроса"}) 
+            if (!body.url) return res.json({error: "Отсутствует url в теле запроса"})
             let lastIndex
             let items = JSON.parse(body.cart).map((item, index) => {
                 lastIndex = index + 1
@@ -40,10 +40,10 @@ class OrderController {
                 }]
             }
             let cart = JSON.stringify(items)
-            let uuid = body.uuid
+            let uuid = v4()
             let email = body.email
             let url = body.url
-            
+
             let create = { cart, uuid, email }
             // client - user_id
             if (body.client !== undefined) create = {...create, client: body.client}
@@ -105,8 +105,13 @@ class OrderController {
             const { uuid } = req.params
             const order = await Order.update({pay:true},{
                 where: { uuid }
-            })
+            })            
             if (order) {
+                const data = await Order.findOne({
+                    where: { uuid }
+                })
+                if (data && data.id !== undefined && data.email !== undefined) 
+                    sendMessage(`Оплата заказа №${data.id} произведена.\n\nEmail клиента ${data.email}`)
                 return res.json(order) // return 
             }
             return res.json(null) // return 
