@@ -8,6 +8,13 @@ module.exports = new Sequelize(
     {
         dialect: process.env.DB,
         host: process.env.DB_HOST,
-        port: process.env.DB_PORT 
+        port: process.env.DB_PORT,
+        dialectOptions: {
+            charset: 'utf8mb4'
+        },
+        define: {
+            charset: 'utf8',
+            collate: 'utf8_general_ci',
+        },
     }
 )
