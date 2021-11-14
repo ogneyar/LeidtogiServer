@@ -14,7 +14,13 @@ const PORT = process.env.PORT || 3000
 const CORS_URL = process.env.CORS_URL || "http://leidtogi.ru"
 const CORS_URL_SECURE = process.env.CORS_URL_SECURE || "https://leidtogi.ru"
 
-let whitelist = [CORS_URL, CORS_URL_SECURE, 'http://web.pzmarket.ru', 'https://web.pzmarket.ru']
+let whitelist = [
+    CORS_URL, CORS_URL_SECURE, 
+    'http://web.pzmarket.ru', 'https://web.pzmarket.ru',
+    'http://pzmarket.ru', 'https://pzmarket.ru',
+    'http://leidtogi.site', 'https://leidtogi.site',
+    'http://leidtogi.ru', 'https://leidtogi.ru',
+]
 let corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (whitelist.indexOf(req.header('Origin')) !== -1) {
