@@ -110,8 +110,10 @@ class OrderController {
                 const data = await Order.findOne({
                     where: { uuid }
                 })
-                if (data && data.id !== undefined && data.email !== undefined) 
+                if (data && data.id !== undefined && data.email !== undefined) {
+                    // await убрал, так как мне не нужен ответ от сервера
                     sendMessage(`Оплата заказа №${data.id} произведена.\n\nEmail клиента ${data.email}`)
+                }
                 return res.json(order) // return 
             }
             return res.json(null) // return 
