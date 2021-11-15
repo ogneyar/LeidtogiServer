@@ -5,4 +5,4 @@ mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 't
 // заливаем базу
 mysql --host=127.0.0.1 -p -u root --default-character-set=utf8 mern < mern.sql
 
-ALFA_BANK_API_URL=https://web.rbsuat.com/ab/rest/
+service nginx ( start | stop | restart )
