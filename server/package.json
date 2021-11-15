@@ -1,8 +1,8 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "server leidtogi",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon --max-http-header-size=16384 server.js"
   },
