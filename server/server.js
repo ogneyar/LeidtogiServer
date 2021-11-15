@@ -19,6 +19,7 @@ let whitelist = [
     'http://web.pzmarket.ru', 'https://web.pzmarket.ru',
     'http://pzmarket.ru', 'https://pzmarket.ru',
     'http://leidtogi.site', 'https://leidtogi.site',
+    'http://www.leidtogi.ru', 'https://www.leidtogi.ru',
     'http://leidtogi.ru', 'https://leidtogi.ru',
 ]
 let corsOptionsDelegate = function (req, callback) {
@@ -41,12 +42,13 @@ app.use(favicon(path.join(__dirname,'static','favicon.ico')))
 app.use(fileUpload({}))
 app.use('/api', router)
 app.get('/', (req, res) => {
-    if (CORS_URL === "http://localhost:3000") {
+    res.sendFile(path.join(__dirname,'static','welcome.html'))
+    // if (CORS_URL === "http://localhost:3000") {
         // res.send("MERN server - приветствует тебя!")
-        res.sendFile(path.join(__dirname,'static','welcome.html'))
-    }else {
-        res.redirect(CORS_URL)
-    }    
+        // res.sendFile(path.join(__dirname,'static','welcome.html'))
+    // }else {
+    //     res.redirect(CORS_URL)
+    // }    
 })
 app.get('/undefined', (req, res) => {
     res.status(200)
