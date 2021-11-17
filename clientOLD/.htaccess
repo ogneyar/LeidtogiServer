@@ -1,7 +1,0 @@
-SetEnv GHOST_NODE_VERSION_CHECK false
-PassengerStartupFile index.js
-PassengerResolveSymlinksInDocumentRoot on
-Require all granted
-PassengerAppType node
-PassengerAppRoot /home/a0525484/domains/web.pzmarket.ru/public_html
-Options -MultiViews 
