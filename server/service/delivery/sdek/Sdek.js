@@ -264,7 +264,7 @@ module.exports = class Sdek {
 
 
     static async deliveryPoints(parameters) {
-        // console.log("SDEK NEW_INTAKES RUN");
+        // console.log("SDEK DELIVERY_POINTS RUN");
         
         // if (!this.token) {
             let token = await this.getToken()
@@ -288,7 +288,7 @@ module.exports = class Sdek {
     }
 
     static async locationRegions(parameters) {
-        // console.log("SDEK NEW_INTAKES RUN");
+        // console.log("SDEK LOCATION_REGIONS RUN");
         
         // if (!this.token) {
             let token = await this.getToken()
@@ -310,7 +310,7 @@ module.exports = class Sdek {
     }
 
     static async locationSities(parameters) {
-        // console.log("SDEK NEW_INTAKES RUN");
+        // console.log("SDEK LOCATION_SITIES RUN");
         
         // if (!this.token) {
             let token = await this.getToken()
