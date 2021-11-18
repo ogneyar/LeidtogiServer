@@ -3,9 +3,11 @@ const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
+const sharp = require('sharp')
 
 const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
 const createProduct = require('../service/product/createProduct.js')
+const translite = require('../service/translite.js')
 
 
 class ProductController {
@@ -14,11 +16,23 @@ class ProductController {
         try {
             let {name, price, brandId, categoryId, have, article, promo, country, files, info, size} = req.body
             let imgBig, imgSmall, fileName
-            if (req.files && req.files.img_big && req.files.img_small) {
-                imgBig =req.files.img_big
-                imgSmall =req.files.img_small
+            if (req.files && req.files.img) {
+
+                imgBig =req.files.img
+                let imgSmallData = await sharp(imgBig.data)
+                    .resize(200, 200)
+                    // .toFile('ouput.jpg', function(err) {})
+                    // .toFile(imgSmall, function(err) {})
+                    .toBuffer()
+
+                // console.log(" ");
+                // console.log(imgBig);
+                // console.log(" ");
+
+                imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
+                    
                 const brand = await Brand.findOne({
-                    where: {id:product.brandId}
+                    where: {id: brandId}
                 })
                 fileName = uuid.v4() + '.jpg'
                 
@@ -26,16 +40,22 @@ class ProductController {
 
                 imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
                 imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
-                files = `[{"big": "${fileName}", "small": "${fileName}"}]`
+                
+                files = `[{"big": "${brand.name.toLowerCase()}/${article}/big/${fileName}", "small": "${brand.name.toLowerCase()}/${article}/small/${fileName}"}]`
+
             }else if (!files) {
                 files = "[{}]"
-            } 
+            }
+
+            let url = translite(name) + "_" + article.toString()
             
-            const product = await createProduct(name, price, have, article, promo, country, brandId, categoryId, files, info, size)
+            const product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
             return res.json(product)
+            // return res.json("product")
 
         }catch (e) {
+            // console.log(e.message);
             return next(ApiError.badRequest(e.message))
         }
     }

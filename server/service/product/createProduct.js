@@ -1,7 +1,7 @@
 const {Product, ProductInfo, ProductSize} = require('../../models/models')
 
 
-async function createProduct(name, price, have, article, promo, country, brandId, categoryId, files, info, size) {
+async function createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size) {
 
     const oldProduct = await Product.findOne({
         where: {article}
@@ -18,7 +18,11 @@ async function createProduct(name, price, have, article, promo, country, brandId
         })
     }
 
-    const product = await Product.create({name, price, have, article, promo, country, brandId, categoryId, img: files})
+    // console.log(" ");
+    // console.log("price",price);
+    // console.log(" ");
+
+    const product = await Product.create({name, url, price, have, article, promo, country, brandId, categoryId, img: files})
 
     if (info) {
         let inf = JSON.parse(info)
