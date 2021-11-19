@@ -29,10 +29,14 @@ class RatingController {
     async getOne(req, res, next) { // рейтинг по одному товару одного клиента
         try {
             const {productId, userId} = req.query 
-            const ratings = await Rating.findOne({
-                where: { productId, userId }
-            })
-            return res.json(ratings) // return Object
+            if (userId) {
+                const ratings = await Rating.findOne({
+                    where: { productId, userId }
+                })
+                return res.json(ratings) // return Object
+            }else {
+                return res.json({error:"Пользователь не авторизован!"})
+            }
         }catch(e) {
             return next(ApiError.badRequest('Ошибка метода getOne!'))
         }
