@@ -1,4 +1,4 @@
-### Сайт - https://leidtogi.ru
+### Сайт - https://server.leidtogi.ru
 
 ## Стек - M.E.R.N.
 
