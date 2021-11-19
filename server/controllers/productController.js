@@ -6,6 +6,7 @@ const fs = require('fs')
 const sharp = require('sharp')
 
 const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
+const deleteOldFiles = require('../service/deleteOldFiles.js')
 const createProduct = require('../service/product/createProduct.js')
 const translite = require('../service/translite.js')
 
@@ -24,10 +25,6 @@ class ProductController {
                     // .toFile('ouput.jpg', function(err) {})
                     // .toFile(imgSmall, function(err) {})
                     .toBuffer()
-
-                // console.log(" ");
-                // console.log(imgBig);
-                // console.log(" ");
 
                 imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
                     
@@ -138,7 +135,7 @@ class ProductController {
                 where: {id:product.brandId}
             })
           
-            createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), product.article)
+            deleteOldFiles(brand.name.toLowerCase(), product.article)
     
             await ProductInfo.destroy({
                 where: {productId: id}
@@ -158,7 +155,18 @@ class ProductController {
     async edit(req, res, next) {
         try {
             const {id} = req.params
-            const body = req.body
+            let body = req.body
+
+            if (body.name !== undefined) {
+                const product = await Product.findOne({
+                    where: {id}
+                })
+                if (product.name !== body.name) {
+                    let url = translite(body.name) + "_" + body.article.toString()
+                    body = { ...body, url }
+                }
+            }
+
             const response = await Product.update(body, {
                 where: { id }
             })
@@ -235,34 +243,48 @@ class ProductController {
             let {name, price, brandId, categoryId, info, have, article, description, promo, country, size, equipment} = req.body
 
             let imgBig, imgSmall, fileName
-            if (req.files && req.files.img_big && req.files.img_small) {
-                imgBig =req.files.img_big
-                imgSmall =req.files.img_small
+            if (req.files && req.files.img) {
+                imgBig =req.files.img
+                let imgSmallData = await sharp(imgBig.data)
+                    .resize(200, 200)
+                    .toBuffer()
+                imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
             }
             let files
             if (imgBig && imgSmall) {
                 const brand = await Brand.findOne({
-                    where: {id:product.brandId}
+                    where: {id: brandId}
                 })
                 fileName = uuid.v4() + '.jpg'
+
+                const product = await Product.findOne({
+                    where: {id}
+                })
+
+                if (product.article !== article) {
+                    deleteOldFiles(brand.name.toLowerCase(), article)
+                }
 
                 createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
 
                 imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
                 imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
-                files = [{"big": fileName, "small": fileName}]
+
+                files = `[{"big": "${brand.name.toLowerCase()}/${article}/big/${fileName}", "small": "${brand.name.toLowerCase()}/${article}/small/${fileName}"}]`
             }
-            
+
+            let url = translite(name) + "_" + article.toString()
+
             let product
 
             if (files) {
                 product = await Product.update(
-                    {name, price, have, article, description, promo, equipment, country, brandId, categoryId, img: JSON.stringify(files)}, 
+                    {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId, img: files}, 
                     {where: { id }}
                 )
             }else {
                 product = await Product.update(
-                    {name, price, have, article, description, promo, equipment, country, brandId, categoryId}, 
+                    {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId}, 
                     {where: { id }}
                 )
             }
