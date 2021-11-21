@@ -9,6 +9,7 @@ const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDelet
 const deleteOldFiles = require('../service/deleteOldFiles.js')
 const createProduct = require('../service/product/createProduct.js')
 const translite = require('../service/translite.js')
+const renameFolder = require('../service/renameFolder')
 
 
 class ProductController {
@@ -17,28 +18,62 @@ class ProductController {
         try {
             let {name, price, brandId, categoryId, have, article, promo, country, files, info, size} = req.body
             let imgBig, imgSmall, fileName
-            if (req.files && req.files.img) {
-
-                imgBig =req.files.img
-                let imgSmallData = await sharp(imgBig.data)
-                    .resize(200, 200)
-                    // .toFile('ouput.jpg', function(err) {})
-                    // .toFile(imgSmall, function(err) {})
-                    .toBuffer()
-
-                imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
-                    
+            let link = ''
+            if (req.files && req.files.image1) {
+   
                 const brand = await Brand.findOne({
                     where: {id: brandId}
                 })
-                fileName = uuid.v4() + '.jpg'
-                
                 createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
 
-                imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
-                imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
-                
-                files = `[{"big": "${brand.name.toLowerCase()}/${article}/big/${fileName}", "small": "${brand.name.toLowerCase()}/${article}/small/${fileName}"}]`
+                for(let i = 0; i < 4; i++) {
+
+                    switch(i) {
+                        case 0:
+                            if (req.files.image1) imgBig = req.files.image1
+                            else continue
+                        break;
+                        case 1:
+                            if (req.files.image2) {
+                                imgBig = req.files.image2
+                                link += ","
+                            }else continue
+                        break;
+                        case 2:
+                            if (req.files.image3) {
+                                imgBig = req.files.image3
+                                link += ","
+                            }else continue
+                        break;
+                        case 3:
+                            if (req.files.image4) {
+                                imgBig = req.files.image4
+                                link += ","
+                            }else continue
+                        break;
+                        default:
+                        break;
+                    }
+                    
+                    let imgSmallData = await sharp(imgBig.data)
+                        .resize(200, 200)
+                        // .toFile('ouput.jpg', function(err) {})
+                        // .toFile(imgSmall, function(err) {})
+                        .toBuffer()
+
+                    imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
+                     
+                    
+                    fileName = uuid.v4() + '.jpg'
+
+                    imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
+                    imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
+                    
+                    link = link + `{"big": "${brand.name.toLowerCase()}/${article}/big/${fileName}", "small": "${brand.name.toLowerCase()}/${article}/small/${fileName}"}`
+
+                }
+
+                files = `[${link}]`
 
             }else if (!files) {
                 files = "[{}]"
@@ -49,7 +84,7 @@ class ProductController {
             const product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
             return res.json(product)
-            // return res.json("product")
+            // return res.json("files: " + files)
 
         }catch (e) {
             // console.log(e.message);
@@ -241,53 +276,104 @@ class ProductController {
         const {id} = req.params
         try {
             let {name, price, brandId, categoryId, info, have, article, description, promo, country, size, equipment} = req.body
-
-            let imgBig, imgSmall, fileName
-            if (req.files && req.files.img) {
-                imgBig =req.files.img
-                let imgSmallData = await sharp(imgBig.data)
-                    .resize(200, 200)
-                    .toBuffer()
-                imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
-            }
             let files
-            if (imgBig && imgSmall) {
-                const brand = await Brand.findOne({
-                    where: {id: brandId}
-                })
-                fileName = uuid.v4() + '.jpg'
+            let imgBig, imgSmall, fileName
+            let link = ''
 
-                const product = await Product.findOne({
-                    where: {id}
-                })
+            const brand = await Brand.findOne({
+                where: {id: brandId}
+            })                
+            const product = await Product.findOne({
+                where: {id}
+            })
+            
+            let img = product.img
 
-                if (product.article !== article) {
-                    deleteOldFiles(brand.name.toLowerCase(), article)
+            if (product.article !== article) {
+                // deleteOldFiles(brand.name.toLowerCase(), article)
+                let ok = renameFolder(brand.name.toLowerCase(), product.article, article)
+
+                if (ok) {
+                    img = img.replace(new RegExp(`/${product.article}/`,'g'), `/${article}/`)
+                }else {
+                    article = product.article
+                }
+            }
+
+            if (req.files && (req.files.image1 || req.files.image2 || req.files.image3 || req.files.image4)) {   
+                
+                if (img === "[{}]") createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
+
+                img = JSON.parse(img)
+
+                for(let i = 0; i < 4; i++) {
+
+                    switch(i) {
+                        case 0: 
+                            if (req.files.image1) { 
+                                imgBig = req.files.image1
+                            }else { 
+                                if(img[i].big !== undefined) link += "," + JSON.stringify(img[i])
+                                continue
+                            } 
+                        break;
+                        case 1: 
+                            if (req.files.image2) { 
+                                imgBig = req.files.image2; 
+                                link += ","; 
+                            }else { 
+                                if(img[i].big !== undefined) link += "," + JSON.stringify(img[i])
+                                continue; 
+                            } 
+                        break;
+                        case 2: 
+                            if (req.files.image3) { 
+                                imgBig = req.files.image3; 
+                                link += ","; 
+                            }else { 
+                                if(img[i].big !== undefined) link += "," + JSON.stringify(img[i])
+                                continue; 
+                            } 
+                        break;
+                        case 3: 
+                            if (req.files.image4) { 
+                                imgBig = req.files.image4; 
+                                link += ","; 
+                            }else {
+                                if(img[i].big !== undefined) link += "," + JSON.stringify(img[i])
+                                continue;
+                            } 
+                        break;
+                        default: break;
+                    }
+                    
+                    let imgSmallData = await sharp(imgBig.data)
+                        .resize(200, 200)
+                        .toBuffer()
+
+                    imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
+                                         
+                    fileName = uuid.v4() + '.jpg'
+
+                    imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
+                    imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
+                    
+                    link = link + `{"big": "${brand.name.toLowerCase()}/${article}/big/${fileName}", "small": "${brand.name.toLowerCase()}/${article}/small/${fileName}"}`
+
                 }
 
-                createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
+                files = `[${link}]`
 
-                imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
-                imgSmall.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'small', fileName))
-
-                files = `[{"big": "${brand.name.toLowerCase()}/${article}/big/${fileName}", "small": "${brand.name.toLowerCase()}/${article}/small/${fileName}"}]`
+            }else if (!files) {
+                files = img
             }
 
             let url = translite(name) + "_" + article.toString()
 
-            let product
-
-            if (files) {
-                product = await Product.update(
-                    {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId, img: files}, 
-                    {where: { id }}
-                )
-            }else {
-                product = await Product.update(
-                    {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId}, 
-                    {where: { id }}
-                )
-            }
+            let response = await Product.update(
+                {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId, img: files}, 
+                {where: { id }}
+            )
     
             await ProductInfo.destroy({
                 where: {productId: id}
@@ -346,7 +432,8 @@ class ProductController {
                 })
             }  
     
-            return res.json(product)
+            return res.json(response)
+            // return res.json("files " + files)
 
         }catch (e) {
             return next(ApiError.badRequest(e.message))
