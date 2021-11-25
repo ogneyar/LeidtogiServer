@@ -1,3 +1,3 @@
 cd server
 
-r
+s
