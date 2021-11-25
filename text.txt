@@ -6,7 +6,3 @@ mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 't
 mysql --host=127.0.0.1 -p -u root --default-character-set=utf8 mern < mern.sql
 
 service nginx ( start | stop | restart )
-
-
-// добавить надо на server.pzmarket.ru
-ALTER TABLE `products` ADD `url` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'Ссылка на товар' AFTER `name`;
