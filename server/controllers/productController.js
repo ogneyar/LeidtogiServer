@@ -135,6 +135,19 @@ class ProductController {
         }
     }
 
+    async getOneOnUrl(req, res, next) {
+        try {
+            const {url} = req.params
+            const product = await Product.findOne({
+                where: {url},
+                include: [{model: ProductInfo, as: 'info'},{model: ProductSize, as: 'size'}]
+            })
+            return res.json(product)
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода getOneOnUrl!'));
+        }
+    }
+
     async getInfo(req, res, next) {
         try {
             const {id} = req.params

@@ -11,6 +11,7 @@ router.get('/', productController.getAll)
 router.get('/temp', productController.temp) // использовал этот роут для удаления нулевых позиций
 
 router.get('/:id', productController.getOne)
+router.get('/url/:url', productController.getOneOnUrl)
 router.get('/info/:id', productController.getInfo)
 router.get('/size/:id', productController.getSize)
 router.put('/edit_sizes/:id', productController.editSizes)
