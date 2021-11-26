@@ -3,7 +3,7 @@ const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
-const sharp = require('sharp')
+// const sharp = require('sharp')
 
 const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
 const deleteOldFiles = require('../service/deleteOldFiles.js')
@@ -55,15 +55,13 @@ class ProductController {
                         break;
                     }
                     
-                    let imgSmallData = await sharp(imgBig.data)
-                        .resize(200, 200)
-                        // .toFile('ouput.jpg', function(err) {})
-                        // .toFile(imgSmall, function(err) {})
-                        .toBuffer()
-
-                    imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
+                    // let imgSmallData = await sharp(imgBig.data)
+                    //     .resize(200, 200)
+                    //     .toBuffer()
+                    // imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
                      
-                    
+                    imgSmall = imgBig
+
                     fileName = uuid.v4() + '.jpg'
 
                     imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
@@ -360,12 +358,13 @@ class ProductController {
                         default: break;
                     }
                     
-                    let imgSmallData = await sharp(imgBig.data)
-                        .resize(200, 200)
-                        .toBuffer()
+                    // let imgSmallData = await sharp(imgBig.data)
+                    //     .resize(200, 200)
+                    //     .toBuffer()
+                    // imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
 
-                    imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
-                                         
+                    imgSmall = imgBig
+                    
                     fileName = uuid.v4() + '.jpg'
 
                     imgBig.mv(path.resolve(__dirname, '..', 'static', brand.name.toLowerCase(), article, 'big', fileName))
