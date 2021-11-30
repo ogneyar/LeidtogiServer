@@ -85,6 +85,21 @@ class OrderController {
         }
     }
 
+    async getOrdersForUser(req, res, next) {
+        try {
+            const { user_id } = req.params
+            const order = await Order.findAll({
+                where: { client: user_id }
+            })
+            if (order) {
+                return res.json(order) // return 
+            }
+            return res.json(null) // return 
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода getOrdersForUser! ' + "Error: " + e.message));
+        }
+    
+    }
     async getOrder(req, res, next) {
         try {
             const { id } = req.params
