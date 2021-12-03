@@ -57,7 +57,7 @@ class OrderController {
             if (!order.id) return res.json({error: "Отсутствует номер заказа (order.id) в ответе от БД"}) 
             let orderNumber = order.id
 
-            let returnUrl = url + "success/" + uuid + "/" + orderNumber
+            let returnUrl = url + "success?uuid=" + uuid + "&id=" + orderNumber
 
             let failUrl = url + "error"
 
