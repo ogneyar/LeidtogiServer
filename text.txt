@@ -10,3 +10,6 @@ SELECT User, Host FROM mysql.user;
 
 // запуск веб-сервера, остановка, перезагрузка
 service nginx ( start | stop | restart | reload )
+
+
+SMTP_PORT_SECURE=465
