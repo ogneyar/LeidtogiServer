@@ -149,7 +149,7 @@ class UserController {
 
     async activate(req, res, next) {
         try {
-            const {link} = req.params
+            const { link } = req.params
             const id = req.body.id
             const user = await User.findOne({where:{activationLink:link}})
             if (!user) {
@@ -164,7 +164,35 @@ class UserController {
 
             return res.json({ok:true}) // return boolean
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода refresh!'));
+            return next(ApiError.badRequest('Ошибка метода activate!'));
+        }
+    }
+
+    async retryMail(req, res, next) {
+        try {
+            const { id } = req.params
+            const user = await User.findOne({
+                where:{ id }
+            })
+            if (!user) {
+                // return next(ApiError.badRequest('Такой пользователь не найден!'))
+                return res.json({error:'Такой пользователь не найден!'})
+            }
+            let response, ok
+            await mailService.sendActivationMail(user.email, user.activationLink)
+                .then(data => {
+                    response = data
+                    ok = true
+                })
+                .catch(err => {
+                    response = err
+                    ok = false
+                })
+
+            return res.json({ok, response}) // return boolean
+        }catch(e) {
+            // return next(ApiError.badRequest('Ошибка метода retryMail!'));
+            return res.json({error:'Ошибка метода retryMail!'})
         }
     }
 
