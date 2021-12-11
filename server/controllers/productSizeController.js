@@ -7,7 +7,7 @@ class ProductSizeController {
         try {
             return res.json(await ProductSize.findAll())
         }catch(e) {
-            return res.json({error:'Ошибка метода getOne!'})
+            return res.json({error:'Ошибка метода getAll!'})
         }
     }
 
