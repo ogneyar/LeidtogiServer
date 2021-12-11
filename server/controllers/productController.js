@@ -86,7 +86,8 @@ class ProductController {
 
         }catch (e) {
             // console.log(e.message);
-            return next(ApiError.badRequest(e.message))
+            // return next(ApiError.badRequest(e.message))
+            return res.json({error: 'Ошибка метода create! ' + e.message})
         }
     }
 
@@ -116,7 +117,27 @@ class ProductController {
             }
             return res.json(products)
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода getAll!'));
+            // return next(ApiError.badRequest('Ошибка метода getAll!'));
+            return res.json({error: 'Ошибка метода getAll!'})
+        }
+    }
+
+    // сделал этот роут для поиска товаров без габаритов
+    async getAllWithOutSize(req, res, next) {
+        try {
+            let products = await Product.findAll()
+            let sizes = await ProductSize.findAll()
+            let response = products.filter(i => {
+                let no = true
+                sizes.forEach(j => {
+                    if (i.id === j.productId) no = false
+                })
+                return no
+            })
+            return res.json(response)
+        }catch(e) {
+            // return next(ApiError.badRequest('Ошибка метода getAllWithOutSize!'))
+            return res.json({error: 'Ошибка метода getAllWithOutSize!'})
         }
     }
 

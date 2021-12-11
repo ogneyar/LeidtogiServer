@@ -9,6 +9,7 @@ router.post('/', checkRole('ADMIN'), productController.create)
 router.get('/', productController.getAll)
 
 router.get('/temp', productController.temp) // использовал этот роут для удаления нулевых позиций
+router.get('/all_without_size', productController.getAllWithOutSize)
 
 router.get('/:id', productController.getOne)
 router.get('/url/:url', productController.getOneOnUrl)
