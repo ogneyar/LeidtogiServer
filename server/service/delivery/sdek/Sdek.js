@@ -272,6 +272,9 @@ module.exports = class Sdek {
         // }
 
         // console.log("token",this.token);
+
+        if (parameters.type === undefined) parameters = {...parameters,type: "PVZ"}
+        if (parameters.country_codes === undefined) parameters = {...parameters,country_codes: "RU"}
         
         let response = await this.curl({ 
             method: "get",
@@ -295,6 +298,8 @@ module.exports = class Sdek {
             if (token.error !== undefined) return token
         // }
 
+        if (parameters.country_codes === undefined) parameters = {...parameters,country_codes:"RU"}
+
         let response = await this.curl({ 
             method: "get",
             url: this.url + "location/regions",
@@ -317,11 +322,13 @@ module.exports = class Sdek {
             if (token.error !== undefined) return token
         // }
 
+        if (parameters.country_codes === undefined) parameters = {...parameters,country_codes:"RU"}
+
         let response = await this.curl({ 
             method: "get",
             url: this.url + "location/cities",
             // data: new Cities(parameters)
-            data: parameters
+            data: parameters 
         })
 
         if (response.requests && response.requests[0].state === "INVALID") {
