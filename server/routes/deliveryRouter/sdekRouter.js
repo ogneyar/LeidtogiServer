@@ -17,9 +17,8 @@ router.post('/refusal_order/:order_id', authMiddlewarre, sdekController.refusalO
 router.post('/intakes/:order_id', authMiddlewarre, sdekController.newIntakes) // Регистрация заявки на вызов курьера (по номеру id из deliveries)
 
 router.get('/delivery_points', sdekController.deliveryPoints) // 
-router.post('/delivery_points', sdekController.deliveryPoints) // 
-router.post('/location_regions', sdekController.locationRegions) // 
-router.post('/location_cities', sdekController.locationSities) // 
+router.get('/location_regions', sdekController.locationRegions) // 
+router.get('/location_cities', sdekController.locationSities) // 
 
 router.post('/print_orders', authMiddlewarre, sdekController.printOrders) // Формирование квитанции к заказу
 router.get('/print_orders/:uuid', authMiddlewarre, sdekController.getPrintOrders) // Получение квитанции к заказу
