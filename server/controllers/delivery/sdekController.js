@@ -139,15 +139,18 @@ class SdekController {
 
     
     async deliveryPoints(req, res) {
-        return res.json(await Sdek.deliveryPoints(req.body))
+        // return res.json(await Sdek.deliveryPoints(req.body))
+        return res.json(await Sdek.deliveryPoints(req.query))
     }
 
     async locationRegions(req, res) {
-        return res.json(await Sdek.locationRegions(req.body))
+        // return res.json(await Sdek.locationRegions(req.body))
+        return res.json(await Sdek.locationRegions(req.query))
     }
     
     async locationSities(req, res) {
-        return res.json(await Sdek.locationSities(req.body))
+        // return res.json(await Sdek.locationSities(req.body)) 
+        return res.json(await Sdek.locationSities(req.query)) 
     }
     
 
