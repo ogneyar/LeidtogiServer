@@ -12,8 +12,10 @@ class BoxberryController {
         let { CountryCode, Name, Region } = req.query
         let response = await Boxberry.listCities({CountryCode})
         if (response.error === undefined) {
-            if (Name) return res.json(response.filter(i => i.Name.includes(Name)))
-            if (Region) return res.json(response.filter(i => i.Region.includes(Region)))
+            // if (Name) return res.json(response.filter(i => i.Name.includes(Name))) 
+            if (Name) return res.json(response.filter(i => i.Name.toLowerCase().startsWith(Name.toLowerCase()))) 
+            // if (Region) return res.json(response.filter(i => i.Region.includes(Region)))
+            if (Region) return res.json(response.filter(i => i.Region.toLowerCase().startsWith(Region.toLowerCase())))
         }
         return res.json(response)
     }
