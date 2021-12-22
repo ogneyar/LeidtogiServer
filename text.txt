@@ -4,6 +4,8 @@ killall -2 node
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'this_password';
 // заливаем базу
 mysql --host=127.0.0.1 -p -u root --default-character-set=utf8 mern < mern.sql
+// скачиваем базу
+mysqldump --host=127.0.0.1 -p -u root --disable-keys --add-drop-table --default-character-set=utf8 --result-file=mern.sql mern
 
 // узнать какие есть пользователи в БД
 SELECT User, Host FROM mysql.user;
