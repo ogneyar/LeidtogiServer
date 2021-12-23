@@ -15,6 +15,7 @@ const Order = sequelize.define('order', {
     email: {type: DataTypes.STRING, defaultValue: null},
     phone: {type: DataTypes.BIGINT, defaultValue: null},
     name: {type: DataTypes.STRING, defaultValue: null},
+    trackNumber: {type: DataTypes.STRING, defaultValue: null},
 })
 
 module.exports = Order

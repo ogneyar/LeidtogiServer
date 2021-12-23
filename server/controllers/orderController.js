@@ -52,6 +52,7 @@ class OrderController {
             if (body.address !== undefined) create = {...create, address: body.address}
             if (body.delivery !== undefined) create = {...create, delivery: body.delivery} 
             if (body.name !== undefined) create = {...create, name: body.name} 
+            if (body.trackNumber !== undefined) create = {...create, trackNumber: body.trackNumber} 
 
             const order = await Order.create(create)
 
