@@ -12,7 +12,3 @@ SELECT User, Host FROM mysql.user;
 
 // запуск веб-сервера, остановка, перезагрузка
 service nginx ( start | stop | restart | reload )
-
-
-// добавь дома (:
-ALTER TABLE `orders` ADD `trackNumber` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `name`;
