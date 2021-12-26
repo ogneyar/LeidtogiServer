@@ -3,6 +3,9 @@ const axios  = require("axios")
 const Auth = require('./Auth')
 const Calculator = require('./Calculator')
 const Micro_calc = require('./Micro_calc')
+const Kladr = require("./Kladr")
+const Terminals = require("./Terminals")
+const SearchTerminals = require("./SearchTerminals")
 
 
 module.exports = class Dl {
@@ -65,7 +68,7 @@ module.exports = class Dl {
         return response
     }
 
-    static async micro_calc(parameters) { // Калькулятор ориентировочной стоимости и сроков заказа
+    static async microCalc(parameters) { // Калькулятор ориентировочной стоимости и сроков заказа
         // console.log("DL micro_calc RUN");
 
         let { arrival_city, derival_city, sessionID } = parameters
@@ -84,6 +87,80 @@ module.exports = class Dl {
                 sessionID
             })
         )
+
+        return response
+    }
+
+    static async kladr(parameters) { // Поиск населённых пунктов
+        // console.log("DL kladr RUN");
+
+        let { q, cityID, code, limit } = parameters
+        
+        if (!q && !cityID && !code) return { error: "Не задан ни один из трёх параметров (q, cityID, code)" }
+        
+        let response = await this.curl(
+            new Kladr(parameters)
+        )
+        
+        if (response.cities !== undefined) return response.cities // массив городов
+
+        return response
+    }
+
+    static async terminals() { // Справочник терминалов
+        // console.log("DL terminals RUN");
+
+        let response = await this.curl(
+            new Terminals()
+        )
+        
+        return response
+    }
+    
+    static async terminalsCatalog(parameters) { // Справочник терминалов
+        // console.log("DL terminals RUN");
+
+        if (!parameters.url) return { error: "Не передан url." }
+
+        let response
+
+        let headers = {'content-type': 'application/json;charset=utf-8'}
+
+        let options = { 
+            url: parameters.url,
+            method: "get", 
+            headers
+        }
+
+        try {
+            await axios(options)
+                .then(data => {
+                    response = data.data
+                })
+                .catch(error => {
+                    // console.log("DL CURL ERROR: ",error);
+                    response = { error }
+                })
+        }catch(e) {  
+            // console.log("DL CURL THROW: ",e);
+            return { error:e }
+        }
+
+        if (response.city !== undefined) return response.city
+        
+        return response
+    }
+    
+    static async searchTerminals(parameters) { // Справочник терминалов
+        // console.log("DL terminals RUN");
+
+        if (!parameters.code && !parameters.cityID) return { error: "Не передан КЛАДР или cityID" }
+        
+        let response = await this.curl(
+            new SearchTerminals(parameters)
+        )
+
+        if (response.terminals !== undefined) return response.terminals
 
         return response
     }
