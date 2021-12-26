@@ -7,7 +7,7 @@ async function sendMessage(message) {
     message = `Сообщение с сайта ${process.env.CORS_URL}\n\n` + message
     message = encodeURI(message)
 
-    let url = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID_ADMIN}&text=`
+    let url = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage?disable_web_page_preview=true&chat_id=${TELEGRAM_CHAT_ID_ADMIN}&text=`
 
     await axios.post(url + "-----------------------------------")
 
