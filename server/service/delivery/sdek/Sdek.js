@@ -323,6 +323,8 @@ module.exports = class Sdek {
         // }
 
         if (parameters.country_codes === undefined) parameters = {...parameters,country_codes:"RU"}
+        if (parameters.size === undefined) parameters = {...parameters,size:10000}
+        if (parameters.page === undefined) parameters = {...parameters,page:0}
 
         let response = await this.curl({ 
             method: "get",

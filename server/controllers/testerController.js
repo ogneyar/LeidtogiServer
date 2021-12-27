@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs')
 
 const {Product, Brand, Category} = require('../models/models')
+const Sdek = require("../service/delivery/sdek/Sdek")
 
 
 class TesterController {
@@ -71,12 +72,40 @@ class TesterController {
         }
     }
 
-    async getFeed (req, res, next) {
+    // async getFeed (req, res, next) {
+    //     try {
+    //         const response = fs.readFileSync(path.resolve(__dirname, '..', 'static', 'feed', 'yml.xml'))
+    //         return res.json(response)
+    //     }catch(e) {
+    //         return  res.json({error:'Ошибка метода getFeed!'})
+    //     }
+    // }
+
+    async locationCitiesSdek (req, res, next) {
         try {
-            const response = fs.readFileSync(path.resolve(__dirname, '..', 'static', 'feed', 'yml.xml'))
-            return res.json(response)
+            let array, response
+
+            response = await Sdek.locationSities(req.query)
+
+            if (response.length > 1) {
+
+                if (req.query.page !== undefined && req.query.page != 0) {
+                    array = fs.readFileSync(path.resolve(__dirname, '..', 'static', 'deliveries', 'sdek', 'TESTlocationCities.json'))
+                    
+                    array = JSON.parse(array)
+
+                    if (Array.isArray(array) && array.length > 1) {
+                        response = [ ...array, ...response ]
+                    }
+                }
+
+                fs.writeFileSync(path.resolve(__dirname, '..', 'static', 'deliveries', 'sdek', 'TESTlocationCities.json'), JSON.stringify(response))
+
+            }
+
+            return res.json(response.length)
         }catch(e) {
-            return  res.json({error:'Ошибка метода getFeed!'})
+            return  res.json({error:'Ошибка метода locationCitiesSdek!'})
         }
     }
 
