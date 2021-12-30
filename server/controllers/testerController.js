@@ -84,26 +84,33 @@ class TesterController {
     async locationCitiesSdek (req, res, next) {
         try {
             let array, response
-
             response = await Sdek.locationSities(req.query)
-
+            
             if (response.length > 1) {
-
+                
                 if (req.query.page !== undefined && req.query.page != 0) {
-                    array = fs.readFileSync(path.resolve(__dirname, '..', 'static', 'deliveries', 'sdek', 'TESTlocationCities.json'))
+                    array = fs.readFileSync(path.resolve(__dirname, '..', 'static', 'deliveries', 'sdek', 'locationCities.json'))
                     
                     array = JSON.parse(array)
-
+                    
                     if (Array.isArray(array) && array.length > 1) {
                         response = [ ...array, ...response ]
                     }
                 }
+                
+                fs.writeFile(path.resolve(__dirname, '..', 'static', 'deliveries', 'sdek', 'locationCities.json'), JSON.stringify(response), (err) => {
+                    if (err) {
+                      console.error(err)
+                      return
+                    }
+                    //файл записан успешно
+                    console.log("успех")
+                  })
 
-                fs.writeFileSync(path.resolve(__dirname, '..', 'static', 'deliveries', 'sdek', 'TESTlocationCities.json'), JSON.stringify(response))
-
+                return res.json(response.length)
             }
 
-            return res.json(response.length)
+            return res.json(response)
         }catch(e) {
             return  res.json({error:'Ошибка метода locationCitiesSdek!'})
         }
