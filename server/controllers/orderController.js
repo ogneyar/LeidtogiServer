@@ -122,20 +122,44 @@ class OrderController {
             const { uuid } = req.params
             const order = await Order.update({pay:true},{
                 where: { uuid }
-            })            
+            })
             if (order) {
                 const data = await Order.findOne({
                     where: { uuid }
                 })
-                if (data && data.id !== undefined && data.email !== undefined && data.phone !== undefined) {
-                    // await убрал, так как мне не нужен ответ от сервера
-                    sendMessage(`Оплата заказа №${data.id} произведена.\n\nEmail клиента ${data.email}\n\nТелефон клиента ${data.phone}`)
+                if (data && data.id !== undefined) {
+                    let id = `Оплата заказа №${data.id} произведена.\n\n`
+                    let name = ""
+                    if (data.name !== undefined) {
+                        name = `Имя клиента ${data.name}\n\n`
+                    }
+                    let email = ""
+                    if (data.email !== undefined ) {
+                        email = `Email клиента ${data.email}\n\n`
+                    }
+                    let phone = ""
+                    if (data.phone !== undefined) {
+                        phone = data.phone.toString().replace('7', '8')
+                        phone = `Телефон клиента ${phone}`
+                    }
+                    let response = await sendMessage(id + name + email + phone)
+                    if (response.ok !== undefined && response.ok === true) return res.json(order) // return 
+                    else {
+                        sendMessage("Ошибка, не смог отправить сообщение об успешном заказе")
+                        return res.json({error: "Ошибка, не смог отправить сообщение об успешном заказе"})
+                    }
                 }
-                return res.json(order) // return 
+                // await убрал, так как мне не нужен ответ от сервера
+                sendMessage("Ошибка, не найден заказ с uuid = " + uuid)
+                return res.json({error: "Ошибка, не найден заказ с uuid = " + uuid}) // return 
             }
-            return res.json(null) // return 
+            sendMessage("Ошибка, не смог обновить заказ с uuid = " + uuid)
+            return res.json({error: "Ошибка, не смог обновить заказ с uuid = " + uuid}) // return 
+
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода setPay! ' + "Error: " + e.message));
+            // sendMessage("Ошибка метода setPay!")
+            sendMessage("Ошибка метода setPay! Error: " + e.message)
+            return next(ApiError.badRequest("Ошибка метода setPay! Error: " + e.message));
         }
     }
 
