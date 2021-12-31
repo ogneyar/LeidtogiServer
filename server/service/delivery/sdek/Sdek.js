@@ -55,7 +55,7 @@ module.exports = class Sdek {
                 })
         }catch(e) {  
             // console.log("SDEK CURL THROW: ",e);
-            return { e }
+            response = { error:e }
         }
         // console.log("SDEK CURL RESPONSE: ",response);
         return response
