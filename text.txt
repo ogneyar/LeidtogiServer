@@ -12,3 +12,7 @@ SELECT User, Host FROM mysql.user;
 
 // запуск веб-сервера, остановка, перезагрузка
 service nginx ( start | stop | restart | reload )
+
+
+// установи
+npm i iconv-lite
