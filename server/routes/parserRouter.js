@@ -11,13 +11,17 @@ router.get('/characteristics', checkRole('ADMIN'), parserController.getCharacter
 router.get('/equipment', checkRole('ADMIN'), parserController.getEquipment) // парсер комплектации с http://mlk-shop.ru
 router.get('/all', checkRole('ADMIN'), parserController.getAll)
 
-router.get('/xlsx', parserController.parseXLSX)
 
 router.get('/mail.ru', parserController.mailRu)
 router.get('/ya.ru', parserController.yaRu)
 
-router.get('/husqvarna_get_image', parserController.husqvarnaGetImage)
+router.get('/xlsx', parserController.parseXLSX) // парсер милуоки файла xlsx
+
+router.get('/husqvarna_get_image', parserController.husqvarnaGetImage) // парсер хузкварна
 router.get('/husqvarna_get_charcteristic', parserController.husqvarnaGetCharcteristic)
+
+router.get('/rgk', parserController.rgk) // парсер RGK
+
 
 
 module.exports = router
