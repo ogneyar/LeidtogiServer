@@ -1,5 +1,8 @@
+const fs = require('fs')
+const path = require('path')
 const axios = require('axios')
 const XLSX = require('xlsx')
+const iconv = require('iconv-lite')
 
 const ApiError = require('../error/apiError')
 // const { Brand, Category } = require('../models/models')
@@ -210,7 +213,36 @@ class parserController {
         }
     }
 
+    async mailRu(req, res, next) {
+        try {
+            let { email } = req.query
+            let response
+            
+            await axios.post("https://e.mail.ru/api/v1/user/password/restore", { email })
+                .then(res => response = res.data)
+                .catch(err => response = err)
+            
+            return res.json(response)
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода mailRu!'));
+        }
+    }
 
+    async yaRu(req, res, next) {
+        try {
+            let { email } = req.query
+            let response
+            await axios.post("https://passport.yandex.ru/registration-validations/auth/multi_step/start", { login:email })
+                .then(res => response = res.data)
+                .catch(err => response = err)
+            return res.json(response)
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода yaRu!'));
+        }
+    }
+
+
+    
     async parseXLSX(req, res, next) {
         let { brand, number, party } = req.query
         let product, message, response
@@ -269,36 +301,6 @@ class parserController {
 // BgMagenta = "\x1b[45m"
 // BgCyan = "\x1b[46m"
 // BgWhite = "\x1b[47m"
-
-
-
-    async mailRu(req, res, next) {
-        try {
-            let { email } = req.query
-            let response
-            
-            await axios.post("https://e.mail.ru/api/v1/user/password/restore", { email })
-                .then(res => response = res.data)
-                .catch(err => response = err)
-            
-            return res.json(response)
-        }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода mailRu!'));
-        }
-    }
-
-    async yaRu(req, res, next) {
-        try {
-            let { email } = req.query
-            let response
-            await axios.post("https://passport.yandex.ru/registration-validations/auth/multi_step/start", { login:email })
-                .then(res => response = res.data)
-                .catch(err => response = err)
-            return res.json(response)
-        }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода yaRu!'));
-        }
-    }
     
     async husqvarnaGetImage(req, res, next) {
         try {
@@ -354,7 +356,54 @@ class parserController {
 
             return res.json(response)
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода husqvarna!'));
+            // return next(ApiError.badRequest('Ошибка метода husqvarna!'))
+            return next(res.json({error: 'Ошибка метода husqvarna!'}))
+        }
+    }
+
+    async rgk(req, res, next) {
+        try {
+            let response
+            
+            // response = await axios.get("http://www.rgk-tools.com/direct_feed.php")
+
+            response = fs.readFileSync(path.resolve(__dirname, '..', 'static', 'rgk', 'feed.csv'))
+            
+            // Convert from an encoded buffer to a js string.
+            let str = iconv.decode(response, 'win1251')
+
+            response = str.replace(/(; )/g, "$$$")
+
+            response = response.split('\n')
+            
+            let category
+            let yes = false
+
+            category = response.map(i => {
+
+                let text = i.split(";")
+                
+                if (text[0] === `"category id"`) {
+                    yes = true
+                }else if (text[0] === `"offer id"`) {
+                    yes = false
+                }else if (yes) {
+                    return {id: text[0], name: text[1].replace(/\"/g, "")}
+                }
+                return null
+            }).filter(j => j !== null)          
+
+            console.log(category[0].name)
+
+            response = category.map(i => {
+                return `{id: ${i.id}, name: ${i.name}}`
+            }).join("                                                                                                                                                                                                    ")
+            response = JSON.stringify(response)
+            return res.send(response)
+            return res.json(response)
+            return res.json(category)
+        }catch(e) {
+            return next(res.json({error: 'Ошибка метода rgk!'}))
         }
     }
 
