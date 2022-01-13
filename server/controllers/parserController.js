@@ -22,6 +22,7 @@ const addNewProduct = require('../service/xlsx/addNewProduct')
 
 const getLink = require('../service/parser/husqvarna/getLink')
 const getImage = require('../service/parser/husqvarna/getImage')
+const getArticle = require('../service/parser/rgk/getArticle')
 
 
 class parserController {
@@ -372,7 +373,15 @@ class parserController {
             // Convert from an encoded buffer to a js string.
             let str = iconv.decode(response, 'win1251')
 
-            response = str.replace(/(; )/g, "$$$")
+            response = str
+                .replace(/(&quot;)/g, "\'\'")
+                .replace(/(&Prime;)/g, "\`")
+                // .replace(/(&amp;lt;p&amp;gt;)/g, "<p>")
+                // .replace(/(&amp;lt;\/p&amp;gt;)/g, "</p>")
+                .replace(/(&amp;)/g, "&")
+                .replace(/(&lt;)/g, "<")
+                .replace(/(&gt;)/g, ">")
+                .replace(/(; )/g, "_$_$_$_")
 
             response = response.split('\n')
             
@@ -388,20 +397,181 @@ class parserController {
                 }else if (text[0] === `"offer id"`) {
                     yes = false
                 }else if (yes) {
-                    return {id: text[0], name: text[1].replace(/\"/g, "")}
+                    return {id: text[0], name: text[1].replace(/\"/g, "").replace(/(\r)/g, "")}
+                    // return {id: text[0], name: text[1]}
                 }
                 return null
-            }).filter(j => j !== null)          
+            }).filter(j => j !== null)
 
-            console.log(category[0].name)
+            let product
+            yes = false
+            let array = []
+            let length
+            let memory
+            let memoryYes = false
 
-            response = category.map(i => {
-                return `{id: ${i.id}, name: ${i.name}}`
-            }).join("                                                                                                                                                                                                    ")
-            response = JSON.stringify(response)
-            return res.send(response)
-            return res.json(response)
+            product = response.map(i => {
+
+                let text = i.split(";")
+                
+                if (text[0] === `"offer id"`) {
+                    length = text.length
+                    yes = true
+                    array = text.map(j => {
+                        // console.log(j.replace(/\"/g, ""))
+                        return j.replace(/\"/g, "")
+                    })
+                    // array = [...text]
+                    
+                }else if (yes) {
+                    if (memoryYes) {
+
+                        memory = memory.map((b, index) => {
+                            if (index + 1 === memory.length) { // если элемент последний
+                                if (text.length === 2 ) {
+                                    return b + text[0] + ";" + text[1]
+                                }
+                                return b + text[0]
+                            }
+                            return b
+                        })
+                        text.forEach((g, index) => {
+                            if (text.length === 2 ) {
+                                if (index !== 0 && index !== 1) {
+                                    memory = [...memory, g]
+                                }
+                            }else {
+                                if (index !== 0) {
+                                    memory = [...memory, g]
+                                }
+                            }
+                        })
+                        text = [...memory]
+                        
+                    }
+                    if (length > text.length) {
+                        // console.log(length)
+                        memory = [...text]
+                        memoryYes = true
+                        return null
+                    }else {
+                        memoryYes = false
+                    }
+
+                    let m = 0
+                    const arrMap = new Map();
+
+                    array.forEach(k => {
+                        arrMap.set(k.replace(/(\r)/g, ""),text[m++].replace(/(\r)/g, ""))
+                    })
+
+                    return arrMap
+                    
+                    return arrMap.get('offer id')
+
+                    return "{"+array
+                        .map(k => {
+                            // return k
+                            return `"${k.replace(/(\r)/g, "")}": "${text[m++].replace(/(\r)/g, "")}"`
+                        })
+                        .join(", ")+"}"
+
+                    return {
+                        "offer id": text[0],
+                        "available": text[1],
+                        "offer name": text[2],
+                        "offer full_name": text[3],
+                        "offer type": text[4],
+                        "offer vendor": text[5],
+                        "offer url": text[6] + "/",
+                        "offer price": text[7],
+                        "offer picture": text[8],
+                        "offer param": text[9],
+                        "offer description": text[10],
+                        "offer instructions": text[11],
+                        "offer certificates": text[12],
+                        "offer category": text[13]
+                    }
+                    // "offer category": text[13].replace(/\"/g, "").replace(/(\r)/g, "")
+                    
+                }
+                return null
+            }).filter(j => j !== null)
+
+
+
+
+            // Ниже описаны примеры вывода данных
+
+            let search
+            search = true
+            // search = false
+            if (search) { // вывод искомой записи (offer description)
+
+                let searchValue = 68
+                let strResponse = "null"
+                let ye = false
+                product.forEach(itog => {
+                    itog.forEach((value,key) => {
+                        if (key === "offer id" && value == searchValue) {
+                            ye = true
+                        }
+                        if (ye === true && key === "offer url") {
+                            strResponse = value
+                            ye = false
+                        }
+                    })
+                })
+                
+                let html
+                await axios.get(strResponse + "/")
+                    .then(res => html = res.data)
+                // return res.send(html)
+
+                let article = getArticle(html)
+
+                if (article.error !== undefined) {
+                    return res.json("Ошибка: " + article.error)
+                }
+
+                return res.json(article.message)
+
+                // return res.redirect(strResponse + "/")
+                return res.json(strResponse)
+                return res.send(strResponse)
+            }
+
+            let arrayResponse = []
+            let stringResponse = '['
+
+            // let one = true
+            let one = false
+            if (!one) { // вывод всех записей или только одной
+
+                product.forEach(itog => {
+                    stringResponse += '{'
+                    itog.forEach(function(value,key) {
+                        stringResponse += '"' + key +'": "' + value + '",'
+                    })
+                    stringResponse = stringResponse.replace(/.$/, "") + '},'
+                })
+
+            }else { //  или только одной
+
+                stringResponse += '{'
+                product[product.length-3].forEach(function(value,key) {
+                    stringResponse += '"' + key +'": "' + value + '",'
+                })
+                stringResponse = stringResponse.replace(/.$/, "") + '},'
+
+            }
+
+            stringResponse = stringResponse.replace(/.$/, "") + ']'
+
+            return res.json(stringResponse)
+            
             return res.json(category)
+
         }catch(e) {
             return next(res.json({error: 'Ошибка метода rgk!'}))
         }
