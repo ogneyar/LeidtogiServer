@@ -362,27 +362,27 @@ class parserController {
         }
     }
 
-    // РосГеоКом
+    // РусГеоКом
     async rgk(req, res, next) {
         try {
-            let { number, field, type } = req.query
+            let { print, number, field, type } = req.query
             let response, rgk
             
             rgk = new RGK()
             await rgk.run()
+            // return res.json(await rgk.run())
             
-            // response = await rgk.print("category") // все категории
-            response = await rgk.print("product") // все товары
+            if ( print === "category" ) response = await rgk.print("category") // все категории
+            if ( print === "product" ) response = await rgk.print("product") // все товары
             // response = await rgk.search(379)
 
-            // if ( ! number) return res.json(await rgk.getLengthProducts()) // 379
-            // response = await rgk.search(number, field)
+            if ( ! number &&  ! print ) return res.json(await rgk.getLengthProducts()) // 379
+            if ( ! print) response = await rgk.search(number, field)
 
             // response = rgk.add(1)
 
             if (type === "html") return res.send(response || "error")
-
-            return res.json(response || "error")
+            else return res.json(response || "error")
 
         }catch(e) {
             return next(res.json({error: 'Ошибка метода rgk!'}))

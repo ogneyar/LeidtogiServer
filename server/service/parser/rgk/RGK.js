@@ -5,6 +5,7 @@ const axios = require('axios')
 
 const getArticle = require('./getArticle')
 const getImages = require('./getImages')
+const getProducts = require('./getProducts')
 
 
 module.exports = class RGK {
@@ -14,29 +15,28 @@ module.exports = class RGK {
     static product = []
     
     constructor() {
-        // this.main().than(data => this.hz = data)
     }
 
     async run() {
-        let response, array, yes, length, memory, memoryYes
+        let response, fullResponse, yes
         
         // response = await axios.get(this.url)
-        response = fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv'))
+        fullResponse = fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv'))
         
         // Convert from an encoded buffer to a js string.
-        let str = iconv.decode(response, 'win1251')
+        let str = iconv.decode(fullResponse, 'win1251')
 
-        response = str
+        fullResponse = str
+            .replace(/(&amp;)/g, "&")
             .replace(/(&amp;)/g, "&")
             .replace(/(&quot;)/g, "\'\'")
             .replace(/(&Prime;)/g, "\`")
             .replace(/(&rdquo;)/g, "\`\`")
             .replace(/(&lt;)/g, "<")
             .replace(/(&gt;)/g, ">")
-            .replace(/(; )/g, "_$_$_$_")
 
-        response = response.split('\n')
-        
+        response = fullResponse.split('\n')
+
         // поиск категорий
         yes = false
         this.category = response.map(i => {
@@ -50,190 +50,88 @@ module.exports = class RGK {
             }
             return null
         }).filter(j => j !== null)
-        
-        // return this.category
+
 
         // поиск товаров
-        yes = false
-        array = []
-        memoryYes = false
-        this.product = response.map(i => {
-            let text = i.split(";")
-            if (text[0] === `"offer id"`) {
-                length = text.length
-                yes = true
-                array = text.map(j => {
-                    return j.replace(/\"/g, "")
-                })
-            }else if (yes) {
-                if (memoryYes) { // если была запись в память
-
-                    memory = memory.map((b, index) => {
-                        if (index + 1 === memory.length) { // если элемент последний
-                            if (text.length === 2 ) {
-                                return b + text[0] + ";" + text[1]
-                            }
-                            return b + text[0]
-                        }
-                        return b
-                    })
-                    text.forEach((g, index) => {
-                        if (text.length === 2 ) {
-                            if (index !== 0 && index !== 1) {
-                                memory = [...memory, g]
-                            }
-                        }else {
-                            if (index !== 0) {
-                                memory = [...memory, g]
-                            }
-                        }
-                    })
-                    text = [...memory]
-                    
-                }
-                if (length > text.length) {
-                    memory = [...text]
-                    memoryYes = true
-                    return null
-                }else {
-                    memoryYes = false
-                }
-
-                let m = 0
-                const arrMap = new Map();
-
-                array.forEach(k => {
-                    let data = k.replace(/(\r)/g, "")
-                    let str = text[m++].replace(/(\r)/g, "").replace(/(\")/g, "")
-                    if (data === "offer param") {
-                        arrMap.set(data, str.split("_$_$_$_"))
-                    }else if (data === "offer url") {
-                        arrMap.set(data, str + "/")
-                    }else if (data === "offer description") {
-                        arrMap.set(data, str.replace(/(_\$_\$_\$_)/g, "; "))
-                    }else {
-                        arrMap.set(data, str)
-                    }
-                })
-
-                // return arrMap.get('offer id')
-
-                return arrMap
-                
-                return {
-                    "offer id": text[0],
-                    "available": text[1],
-                    "offer name": text[2],
-                    "offer full_name": text[3],
-                    "offer type": text[4],
-                    "offer vendor": text[5],
-                    "offer url": text[6] + "/",
-                    "offer price": text[7],
-                    "offer picture": text[8],
-                    "offer param": text[9],
-                    "offer description": text[10],
-                    "offer instructions": text[11],
-                    "offer certificates": text[12],
-                    "offer category": text[13]
-                }
-                
-            }
-            return null
-        }).filter(j => j !== null)
+        response = getProducts(fullResponse)
+        if (response.error !== undefined) {
+            return "Ошибка: " + response.error
+        }
+        this.product = response.message
 
         // return this.product
     }
 
     // вывод данных
-    async print(action = "product", one = false) {
+    async print(action = "product") {
         let stringResponse
-
         if (action === "product") {
-            stringResponse = '['
-            // one = true
-            if (!one) { // вывод всех записей или только одной
-                this.product.forEach(itog => {
-                    stringResponse += '{'
-                    itog.forEach(function(value,key) {
-                        stringResponse += '"' + key +'": "' + value + '",'
-                    })
-                    stringResponse = stringResponse.replace(/.$/, "") + '},'
-                })
-            }else { //  или только одной
-                stringResponse += '{'
-                this.product[product.length-3].forEach(function(value,key) {
-                    stringResponse += '"' + key +'": "' + value + '",'
-                })
-                stringResponse = stringResponse.replace(/.$/, "") + '},'
-            }
-            stringResponse = stringResponse.replace(/.$/, "") + ']'
+            stringResponse = this.product
         }else if (action === "category") {
             stringResponse = this.category
         }
-
         return stringResponse
-
     }
 
+    // вывод суммы общего количества товара
     async getLengthProducts() {
         return this.product.length
     }
 
-    // поиск данных
+    // поиск данных (поочерёдное, от 1 до getLengthProducts)
     async search(number = 1, info = "full") {
 
-        // if (info === "full") {
+        if (number > this.product.length) return "Ошибка: такого номера не существует!"
 
-            if ( ! this.product[number - 1].get('available')) return "Нет в наличие"
-            let object = {}
+        // if ( ! this.product[number - 1]['available']) return "Нет в наличии"
+        let object = {}
 
-            object.id = this.product[number - 1].get('offer id')
-            // object.available = this.product[number - 1].get('available')
-            // object.name = this.product[number - 1].get('offer name')
-            object.name = this.product[number - 1].get('offer full_name')
-            // object.type = this.product[number - 1].get('offer type')
-            // object.vendor = this.product[number - 1].get('offer vendor')
-            object.url = this.product[number - 1].get('offer url')
-            object.price = this.product[number - 1].get('offer price')
-            // object.picture = this.product[number - 1].get('offer picture')
-            let characteristics = this.product[number - 1].get('offer param')
-            object.description = this.product[number - 1].get('offer description')
-            // object.instructions = this.product[number - 1].get('offer instructions')
-            // object.certificates = this.product[number - 1].get('offer certificates')
-            let categoryId = this.product[number - 1].get('offer category')
+        object.id = this.product[number - 1]['offer id']
+        // object.available = this.product[number - 1]['available']
+        // object.name = this.product[number - 1]['offer name']
+        object.name = this.product[number - 1]['offer full_name']
+        // object.type = this.product[number - 1]['offer type']
+        // object.vendor = this.product[number - 1]['offer vendor']
+        object.url = this.product[number - 1]['offer url'] + "/"
+        object.price = this.product[number - 1]['offer price']
+        // object.picture = this.product[number - 1]['offer picture']
+        let characteristics = this.product[number - 1]['offer param'].split("; ")
+        object.description = this.product[number - 1]['offer description'].replace(/(\r\n)/g, "")
+        // object.instructions = this.product[number - 1]['offer instructions']
+        // object.certificates = this.product[number - 1]['offer certificates']
+        let categoryId = this.product[number - 1]['offer category']
 
-            object.characteristics = "<tbody>" + characteristics.map(i => {
-                return "<tr>" + i.replace("-", "#@").split(" #@ ").map(j => {
-                    return "<td>" + j.replace(/\?/g, "&lt;=") + "</td>"
-                }).join("") + "</tr>"
-            }).join("") + "</tbody>"
 
-            this.category.forEach(i => {
-                if (i.id === categoryId) object.category = i.name
-            }) 
+        object.characteristics = "<tbody>" + characteristics.map(i => {
+            return "<tr>" + i.replace("-", "#@").split(" #@ ").map(j => {
+                return "<td>" + j.replace(/\?/g, "&lt;=") + "</td>"
+            }).join("") + "</tr>"
+        }).join("") + "</tbody>"
 
-            let html
+        this.category.forEach(i => {
+            if (i.id === categoryId) object.category = i.name
+        }) 
 
-            await axios.get(object.url)
-                .then(res => html = res.data)
+        let html
 
-            let images = getImages(html)
-            if (images.error !== undefined) {
-                return "Ошибка: " + images.error
-            }
-            object.images = images.message
+        await axios.get(object.url)
+            .then(res => html = res.data)
 
-            let article = getArticle(html)
-            if (article.error !== undefined) {
-                return res.json("Ошибка: " + article.error)
-            }
-            object.article = article.message
+        let images = getImages(html)
+        if (images.error !== undefined) {
+            return "Ошибка: " + images.error
+        }
+        object.images = images.message
 
-            // return {...object, url: undefined}
-            if (info === "full") return object
-            else return object[info]
+        let article = getArticle(html)
+        if (article.error !== undefined) {
+            return res.json("Ошибка: " + article.error)
+        }
+        object.article = article.message
 
-        // }
+        // return {...object, url: undefined}
+        if (info === "full") return object
+        else return object[info]
                 
     }
 
