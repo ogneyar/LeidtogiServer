@@ -20,7 +20,7 @@ function getArticle(string) {
     
     if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
         
-        return {message:string.replace(/\r|\n|\t/g,"")}
+    return {message:string.replace(/\r|\n|\t/g,"")}
 }
     
 module.exports = getArticle
