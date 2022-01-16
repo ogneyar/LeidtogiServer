@@ -1,4 +1,4 @@
-const {Product, ProductInfo, ProductSize, Brand} = require('../models/models')
+const { Product, ProductInfo, ProductSize, Brand } = require('../models/models')
 const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
@@ -14,7 +14,7 @@ const renameFolder = require('../service/renameFolder')
 
 class ProductController {
 
-    async create(req, res, next) { 
+    async create(req, res, next) {  
         try {
             let {name, price, brandId, categoryId, have, article, promo, country, files, info, size} = req.body
             let imgBig, imgSmall, fileName
