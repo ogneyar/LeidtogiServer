@@ -15,12 +15,12 @@ router.get('/all', checkRole('ADMIN'), parserController.getAll)
 router.get('/mail.ru', parserController.mailRu)
 router.get('/ya.ru', parserController.yaRu)
 
-router.get('/xlsx', parserController.parseXLSX) // парсер милуоки файла xlsx
+router.get('/xlsx', checkRole('ADMIN'), parserController.parseXLSX) // парсер милуоки файла xlsx
 
 router.get('/husqvarna_get_image', parserController.husqvarnaGetImage) // парсер хузкварна
 router.get('/husqvarna_get_charcteristic', parserController.husqvarnaGetCharcteristic)
 
-router.get('/rgk', parserController.rgk) // парсер RGK
+router.get('/rgk', checkRole('ADMIN'), parserController.rgk) // парсер RGK
 
 
 
