@@ -36,7 +36,7 @@ function getProducts(string) {
     number = string.indexOf(serchString)
     if (number === -1) return {error:`Не найден '${serchString}'`,string}
     
-    arrayKey = string.substring(0, number).replace(/\"/g, "").split(";")
+    arrayKey = string.substring(0, number).replace(/\"/g, "").replace(/(\r)/g, "").split(";")
     
     string = string.substring(number + lengthSerchString, lengthString)
     
@@ -47,8 +47,8 @@ function getProducts(string) {
     while(string){
         lengthString = string.length
 
-        if (string[0] === "\"") {
-            serchString = `";`
+        if (string[0] === "\"") { // если есть кавычки
+            serchString = `";` // ищем закрывающие кавычки
             number = string.indexOf(serchString)
             if (number === -1) return {error:`Не найден '${serchString}'`,string}
             value = string.substring(1, number)
@@ -66,7 +66,7 @@ function getProducts(string) {
             continue
         }
 
-        if (string[0] === ";") {
+        if (string[0] === ";") { // если нет контента, сразу следующий разделитель (;) в строке
 
             object[arrayKey[i]] = null
 
@@ -81,14 +81,14 @@ function getProducts(string) {
             continue
         }
 
-        serchString = `;`
+        serchString = `;` // ищем разделитель
         number = string.indexOf(serchString)
-        if (number === -1) {
-            serchString = `\n`
+        if (number === -1) { // если конец файла
+            serchString = `\r\n`
             number = string.indexOf(serchString)
             if (number === -1) return {error:`Не найден конец файла!`}
 
-            value = string.substring(0, number)
+            value = string.substring(0, number) // удаляем перенос строки
             string = null
 
             object[arrayKey[i]] = value
@@ -104,12 +104,12 @@ function getProducts(string) {
 
         value = string.substring(0, number)
 
-        serchString = `\n`
+        serchString = `\r\n` 
         number2 = value.indexOf(serchString)
-        if (number2 !== -1) {
-            endValue = value.split("\n")
+        if (number2 !== -1) { // если в найденом значении есть перенос строки
+            endValue = value.split("\r\n")
 
-            if (endValue.length > 2) return {error:`Ошибка в строке '${value}', после split("\n") длина массива оказалась больше двух!`}
+            if (endValue.length > 2) return {error:`Ошибка в строке '${value}', после split("\r\n") длина массива оказалась больше двух!`}
 
             object[arrayKey[i]] = endValue[0]
             
