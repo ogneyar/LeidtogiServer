@@ -3,7 +3,6 @@ const axios = require('axios')
 const XLSX = require('xlsx')
 
 const ApiError = require('../error/apiError')
-// const { Brand, Category } = require('../models/models')
 
 const getUrlVseinstrumenti = require('../service/parser/milwaukee/getUrlVseinstrumenti.js')
 const getArrayImages = require('../service/parser/milwaukee/getArrayImages.js')
@@ -15,7 +14,6 @@ const getCharacteristics = require('../service/parser/milwaukee/getCharacteristi
 const getEquipment = require('../service/parser/milwaukee/getEquipment.js')
 const getAllData = require('../service/parser/milwaukee/getAllData.js')
 
-// const createProduct = require('../service/product/createProduct.js')
 const addNewProduct = require('../service/xlsx/addNewProduct')
 
 const getLink = require('../service/parser/husqvarna/getLink')
@@ -372,17 +370,21 @@ class parserController {
             await rgk.run()
             // return res.json(await rgk.run())
             
-            if ( print === "category" ) response = await rgk.print("category") // все категории
-            if ( print === "product" ) response = await rgk.print("product") // все товары
+            if ( print === "category" ) return res.json(await rgk.print("category")) // все категории
+            if ( print === "product" ) return res.json(await rgk.print("product")) // все товары
             // response = await rgk.search(379)
 
             if ( ! number &&  ! print ) return res.json(await rgk.getLengthProducts()) // 379
-            if ( ! print) response = await rgk.search(number, field)
+            
+            if ( ! print && field ) return res.json(await rgk.search(number, field))
 
-            // response = rgk.add(1)
+            if ( ! print && ! field ) response = await rgk.add(number) // добавление нового товара
+            
+            if (response && response.error === undefined) return res.json(number)
+            else return next(res.json({error: `Не смог сохранить товар, ${number} по очереди!` + response.error ? " " + response.error : ""}))
 
-            if (type === "html") return res.send(response || "error")
-            else return res.json(response || "error")
+            // if (type === "html") return res.send(response || "error")
+            // else return res.json(response || "error")
 
         }catch(e) {
             return next(res.json({error: 'Ошибка метода rgk!'}))
