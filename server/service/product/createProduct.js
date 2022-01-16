@@ -1,8 +1,8 @@
-const {Product, ProductInfo, ProductSize} = require('../../models/models')
+const { Product, ProductInfo, ProductSize } = require('../../models/models')
 
 
 async function createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size) {
-
+    
     const oldProduct = await Product.findOne({
         where: {article}
     })
@@ -25,7 +25,9 @@ async function createProduct(name, url, price, have, article, promo, country, br
     const product = await Product.create({name, url, price, have, article, promo, country, brandId, categoryId, img: files})
 
     if (info) {
-        let inf = JSON.parse(info)
+        let inf
+        if (Array.isArray(info)) inf = info
+        else inf = JSON.parse(info)
         if (Array.isArray(inf)) {
             for (let i = 0; i < inf.length; i++) {
                 if (inf[i]) {
@@ -40,7 +42,9 @@ async function createProduct(name, url, price, have, article, promo, country, br
     }
 
     if (size) {
-        let s = JSON.parse(size)
+        let s
+        if (Array.isArray(size)) s = size
+        else s = JSON.parse(size)
         if (s.weight || s.volume || s.width || s.height || s.length) {
             if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
             if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
