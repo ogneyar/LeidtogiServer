@@ -6,14 +6,14 @@ async function createProduct(name, url, price, have, article, promo, country, br
     
     const oldProduct = await findProductByArticle(article)
     if (oldProduct) {
-        await Product.destroy({
-            where: {article}
-        })
         await ProductInfo.destroy({
             where: {productId: oldProduct.id}
         })
         await ProductSize.destroy({
             where: {productId: oldProduct.id}
+        })
+        await Product.destroy({
+            where: {article}
         })
     }
 
