@@ -13,6 +13,3 @@ SELECT User, Host FROM mysql.user;
 // запуск веб-сервера, остановка, перезагрузка
 service nginx ( start | stop | restart | reload )
 
-
-
-RGK_FEED_URL=http://www.rgk-tools.com/direct_feed.php
