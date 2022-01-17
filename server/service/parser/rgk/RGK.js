@@ -172,12 +172,15 @@ module.exports = class RGK {
         // преобразуем объект object
         let { name, price, characteristics, description, category, images, article } = object
 
+        article = "rgk" + article
+
         let prod = await findProductByArticle(article)
-        if (prod) return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
+        if (prod) {
+            console.log("Такой товар уже есть: ",article);
+            return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
+        }
 
         if (characteristics) characteristics = characteristics.replace(/(<tr><td><\/td><\/tr>)/g, "")
-
-        article = "rgk" + article
 
         let brand
         try {
