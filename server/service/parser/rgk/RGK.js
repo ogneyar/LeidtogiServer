@@ -180,7 +180,12 @@ module.exports = class RGK {
             return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
         }
 
-        if (characteristics) characteristics = characteristics.replace(/(<tr><td><\/td><\/tr>)/g, "")
+        if (characteristics) 
+            characteristics = characteristics
+                .replace(/(<tr><td><\/td><\/tr>)/g, "")
+                .replace(/(<tr><td> <\/td><\/tr>)/g, "")
+                .replace(/(<tr><td>  <\/td><\/tr>)/g, "")
+                .replace(/(<tbody><\/tbody>)/g, "")
 
         let brand
         try {
