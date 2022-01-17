@@ -20,17 +20,19 @@ const translite = require('../../translite.js')
 
 module.exports = class RGK {
     
-    static url = process.env.RGK_FEED_URL
+    static url
     static category = []
     static product = []
     
     constructor() {
+        this.url = process.env.RGK_FEED_URL
     }
 
     async run() {
         let response, fullResponse, yes
         
-        // response = await axios.get(this.url)
+        // fullResponse = await axios.get(this.url)
+        // console.log("fullResponse: ",fullResponse);
         fullResponse = fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv'))
         
         // Convert from an encoded buffer to a js string.
@@ -165,10 +167,6 @@ module.exports = class RGK {
 
         if (object.error !== undefined) return object
 
-        // console.log(" ");
-        // console.log("object",object);
-        // console.log(" ");
-
         // преобразуем объект object
         let { name, price, characteristics, description, category, images, article } = object
 
@@ -204,7 +202,6 @@ module.exports = class RGK {
         try {
             categoryClass = await Category.findOne({
                 where: {name: category}
-                // where: {id: 272}
             })
         }catch(e) {
             return { error: "Ошибка: категория " + category + " не найдена!!!" }
