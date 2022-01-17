@@ -12,6 +12,7 @@ const getImages = require('./getImages')
 const getProducts = require('./getProducts')
 
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
+const findProductByArticle = require('../../product/findProductByArticle.js')
 const createProduct = require('../../product/createProduct.js')
 const translite = require('../../translite.js')
 
@@ -170,6 +171,9 @@ module.exports = class RGK {
 
         // преобразуем объект object
         let { name, price, characteristics, description, category, images, article } = object
+
+        let prod = await findProductByArticle(article)
+        if (prod) return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
 
         if (characteristics) characteristics = characteristics.replace(/(<tr><td><\/td><\/tr>)/g, "")
 

@@ -1,11 +1,10 @@
 const { Product, ProductInfo, ProductSize } = require('../../models/models')
+const findProductByArticle = require('./findProductByArticle')
 
 
 async function createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size) {
     
-    const oldProduct = await Product.findOne({
-        where: {article}
-    })
+    const oldProduct = await findProductByArticle(article)
     if (oldProduct) {
         await Product.destroy({
             where: {article}
