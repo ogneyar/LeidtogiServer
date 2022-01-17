@@ -20,6 +20,7 @@ router.get('/xlsx', checkRole('ADMIN'), parserController.parseXLSX) // парс�
 router.get('/husqvarna_get_image', parserController.husqvarnaGetImage) // парсер хузкварна
 router.get('/husqvarna_get_charcteristic', parserController.husqvarnaGetCharcteristic)
 
+// router.get('/rgk', parserController.rgk) // парсер RGK
 router.get('/rgk', checkRole('ADMIN'), parserController.rgk) // парсер RGK
 
 
