@@ -2,10 +2,11 @@ const fs = require('fs')
 const path = require('path')
 const iconv = require('iconv-lite')
 const axios = require('axios')
+const http = require('http')
 const https = require('https')
 const uuid = require('uuid')
 
-const { Brand, Category } = require('../../../models/models')
+const { Brand, Category, Product } = require('../../../models/models')
 
 const getArticle = require('./getArticle')
 const getImages = require('./getImages')
@@ -23,22 +24,43 @@ module.exports = class RGK {
     static url
     static category = []
     static product = []
+
     
     constructor() {
         this.url = process.env.RGK_FEED_URL
     }
 
+    async update() {
+
+        let feed = path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv')
+        let file = fs.createWriteStream(feed)
+
+        await new Promise((resolve, reject) => {
+            https.get(this.url, res => {
+                res.pipe(file)
+                res.on("end", () => {
+                    console.log("Записал данные в файл feed.csv")
+                    resolve()
+                })
+            })
+        })
+    }
+
     async run() {
-        let response, fullResponse, yes
-        
-        // fullResponse = await axios.get(this.url)
+        let response, fullResponse, yes, feed, newfeed
+
+        feed = path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv')
         // console.log("fullResponse: ",fullResponse);
-        fullResponse = fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv'))
+        if (fs.existsSync(feed) && iconv.decode(fs.readFileSync(feed), 'win1251') !== "") {
+            fullResponse = fs.readFileSync(feed)
+        }else {
+            return { error: "Файл rgk/feed.csv отсутствует или пуст!" }
+        }
         
         // Convert from an encoded buffer to a js string.
-        let str = iconv.decode(fullResponse, 'win1251')
-
-        fullResponse = str
+        fullResponse = iconv.decode(fullResponse, 'win1251')
+        
+        fullResponse = fullResponse
             .replace(/(&amp;)/g, "&")
             .replace(/(&amp;)/g, "&")
             .replace(/(&quot;)/g, "\'\'")
@@ -67,11 +89,11 @@ module.exports = class RGK {
         // поиск товаров
         response = getProducts(fullResponse)
         if (response.error !== undefined) {
-            return "Ошибка: " + response.error
+            return response
         }
         this.product = response.message
 
-        // return this.product
+        return true
     }
 
     // вывод данных
@@ -92,6 +114,7 @@ module.exports = class RGK {
 
     // поиск данных (поочерёдное, от 1 до getLengthProducts)
     async search(number = 1, info = "full") {
+        if ( ! this.product ) return { error: "Ошибка: нет данных о товарах!" }
         if (number > this.product.length) return { error: "Ошибка: такого номера не существует!" }
         
         // if ( ! this.product[number - 1]['available']) return "Нет в наличии"
@@ -135,8 +158,8 @@ module.exports = class RGK {
         }
         
         let html
-
-        await axios.get(object.url)
+        // console.log("object.url: ",object.url)
+        await axios.get(object.url.replace(/(:443)/g, ""))
             .then(res => html = res.data)
 
         let images = getImages(html)
@@ -153,8 +176,8 @@ module.exports = class RGK {
         }
         object.article = article.message
 
-        // return {...object, url: undefined}
-        if (info === "full") return object // { id, name, url, price, characteristics, description, category, images, article }
+        // { id, name, url, price, characteristics, description, category, images, article }
+        if (info === "full") return object 
         else return object[info]
         
     }
@@ -174,7 +197,7 @@ module.exports = class RGK {
 
         let prod = await findProductByArticle(article)
         if (prod) {
-            console.log("Такой товар уже есть: ",article);
+            console.log("Такой товар уже есть: ",article)
             return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
         }
 
@@ -258,6 +281,34 @@ module.exports = class RGK {
         }
 
         return product
+    }
+
+    // смена цены
+    async changePrice(number) {
+
+        let article, price, response
+            
+        await axios.get(this.product[number - 1]["offer url"].replace(/(:443)/g, "") + "/")
+            .then(res => article = getArticle(res.data))            
+        if (article.error !== undefined) article = "rgk" + this.product[number - 1]["offer id"]
+        else article = "rgk" + article.message
+
+        price = this.product[number - 1]["offer price"]
+
+        const product = await Product.findOne({
+            where: { article }
+        })
+        if (product) {
+            if (Number(price) === Number(product.price)) return `Артикул: ${article}. Цена не изменилась.`
+            response = await Product.update({ price }, {
+                where: { id: product.id }
+            })
+        }else {
+            return `Артикул: ${article}. Такого товара нет.`
+        }
+        
+        // if (response) return { article, oldPrice: product.price, newPrice: price }
+        if (response) return `Артикул: ${article}. Старая цена: ${product.price}. Новая цена: ${price}`
     }
 
 

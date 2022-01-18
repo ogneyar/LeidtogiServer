@@ -41,8 +41,8 @@ class TesterController {
                 .map(k => k.name.toLowerCase())
                 .join("")
             let name = i.name
-                .replace(/"/g,"&quot;")
                 .replace(/&/g,"&amp;")
+                .replace(/"/g,"&quot;")
                 .replace(/>/g,"&gt;")
                 .replace(/</g,"&lt;")
                 .replace(/'/g,"&apos;")

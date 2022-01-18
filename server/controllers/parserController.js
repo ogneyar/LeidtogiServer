@@ -363,28 +363,47 @@ class parserController {
     // РусГеоКом
     async rgk(req, res, next) {
         try {
-            let { print, number, field, type } = req.query
+            let { 
+                update, // если передан параметр update (с любым значением), значит необходимо обновить файл feed.csv
+                change, // если передан параметр change (с любым значением), значит необходимо обновить цену  - в этом случае параметр number обязателен 
+                print,  // если передан параметр print=product, значит необходимо вывести на экран информацию о товарах
+                        // если передан параметр print=category, значит необходимо вывести на экран информацию о категориях
+                field,  // если передан параметр field, значит необходимо вывести информацию о заданном поле (например: field=article) - в этом случае параметр number обязателен 
+                number  // если передан параметр number без параметра field, значит необходимо добавить в БД товар по очереди под номером number
+            } = req.query
+
             let response, rgk
-            
+            // создание экземпляра класса RGK
             rgk = new RGK()
-            await rgk.run()
-            // return res.json(await rgk.run())
-            
-            if ( print === "category" ) return res.json(await rgk.print("category")) // все категории
-            if ( print === "product" ) return res.json(await rgk.print("product")) // все товары
-            // response = await rgk.search(379)
-
-            if ( ! number &&  ! print ) return res.json(await rgk.getLengthProducts()) // 379
-            
-            if ( ! print && field ) return res.json(await rgk.search(number, field))
-
-            if ( ! print && ! field ) response = await rgk.add(number) // добавление нового товара
-            
-            if (response && response.error === undefined) return res.json(number)
-            else return next(res.json({error: `Не смог сохранить товар, ${number} по очереди!` + response.error ? " " + response.error : ""}))
-
-            // if (type === "html") return res.send(response || "error")
-            // else return res.json(response || "error")
+            // обновление файла feed.csv
+            if (update) await rgk.update() 
+            // обработка данных файла feed.csv
+            response = await rgk.run()
+            if (response.error !== undefined) return res.json(response) // вывод ошибки
+            // обновление цен
+            if (change) {
+                if (number) return res.json(await rgk.changePrice(Number(number)))
+                else return next(res.json({error: 'Ошибка, не задан number при заданном параметре change!'}))
+            }
+            // вывод информации на экран
+            if (print) {
+                if (print === "category") return res.json(await rgk.print("category")) // все категории
+                if (print === "product") return res.json(await rgk.print("product")) // все товары
+            }
+            // вывод на экран конкретной записи (например: field = "article")
+            if (field) {
+                if (number) return res.json(await rgk.search(Number(number), field))
+                else return next(res.json({error: 'Ошибка, не задан number при заданном field!'}))
+            }
+            // добавление нового товара
+            if (number) {
+                response = await rgk.add(Number(number))
+                
+                if (response && response.error === undefined) return res.json(number)
+                else return next(res.json({error: `Не смог сохранить товар, ${number} по очереди!` + response.error ? " " + response.error : ""}))
+            }
+            // вывод на экран общего количества товаров (например: 372)
+            return res.json(await rgk.getLengthProducts()) 
 
         }catch(e) {
             return next(res.json({error: 'Ошибка метода rgk!'}))
