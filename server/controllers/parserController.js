@@ -21,6 +21,8 @@ const getImage = require('../service/parser/husqvarna/getImage')
 
 const RGK = require('../service/parser/rgk/RGK')
 
+const Milwaukee = require('../service/parser/milwaukee/Milwaukee')
+
 
 class parserController {
 
@@ -133,7 +135,7 @@ class parserController {
             return next(ApiError.badRequest('Ошибка метода getDescription!'));
         }
 
-        return res.send(string)                
+        return res.send(string)
     }
 
     async getCharacteristics(req, res, next) {
@@ -162,7 +164,7 @@ class parserController {
             return next(ApiError.badRequest('Ошибка метода getCharacteristics!'));
         }
 
-        return res.send(string)                
+        return res.send(string)
     }
     
 
@@ -210,6 +212,7 @@ class parserController {
             return res.json({error:e})
         }
     }
+
 
     async mailRu(req, res, next) {
         try {
@@ -408,6 +411,36 @@ class parserController {
         }catch(e) {
             return next(res.json({error: 'Ошибка метода rgk!'}))
         }
+    }
+
+    
+    async milwaukee(req, res, next) {
+
+        let { all, party, change, number } = req.query
+
+        let mlk = new Milwaukee()
+        let response = await mlk.run()
+
+        if (response) {
+
+            if (all) return res.json(await mlk.getAll())
+
+            if (party) {
+                if (number) return res.json(await mlk.getPart(number, party))
+                else return next(res.json({error: 'Ошибка, не задан number при заданном party!'}))
+            }
+            // обновление цен 
+            if (change) {
+                if (number) return res.json(await mlk.changePrice(number))
+                else return res.json(await mlk.changePriceAll())
+            }
+
+            if (number) return res.json(await mlk.getOne(number))
+
+            return res.json(await mlk.getLength())
+        }
+
+        return res.json(false)
     }
 
 
