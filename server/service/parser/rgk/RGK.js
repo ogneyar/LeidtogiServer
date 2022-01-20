@@ -32,24 +32,31 @@ module.exports = class RGK {
 
     async update() {
 
-        let feed = path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv')
-        let file = fs.createWriteStream(feed)
+        let feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv')
+        // let file = fs.createWriteStream(feed)
 
         await new Promise((resolve, reject) => {
-            https.get(this.url, res => {
-                res.pipe(file)
-                res.on("end", () => {
-                    console.log("Записал данные в файл feed.csv")
-                    resolve()
+            try {
+                https.get(this.url, res => {
+                    res.pipe(fs.createWriteStream(feed))
+                    res.on("end", () => {
+                        console.log("Записал данные в файл feed.csv")
+                        resolve()
+                    })
                 })
-            })
+            }catch(e) {
+                console.log("Не смог записать данные в файл feed.csv")
+                console.log(" ")
+                console.log(e);
+                resolve()
+            }
         })
     }
 
     async run() {
-        let response, fullResponse, yes, feed, newfeed
+        let response, fullResponse, yes, feed
 
-        feed = path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', 'feed.csv')
+        feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv')
         // console.log("fullResponse: ",fullResponse);
         if (fs.existsSync(feed) && iconv.decode(fs.readFileSync(feed), 'win1251') !== "") {
             fullResponse = fs.readFileSync(feed)
@@ -289,7 +296,7 @@ module.exports = class RGK {
         let article, price, response
             
         await axios.get(this.product[number - 1]["offer url"].replace(/(:443)/g, "") + "/")
-            .then(res => article = getArticle(res.data))            
+            .then(res => article = getArticle(res.data))
         if (article.error !== undefined) article = "rgk" + this.product[number - 1]["offer id"]
         else article = "rgk" + article.message
 
