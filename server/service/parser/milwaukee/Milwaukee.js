@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const XLSX = require('xlsx')
+const encoding = require('encoding')
 
 const { Product } = require('../../../models/models')
 
@@ -11,7 +12,10 @@ module.exports = class Milwaukee {
     static workbook // рабочая книга
     static worksheet // рабочая вкладка
     static start // стартовая позиция (номер строки)
+    static categorySymbol // имя столбца категория (A, B, C,..)
+    static groupSymbol // имя столбца группа (A, B, C,..)
     static articleSymbol // имя столбца артикула (A, B, C,..)
+    static modelSymbol // имя столбца модель (A, B, C,..)
     static priceSymbol // имя столбца цены (A, B, C,..)
 
     
@@ -42,9 +46,21 @@ module.exports = class Milwaukee {
                 let value = (desired ? desired.v : undefined)
 
                 if (value && typeof(value) === "string") {
-                    if (value.includes("Артикул")) {
+                    if (value.includes("Категория")) {
                         this.start = number + 1
+                        this.categorySymbol = array[i]
+                        continue
+                    }
+                    if (value.includes("Группа")) {
+                        this.groupSymbol = array[i]
+                        continue
+                    }
+                    if (value.includes("Артикул")) {
                         this.articleSymbol = array[i]
+                        continue
+                    }
+                    if (value.includes("Модель")) {
+                        this.modelSymbol = array[i]
                         continue
                     }
                     if (value.includes("Цена")) {
@@ -56,8 +72,8 @@ module.exports = class Milwaukee {
             }
         }
         
-        if ( ! this.articleSymbol || ! this.priceSymbol ) return false
-
+        if ( ! this.articleSymbol || ! this.priceSymbol || ! this.categorySymbol || ! this.groupSymbol || ! this.modelSymbol ) return false
+        
         // console.log(" ");
         // console.log("start", this.start);
         // console.log("articleSymbol", this.articleSymbol);
@@ -139,36 +155,55 @@ module.exports = class Milwaukee {
     // вывод данных
     async print(number) {
 
-        let article, price
-        article = this.worksheet[ this.articleSymbol + ( this.start + Number(number) - 1 ) ]
-        price = this.worksheet[ this.priceSymbol + ( this.start + Number(number) - 1 ) ]
+        let article = this.worksheet[ this.articleSymbol + ( this.start + Number(number) - 1 ) ]
+        let price = this.worksheet[ this.priceSymbol + ( this.start + Number(number) - 1 ) ]
+        let category = this.worksheet[ this.categorySymbol + ( this.start + Number(number) - 1 ) ]
+        let group = this.worksheet[ this.groupSymbol + ( this.start + Number(number) - 1 ) ]
+        let model = this.worksheet[ this.modelSymbol + ( this.start + Number(number) - 1 ) ]
 
-        if ( ! article || ! price ) return "Ошибка, не найдены записи."
+        if ( ! article || ! price || ! category || ! group || ! model ) return "Ошибка, не найдены записи."
 
         return { 
             article: article.v,
             price: price.v,
+            category: category.v,
+            group: group.v,
+            model: model.v,
         }
     }
 
 
     async changePrice(number) {
 
-        let { article, price } = await this.print(number)
+        let print = await this.print(number)
+        if (print.article === undefined) return { article: undefined, update: "warning" }
+
+        let { article, price, category, group, model } = print
         let response
 
         const product = await Product.findOne({
             where: { article }
         })
         if (product) {
-            if (Number(price) === Number(product.price)) return `Артикул: ${article}. Цена не изменилась.`
-            // response = await Product.update({ price }, {
-            //     where: { id: product.id }
-            // })
-            response = true
+            if (Number(price) === Number(product.price)) {
+                return { article, update: "no" }
+                return `Артикул: ${article}. Цена не изменилась.`
+            }
+            // response = await 
+            Product.update({ price }, {
+                where: { id: product.id }
+            })
+            // response = true
             
-            if (response) return `Артикул: ${article}. Старая цена: ${product.price}. Новая цена: ${price}`
+            // if (response) {
+                return { article, update: "yes" }
+                return `Артикул: ${article}. Старая цена: ${product.price}. Новая цена: ${price}`
+            // }else {
+            //     return { article, update: "error" }
+            //     return `Артикул: ${article}. Не смог внести новую цену: ${price}`
+            // }
         }else {
+            return { article, category, group, model, price, update: "unknown" }
             return `Артикул: ${article}. Такого товара нет.`
         }
         
@@ -185,8 +220,78 @@ module.exports = class Milwaukee {
             string = await this.changePrice(number)
             array.push(string)
         }
-        
-        return array
+
+        let urlChange, urlUnknown, urlError
+
+        let date = new Date()
+        let folderName = date.getFullYear() + "." + (date.getMonth()+1) + "." + date.getDate() + "_" + date.getHours() + "." + date.getMinutes()
+        if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'info'))){
+            try {
+                fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'info'))
+            }catch(e) {
+                return `Создать папку info не удалось.`
+            }
+        }
+        if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee'))){
+            try {
+                fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee'))
+            }catch(e) {
+                return `Создать папку milwaukee не удалось.`
+            }
+        }
+        if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee', folderName))){
+            try {
+                fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee', folderName))
+            }catch(e) {
+                return `Создать папку ${folderName} не удалось.`
+            }
+        }
+
+        let unknown = path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee', folderName, 'unknown.csv')
+
+        let text = "Категория;Группа;Артикул;Модель;Цена;Ссылка\r\n" + array.map(i => {
+            if (i.update === "unknown") {
+                return `"${i.category.replace(/\"/g, "&quot;")}";"${i.group.replace(/\"/g, "&quot;")}";"${i.article}";"${i.model.replace(/\"/g, "&quot;")}";"${i.price}";\r\n`
+            }
+            return null
+        }).filter(j => j !== null).join("")
+
+        // try {
+        //     fs.writeFileSync( unknown, encoding.convert(text, 'WINDOWS-1251', 'UTF-8') )
+        //     urlUnknown = `<a href="${process.env.URL}/info/milwaukee/${folderName}/unknown.csv" >unknown.csv</a><br />`
+        // }catch(e) {
+        //     urlUnknown = `Создать файл unknown.csv не удалось.<br />`
+        // }
+        fs.writeFile( unknown, encoding.convert(text, 'WINDOWS-1251', 'UTF-8'), () => {})
+        urlUnknown = `<a href="${process.env.URL}/info/milwaukee/${folderName}/unknown.csv" >unknown.csv</a><br />`
+
+
+        let changes = path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee', folderName, 'changes.json')
+        try {
+            fs.writeFileSync(changes, "[" + array.map(i => {
+                return "\n    " + JSON.stringify(i)
+            }) + "]")
+            urlChange = `<a href="${process.env.URL}/info/milwaukee/${folderName}/changes.json" >changes.json</a><br />`
+        }catch(e) {
+            urlChange = `Создать файл changes.json не удалось.<br />`
+        }
+
+        // let error = path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee', folderName, 'error.json')
+        // try {
+        //     fs.writeFileSync(error, "[" + array.map(i => {
+        //         if (i.update === "error" || i.update === "warning") {
+        //             return "\n    " + JSON.stringify(i)
+        //         }
+        //         return null
+        //     }).filter(j => j !== null) + "]")
+        //     urlError = `<a href="${process.env.URL}/info/milwaukee/${folderName}/error.json" >error.json</a>`
+        // }catch(e) {
+        //     urlError = `Создать файл error.json не удалось.`
+        // }
+
+        // return array
+        // return urlChange + urlUnknown + urlError
+        return urlChange + urlUnknown
     }
 
 
