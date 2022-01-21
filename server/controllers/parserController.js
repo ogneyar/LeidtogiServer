@@ -1,6 +1,9 @@
 
 const axios = require('axios')
 const XLSX = require('xlsx')
+const path = require('path')
+const fs = require('fs')
+const Math = require('mathjs')
 
 const ApiError = require('../error/apiError')
 
@@ -361,6 +364,53 @@ class parserController {
             // return next(ApiError.badRequest('Ошибка метода husqvarna!'))
             return next(res.json({error: 'Ошибка метода husqvarna!'}))
         }
+    }
+
+    // временный роут РусГеоКом
+    async rgkTemp(req, res, next) {
+        let size, workbook, worksheet, response = []
+
+        size = path.resolve(__dirname, '..', 'static', 'temp', 'rgk', 'size.xlsx')
+        // console.log("fullResponse: ",fullResponse)
+        if (fs.existsSync(size)) {
+            workbook = XLSX.readFile(size)
+        }else {
+            return next(res.json({ error: "Файл rgk/size.xlsx отсутствует или пуст!" }))
+        }
+        
+        let first_sheet_name = workbook.SheetNames[0] // наименование первой вкладки
+        worksheet = workbook.Sheets[first_sheet_name] // рабочая вкладка
+        
+        
+        let len = 317
+        let desired, article, weight, length, width, height, volume
+
+        for(let number = 2; number <= len; number++) {
+            desired = worksheet["A" + number] // артикул
+            article = "rgk" + (desired ? desired.v : undefined)
+
+            desired = worksheet["F" + number] // вес
+            weight = (desired ? desired.v : undefined)
+            weight = Math.round((Number(weight) / 1000), 2)
+
+            desired = worksheet["G" + number] // длина
+            length = (desired ? desired.v : undefined)
+
+            desired = worksheet["H" + number] // ширина
+            width = (desired ? desired.v : undefined)
+
+            desired = worksheet["I" + number] // высота
+            height = (desired ? desired.v : undefined)
+            
+            volume = Math.round(((Number(length) /1000) * (Number(width) /1000) * (Number(height) /1000)), 4)
+
+            response.push({ article, weight, length, width, height, volume })
+        }
+
+        return res.json(response)
+        // return res.json({ article, weight, length, width, height, volume })
+
+
     }
 
     // РусГеоКом
