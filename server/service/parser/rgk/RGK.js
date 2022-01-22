@@ -10,7 +10,7 @@ const { Brand, Category, Product } = require('../../../models/models')
 
 const getArticle = require('./getArticle')
 const getImages = require('./getImages')
-const getProducts = require('./getProducts')
+const getProducts = require('../../csv/parse')
 
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 const findProductByArticle = require('../../product/findProductByArticle.js')
