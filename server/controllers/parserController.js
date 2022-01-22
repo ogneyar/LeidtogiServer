@@ -5,6 +5,7 @@ const path = require('path')
 const fs = require('fs')
 const Math = require('mathjs')
 
+const { ProductSize, Product } = require('../models/models')
 const ApiError = require('../error/apiError')
 
 const getUrlVseinstrumenti = require('../service/parser/milwaukee/getUrlVseinstrumenti.js')
@@ -403,8 +404,35 @@ class parserController {
             height = (desired ? desired.v : undefined)
             
             volume = Math.round(((Number(length) /1000) * (Number(width) /1000) * (Number(height) /1000)), 4)
+            
+            // 
+            let product = await Product.findOne({
+                where: { article }
+            })
+            let have = false
+            if (product && product.id !== undefined) {
+                have = true
+                let product_size = await ProductSize.findOne({
+                    where: { productId: product.id }
+                })
+                if ( ! product_size ) {
+                    weight = weight.toString().replace(',', '.')
+                    volume = volume.toString().replace(',', '.')
+                    width = width.toString().replace(',', '.')
+                    height = height.toString().replace(',', '.')
+                    length = length.toString().replace(',', '.')
+                    ProductSize.create({
+                        weight,
+                        volume,
+                        width,
+                        height,
+                        length,
+                        productId: product.id 
+                    })
+                }
+            }
 
-            response.push({ article, weight, length, width, height, volume })
+            response.push({ article, weight, length, width, height, volume, have })
         }
 
         return res.json(response)
