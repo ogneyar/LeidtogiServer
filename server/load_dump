@@ -1,0 +1,1 @@
+mysql --host=127.0.0.1 -p -u mern --default-character-set=utf8 mern < mern.sql

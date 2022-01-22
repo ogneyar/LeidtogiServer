@@ -1,0 +1,1 @@
+mysqldump --host=127.0.0.1 -p -u mern --disable-keys --add-drop-table --default-character-set=utf8 --result-file=mern.sql mern
