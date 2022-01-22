@@ -22,10 +22,14 @@ router.get('/husqvarna_get_charcteristic', parserController.husqvarnaGetCharcter
 
 // router.get('/rgk', parserController.rgk) // парсер RGK
 router.get('/rgk', checkRole('ADMIN'), parserController.rgk) // парсер RGK
-router.get('/rgkTemp', parserController.rgkTemp) // временный роут RGK
+router.get('/rgkTemp', checkRole('ADMIN'), parserController.rgkTemp) // временный роут RGK
 
 // router.get('/milwaukee', parserController.milwaukee) // парсер милуоки файла xlsx для обновления цен
 router.get('/milwaukee', checkRole('ADMIN'), parserController.milwaukee) // парсер милуоки файла xlsx для обновления цен
+router.get('/mlkTemp', checkRole('ADMIN'), parserController.mlkTemp) // временный роут Milwaukee
+
+
+router.get('/temp', parserController.temp) // временный роут
 
 
 
