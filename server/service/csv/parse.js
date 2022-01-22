@@ -15,14 +15,14 @@
     "offer category"
 }
 
-function getProducts(string) {
+function parse(string, search = `"offer id"`) {
     let lengthString, serchString, number, number2, lengthSerchString, arrayKey
     let products = []
     let object = {}
     
     lengthString = string.length
     
-    serchString = `"offer id"`
+    serchString = search
     number = string.indexOf(serchString)
     if (number === -1) return {error:`'Не найден '${serchString}'`,string}
     string = string.substring(number, lengthString)
@@ -37,7 +37,7 @@ function getProducts(string) {
     
     arrayKey = string.substring(0, number).replace(/\"/g, "").replace(/(\r)/g, "").split(";")
     
-    string = string.substring(number + lengthSerchString, lengthString)
+    string = string.substring(number + lengthSerchString, lengthString).replace(/(\r)/g, "")
     
     if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
     
@@ -93,7 +93,7 @@ function getProducts(string) {
             object[arrayKey[i]] = value
             
             if (i + 1 < arrayKey.length) {
-                return {error:`Ошибка, после сохранения последнего элемента в Map, i+1 оказалось меньше длины массива ключей!!!`}
+                return {error:`Ошибка, после сохранения последнего элемента в object, i+1 оказалось меньше длины массива ключей!!!`}
             }else {
                 i = 0
                 products.push(object)
@@ -113,7 +113,7 @@ function getProducts(string) {
             
             object[arrayKey[i]] = endValue[0]
             
-            if (i + 1 < arrayKey.length) return {error:`Ошибка, после сохранения последнего элемента в Map, i+1 оказалось меньше длины массива ключей.`}
+            if (i + 1 < arrayKey.length) return {error:`Ошибка, после сохранения последнего элемента в object, i+1 оказалось меньше длины массива ключей.`}
             else {
                 i = 0
                 products.push(object)
@@ -125,7 +125,7 @@ function getProducts(string) {
             string = string.substring(number + 1, lengthString)
             
             if (i + 1 < arrayKey.length) i++
-            else return {error:`Ошибка, после сохранения первого элемента в Map, i+1 оказалось равным длине массива ключей!`}
+            else return {error:`Ошибка, после сохранения первого элемента в object, i+1 оказалось равным длине массива ключей!`}
             
             continue
         }
@@ -145,4 +145,4 @@ function getProducts(string) {
     return { message: products }
 }
 
-module.exports = getProducts
+module.exports = parse
