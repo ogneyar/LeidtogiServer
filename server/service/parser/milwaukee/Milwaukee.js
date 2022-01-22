@@ -59,7 +59,7 @@ module.exports = class Milwaukee {
                         this.articleSymbol = array[i]
                         continue
                     }
-                    if (value.includes("Модель")) {
+                    if (value === "Модель") {
                         this.modelSymbol = array[i]
                         continue
                     }
