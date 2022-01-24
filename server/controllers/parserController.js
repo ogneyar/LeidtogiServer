@@ -28,9 +28,9 @@ const getImage = require('../service/parser/husqvarna/getImage')
 const RGK = require('../service/parser/rgk/RGK')
 
 const Milwaukee = require('../service/parser/milwaukee/Milwaukee')
-const getProducts = require('../service/csv/parse')
+const parseCsv = require('../service/csv/parseCsv')
 
-const parse = require('../service/xlsx/parse')
+const parseXlsx = require('../service/xlsx/parseXlsx')
 
 
 class parserController {
@@ -374,47 +374,24 @@ class parserController {
 
     // временный роут РусГеоКом
     async rgkTemp(req, res, next) {
-        let size, workbook, worksheet, response = []
-
+        let size, workbook, worksheet, response = [], xlsx
         size = path.resolve(__dirname, '..', 'static', 'temp', 'rgk', 'size.xlsx')
-        // console.log("fullResponse: ",fullResponse)
-        if (fs.existsSync(size)) {
-            workbook = XLSX.readFile(size)
-        }else {
-            return next(res.json({ error: "Файл rgk/size.xlsx отсутствует или пуст!" }))
-        }
-        
-        let first_sheet_name = workbook.SheetNames[0] // наименование первой вкладки
-        worksheet = workbook.Sheets[first_sheet_name] // рабочая вкладка
-        
-        
-        let len = 317
+
+        xlsx = await parseXlsx(size, [ "Артикул", "гр.", "д (мм)", "ш (мм)", "в (мм)" ])
+
         let desired, article, weight, length, width, height, volume
-
-        for(let number = 2; number <= len; number++) {
-            desired = worksheet["A" + number] // артикул
-            article = "rgk" + (desired ? desired.v : undefined)
-
-            desired = worksheet["F" + number] // вес
-            weight = (desired ? desired.v : undefined)
-            weight = Math.round((Number(weight) / 1000), 2)
-
-            desired = worksheet["G" + number] // длина
-            length = (desired ? desired.v : undefined)
-
-            desired = worksheet["H" + number] // ширина
-            width = (desired ? desired.v : undefined)
-
-            desired = worksheet["I" + number] // высота
-            height = (desired ? desired.v : undefined)
-            
+        for(let number = 2; number <= 317; number++) {
+            article = "rgk" + xlsx[number-2]["Артикул"]
+            weight = Math.round((Number(xlsx[number-2]["гр."]) / 1000), 2)
+            length = xlsx[number-2]["д (мм)"]
+            width = xlsx[number-2]["ш (мм)"]
+            height = xlsx[number-2]["в (мм)"]
             volume = Math.round(((Number(length) /1000) * (Number(width) /1000) * (Number(height) /1000)), 4)
             
-            // 
             let product = await Product.findOne({
                 where: { article }
             })
-            let have = false
+            let have = false 
             if (product && product.id !== undefined) {
                 have = true
                 let product_size = await ProductSize.findOne({
@@ -441,9 +418,6 @@ class parserController {
         }
 
         return res.json(response)
-        // return res.json({ article, weight, length, width, height, volume })
-
-
     }
 
     // РусГеоКом
@@ -498,80 +472,31 @@ class parserController {
 
     
     async mlkTemp(req, res, next) {
-        let feed, workbook, worksheet, response = []
-        
-        feed = path.resolve(__dirname, '..', 'prices', 'milwaukee', 'old', 'newMILWAUKEE.xlsx')
-        // console.log("fullResponse: ",fullResponse)
-        if (fs.existsSync(feed)) {
-            workbook = XLSX.readFile(feed)
-        }else {
-            return { error: "Файл milwaukee/old/newMILWAUKEE.xlsx отсутствует или пуст!" }
-        }
+        let feed, response = []        
+        feed = path.resolve(__dirname, '..', 'prices', 'milwaukee', 'old', 'newMILWAUKEE.xlsx')   
 
-        let first_sheet_name = workbook.SheetNames[0] // наименование первой вкладки
-        worksheet = workbook.Sheets[first_sheet_name] // рабочая вкладка
-
-        let start, articleSymbol, categorySymbol
-        
-        let array = ["A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]
-        for (let number = 1; number <= 20; number++) {
-            if (articleSymbol && categorySymbol) break
-            for (let i = 0; i < array.length; i++) {
-                let address = array[i] + number // A1, B1, .., K1, A2, B2, ... 
-                let desired = worksheet[address] // искомое
-                let value = (desired ? desired.v : undefined)
-
-                if (value && typeof(value) === "string") {
-                    if (value.includes("Артикул")) {                        
-                        start = number + 1
-                        articleSymbol = array[i]
-                        continue
-                    }
-                    if (value.includes("Категории")) {
-                        categorySymbol = array[i]
-                        continue
-                        break
-                    }
-                }
-
-            }
-        }
-        let article, category
-        for (let i = 1; i <= 4676; i++) {
-            article = worksheet[ articleSymbol + ( start + Number(i) - 1 ) ].v
-            category = worksheet[ categorySymbol + ( start + Number(i) - 1 ) ].v
-
-            response.push({article, category})
-        }
+        response = await parseXlsx(feed, [ "Артикул", "Категории" ])
 
         let fullResponse
-
-        feed = path.resolve(__dirname, '..', 'static', 'info', 'milwaukee', '2022.1.22_18.23', 'unknown.csv')
-        // console.log("fullResponse: ",fullResponse);
+        feed = path.resolve(__dirname, '..', 'static', 'info', 'milwaukee', '2022.1.22_18.23', 'unknown.csv')        
         if (fs.existsSync(feed) && iconv.decode(fs.readFileSync(feed), 'win1251') !== "") {
             fullResponse = fs.readFileSync(feed)
         }else {
             return { error: "Файл info/milwaukee/2022.1.22_18.23/unknown.csv отсутствует или пуст!" }
-        }
-        
+        }        
         // Convert from an encoded buffer to a js string.
-        fullResponse = iconv.decode(fullResponse, 'win1251')
-        
-        let products = getProducts(fullResponse, `Категория`)
-
+        fullResponse = iconv.decode(fullResponse, 'win1251')        
+        let products = parseCsv(fullResponse, `Категория`)
         if (products.error !=undefined) return res.json(products)
-
         let response2 = products.message
-
         let text = "Категория;Группа;Артикул;Модель;Цена;Ссылка\r\n" + response2.map(i => {
             let article = i["Артикул"]
             let url = ""
             response.forEach(j => {
-                if (Number(j.article) === Number(article)) url = j.category
+                if (Number(j["Артикул"]) === Number(article)) url = j["Категории"]
             })
             return `${i["Категория"]};${i["Группа"]};${article};"${i["Модель"] && i["Модель"].replace(/\"/g, "&quot;")}";${i["Цена"]};${url}\r\n`
         }).join("")
-
         let unknown = path.resolve(__dirname, '..', 'static', 'temp', 'mlk', 'unknown.csv')
         let urlUnknown
         try {
@@ -588,10 +513,13 @@ class parserController {
     async milwaukee(req, res, next) {
 
         let { all, party, change, number } = req.query
+        let feed = req.files && req.files.feed || undefined
+
+        if (!feed) feed = path.resolve(__dirname, '..', 'prices', 'milwaukee', 'feed.xlsx')
 
         let mlk = new Milwaukee()
-        let response = await mlk.run()
-
+        let response = await mlk.run(feed)
+        
         if (response) {
 
             if (all) return res.json(await mlk.getAll())
@@ -612,20 +540,6 @@ class parserController {
         }
 
         return res.json(false)
-    }
-
-    async temp(req, res, next) {
-
-        let response = await parse(
-            path.resolve(__dirname, '..', 'prices', 'milwaukee', 'feed.xlsx'),
-            [
-                "Артикул",
-                "Модель",
-                "Цена с учетом НДС, руб."
-            ]
-        )
-
-        return res.json(response)
     }
 
 

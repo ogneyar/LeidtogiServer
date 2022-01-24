@@ -3,7 +3,7 @@ const XLSX = require('xlsx')
 const fs = require('fs')
 
 
-async function parse(file, arraySearch) {
+async function parseXlsx(file, arraySearch) {
 
     let workbook, worksheet, response = []
     
@@ -35,14 +35,8 @@ async function parse(file, arraySearch) {
                     // if (value.includes(arraySearch[numberObject])) {                        
                     if (value === arraySearch[numberObject]) {                        
                         if (!start) start = number + 1
-                        // symbol.push(array[i])
 
                         symbol[numberObject] = array[i]
-
-                        console.log(`arraySearch[${numberObject}]`,arraySearch[numberObject])
-                        console.log(`symbol: `,array[i])
-
-                        // return symbol
                     }
                 } 
 
@@ -71,4 +65,4 @@ async function parse(file, arraySearch) {
 
 }
 
-module.exports = parse
+module.exports = parseXlsx
