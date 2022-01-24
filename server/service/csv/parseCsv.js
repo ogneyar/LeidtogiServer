@@ -15,7 +15,7 @@
     "offer category"
 }
 
-function parse(string, search = `"offer id"`) {
+function parseCsv(string, search = `"offer id"`) {
     let lengthString, serchString, number, number2, lengthSerchString, arrayKey
     let products = []
     let object = {}
@@ -145,4 +145,4 @@ function parse(string, search = `"offer id"`) {
     return { message: products }
 }
 
-module.exports = parse
+module.exports = parseCsv
