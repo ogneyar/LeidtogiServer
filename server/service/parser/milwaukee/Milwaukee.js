@@ -23,18 +23,24 @@ module.exports = class Milwaukee {
         this.brand = "milwaukee"
     }
 
-    async run() {
+    async run(feed) {
+        // let feed
+        // feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'feed.xlsx')
 
-        let feed
-
-        feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'feed.xlsx')
-        // console.log("fullResponse: ",fullResponse)
-        if (fs.existsSync(feed)) {
-            this.workbook = XLSX.readFile(feed)
+        if (feed.name !== undefined) {
+            if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
+            if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk'))
+            let fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk', feed.name)
+            await feed.mv(fullPath)
+            this.workbook = XLSX.readFile(fullPath)
         }else {
-            return { error: "Файл milwaukee/feed.xlsx отсутствует или пуст!" }
+            if (fs.existsSync(feed)) { 
+                this.workbook = XLSX.readFile(feed)
+            }else {
+                return { error: `Файл ${feed} отсутствует или пуст!` }
+            }
         }
-
+        
         let first_sheet_name = this.workbook.SheetNames[0] // наименование первой вкладки
         this.worksheet = this.workbook.Sheets[first_sheet_name] // рабочая вкладка
 
