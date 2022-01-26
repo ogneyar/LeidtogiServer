@@ -223,6 +223,8 @@ class parserController {
     }
 
 
+
+
     async mailRu(req, res, next) {
         try {
             let { email } = req.query
@@ -251,66 +253,6 @@ class parserController {
         }
     }
 
-
-    
-    async parseXLSX(req, res, next) {
-        let { brand, number, party } = req.query
-        let product, message, response
-
-        let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
-
-        for(let i = Number(number); i < Number(number)+Number(party); i++) {
-
-            try{
-                product = await addNewProduct(workbook,brand,i)
-            }catch(e) {
-                product = e
-            }
-        
-            if (product.article) {
-                message = `${i}. Товар с артикулом ${product.article} добавлен.`
-                console.log('\x1b[34m%s\x1b[0m', message)
-            }else {
-                message = `${i}. Ошибка: ${product}`
-                console.log('\x1b[33m%s\x1b[0m', message)
-            }
-    
-            message = message + "<br />"
-            if (response) response = response + message
-            else response = message
-
-        }
-
-        return res.send(response)
-    }
-    
-// color text console
-
-// Reset = "\x1b[0m"
-// Bright = "\x1b[1m"
-// Dim = "\x1b[2m"
-// Underscore = "\x1b[4m"
-// Blink = "\x1b[5m"
-// Reverse = "\x1b[7m"
-// Hidden = "\x1b[8m"
-
-// FgBlack = "\x1b[30m"
-// FgRed = "\x1b[31m"
-// FgGreen = "\x1b[32m"
-// FgYellow = "\x1b[33m"
-// FgBlue = "\x1b[34m"
-// FgMagenta = "\x1b[35m"
-// FgCyan = "\x1b[36m"
-// FgWhite = "\x1b[37m"
-
-// BgBlack = "\x1b[40m"
-// BgRed = "\x1b[41m"
-// BgGreen = "\x1b[42m"
-// BgYellow = "\x1b[43m"
-// BgBlue = "\x1b[44m"
-// BgMagenta = "\x1b[45m"
-// BgCyan = "\x1b[46m"
-// BgWhite = "\x1b[47m"
 
     
     async husqvarnaGetImage(req, res, next) {
@@ -471,18 +413,21 @@ class parserController {
     }
 
     
-    async mlkTemp(req, res, next) {
+    async mlkAddUrls(req, res, next) {
+        let query = req.query
+        if (query.data === undefined) return res.json({ error: "Отсутствует дата!" })
+        let data = query.data
         let feed, response = []        
         feed = path.resolve(__dirname, '..', 'prices', 'milwaukee', 'old', 'newMILWAUKEE.xlsx')   
 
         response = await parseXlsx(feed, [ "Артикул", "Категории" ])
 
         let fullResponse
-        feed = path.resolve(__dirname, '..', 'static', 'info', 'milwaukee', '2022.1.22_18.23', 'unknown.csv')        
+        feed = path.resolve(__dirname, '..', 'static', 'info', 'milwaukee', data, 'unknown.csv')        
         if (fs.existsSync(feed) && iconv.decode(fs.readFileSync(feed), 'win1251') !== "") {
             fullResponse = fs.readFileSync(feed)
         }else {
-            return { error: "Файл info/milwaukee/2022.1.22_18.23/unknown.csv отсутствует или пуст!" }
+            return res.json({ error: `Файл info/milwaukee/${data}/unknown.csv отсутствует или пуст!` })
         }        
         // Convert from an encoded buffer to a js string.
         fullResponse = iconv.decode(fullResponse, 'win1251')        
@@ -497,13 +442,13 @@ class parserController {
             })
             return `${i["Категория"]};${i["Группа"]};${article};"${i["Модель"] && i["Модель"].replace(/\"/g, "&quot;")}";${i["Цена"]};${url}\r\n`
         }).join("")
-        let unknown = path.resolve(__dirname, '..', 'static', 'temp', 'mlk', 'unknown.csv')
+        let unknown = path.resolve(__dirname, '..', 'static', 'info', 'milwaukee', data, 'unknownWithUrls.csv')
         let urlUnknown
         try {
             fs.writeFileSync( unknown, encoding.convert(text, 'WINDOWS-1251', 'UTF-8') )
-            urlUnknown = `${process.env.URL}/temp/mlk/unknown.csv`
+            urlUnknown = `${process.env.URL}/info/milwaukee/${data}/unknownWithUrls.csv`
         }catch(e) {
-            urlUnknown = `Создать файл unknown.csv не удалось.`
+            urlUnknown = `Создать файл unknownWithUrls.csv не удалось.`
         }
 
         return res.json(urlUnknown)
@@ -515,7 +460,8 @@ class parserController {
         let { all, party, change, number } = req.query
         let feed = req.files && req.files.feed || undefined
 
-        if (!feed) feed = path.resolve(__dirname, '..', 'prices', 'milwaukee', 'feed.xlsx')
+        // if (!feed) feed = path.resolve(__dirname, '..', 'prices', 'milwaukee', 'feed.xlsx')
+        if (!feed) return res.json(false)
 
         let mlk = new Milwaukee()
         let response = await mlk.run(feed)
@@ -541,6 +487,77 @@ class parserController {
 
         return res.json(false)
     }
+   
+    
+    async parseXLSX(req, res, next) {
+        let { brand, number, party } = req.query
+        let feed = req.files && req.files.feed || undefined
+        let workbook
+        if (feed) {
+            if (!fs.existsSync(path.resolve(__dirname, '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
+            if (!fs.existsSync(path.resolve(__dirname, '..', 'static', 'temp', 'mlk'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk'))
+            let fullPath = path.resolve(__dirname, '..', 'static', 'temp', 'mlk', feed.name)
+            await feed.mv(fullPath)
+            workbook = XLSX.readFile(fullPath)
+        }else return res.json({ error: `Файл отсутствует или пуст!` })
+        
+        let product, message, response
+
+        // let workbook = XLSX.readFile('newMILWAUKEE.xlsx')
+
+        for(let i = Number(number); i < Number(number)+Number(party); i++) {
+
+            try{
+                product = await addNewProduct(workbook,brand,i)
+            }catch(e) {
+                product = e
+            }
+        
+            if (product.article) {
+                message = `${i}. Товар с артикулом ${product.article} добавлен.`
+                console.log('\x1b[34m%s\x1b[0m', message)
+            }else {
+                message = `${i}. Ошибка: ${product}`
+                console.log('\x1b[33m%s\x1b[0m', message)
+            }
+    
+            message = message + "<br />"
+            if (response) response = response + message
+            else response = message
+
+        }
+
+        return res.send(response)
+    }
+    
+// color text console
+
+// Reset = "\x1b[0m"
+// Bright = "\x1b[1m"
+// Dim = "\x1b[2m"
+// Underscore = "\x1b[4m"
+// Blink = "\x1b[5m"
+// Reverse = "\x1b[7m"
+// Hidden = "\x1b[8m"
+
+// FgBlack = "\x1b[30m"
+// FgRed = "\x1b[31m"
+// FgGreen = "\x1b[32m"
+// FgYellow = "\x1b[33m"
+// FgBlue = "\x1b[34m"
+// FgMagenta = "\x1b[35m"
+// FgCyan = "\x1b[36m"
+// FgWhite = "\x1b[37m"
+
+// BgBlack = "\x1b[40m"
+// BgRed = "\x1b[41m"
+// BgGreen = "\x1b[42m"
+// BgYellow = "\x1b[43m"
+// BgBlue = "\x1b[44m"
+// BgMagenta = "\x1b[45m"
+// BgCyan = "\x1b[46m"
+// BgWhite = "\x1b[47m"
+
 
 
 }
