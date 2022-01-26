@@ -1,16 +1,17 @@
-const XLSX = require('xlsx')
+// const XLSX = require('xlsx')
 
-const { Product, ProductInfo, Brand, Category } = require('../../models/models')
+const { Product, ProductInfo, Brand, Category } = require('../../../models/models')
 
-const getAllData = require('../parser/milwaukee/getAllData.js')
-const createProduct = require('../product/createProduct.js')
+const getAllData = require('./getAllData.js')
+const createProduct = require('../../product/createProduct.js')
 
 
 async function addNewProduct(workbook, brandName, number) {
     
     // let brandName = "MILWAUKEE".toLowerCase()
     
-    if (!workbook) workbook = XLSX.readFile('newMILWAUKEE.xlsx')
+    // if (!workbook) workbook = XLSX.readFile('newMILWAUKEE.xlsx')
+    if (!workbook) return `Не найден workbook!`
 
     let first_sheet_name = workbook.SheetNames[0];
     let worksheet = workbook.Sheets[first_sheet_name];
