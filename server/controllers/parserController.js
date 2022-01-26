@@ -20,7 +20,6 @@ const getCharacteristics = require('../service/parser/milwaukee/getCharacteristi
 const getEquipment = require('../service/parser/milwaukee/getEquipment.js')
 const getAllData = require('../service/parser/milwaukee/getAllData.js')
 
-const addNewProduct = require('../service/xlsx/addNewProduct')
 
 const getLink = require('../service/parser/husqvarna/getLink')
 const getImage = require('../service/parser/husqvarna/getImage')
@@ -31,6 +30,8 @@ const Milwaukee = require('../service/parser/milwaukee/Milwaukee')
 const parseCsv = require('../service/csv/parseCsv')
 
 const parseXlsx = require('../service/xlsx/parseXlsx')
+
+const parseXlsxAndAddNewProduct = require('../service/parser/milwaukee/addNewProduct')
 
 
 class parserController {
@@ -489,7 +490,7 @@ class parserController {
     }
    
     
-    async parseXLSX(req, res, next) {
+    async mlkXlsxFeed(req, res, next) {
         let { brand, number, party } = req.query
         let feed = req.files && req.files.feed || undefined
         let workbook
@@ -508,7 +509,7 @@ class parserController {
         for(let i = Number(number); i < Number(number)+Number(party); i++) {
 
             try{
-                product = await addNewProduct(workbook,brand,i)
+                product = await parseXlsxAndAddNewProduct(workbook,brand,i)
             }catch(e) {
                 product = e
             }
