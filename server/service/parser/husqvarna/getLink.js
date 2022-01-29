@@ -30,7 +30,7 @@ function getLink(string) {
     if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
 
 
-    return {message:string.replace(/\r|\n|\t/g,"")}
+    return "http://shop.plus-kpd.ru" + string.replace(/\r|\n|\t/g,"")
 }
 
 module.exports = getLink
