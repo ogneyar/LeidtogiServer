@@ -6,6 +6,9 @@ const encoding = require('encoding')
 const { Product } = require('../../../models/models')
 
 
+// класс для получения данных из фида xlsx 
+// и для обновления цен
+
 module.exports = class Milwaukee {
     
     static brand // наименование бренда
@@ -185,7 +188,6 @@ module.exports = class Milwaukee {
         if (print.article === undefined) return { article: undefined, update: "warning" }
 
         let { article, price, category, group, model } = print
-        let response
 
         const product = await Product.findOne({
             where: { article }
@@ -195,22 +197,14 @@ module.exports = class Milwaukee {
                 return { article, update: "no" }
                 return `Артикул: ${article}. Цена не изменилась.`
             }
-            // response = await 
+            
             Product.update({ price }, {
                 where: { id: product.id }
             })
-            // response = true
             
-            // if (response) {
-                return { article, update: "yes" }
-                return `Артикул: ${article}. Старая цена: ${product.price}. Новая цена: ${price}`
-            // }else {
-            //     return { article, update: "error" }
-            //     return `Артикул: ${article}. Не смог внести новую цену: ${price}`
-            // }
+            return { article, update: "yes" }
         }else {
             return { article, category, group, model, price, update: "unknown" }
-            return `Артикул: ${article}. Такого товара нет.`
         }
         
     }
