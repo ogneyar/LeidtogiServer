@@ -32,8 +32,8 @@ async function parseXlsx(file, arraySearch) {
             if (value && typeof(value) === "string") {
 
                 for (let numberObject = 0; numberObject < arraySearch.length; numberObject++) {
-                    // if (value.includes(arraySearch[numberObject])) {                        
-                    if (value === arraySearch[numberObject]) {                        
+                    // if (value.includes(arraySearch[numberObject])) {
+                    if (value === arraySearch[numberObject]) {
                         if (!start) start = number + 1
 
                         symbol[numberObject] = array[i]
@@ -54,10 +54,10 @@ async function parseXlsx(file, arraySearch) {
             if (text) object[arraySearch[numberObject]] = text.v
             else object[arraySearch[numberObject]] = ""
             if (object[arraySearch[numberObject]] === "") end++
-            if (end === arraySearch.length) yes = false
+            if (end === arraySearch.length) yes = false 
         }
 
-        response.push(object)
+        if (yes) response.push(object)
         i++
     }
 
