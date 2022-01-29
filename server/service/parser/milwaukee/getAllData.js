@@ -10,7 +10,7 @@ const getCharacteristics = require('./getCharacteristics.js')
 const getEquipment = require('./getEquipment.js')
 
 
-async function getAllData(brand, article) {
+async function getAllData(article) {
 
     let response, Html, images, sizes, price, description, characteristics, equipment
     let urlMlkShop, string
@@ -32,7 +32,7 @@ async function getAllData(brand, article) {
 
     if (!Html) return {error:"Запрос axios.get(https://rostov.vseinstrumenti.ru) не вернул результат"}
             
-    images = getArrayImages(brand, article, Html)
+    images = getArrayImages(article, Html)
 
     if (!images[0]) return {error:'Нет фотографий товара',string:images}
 

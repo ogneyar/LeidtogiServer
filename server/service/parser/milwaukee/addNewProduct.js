@@ -6,9 +6,9 @@ const getAllData = require('./getAllData.js')
 const createProduct = require('../../product/createProduct.js')
 
 
-async function addNewProduct(workbook, brandName, number) {
+async function addNewProduct(workbook, number) {
     
-    // let brandName = "MILWAUKEE".toLowerCase()
+    // let brandName = "milwaukee"
     
     // if (!workbook) workbook = XLSX.readFile('newMILWAUKEE.xlsx')
     if (!workbook) return `Не найден workbook!`
@@ -42,7 +42,7 @@ async function addNewProduct(workbook, brandName, number) {
         }
     }
 
-    let response = await getAllData(brandName, article)
+    let response = await getAllData(article)
 
     if (response.error) return response.error
 
@@ -53,7 +53,7 @@ async function addNewProduct(workbook, brandName, number) {
     let country = "Германия"
 
     const brand = await Brand.findOne({
-        where: {name:brandName}
+        where: {name: "milwaukee"}
     })
     let brandId = brand.id
 

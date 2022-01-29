@@ -5,9 +5,9 @@ const https = require('https')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 
 
-function getArrayImages(brand, article, Html) {
+function getArrayImages(article, Html) {
     let response, lengthHtml, serchString, lengthSerchString, number
-    
+    let brand = "milwaukee"
     lengthHtml = Html.length
     serchString = `<div class="product-photo">`
     lengthSerchString = serchString.length
