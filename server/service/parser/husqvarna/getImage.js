@@ -1,36 +1,39 @@
-function getImage(string) {
 
-    let lengthString, serchString, lengthSerchString, number
+function getImage(string, startSearch = undefined, secondSearch = undefined) {
+
+    let lengthString, searchString, lengthSearchString, number
 
     lengthString = string.length
-    serchString = `<div class="image_slider">`
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
+    searchString = startSearch || `<div class="image_slider">`
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getImage)`
     string = string.substring(number, lengthString)
 
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getImage)`
 
     lengthString = string.length
-    serchString = `href="`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`Не найден '${serchString}'`,string}
+    searchString = secondSearch || `href="`
+    lengthSearchString = searchString.length
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getImage)`
 
-    string = string.substring(number + lengthSerchString, lengthString)
+    string = string.substring(number + lengthSearchString, lengthString)
 
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getImage)`
 
-    serchString = `"`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`Не найден '${serchString}'`,string}
+    searchString = `"`
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getImage)`
 
     string = string.substring(0, number)
 
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getImage)`
 
 
-    return "http://shop.plus-kpd.ru" + string.replace(/\r|\n|\t/g,"")
+    if ( ! startSearch ) return "http://shop.plus-kpd.ru" + string
+
+    return string
+
 }
 
 module.exports = getImage

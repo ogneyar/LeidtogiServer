@@ -1,28 +1,42 @@
+//class="text-uppercase">Описание
 
-function getDescription(string) {
+function getDescription(string, startSearch = undefined, secondSearch = undefined, finishSearch = undefined) {
 
-    let lengthString, serchString, lengthSerchString, number
+    let lengthString, searchString, lengthSearchString, number
+    
+    if (startSearch) {
+        lengthString = string.length
+        searchString = startSearch
+        number = string.indexOf(searchString)
+        if (number === -1) throw `Не найден '${searchString}'! (getDescription)`
+        string = string.substring(number, lengthString)
+        
+        if (!string) throw `Не сработал substring после найденого '${searchString}'! (getDescription)`
+    }
+
+    lengthString = string.length
+    searchString = secondSearch || `<p class="prew_text">`
+    lengthSearchString = searchString.length
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getDescription)`
+    string = string.substring(number + lengthSearchString, lengthString)
+    
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getDescription)`
     
     lengthString = string.length
-    serchString = `<p class="prew_text">`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
-    string = string.substring(number + lengthSerchString, lengthString)
-    
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
-    
-    lengthString = string.length
-    serchString = `</p>`
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`Не найден '${serchString}'`,string}
+    searchString = finishSearch || `</p>`
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getDescription)`
     
     string = string.substring(0, number)
     
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getDescription)`
     
     
-    return "<p>" + string.replace(/(<br>)/g,"") + "</p>"
+    if ( ! startSearch ) return "<p>" + string.replace(/(<br>)/g,"") + "</p>"
+
+    return "<ul>" + string.replace(/\r|\n|\t/g,"").replace(/(&nbsp;)/g," ") + "</ul>"
+
 }
     
 module.exports = getDescription

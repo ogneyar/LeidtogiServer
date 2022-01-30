@@ -1,36 +1,38 @@
-function getLink(string) {
 
-    let lengthString, serchString, lengthSerchString, number
+function getLink(string, startSearch = undefined) {
+
+    let lengthString, searchString, lengthSearchString, number
 
     lengthString = string.length
-    serchString = `<div class="over_item">`
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
+    searchString = startSearch || `<div class="over_item">`
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getLink)`
     string = string.substring(number, lengthString)
     
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getLink)`
     
     lengthString = string.length
-    serchString = `<a href="`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`Не найден '${serchString}'`,string}
+    searchString = `<a href="`
+    lengthSearchString = searchString.length
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getLink)`
     
-    string = string.substring(number + lengthSerchString, lengthString)
+    string = string.substring(number + lengthSearchString, lengthString)
     
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getLink)`
 
-    serchString = `"`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`Не найден '${serchString}'`,string}
+    searchString = `"`
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getLink)`
     
     string = string.substring(0, number)
     
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getLink)`
 
 
-    return "http://shop.plus-kpd.ru" + string.replace(/\r|\n|\t/g,"")
+    if ( ! startSearch ) return "http://shop.plus-kpd.ru" + string
+
+    return string
 }
 
 module.exports = getLink

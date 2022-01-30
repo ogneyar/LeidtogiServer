@@ -1,36 +1,49 @@
+//class="text-uppercase">Характеристики
 
-function getCharcteristics(string) {
+function getCharcteristics(string, startSearch = undefined, secondSearch = undefined, finishSearch = undefined) {
 
-    let lengthString, serchString, lengthSerchString, number
+    let lengthString, searchString, lengthSearchString, number
+    
+    if (startSearch) {
+        lengthString = string.length
+        searchString = startSearch
+        number = string.indexOf(searchString)
+        if (number === -1) throw `Не найден '${searchString}'! (getCharcteristics)`
+        string = string.substring(number, lengthString)
+        
+        if (!string) throw `Не сработал substring после найденого '${searchString}'! (getCharcteristics)`
+    }
+
+    lengthString = string.length
+    searchString = secondSearch || `<ul class="prps_all">`
+    lengthSearchString = searchString.length
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getCharcteristics)`
+    string = string.substring(number + lengthSearchString, lengthString)
+    
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getCharcteristics)`
     
     lengthString = string.length
-    serchString = `<ul class="prps_all">`
-    lengthSerchString = serchString.length
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`'Не найден '${serchString}'`,string}
-    string = string.substring(number + lengthSerchString, lengthString)
-    
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
-    
-    lengthString = string.length
-    serchString = `</ul>`
-    number = string.indexOf(serchString)
-    if (number === -1) return {error:`Не найден '${serchString}'`,string}
+    searchString = finishSearch || `</ul>`
+    number = string.indexOf(searchString)
+    if (number === -1) throw `Не найден '${searchString}'! (getCharcteristics)`
     
     string = string.substring(0, number)
     
-    if (!string) return {error:`Не сработал substring после найденого '${serchString}'`}
+    if (!string) throw `Не сработал substring после найденого '${searchString}'! (getCharcteristics)`
     
-    string = string
-        .replace(/(<div class=\"clb\"><\/div>)/g,"")
-        .replace(/(<li>)/g,"<tr>")
-        .replace(/(<\/li>)/g,"</tr>")
-        .replace(/(<strong>)/g,"<td>")
-        .replace(/(<\/strong>)/g,"</td>")
-        .replace(/(<span>)/g,"<td>")
-        .replace(/(<\/span>)/g,"</td>")
+    if ( ! startSearch ) {
+        string = string
+            .replace(/(<div class=\"clb\"><\/div>)/g,"")
+            .replace(/(<li>)/g,"<tr>")
+            .replace(/(<\/li>)/g,"</tr>")
+            .replace(/(<strong>)/g,"<td>")
+            .replace(/(<\/strong>)/g,"</td>")
+            .replace(/(<span>)/g,"<td>")
+            .replace(/(<\/span>)/g,"</td>")
+    }
 
-    return "<tbody>" + string + "</tbody>"
+    return "<tbody>" + string.replace(/\r|\n|\t/g,"") + "</tbody>"
 }
     
 module.exports = getCharcteristics
