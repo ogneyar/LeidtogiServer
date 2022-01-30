@@ -8,7 +8,7 @@ const fs = require('fs')
 const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
 const deleteOldFiles = require('../service/deleteOldFiles.js')
 const createProduct = require('../service/product/createProduct.js')
-const translite = require('../service/translite.js')
+const translit = require('../service/translit.js')
 const renameFolder = require('../service/renameFolder')
 
 
@@ -77,7 +77,7 @@ class ProductController {
                 files = "[{}]"
             }
 
-            let url = translite(name) + "_" + article.toString()
+            let url = translit(name) + "_" + article.toString()
             
             const product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
@@ -229,7 +229,7 @@ class ProductController {
                     where: {id}
                 })
                 if (product.name !== body.name) {
-                    let url = translite(body.name) + "_" + body.article.toString()
+                    let url = translit(body.name) + "_" + body.article.toString()
                     body = { ...body, url }
                 }
             }
@@ -401,7 +401,7 @@ class ProductController {
                 files = img
             }
 
-            let url = translite(name) + "_" + article.toString()
+            let url = translit(name) + "_" + article.toString()
 
             let response = await Product.update(
                 {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId, img: files}, 
