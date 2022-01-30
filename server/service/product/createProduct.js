@@ -1,10 +1,11 @@
+
 const { Product, ProductInfo, ProductSize } = require('../../models/models')
 const findProductByArticle = require('./findProductByArticle')
 
 
 async function createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size) {
     
-    const oldProduct = await findProductByArticle(article)
+    const oldProduct = await findProductByArticle(article) 
     if (oldProduct) {
         await ProductInfo.destroy({
             where: {productId: oldProduct.id}
@@ -42,8 +43,10 @@ async function createProduct(name, url, price, have, article, promo, country, br
 
     if (size) {
         let s
-        if (Array.isArray(size)) s = size
-        else s = JSON.parse(size)
+        if (typeof(size) === "string") s = JSON.parse(size)
+        else s = size
+        // if (Array.isArray(size)) s = size
+        // else s = JSON.parse(size)
         if (s.weight || s.volume || s.width || s.height || s.length) {
             if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
             if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
