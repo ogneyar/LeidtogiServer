@@ -3,7 +3,8 @@
 const { Product, ProductInfo, Brand, Category } = require('../../../models/models')
 
 const getAllData = require('./getAllData.js')
-const createProduct = require('../../product/createProduct.js')
+const createProduct = require('../../product/createProduct.js');
+const translit = require('../../translite');
 
 
 async function addNewProduct(workbook, number) {
@@ -73,7 +74,9 @@ async function addNewProduct(workbook, number) {
 
     let size = JSON.stringify(sizes)
 
-    return await createProduct(name, price, have, article, promo, country, brandId, categoryId, files, info, size)
+    let url = translite(name) + "_" + article.toString()
+    
+    return await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
 }
 
