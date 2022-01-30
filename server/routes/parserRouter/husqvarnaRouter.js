@@ -4,13 +4,14 @@ const husqvarnaController = require('../../controllers/parser/husqvarnaControlle
 const checkRole = require('../../middleware/checkRoleMiddleware')
 
 
-router.get('/', husqvarnaController.husqvarna) // 
-// router.get('/', checkRole("ADMIN"), husqvarnaController.husqvarna) // 
+// router.get('/', husqvarnaController.husqvarna) // добавление нового товара или обновление цен
+router.post('/', checkRole("ADMIN"), husqvarnaController.husqvarna) // добавление нового товара или обновление цен
 
 router.get('/get_image', husqvarnaController.getImage) // получение изображения товара
 router.get('/get_charcteristics', husqvarnaController.getCharcteristics) // получение характеристик товара
 router.get('/get_description', husqvarnaController.getDescription) // получение описания товара
 
+router.get('/test', husqvarnaController.test) // тест
 
 
 module.exports = router

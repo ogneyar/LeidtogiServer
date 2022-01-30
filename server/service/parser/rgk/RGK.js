@@ -15,7 +15,7 @@ const getProducts = require('../../csv/parseCsv')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 const findProductByArticle = require('../../product/findProductByArticle.js')
 const createProduct = require('../../product/createProduct.js')
-const translite = require('../../translite.js')
+const translit = require('../../translit.js')
 
 
 
@@ -272,7 +272,7 @@ module.exports = class RGK {
         
         let size = undefined
         
-        let urlTranslite = translite(name) + "_" + article.toString()
+        let urlTranslit = translit(name) + "_" + article.toString()
 
         // console.log(" ");
         // console.log("id",id);
@@ -282,7 +282,7 @@ module.exports = class RGK {
         
         let product
         try {
-            product = await createProduct(name, urlTranslite, price, have, article, promo, country, brandId, categoryId, files, info, size)
+            product = await createProduct(name, urlTranslit, price, have, article, promo, country, brandId, categoryId, files, info, size)
         }catch(e) {
             return { error: "Ошибка: не смог добавить товар!!!" }
         }

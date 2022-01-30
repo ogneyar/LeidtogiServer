@@ -4,7 +4,7 @@ const { Product, ProductInfo, Brand, Category } = require('../../../models/model
 
 const getAllData = require('./getAllData.js')
 const createProduct = require('../../product/createProduct.js');
-const translit = require('../../translite');
+const translit = require('../../translit');
 
 
 async function addNewProduct(workbook, number) {

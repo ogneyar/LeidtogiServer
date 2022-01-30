@@ -1,5 +1,5 @@
 
-function translit(word){
+function translit(word){ 
 	var converter = {
 		'а': 'a',    'б': 'b',    'в': 'v',    'г': 'g',    'д': 'd',
 		'е': 'e',    'ё': 'e',    'ж': 'zh',   'з': 'z',    'и': 'i',
