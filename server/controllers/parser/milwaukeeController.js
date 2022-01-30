@@ -98,7 +98,7 @@ class milwaukeeController {
             // получение части данных из файла
             if (party) {
                 if (number) return res.json(await mlk.getPart(number, party))
-                else return next(res.json({error: 'Ошибка, не задан number при заданном party!'}))
+                else return res.json({error: 'Ошибка, не задан number при заданном party!'})
             }
             // обновление цен 
             if (change) {
