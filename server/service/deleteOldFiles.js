@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 
 
-module.exports = function (brand,article) {
+module.exports = function (brand, article) {
 
     if (!fs.existsSync(path.resolve(__dirname, '..', 'static', brand))){
         return
@@ -17,7 +17,7 @@ module.exports = function (brand,article) {
             if (dir) {
                 try {
                     files = fs.readdirSync(path.resolve(__dirname, '..', 'static', brand, article, 'big'))  
-                    if (files) {             
+                    if (files) {
                         files.forEach(i => {
                             try {
                                 fs.unlinkSync(path.resolve(__dirname, '..', 'static', brand, article, 'big', i))
