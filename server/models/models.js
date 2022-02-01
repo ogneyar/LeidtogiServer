@@ -11,6 +11,7 @@ const Rating = require('./Rating')
 const ProductInfo = require('./ProductInfo')
 const CategoryBrand = require('./CategoryBrand')
 const ProductSize = require('./ProductSize')
+const ProductFilter = require('./ProductFilter')
 const Token = require('./Token')
 const Delivery = require('./Delivery')
 const Order = require('./Order')
@@ -43,6 +44,9 @@ ProductInfo.belongsTo(Product)
 Product.hasMany(ProductSize, {as: 'size'})
 ProductSize.belongsTo(Product)
 
+Product.hasMany(ProductFilter, {as: 'filter'})
+ProductFilter.belongsTo(Product)
+
 Category.belongsToMany(Brand, {through: CategoryBrand})
 Brand.belongsToMany(Category, {through: CategoryBrand})
 
@@ -64,6 +68,7 @@ module.exports = {
     ProductInfo,
     CategoryBrand,
     ProductSize,
+    ProductFilter,
     Token,
     Delivery,
     Order
