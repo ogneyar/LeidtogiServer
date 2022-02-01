@@ -13,11 +13,8 @@ const createProduct = require('../../product/createProduct')
 const findProductByArticle = require('../../product/findProductByArticle')
 const translit = require('../../translit')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles')
-const getImage = require('./getImage')
-const getCharcteristics = require('./getCharcteristics')
-const getDescription = require('./getDescription')
-const getLink = require('./getLink')
-const getWeight = require('./getWeight')
+const parseHtml = require('../../html/parseHtml')
+// const deleteProduct = require('../../product/deleteProduct')
 
 
 // класс для получения данных из фида xlsx 
@@ -25,11 +22,13 @@ const getWeight = require('./getWeight')
 
 module.exports = class Husqvarna {
     
+    static url // наименование бренда
     static brand // наименование бренда
     static array // все записи из файла
 
     
     constructor() {
+        this.url = "http://husq.ru/search"
         this.brand = "husqvarna"
     }
 
@@ -52,7 +51,7 @@ module.exports = class Husqvarna {
         if (fs.existsSync(fullPath)) { 
             
             response = await parseXlsx(fullPath, [
-                "Наименование",
+                // "Наименование",
                 "Код изделия",
                 "Цена без НДС",
                 "Категория",
@@ -61,7 +60,7 @@ module.exports = class Husqvarna {
             if (response && Array.isArray(response)) {
                 this.array = response.map(i => {
                     return {
-                        name: i["Наименование"],
+                        // name: i["Наименование"],
                         article: i["Код изделия"],
                         price: Math.round(Number(i["Цена без НДС"]) * 1.2),
                         category: i["Категория"]
@@ -102,8 +101,8 @@ module.exports = class Husqvarna {
     async addProduct(number) {
         if (Number(number)) {
             let response
-            // return this.array[number - 1]
-            let { name, article, price, category } = this.array[number - 1]
+            
+            let { article, price, category } = this.array[number - 1]
             
             let product = await findProductByArticle("hqv" + article)
             if (product) throw `Товар с артикулом ${article} уже добавлен!`
@@ -122,57 +121,153 @@ module.exports = class Husqvarna {
 
             let have = 1
 
-            await axios.get("http://shop.plus-kpd.ru/search/index.php", { params: { q: article } })
+            await axios.get(this.url, { params: { search: article } })
+                .then(res => response = res.data)
+                .catch(err => response = {error:err})
+            if (response.error !== undefined) throw response.error
+            
+            // если вернёт true, то выбросится исключение
+            if (parseHtml(response, { entry: "Нет товаров, которые соответствуют критериям поиска" })) {
+                // await deleteProduct("husqvarna", "hqv" + article)
+                throw `Нет товара с артикулом ${article}`
+            }
+            // else throw `Товар с артикулом ${article} уже есть`
+
+            let link = parseHtml(response, {
+                entry: `<div class="product-preview">`,
+                start: `href="`,
+                end: `"`
+            })
+
+            let image = parseHtml(response, {
+                entry: `<div class="product-preview">`,
+                start: `<img src="`,
+                end: `"`
+            })
+
+            await axios.get(link)
                 .then(res => response = res.data)
                 .catch(err => response = { error: err })
             if (response.error !== undefined) throw response.error
             
-            response = getLink(response)
+            let name = parseHtml(response, {
+                start: `<h1 itemprop="name">`,
+                end: `</h1>`
+            })
 
-            await axios.get(response)
-                .then(res => response = res.data)
-                .catch(err => response = { error: err })
-            if (response.error !== undefined) throw response.error
-            
-            let image = getImage(response)
+            let description = parseHtml(response, {
+                start: `id="tab-description">`,
+                end: `</section>`
+            })
+            try {
+                description = parseHtml(description, {
+                    start: `<ul>`,
+                    end: `</ul>`,
+                    inclusive: true
+                })
+            }catch(error) { 
+                try { description = parseHtml(description, { start: "<p>", end: "</p>", inclusive: true })
+                }catch(error) { 
+                    console.log("Error: ",error)
+                    description = undefined
+                }
+            }
 
-            let description = getDescription(response) 
-
-            let characteristics = getCharcteristics(response)
+            let characteristics
+            try {
+                characteristics = parseHtml(response, {
+                    entry: `class="text-uppercase">Характеристики`,
+                    start: `<tbody>`,
+                    end: `</tbody>`,
+                    inclusive: true
+                })
+            }catch(error) { console.log("Error: ",error) }
 
             let info = []
             if (description) info.push({title:"description",body:description})
             if (characteristics) info.push({title:"characteristics",body:characteristics})
             
-            let weight
+           
+            let filter
+            let rest // остаток (если Фильтры будут найдены, поиск будет осуществлён с parseHtml -> return: true, что возвращает объект с остатком rest )
             try {
-                weight = getWeight(characteristics)
-            }catch(e) {
-                console.log(e)
-                weight = null
-            }
+                rest = parseHtml(response, {
+                    entry: `>Фильтры</strong>`,
+                    start: "<tbody>",
+                    end: "</tbody>"
+                })
+            }catch(error) { console.log("Error: ",error) }
 
-            let size = undefined
-            if (weight) size = {weight, volume: "", width: "", height: "", length: ""}
+            if (rest) {
+                let resp = { rest}
+                filter = []
+                let yes =true
+
+                while (yes) {
+                    let name, value
+                    try {
+                        resp = parseHtml(resp.rest, {
+                            start: "<td >",
+                            end: "</td>",
+                            return: true
+                        })
+                        name = resp.search
+                        resp = parseHtml(resp.rest, {
+                            start: "<td >",
+                            end: "</td>",
+                            return: true
+                        })
+                        value = resp.search
+                    }catch(error) {
+                        yes = false
+                    }
+                    if (yes) {
+                        filter.push({ name, value })
+                    }
+                }
+            }            
             
+            let size = parseHtml(response, {
+                entry: `>Габариты и вес`,
+                start: `<tbody>`,
+                end: `</tbody>`
+            })
+
+            let weight = "", width, height, length, volume = ""
+
+            try { weight = parseHtml(size, { entry: "Вес", start: "<td >", end: "</td>" }) }
+            catch(error) { 
+                try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+            }
+            try { width = parseHtml(size, { entry: "Ширина", start: "<td >", end: "</td>" })
+            }catch(error) { console.log("Error: ",error) }
+            try { height = parseHtml(size, { entry: "Высота", start: "<td >", end: "</td>" })
+            }catch(error) { console.log("Error: ",error) }
+            try { length = parseHtml(size, { entry: "Длина", start: "<td >", end: "</td>" })
+            }catch(error) { console.log("Error: ",error) }
+
+            if (width, height, length) volume = Math.round( ( Number(width) / 1000 ) * ( Number(height) / 1000 ) * ( Number(length) / 1000 ), 4 )
+
+            size = { weight, width, height, length, volume }
+
             article = "hqv" + article
             createFoldersAndDeleteOldFiles("husqvarna", article)
 
-            let link = ""
-            // images.forEach(image => {
-                let fileName = uuid.v4() + '.jpg'
-                
-                let file = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'husqvarna', article, 'big', fileName))
-                let file2 = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'husqvarna', article, 'small', fileName))
-                http.get(image, function(res) {
-                    res.pipe(file)
-                    res.pipe(file2)
-                })
+            let files = `[`
+            
+            let fileName = uuid.v4() + '.jpg'
+            
+            let file = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'husqvarna', article, 'big', fileName))
+            // let file2 = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'husqvarna', article, 'small', fileName))
+            https.get(image, function(res) {
+                res.pipe(file)
+                // res.pipe(file2)
+            })
 
-                link = `{"big": "husqvarna/${article}/big/${fileName}", "small": "husqvarna/${article}/small/${fileName}"}`
-            // })
+            files += `{"big": "husqvarna/${article}/big/${fileName}", "small": "husqvarna/${article}/big/${fileName}"}`
 
-            let files = `[${link}]`
+            files += `]`
 
             let country = "Швеция"
 
@@ -186,7 +281,7 @@ module.exports = class Husqvarna {
             // console.log("-------------")
             // console.log(" ")
             
-            response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
+            response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
 
             if ( ! response ) throw `Не смог сохранить товар с артикулом ${article}!`
 
