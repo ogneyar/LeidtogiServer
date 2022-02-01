@@ -1,15 +1,11 @@
 const axios = require('axios')
 const http = require('http')
+const Math = require('mathjs')
 
 const Husqvarna = require('../../service/parser/husqvarna/Husqvarna')
-const getLink = require('../../service/parser/husqvarna/getLink')
+const parseHtml = require('../../service/html/parseHtml')
 
-const getImg = require('../../service/parser/husqvarna/getImage')
-const getChar = require('../../service/parser/husqvarna/getCharcteristics')
-const getDesc = require('../../service/parser/husqvarna/getDescription')
-const getName = require('../../service/parser/husqvarna/getName')
-const getFilters = require('../../service/parser/husqvarna/getFilters')
-const getSizes = require('../../service/parser/husqvarna/getSizes')
+// const deleteProduct = require('../../service/product/deleteProduct')
 
 
 class husqvarnaController {
@@ -55,7 +51,7 @@ class husqvarnaController {
     async test(req,res) {
         // https://husq.ru/search?search=9679339-02
         try {
-            let { article } = req.query // 9678968-01
+            let { article } = req.query // 9678546-03
             // if ( ! article ) throw "Отсутствует article в запросе!"
             if ( ! article ) article = "9678968-01"
             let url = "http://husq.ru/search"
@@ -64,126 +60,140 @@ class husqvarnaController {
                 .then(res => response = res.data)
                 .catch(err => response = {error:err})
             if (response.error !== undefined) return res.json(response.error)
-            // return res.json(response)
-            // <div class="product-preview">
-            let link = getLink(response, `<div class="product-preview">`)
+            
+            // если вернёт true, то выбросится исключение
+            if (parseHtml(response, { entry: "Нет товаров, которые соответствуют критериям поиска" })) {
+                // await deleteProduct("husqvarna", "hqv" + article)
+                throw `Нет товара с артикулом ${article}`
+            }
 
-            let image = getImg(response, `<div class="product-preview">`, `<img src="`)
+            let link = parseHtml(response, {
+                entry: `<div class="product-preview">`,
+                start: `href="`,
+                end: `"`
+            })
+
+            let image = parseHtml(response, {
+                entry: `<div class="product-preview">`,
+                start: `<img src="`,
+                end: `"`
+            })
 
             await axios.get(link)
                 .then(res => response = res.data)
                 .catch(err => response = {error:err})
             if (response.error !== undefined) return res.json(response.error)
 
-            // getName()
-            let name = getName(response)
+            let name = parseHtml(response, {
+                start: `<h1 itemprop="name">`,
+                end: `</h1>`
+            })
+           
+            let description = parseHtml(response, {
+                start: `id="tab-description">`,
+                end: `</section>`
+            })
+            try {
+                description = parseHtml(description, {
+                    start: `<ul>`,
+                    end: `</ul>`,
+                    inclusive: true
+                })
+            }catch(error) { 
+                try { description = parseHtml(description, { start: "<p>", end: "</p>", inclusive: true })
+                }catch(error) { 
+                    console.log("Error: ",error)
+                    description = undefined
+                }
+            }
 
-            let description = getDesc(response, `class="text-uppercase">Описание`, `<ul>`, `</ul>`)
+            let characteristics
+            try {
+                characteristics = parseHtml(response, {
+                    entry: `class="text-uppercase">Характеристики`,
+                    start: `<tbody>`,
+                    end: `</tbody>`,
+                    inclusive: true
+                })
+            }catch(error) { console.log("Error: ",error) }
 
-            let characteristics = getChar(response, `class="text-uppercase">Характеристики`, `<tbody>`, `</tbody>`)
+            let filter
+            let rest
+            try {
+                rest = parseHtml(response, {
+                    entry: `>Фильтры</strong>`,
+                    start: "<tbody>",
+                    end: "</tbody>"
+                })
+            }catch(error) { console.log("Error: ",error) }
 
-            let filters = getFilters(response)
+            if (rest) {
+                let resp = { rest}
+                filter = []
+                let yes =true
+
+                while (yes) {
+                    let name, value
+                    try {
+                        resp = parseHtml(resp.rest, {
+                            start: "<td >",
+                            end: "</td>",
+                            return: true
+                        })
+                        name = resp.search
+                        resp = parseHtml(resp.rest, {
+                            start: "<td >",
+                            end: "</td>",
+                            return: true
+                        })
+                        value = resp.search
+                    }catch(error) {
+                        yes = false
+                    }
+                    if (yes) {
+                        filter.push({ name, value })
+                    }
+                }
+            }
             
-            let sizes = getSizes(response)
+            let size
+            try {
+                size = parseHtml(response, {
+                    entry: `>Габариты и вес`,
+                    start: `<tbody>`,
+                    end: `</tbody>`
+                })
+            }catch(error) { console.log("Error: ",error) }
 
-            return res.json({ image, name, article, description, characteristics, filters, sizes })
+            let weight = "", width = "", height = "", length = "", volume = ""
+
+            if (size) {
+                try { weight = parseHtml(size, { entry: "Вес", start: "<td >", end: "</td>" }) 
+                }catch(error) { 
+                    try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
+                    }catch(error) { console.log("Error: ",error) }
+                }
+                try { width = parseHtml(size, { entry: "Ширина", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+                try { height = parseHtml(size, { entry: "Высота", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+                try { length = parseHtml(size, { entry: "Длина", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+
+                if (width, height, length) volume = Math.round( ( Number(width) / 1000 ) * ( Number(height) / 1000 ) * ( Number(length) / 1000 ), 4 )
+
+                size = { weight, width, height, length, volume }
+            }else {
+                try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+                if (weight){
+                    size = { weight, width: 0, height: 0, length: 0, volume: 0 }
+                }
+            }
+
+            return res.json({ image, name, article, description, characteristics, filter, size })
         }catch(error) {
             return res.json({ error })
-        }
-    }
-
-    // в этом методе уже нет необходимости
-    async getImage(req, res, next) {
-        try {
-            let { article } = req.query // 9678968-01
-            let response
-            await axios.get("http://shop.plus-kpd.ru/search/index.php", { params: { q: article } })
-                .then(res => response = res.data)
-                .catch(err => response = {error:err})
-            
-            if (response.error !== undefined) return res.json(response.error)
-            
-            response = getLink(response)
-
-            if (response.error !== undefined) return res.json(response.error)
-
-            await axios.get(response)
-                .then(res => response = res.data)
-                .catch(err => response = err)
-            
-            if (response.error !== undefined) return res.json(response.error)
-
-            response = getImg(response)
-
-            if (response.error !== undefined) return res.json(response.error)
-            
-            return res.json(response)
-        }catch(e) {
-            return res.json({error: 'Ошибка метода getImage!'})
-        }
-    }
-
-    // в этом методе уже нет необходимости
-    async getCharcteristics(req, res, next) {
-        try {
-            let { article } = req.query // 9678968-01
-            let response
-            await axios.get("http://shop.plus-kpd.ru/search/index.php", { params: { q: article } })
-                .then(res => response = res.data)
-                .catch(err => response = {error:err})
-
-            if (response.error !== undefined) return res.json(response.error)
-            
-            response = getLink(response)
-
-            if (response.error !== undefined) return res.json(response.error)
-
-            await axios.get(response)
-                .then(res => response = res.data)
-                .catch(err => response = err)
-            
-            if (response.error !== undefined) return res.json(response.error)
-
-            response = getChar(response)
-
-            // console.log("response",response)
-
-            if (response.error !== undefined) return res.json(response.error)
-
-            return res.json(response)
-        }catch(e) {
-            return res.json({error: 'Ошибка метода getCharcteristic!'})
-        }
-    }
-
-    // в этом методе уже нет необходимости
-    async getDescription(req, res, next) {
-        try {
-            let { article } = req.query // 9678968-01
-            let response
-            await axios.get("http://shop.plus-kpd.ru/search/index.php", { params: { q: article } })
-                .then(res => response = res.data)
-                .catch(err => response = {error:err})
-
-            if (response.error !== undefined) return res.json(response.error)
-            
-            response = getLink(response)
-
-            if (response.error !== undefined) return res.json(response.error)
-
-            await axios.get(response)
-                .then(res => response = res.data)
-                .catch(err => response = err)
-            
-            if (response.error !== undefined) return res.json(response.error)
-
-            response = getDesc(response)
-
-            if (response.error !== undefined) return res.json(response.error)
-
-            return res.json(response)
-        }catch(e) {
-            return res.json({error: 'Ошибка метода getDescription!'})
         }
     }
 
