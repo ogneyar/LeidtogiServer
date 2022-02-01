@@ -1,9 +1,9 @@
 
-const { Product, ProductInfo, ProductSize } = require('../../models/models')
+const { Product, ProductInfo, ProductSize, ProductFilter } = require('../../models/models')
 const findProductByArticle = require('./findProductByArticle')
 
 
-async function createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size) {
+async function createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter = null) {
     
     const oldProduct = await findProductByArticle(article) 
     if (oldProduct) {
@@ -11,6 +11,9 @@ async function createProduct(name, url, price, have, article, promo, country, br
             where: {productId: oldProduct.id}
         })
         await ProductSize.destroy({
+            where: {productId: oldProduct.id}
+        })
+        await ProductFilter.destroy({
             where: {productId: oldProduct.id}
         })
         await Product.destroy({
@@ -26,8 +29,10 @@ async function createProduct(name, url, price, have, article, promo, country, br
 
     if (info) {
         let inf
-        if (Array.isArray(info)) inf = info
-        else inf = JSON.parse(info)
+        if (typeof(info) === "string") inf = JSON.parse(info)
+        else inf = info
+        // if (Array.isArray(info)) inf = info
+        // else inf = JSON.parse(info)
         if (Array.isArray(inf)) {
             for (let i = 0; i < inf.length; i++) {
                 if (inf[i]) {
@@ -60,6 +65,19 @@ async function createProduct(name, url, price, have, article, promo, country, br
                 height: s.height || 0,
                 length: s.length || 0,
                 productId: product.id 
+            })
+        }
+    }
+
+    if (filter) {
+        if (typeof(filter) === "string") filter = JSON.parse(filter)
+        if (Array.isArray(filter)) {
+            filter.forEach(item => {
+                ProductFilter.create({
+                    name: item.name,
+                    value: item.value,
+                    productId: product.id 
+                })
             })
         }
     }
