@@ -183,7 +183,7 @@ class husqvarnaController {
                 if (width, height, length) volume = Math.round( ( Number(width) / 1000 ) * ( Number(height) / 1000 ) * ( Number(length) / 1000 ), 4 )
 
                 size = { weight, width, height, length, volume }
-            }else {
+            }else if (characteristics) {
                 try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
                 }catch(error) { console.log("Error: ",error) }
                 if (weight){
