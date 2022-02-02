@@ -36,10 +36,17 @@ module.exports = class Husqvarna {
         // let feed
         let fullPath, response
 
-        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_CLP.xlsx')
+        // для заведения товаров
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_CLP.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Accessories.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_HU.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_HCP.xlsx')
+        
+        // для обновления цен
+        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_CLP.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Accessories.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HU.xlsx')
-        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HCP.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HCP.xlsx')
 
         if (feed && feed.name !== undefined) {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
@@ -47,7 +54,7 @@ module.exports = class Husqvarna {
             fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'hqv', feed.name)
             await feed.mv(fullPath)
         }
-
+            
         if (fs.existsSync(fullPath)) { 
             
             response = await parseXlsx(fullPath, [
