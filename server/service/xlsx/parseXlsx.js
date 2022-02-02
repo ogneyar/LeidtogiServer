@@ -52,7 +52,7 @@ async function parseXlsx(file, arraySearch) {
         let end = 0
         for (let numberObject = 0; numberObject < arraySearch.length; numberObject++) {
             let text = worksheet[ symbol[numberObject] + ( start + Number(i) - 1 ) ]
-            if (text) object[arraySearch[numberObject]] = text.v
+            if (text) object[arraySearch[numberObject]] = text.v.trim()
             else object[arraySearch[numberObject]] = ""
             if (object[arraySearch[numberObject]] === "") end++
             if (end === arraySearch.length) yes = false 
