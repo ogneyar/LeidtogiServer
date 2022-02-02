@@ -36,10 +36,10 @@ module.exports = class Husqvarna {
         // let feed
         let fullPath, response
 
-        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_CLP.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_CLP.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Accessories.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HU.xlsx')
-        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HCP.xlsx')
+        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HCP.xlsx')
 
         if (feed && feed.name !== undefined) {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
@@ -150,23 +150,18 @@ module.exports = class Husqvarna {
                 .catch(err => response = { error: err })
             if (response.error !== undefined) throw response.error
             
+            response = response.replace(/(&quot;)/g,`"`)
+            
             let name = parseHtml(response, {
                 start: `<h1 itemprop="name">`,
                 end: `</h1>`
             })
 
-            let description = parseHtml(response, {
-                start: `id="tab-description">`,
-                end: `</section>`
-            })
+            let description = parseHtml(response, { start: `id="tab-description">`, end: `</section>` })
             try {
-                description = parseHtml(description, {
-                    start: `<ul>`,
-                    end: `</ul>`,
-                    inclusive: true
-                })
+                description = parseHtml(description, { start: `<ul`, end: `</ul>`, inclusive: true })
             }catch(error) { 
-                try { description = parseHtml(description, { start: "<p>", end: "</p>", inclusive: true })
+                try { description = parseHtml(description, { start: "<p", end: "</p>", inclusive: true })
                 }catch(error) { 
                     console.log("Error: ",error)
                     description = undefined
@@ -177,7 +172,7 @@ module.exports = class Husqvarna {
             try {
                 characteristics = parseHtml(response, {
                     entry: `class="text-uppercase">Характеристики`,
-                    start: `<tbody>`,
+                    start: `<tbody`,
                     end: `</tbody>`,
                     inclusive: true
                 })
@@ -225,31 +220,42 @@ module.exports = class Husqvarna {
                         filter.push({ name, value })
                     }
                 }
-            }            
+            }
             
-            let size = parseHtml(response, {
-                entry: `>Габариты и вес`,
-                start: `<tbody>`,
-                end: `</tbody>`
-            })
+            let size
+            try {
+                size = parseHtml(response, {
+                    entry: `>Габариты и вес`,
+                    start: `<tbody>`,
+                    end: `</tbody>`
+                })
+            }catch(error) { console.log("Error: ",error) }
 
-            let weight = "", width, height, length, volume = ""
+            let weight = "", width = "", height = "", length = "", volume = ""
 
-            try { weight = parseHtml(size, { entry: "Вес", start: "<td >", end: "</td>" }) }
-            catch(error) { 
+            if (size) {
+                try { weight = parseHtml(size, { entry: "Вес", start: "<td >", end: "</td>" }) 
+                }catch(error) { 
+                    try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
+                    }catch(error) { console.log("Error: ",error) }
+                }
+                try { width = parseHtml(size, { entry: "Ширина", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+                try { height = parseHtml(size, { entry: "Высота", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+                try { length = parseHtml(size, { entry: "Длина", start: "<td >", end: "</td>" })
+                }catch(error) { console.log("Error: ",error) }
+
+                if (width, height, length) volume = Math.round( ( Number(width) / 1000 ) * ( Number(height) / 1000 ) * ( Number(length) / 1000 ), 4 )
+
+                size = { weight, width, height, length, volume }
+            }else if (characteristics) {
                 try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
                 }catch(error) { console.log("Error: ",error) }
+                if (weight){
+                    size = { weight, width: 0, height: 0, length: 0, volume: 0 }
+                }
             }
-            try { width = parseHtml(size, { entry: "Ширина", start: "<td >", end: "</td>" })
-            }catch(error) { console.log("Error: ",error) }
-            try { height = parseHtml(size, { entry: "Высота", start: "<td >", end: "</td>" })
-            }catch(error) { console.log("Error: ",error) }
-            try { length = parseHtml(size, { entry: "Длина", start: "<td >", end: "</td>" })
-            }catch(error) { console.log("Error: ",error) }
-
-            if (width, height, length) volume = Math.round( ( Number(width) / 1000 ) * ( Number(height) / 1000 ) * ( Number(length) / 1000 ), 4 )
-
-            size = { weight, width, height, length, volume }
 
             article = "hqv" + article
             createFoldersAndDeleteOldFiles("husqvarna", article)
