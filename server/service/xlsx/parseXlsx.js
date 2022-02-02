@@ -18,7 +18,7 @@ async function parseXlsx(file, arraySearch) {
 
     let start, symbol = []
     
-    let array = ["A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]
+    let array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]
     for (let number = 1; number <= 20; number++) {
 
         if (symbol.length > 0 && symbol.length === arraySearch.length) break
@@ -29,14 +29,15 @@ async function parseXlsx(file, arraySearch) {
             let desired = worksheet[address] // искомое
             let value = (desired ? desired.v : undefined)
 
+            // поиск названий столбцов
             if (value && typeof(value) === "string") {
 
                 for (let numberObject = 0; numberObject < arraySearch.length; numberObject++) {
                     // if (value.includes(arraySearch[numberObject])) {
-                    if (value === arraySearch[numberObject]) {
+                    if (value.trim() === arraySearch[numberObject]) {
                         if (!start) start = number + 1
 
-                        symbol[numberObject] = array[i]
+                        symbol[numberObject] = array[i] 
                     }
                 } 
 
