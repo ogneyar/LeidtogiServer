@@ -6,7 +6,7 @@ const https = require('https')
 const uuid = require('uuid')
 const axios = require('axios')
 
-const { Category, Brand } = require('../../../models/models')
+const { Product, Category, Brand } = require('../../../models/models')
 
 const parseXlsx = require('../../xlsx/parseXlsx')
 const createProduct = require('../../product/createProduct')
@@ -28,6 +28,7 @@ module.exports = class Husqvarna {
 
     
     constructor() {
+        // this.url = "http://husq24.ru/search/?q=9679776-01&s=поиск"
         this.url = "http://husq.ru/search"
         this.brand = "husqvarna"
     }
@@ -37,16 +38,16 @@ module.exports = class Husqvarna {
         let fullPath, response
 
         // для заведения товаров
-        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_CLP.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Accessories.xlsx')
-        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_HU.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_CLP.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_HCP.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'old', 'withCategory', 'Products_HU.xlsx')
         
         // для обновления цен
-        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_CLP.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Accessories.xlsx')
-        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HU.xlsx')
+        // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_CLP.xlsx')
         // fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HCP.xlsx')
+        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'husqvarna', 'Products_HU.xlsx')
 
         if (feed && feed.name !== undefined) {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
@@ -86,11 +87,6 @@ module.exports = class Husqvarna {
     // количество записей
     async getLength() {
         return this.array.length
-    }
-
-    // смена цен (позже реализую)
-    async changePrice() {
-        return "Метод ещё не реализован!"
     }
 
     // вывод одной записи
@@ -304,20 +300,65 @@ module.exports = class Husqvarna {
         return false
     }
 
-    //
+    // добавление всех товаров из файла
     async addAllProduct() {
-        let length = await this.getLength()
-        let response = []
-        let answer
-
-        for(let item = 0; item < length; item++) {
-            try { answer = await this.addProduct(item + 1) }
+        let item, answer, response = []
+        response.push(`<br />`)
+        for(item = 1; item <= this.array.length; item++) {
+            try { answer = await this.addProduct(item) }
             catch(e) { answer = e }
-            response.push(answer)
+            response.push(answer + `<br />`)
         }
         
-        return response
+        return JSON.stringify(response)
     }
+
+    // смена цен
+    async changePrice(number) {
+        let response 
+
+        if (number > this.array.length || number < 1) return `Нет номера ${number} в массиве!`
+
+        let { article, price } = this.array[number - 1]
+        // article = "hqv" + article
+        let product = await Product.findOne({
+            where: { article: "hqv" + article }
+        })
+        if (product) {
+            if (Number(product.price) === Number(price)) return `Цена у артикула ${article} не изменилась!`
+            response = {
+                article,
+                oldPrice: product.price,
+                newPrice: price
+            }
+            
+            let update = await Product.update(
+                { price },
+                { where: { article: "hqv" + article } }
+            )
+
+            if ( ! update ) return `Не смог обновить цену у артикула ${article}!`
+
+            return `Цена у артикула ${article} обновлена, была: ${product.price}, стала: ${price}!`
+        }
+
+        return `Нет артикула ${article} в базе данных!`
+
+    }
+
+    // смена всех цен
+    async changeAllPrice() {
+        let item, answer, response = []
+        response.push(`<br />`)
+        for(item = 1; item <= this.array.length; item++) {
+            try { answer = await this.changePrice(item) }
+            catch(e) { answer = e }
+            response.push(answer + `<br />`)
+        }
+        
+        return JSON.stringify(response)
+    }
+
 
 
 }
