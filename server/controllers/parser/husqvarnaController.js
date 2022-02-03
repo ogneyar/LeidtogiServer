@@ -28,17 +28,24 @@ class husqvarnaController {
                     if (number) {
                         return res.json(await husqvarna.addProduct(number))
                     }else if (all) {
-                        return res.json(await husqvarna.addAllProduct())
+                        return res.send(await husqvarna.addAllProduct())
                     }else throw 'Ошибка, не задан number при заданном add!'
                 }
-                // смена цен (позже реализую)
-                if (change) return res.json(await husqvarna.changePrice())
+                // смена цен
+                if (change) {
+                    if (number) {
+                        return res.json(await husqvarna.changePrice(number))
+                    }else if (all) {
+                        return res.send(await husqvarna.changeAllPrice())
+                    }else throw 'Ошибка, не задан number при заданном change!'
+                }
+                
                 // вывод одной записи
                 if (number) return res.json(await husqvarna.getOne(number))
                 // вывод всех записей
                 if (all) return res.json(await husqvarna.getAll())
                 // вывод информации о  количестве записей
-                return res.json(await husqvarna.getLength())
+                return res.json(await husqvarna.getLength()) 
             }
         
             return res.json({ error: "Нет ответа от метода run класса Husqvarna!" })
