@@ -4,7 +4,9 @@ const husqvarnaController = require('../../controllers/parser/husqvarnaControlle
 const checkRole = require('../../middleware/checkRoleMiddleware')
 
 
-// router.get('/', husqvarnaController.husqvarna) // добавление нового товара или обновление цен
+if (process.env.URL === "http://localhost:5000") {
+    router.get('/', husqvarnaController.husqvarna) // добавление нового товара или обновление цен
+}
 router.post('/', checkRole("ADMIN"), husqvarnaController.husqvarna) // добавление нового товара или обновление цен
 
 router.get('/test', husqvarnaController.test) // тест 
