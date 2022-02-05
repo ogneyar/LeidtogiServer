@@ -4,11 +4,14 @@ const testerController = require('../controllers/testerController')
 const checkRole = require('../middleware/checkRoleMiddleware')
 
 
-router.post('/feed', checkRole("ADMIN"), testerController.setFeed)
-// router.get('/feed', testerController.getFeed)
+router.post('/set_feed', checkRole("ADMIN"), testerController.setFeed)
+// router.get('/set_feed', testerController.getFeed)
 
-// router.get('/locationCitiesSdek', checkRole("ADMIN"), testerController.locationCitiesSdek)
-router.get('/locationCitiesSdek', testerController.locationCitiesSdek)
+router.get('/set_location_cities_sdek', checkRole("ADMIN"), testerController.setLocationCitiesSdek)
+// router.get('/set_location_cities_sdek', testerController.setLocationCitiesSdek)
+
+router.get('/set_places_dl', checkRole("ADMIN"), testerController.setPlacesDl)
+// router.get('/set_places_dl', testerController.setPlacesDl)
 
 
 module.exports = router
