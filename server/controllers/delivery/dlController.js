@@ -8,7 +8,8 @@ class DlController {
         return res.json(await Dl.auth())
     }
 
-    async calculator(req, res) { // Калькулятор стоимости и сроков заказа
+    // Калькулятор стоимости и сроков заказа
+    async calculator(req, res) { 
         return res.json(await Dl.calculator(req.query))
     }
 
@@ -28,8 +29,34 @@ class DlController {
         return res.json(await Dl.terminalsCatalog(req.query))
     }
 
-    async searchTerminals(req, res) { // Поиск терминалов
+    // Поиск терминалов
+    async searchTerminals(req, res) { 
         return res.json(await Dl.searchTerminals(req.query))
+    }
+
+    // Ограничения по параметрам заказа
+    async requestConditions(req, res) { 
+        return res.json(await Dl.requestConditions(req.query))
+    }
+
+    // этот метод находится в testerController
+    // async places(req, res) { // Справочник населённых пунктов
+    //     return res.json(await Dl.places())
+    // }
+
+    // этот метод пока не используется
+    async streets(req, res) { // Справочник улиц
+        return res.json(await Dl.streets())
+    }
+
+    // этот метод пока не используется
+    async loadTypes(req, res) { // Справочник видов загрузки
+        return res.json(await Dl.loadTypes())
+    }
+
+    // этот метод пока не используется
+    async servises(req, res) { // Справочник специальных требований к транспорту
+        return res.json(await Dl.servises())
     }
 
 }
