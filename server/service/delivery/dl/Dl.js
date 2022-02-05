@@ -6,6 +6,11 @@ const Micro_calc = require('./Micro_calc')
 const Kladr = require("./Kladr")
 const Terminals = require("./Terminals")
 const SearchTerminals = require("./SearchTerminals")
+const Places = require("./Places")
+const Streets = require("./Streets")
+const LoadTypes = require("./LoadTypes")
+const Servises = require("./Servises")
+const RequestConditions = require("./RequestConditions")
 
 
 module.exports = class Dl {
@@ -57,10 +62,27 @@ module.exports = class Dl {
         return response
     }
 
-    // НЕ РАБОТАЕТ
+    // 
     static async calculator(parameters) { // Калькулятор стоимости и сроков перевозки
         // console.log("DL calculator RUN");
        
+        // new Calculator({
+        //     delivery: {
+        //         derival: {
+        //             address: {
+        //                 street: "5000003200000000000000000"
+        //             },
+        //             produceDate: "2022-02-09"
+        //         },
+        //         arrival: {
+        //             address: {
+        //                 street: "6100500010300010000000000"
+        //             }
+        //         }
+        //     },
+        //     cargo: {}
+        // })
+
         let response = await this.curl(
             new Calculator(parameters)
         )
@@ -151,7 +173,8 @@ module.exports = class Dl {
         return response
     }
     
-    static async searchTerminals(parameters) { // Справочник терминалов
+    // Справочник терминалов
+    static async searchTerminals(parameters) { 
         // console.log("DL terminals RUN");
 
         if (!parameters.code && !parameters.cityID) return { error: "Не передан КЛАДР или cityID" }
@@ -162,6 +185,65 @@ module.exports = class Dl {
 
         if (response.terminals !== undefined) return response.terminals
 
+        return response
+    }
+    
+    // Справочник населённых пунктов
+    static async places() { 
+        // console.log("DL places RUN");
+        
+        let response = await this.curl(
+            new Places()
+        )
+
+        if (response.url !== undefined) return response.url
+
+        return response
+    }
+    
+    // Справочник улиц
+    static async streets() { 
+        // console.log("DL streets RUN");
+        
+        let response = await this.curl(
+            new Streets()
+        )
+
+        if (response.url !== undefined) return response.url
+
+        return response
+    }
+    
+    // Справочник видов загрузки
+    static async loadTypes() { 
+        // console.log("DL loadTypes RUN");
+        
+        let response = await this.curl(
+            new LoadTypes()
+        )
+        
+        return response
+    }
+    
+    // Справочник специальных требований к транспорту
+    static async servises() { 
+        // console.log("DL servises RUN");
+        
+        let response = await this.curl(
+            new Servises()
+        )
+        
+        return response
+    }
+    
+    // Ограничения по параметрам заказа
+    static async requestConditions(parameters) { 
+        // console.log("DL requestConditions RUN");
+        
+        let response = await this.curl(
+            new RequestConditions(parameters)
+        )
+        
         return response
     }
 
