@@ -1,8 +1,10 @@
 const path = require('path')
 const fs = require('fs')
+const axios = require('axios')
 
 const {Product, Brand, Category} = require('../models/models')
 const Sdek = require("../service/delivery/sdek/Sdek")
+const Dl = require("../service/delivery/dl/Dl")
 
 
 class TesterController {
@@ -81,7 +83,7 @@ class TesterController {
     //     }
     // }
 
-    async locationCitiesSdek (req, res, next) {
+    async setLocationCitiesSdek (req, res, next) {
         try {
             let array, response
             response = await Sdek.locationSities(req.query)
@@ -113,6 +115,54 @@ class TesterController {
             return res.json(response)
         }catch(e) {
             return  res.json({error:'Ошибка метода locationCitiesSdek!'})
+        }
+    }
+
+    //
+    async setPlacesDl (req, res, next) {
+        try {
+            let array, response
+            response = await Dl.places()
+            
+            if (response.errors === undefined) {
+
+                let { data } = await axios.get(response)
+
+                if (data) {
+
+                    if (!fs.existsSync(path.resolve(__dirname, '..', 'static', 'deliveries'))){
+                        try {
+                            fs.mkdirSync(path.resolve(__dirname, '..', 'static', 'deliveries'))
+                        }catch(e) {
+                            console.log(`Создать папку static/deliveries не удалось.`)
+                            return res.json({error:'Создать папку static/deliveries не удалось.'})
+                        }
+                    }
+                    if (!fs.existsSync(path.resolve(__dirname, '..', 'static', 'deliveries', 'dl'))){
+                        try {
+                            fs.mkdirSync(path.resolve(__dirname, '..', 'static', 'deliveries', 'dl'))
+                        }catch(e) {
+                            console.log(`Создать папку static/deliveries/dl не удалось.`)
+                            return res.json({error:'Создать папку static/deliveries/dl не удалось.'})
+                        }
+                    }
+                    fs.writeFile(path.resolve(__dirname, '..', 'static', 'deliveries', 'dl', 'places.csv'), data, (err) => {
+                        if (err) {
+                        console.error(err)
+                        return
+                        }
+                        //файл записан успешно
+                        console.log("успех")
+                    })
+
+                    return res.json(process.env.URL + "/deliveries/dl/places.csv")
+                    
+                }
+            }
+
+            return res.json(response)
+        }catch(e) {
+            return  res.json({error:'Ошибка метода placesDl!'})
         }
     }
 
