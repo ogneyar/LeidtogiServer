@@ -17,15 +17,18 @@ router.get('/terminals_catalog', dlController.terminalsCatalog) // Справо�
 router.get('/search_terminals', dlController.searchTerminals) // Поиск терминалов
 
 router.get('/request_conditions', dlController.requestConditions) // Ограничения по параметрам заказа
+router.get('/load_types', dlController.loadTypes) // Справочник видов загрузки
+router.get('/servises', dlController.servises) // Справочник специальных требований к транспорту
 
-// этот роут находится в testerRouter
-// router.get('/places', checkRole("ADMIN"), dlController.places) // Справочник населённых пунктов
-// этот роут пока неподключен
-// router.get('/streets', checkRole("ADMIN"), dlController.streets) // Справочник улиц
-// этот роут пока неподключен
-// router.get('/load_types', checkRole("ADMIN"), dlController.loadTypes) // Справочник видов загрузки
-// этот роут пока неподключен
-// router.get('/servises', checkRole("ADMIN"), dlController.servises) // Справочник специальных требований к транспорту
+// этот роут находится в testerRouter (для скачивания файла plases.csv)
+router.get('/places', checkRole("ADMIN"), dlController.places) // Справочник населённых пунктов
+// router.get('/places', dlController.places) // Справочник населённых пунктов
+
+router.get('/get_places', dlController.getPlaces)
+
+router.get('/streets', checkRole("ADMIN"), dlController.streets) // Справочник улиц
+// router.get('/streets', dlController.streets) // Справочник улиц
+
 
 
 
