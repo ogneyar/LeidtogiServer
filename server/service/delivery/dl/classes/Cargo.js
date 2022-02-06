@@ -6,7 +6,7 @@ module.exports = class Cargo { // Информация о грузе
     width // Ширина самого широкого грузового места, м.
     height // Высота самого высокого грузового места, м.
     totalVolume // не более 79 м.куб
-    totalWeight // при общем весе более 99 кг необходимо указывать oversizedWeight и oversizedVolume
+    totalWeight // при общем весе от 100 кг необходимо указывать oversizedWeight и oversizedVolume
 
     // -------------------
     // необязательные поля
@@ -20,6 +20,8 @@ module.exports = class Cargo { // Информация о грузе
 
     constructor(data) {
         if ( ! data ) data = {}
+        if (typeof(data) === "string") data = JSON.parse(data)
+        
         this.length = data.length || 1
         this.width = data.width || 1
         this.height = data.height || 1
@@ -28,7 +30,13 @@ module.exports = class Cargo { // Информация о грузе
 
         this.quantity = data.quantity || 1
         this.weight = data.weight || undefined
-        this.oversizedWeight = data.oversizedWeight || undefined
-        this.oversizedVolume = data.oversizedVolume || undefined
+
+        if (Number(this.totalWeight) >= 100) {
+            this.oversizedWeight = this.totalWeight
+            this.oversizedVolume = this.totalVolume
+        }else {
+            this.oversizedWeight = data.oversizedWeight || undefined
+            this.oversizedVolume = data.oversizedVolume || undefined
+        }
     }
 }
