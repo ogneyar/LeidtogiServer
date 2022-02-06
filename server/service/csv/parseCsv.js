@@ -15,7 +15,7 @@
     "offer category"
 }
 
-function parseCsv(string, search = `"offer id"`) {
+function parseCsv(string, search = `"offer id"`, separator = `;`) {
     let lengthString, serchString, number, number2, lengthSerchString, arrayKey
     let products = []
     let object = {}
@@ -35,7 +35,7 @@ function parseCsv(string, search = `"offer id"`) {
     number = string.indexOf(serchString)
     if (number === -1) return {error:`Не найден '${serchString}'`,string}
     
-    arrayKey = string.substring(0, number).replace(/\"/g, "").replace(/(\r)/g, "").split(";")
+    arrayKey = string.substring(0, number).replace(/\"/g, "").replace(/(\r)/g, "").split(separator)
     
     string = string.substring(number + lengthSerchString, lengthString).replace(/(\r)/g, "")
     
@@ -47,14 +47,30 @@ function parseCsv(string, search = `"offer id"`) {
         lengthString = string.length
         
         if (string[0] === "\"") { // если есть кавычки
-            serchString = `";` // ищем закрывающие кавычки
+            serchString = `"`+separator // ищем закрывающие кавычки
             number = string.indexOf(serchString)
-            if (number === -1) return {error:`Не найден '${serchString}'`,string}
+
+            let serchString2 = `"\n` // или ищем конец строки
+            let number2 = string.indexOf(serchString2)
+
+            if (number === -1) { // если закрывающие кавычки отсутствуют
+                if (number2 === -1) return {error:`Не найден '${serchString}'`,string} // и нет конца строки то return error
+                number = number2 // иначе меняем местами искомое значение
+                serchString = serchString2 // и искомые строки
+            }else { // если закрывающие кавычки найдены
+                if (number2 !== -1) { // и найден конец строки
+                    if (number > number2) { // сравниваем кто из них найден раньше в строке
+                        number = number2 // и меняем местами
+                        serchString = serchString2
+                    }
+                }
+            }
+
             value = string.substring(1, number)
             
             object[arrayKey[i]] = value
             
-            string = string.substring(number + 2, lengthString)
+            string = string.substring(number + serchString.length, lengthString)
 
             if (i + 1 < arrayKey.length) i++
             else {
@@ -65,7 +81,7 @@ function parseCsv(string, search = `"offer id"`) {
             continue
         }
         
-        if (string[0] === ";") { // если нет контента, сразу следующий разделитель (;) в строке
+        if (string[0] === separator) { // если нет контента, сразу следующий разделитель (separator) в строке
 
             object[arrayKey[i]] = null
             
@@ -80,7 +96,7 @@ function parseCsv(string, search = `"offer id"`) {
             continue
         }
         
-        serchString = `;` // ищем разделитель
+        serchString = separator // ищем разделитель
         number = string.indexOf(serchString)
         if (number === -1) { // если не найден разделитель, значит конец файла
             serchString = `\n`
