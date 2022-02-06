@@ -13,3 +13,12 @@ SELECT User, Host FROM mysql.user;
 // запуск веб-сервера, остановка, перезагрузка
 service nginx ( start | stop | restart | reload )
 
+// pm2
+pm2 (start | stop | restart | status)
+
+// обновление сертификатов вручную
+// --dry-run для тестирования (после тестирования --dry-run надо убрать)
+sudo /usr/bin/certbot renew --dry-run
+
+// обновление сертификатов вручную (так ещё не пробовал)
+certbot --force-renewal -d leidtogi.ru,server.leidtogi.ru,www.leidtogi.ru
