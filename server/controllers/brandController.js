@@ -16,10 +16,19 @@ class BrandController {
 
     async getAll(req, res, next) {
         try {
-            const brands = await Brand.findAll()
-            return res.json(brands) // return array
+            return res.json(await Brand.findAll()) // return
         }catch(e) {
             return next(ApiError.badRequest('Ошибка метода getAll!'));
+        }
+    }
+
+    async getOne(req, res, next) {
+        try {
+            return res.json(await Brand.findOne({
+                where: { id: req.query.id }
+            })) // return
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода getOne!'));
         }
     }
 
