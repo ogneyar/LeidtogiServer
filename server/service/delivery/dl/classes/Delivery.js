@@ -18,8 +18,10 @@ module.exports = class Delivery { // Информация по перевозк�
     accompanyingDocuments // Информация по сопроводительным документам
 
     constructor(data) {
+        if (typeof(data) === "string") data = JSON.parse(data)
+        
         this.deliveryType = data.deliveryType || { type: "auto" }
-
+        
         if (data.derival === undefined) throw "Отсутствует обязательный параметр derival."
         this.derival = new DerivalArrival(data.derival)
 
