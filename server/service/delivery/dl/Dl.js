@@ -11,6 +11,7 @@ const Streets = require("./Streets")
 const LoadTypes = require("./LoadTypes")
 const Servises = require("./Servises")
 const RequestConditions = require("./RequestConditions")
+const parseCsv = require("../../csv/parseCsv")
 
 
 module.exports = class Dl {
@@ -62,26 +63,29 @@ module.exports = class Dl {
         return response
     }
 
-    // 
-    static async calculator(parameters) { // Калькулятор стоимости и сроков перевозки
+
+    // Калькулятор стоимости и сроков перевозки
+    static async calculator(parameters) { 
         // console.log("DL calculator RUN");
-       
-        // new Calculator({
+        
+        // *** EXAMPLE ***
+        // parameters = {
         //     delivery: {
         //         derival: {
-        //             address: {
-        //                 street: "5000003200000000000000000"
-        //             },
+        //             address: { street: "5000003200000000000000000" },
         //             produceDate: "2022-02-09"
         //         },
-        //         arrival: {
-        //             address: {
-        //                 street: "6100500010300010000000000"
-        //             }
-        //         }
+        //         arrival: { address: { street: "6100500010300010000000000" } }
         //     },
-        //     cargo: {}
-        // })
+        //     cargo: {
+        //         quantity: 1,
+        //         length: 0.5,
+        //         width: 0.3,
+        //         height: 0.4,
+        //         totalVolume: 0.005,
+        //         totalWeight: 1
+        //     }
+        // }
 
         let response = await this.curl(
             new Calculator(parameters)
@@ -188,7 +192,7 @@ module.exports = class Dl {
         return response
     }
     
-    // Справочник населённых пунктов
+    // Справочник населённых пунктов (возвращает url для скачивания файла plases.csv)
     static async places() { 
         // console.log("DL places RUN");
         
@@ -199,6 +203,23 @@ module.exports = class Dl {
         if (response.url !== undefined) return response.url
 
         return response
+    }
+
+    // Справочник населённых пунктов (поиск)
+    static async getPlaces(query) { 
+        let { data } = await axios.get(process.env.URL + "/deliveries/dl/places.csv")
+
+        let response = parseCsv(data, `"cityID"`, `,`)
+        
+        return response.message.filter(i => {
+            if (query.search && query.regname) {
+                if (i.searchString.includes(query.search) && i.regname.includes(query.regname)) return true
+            }else if (query.search) {
+                if (i.searchString.includes(query.search)) return true
+            }else if (query.regname) {
+                if (i.regname.includes(query.regname)) return true
+            }
+        })
     }
     
     // Справочник улиц
@@ -244,7 +265,7 @@ module.exports = class Dl {
             new RequestConditions(parameters)
         )
         
-        return response
+        return response 
     }
 
 
