@@ -10,7 +10,11 @@ class DlController {
 
     // Калькулятор стоимости и сроков заказа
     async calculator(req, res) { 
-        return res.json(await Dl.calculator(req.query))
+        try {
+            return res.json(await Dl.calculator(req.query))
+        }catch(error) {
+            return res.json(error)
+        }
     }
 
     async microCalc(req, res) { // Калькулятор ориентировочной стоимости и сроков заказа
@@ -36,27 +40,55 @@ class DlController {
 
     // Ограничения по параметрам заказа
     async requestConditions(req, res) { 
-        return res.json(await Dl.requestConditions(req.query))
+        try {
+            return res.json(await Dl.requestConditions(req.query))
+        }catch(error) {
+            return res.json(error)
+        }
     }
 
-    // этот метод находится в testerController
-    // async places(req, res) { // Справочник населённых пунктов
-    //     return res.json(await Dl.places())
-    // }
-
-    // этот метод пока не используется
-    async streets(req, res) { // Справочник улиц
-        return res.json(await Dl.streets())
+    // этот метод находится и используется в testerController
+    async places(req, res) { // Справочник населённых пунктов
+        try {
+            return res.json(await Dl.places())
+        }catch(error) {
+            return res.json(error)
+        }
+    }
+    // 
+    async getPlaces(req, res) { // Справочник населённых пунктов
+        try {
+            return res.json(await Dl.getPlaces(req.query))
+        }catch(error) {
+            return res.json(error)
+        }
     }
 
-    // этот метод пока не используется
-    async loadTypes(req, res) { // Справочник видов загрузки
-        return res.json(await Dl.loadTypes())
+    // Справочник улиц
+    async streets(req, res) {
+        try {
+            return res.json(await Dl.streets())
+        }catch(error) {
+            return res.json(error)
+        }
     }
 
-    // этот метод пока не используется
-    async servises(req, res) { // Справочник специальных требований к транспорту
-        return res.json(await Dl.servises())
+    //  Справочник видов загрузки
+    async loadTypes(req, res) {
+        try {
+            return res.json(await Dl.loadTypes())
+        }catch(error) {
+            return res.json(error)
+        }
+    }
+
+    // Справочник специальных требований к транспорту
+    async servises(req, res) {
+        try {
+            return res.json(await Dl.servises())
+        }catch(error) {
+            return res.json(error)
+        }
     }
 
 }
