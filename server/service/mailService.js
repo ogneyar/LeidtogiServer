@@ -36,6 +36,30 @@ class MailService {
             return e
         }
     }
+
+    async sendChangePasswordLink(to, link) {
+        try {
+            let response = await this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to,
+                subject: 'Смена пароля на ' + process.env.CORS_URL_SECURE,
+                text: '',
+                html:
+                    `
+                        <div>
+                            <h1>Для смены пароля перейдите по ссылке</h1>
+                            <a href="${process.env.CORS_URL_SECURE}/change_password/${link}">${process.env.CORS_URL_SECURE}/change_password/${link}</a>
+                            <hr />
+                            <h3>Если Вы не запрашивали смену пароля, то проигнорируйте это письмо!</h3>
+                        </div>
+                    `
+            })
+            return response
+        }catch(e) {
+            return e
+        }
+    }
+
 }
 
 module.exports = new MailService();
