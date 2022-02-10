@@ -5,10 +5,12 @@ const authMiddleware = require('../middleware/authMiddleware')
 const checkRole = require('../middleware/checkRoleMiddleware')
 
 router.post('/', orderController.create) // создание новой записи
-// router.get('/', orderController.getAll) // получение всех записей
+router.get('/', checkRole("ADMIN"), orderController.getAll) // получение всех записей
 router.get('/user/:user_id', authMiddleware, orderController.getOrdersForUser) // получение записей у заданного пользователя
 
-router.put('/pay/:uuid', orderController.setPay) // редактирование записей
+router.put('/:id', checkRole("ADMIN"), orderController.editOrder) // редактирование записей
+router.put('/pay/:uuid', orderController.setPay) // установка флага оплаченного товара
+router.put('/taken/:id', orderController.setTaken) // установка статуса полученого товара
 
 router.get('/test', orderController.test) // 
 
