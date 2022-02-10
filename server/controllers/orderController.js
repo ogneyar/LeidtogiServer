@@ -87,6 +87,44 @@ class OrderController {
         }
     }
 
+    // 
+    async getAll(req, res, next) {
+        try {
+            const orders = await Order.findAll()
+            return res.json(orders) // return array
+        }catch(e) {
+            return next(res.json({error:'Ошибка метода getAll! ' + e}))
+        }
+    }
+
+    //
+    async editOrder(req, res, next) {
+        try {
+            const { id } = req.params
+            const body = req.body
+            const order = await Order.update(body, {
+                where: { id }
+            })
+            return res.json(order) // return 
+        }catch(e) {
+            return next(res.json({error:'Ошибка метода editOrder! ' + e}))
+        }
+    }
+
+    //
+    async setTaken(req, res, next) {
+        try {
+            const { id } = req.params
+            const order = await Order.update({ state: "taken"}, {
+                where: { id }
+            })
+            return res.json(order) // return 
+        }catch(e) {
+            return next(res.json({error:'Ошибка метода setTaken! ' + e}))
+        }
+    }
+
+    //
     async getOrdersForUser(req, res, next) {
         try {
             const { user_id } = req.params
@@ -102,6 +140,8 @@ class OrderController {
         }
     
     }
+
+    //
     async getOrder(req, res, next) {
         try {
             const { id } = req.params
@@ -172,14 +212,7 @@ class OrderController {
         }
     }
 
-    // async getAll(req, res, next) {
-    //     try {
-    //         const brands = await Brand.findAll()
-    //         return res.json(brands) // return array
-    //     }catch(e) {
-    //         return next(ApiError.badRequest('Ошибка метода getAll!'));
-    //     }
-    // }
+    
 
     // async delete(req, res, next) {
     //     try {
@@ -193,18 +226,6 @@ class OrderController {
     //     }
     // }
     
-    // async edit(req, res, next) {
-    //     try {
-    //         const {id} = req.params
-    //         const body = req.body
-    //         const brand = await Brand.update(body, {
-    //             where: { id }
-    //         })
-    //         return res.json(brand) // return boolean
-    //     }catch(e) {
-    //         return next(ApiError.badRequest('Ошибка метода edit!'));
-    //     }
-    // }
 
 
 }
