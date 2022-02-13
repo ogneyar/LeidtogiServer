@@ -7,6 +7,7 @@ const registrationMiddleware = require('../middleware/registrationMiddleware')
 const router = new Router()
 
 router.post('/registration', registrationMiddleware, userController.registration)
+router.post('/create_guest', userController.createGuest)
 router.post('/login', userController.login)
 router.post('/logout', userController.logout)
 router.post('/activate/:link', authMiddleware, userController.activate)
