@@ -7,7 +7,8 @@ const {User, Cart} = require('../models/models')
 const mailService = require('../service/mailService')
 const tokenService = require('../service/tokenService')
 
-const UserDto = require('../dtos/userDto');
+const UserDto = require('../dtos/userDto')
+const GuestDto = require('../dtos/guestDto')
 
 const maxAge = 90 * 24 * 60 * 60 * 1000 // 90 дней
 const oldHost = "pzmarket.ru" // игнорировать этот хост при сохранении токена
@@ -18,7 +19,7 @@ class UserController {
     async registration(req, res, next) {
         try {
             const body = req.body
-            const candidate = await User.findOne({where:{email:body.email}})
+            const candidate = await User.findOne({ where: { email: body.email } })
             if (candidate) {
                 return next(ApiError.badRequest('Пользователь с таким email уже существует!'))
                 // return next(res.json({error:'Пользователь с таким email уже существует!'}))
@@ -32,7 +33,7 @@ class UserController {
                 .then(data => console.log(data))
                 .catch(err => console.log(err))
             
-            const userDto = new UserDto(user); // id, email, role, isActivated
+            const userDto = new UserDto(user) // id, email, role, isActivated
             const tokens = tokenService.generateTokens({...userDto});
 
             // если домен сервера сделавшего запрос !не содержит имя старого хоста
@@ -46,6 +47,32 @@ class UserController {
         } catch (e) {
             // return next(ApiError.badRequest('Ошибка регистрации нового пользователя!!!'))
             return next(res.json({error:'Ошибка метода registration! ' + e}))
+        }
+    }
+
+    // регистрация как гостя пользователя, нежелающего регистрироваться
+    async createGuest(req, res, next) {
+        try {
+            const body = req.body // name, phone, email
+            let guest, user
+            let candidate = await User.findOne({ where: { email: body.email } })
+            if (candidate) {
+                guest = new GuestDto({...body, email: "GUEST#" + body.email})
+                candidate = await User.findOne({ where: { email: guest.email } })
+                if (candidate) {
+                    user = await User.update(guest, { where: { id: candidate.id } })
+                }else {
+                    user = await User.create(guest)
+                }
+            }else {
+                guest = new GuestDto(body) // name, phone, email, role
+                user = await User.create(guest)
+            }
+            
+            return res.json(user)
+
+        } catch (e) {
+            return next(res.json({error:'Ошибка метода createGuest! ' + e}))
         }
     }
 
