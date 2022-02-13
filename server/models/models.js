@@ -3,13 +3,13 @@ const { DataTypes } = require('sequelize')
 
 const User = require('./User')
 const Cart = require('./Cart')
-const CartProduct = require('./CartProduct')
+// const CartProduct = require('./Old/CartProduct')
 const Product = require('./Product')
 const Category = require('./Category')
 const Brand = require('./Brand')
 const Rating = require('./Rating')
 const ProductInfo = require('./ProductInfo')
-const CategoryBrand = require('./CategoryBrand')
+// const CategoryBrand = require('./Old/CategoryBrand')
 const ProductSize = require('./ProductSize')
 const ProductFilter = require('./ProductFilter')
 const Token = require('./Token')
@@ -23,8 +23,8 @@ Cart.belongsTo(User)
 User.hasMany(Rating)
 Rating.belongsTo(User)
 
-Cart.hasMany(CartProduct)
-CartProduct.belongsTo(Cart)
+// Cart.hasMany(CartProduct)
+// CartProduct.belongsTo(Cart)
 
 Category.hasMany(Product)
 Product.belongsTo(Category)
@@ -35,8 +35,8 @@ Product.belongsTo(Brand)
 Product.hasMany(Rating)
 Rating.belongsTo(Product)
 
-Product.hasMany(CartProduct)
-CartProduct.belongsTo(Product)
+// Product.hasMany(CartProduct)
+// CartProduct.belongsTo(Product)
 
 Product.hasMany(ProductInfo, {as: 'info'})
 ProductInfo.belongsTo(Product)
@@ -47,8 +47,8 @@ ProductSize.belongsTo(Product)
 Product.hasMany(ProductFilter, {as: 'filter'})
 ProductFilter.belongsTo(Product)
 
-Category.belongsToMany(Brand, {through: CategoryBrand})
-Brand.belongsToMany(Category, {through: CategoryBrand})
+// Category.belongsToMany(Brand, {through: CategoryBrand})
+// Brand.belongsToMany(Category, {through: CategoryBrand})
 
 User.hasMany(Token)
 Token.belongsTo(User)
@@ -60,13 +60,13 @@ Delivery.belongsTo(User)
 module.exports = {
     User,
     Cart,
-    CartProduct,
+    // CartProduct,
     Product,
     Category,
     Brand,
     Rating,
     ProductInfo,
-    CategoryBrand,
+    // CategoryBrand,
     ProductSize,
     ProductFilter,
     Token,
