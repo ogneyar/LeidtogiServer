@@ -22,3 +22,11 @@ sudo /usr/bin/certbot renew --dry-run
 
 // обновление сертификатов вручную (так ещё не пробовал)
 certbot --force-renewal -d leidtogi.ru,server.leidtogi.ru,www.leidtogi.ru
+
+
+
+// добавление колонки в таблицу
+ALTER TABLE carts ADD value varchar(1024) not null AFTER id;
+// удаление таблицы
+DROP TABLE cart_products;
+DROP TABLE category_brands;
