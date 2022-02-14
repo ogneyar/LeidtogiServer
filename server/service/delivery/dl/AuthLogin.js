@@ -1,8 +1,9 @@
 
 
-module.exports = class Auth {
+
+module.exports = class AuthLogin { // Авторизация пользователя
     
-    method 
+    method // метод для доступа к api-сервисам
     appkey // ключ для доступа к api-сервисам
     login // логин для доступа к api-сервисам
     password // пароль для доступа к api-сервисам

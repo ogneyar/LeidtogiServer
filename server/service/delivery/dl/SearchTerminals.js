@@ -24,6 +24,8 @@ module.exports = class SearchTerminals { // Поиск терминалов
         this.method = "v1/public/request_terminals.json"
         this.appkey = process.env.DL_APPKEY
         
+        if (parameters.cityID === undefined && parameters.code === undefined) throw "Необходим один из двух параметров, cityID или code."
+
         this.cityID = parameters.cityID || undefined
         this.code = parameters.code || undefined
 
