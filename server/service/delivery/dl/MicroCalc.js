@@ -1,6 +1,7 @@
 
 
-module.exports = class Micro_calc {
+
+module.exports = class MicroCalc {
     
     method // метод для доступа к api-сервисам
     appkey // ключ для доступа к api-сервисам
@@ -19,7 +20,9 @@ module.exports = class Micro_calc {
         this.method = "v1/micro_calc.json"
         this.appkey = process.env.DL_APPKEY
 
+        if (parameters.derival === undefined) throw "Отсутствует обязательный параметр derival."
         this.derival = parameters.derival
+        if (parameters.arrival === undefined) throw "Отсутствует обязательный параметр arrival."
         this.arrival = parameters.arrival
 
         this.sessionID = parameters.sessionID || undefined

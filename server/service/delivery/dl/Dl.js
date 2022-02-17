@@ -6,21 +6,76 @@ const axios  = require("axios")
 // Авторизация пользователя
 const AuthLogin = require('./AuthLogin')
 const AuthLogout = require('./AuthLogout')
+const AuthSessionInfo = require('./AuthSessionInfo')
+// Cписок контрагентов
+const Counteragents = require('./Counteragents')
 
+// ------------------
+// Выполнение расчета
+// ------------------
+// Калькулятор стоимости и сроков перевозки
 const Calculator = require('./Calculator')
-const Micro_calc = require('./Micro_calc')
-const Kladr = require("./Kladr")
+// Калькулятор услуги Доставка
+const CalculatorSf = require('./CalculatorSf')
+// Ориентировочные сроки и стоимость
+const MicroCalc = require('./MicroCalc')
+
+// -----------------
+// Оформление заявок
+// -----------------
+//
+
+// ---------------------
+// Информация по заказам
+// ---------------------
+//
+
+// ------------------
+// Управление заказом
+// ------------------
+//
+
+// --------------
+// Адресная книга
+// --------------
+//
+
+// -------
+// Платежи
+// -------
+//
+
+// ---------
+// Терминалы
+// ---------
+// Справочник терминалов
 const Terminals = require("./Terminals")
-const SearchTerminals = require("./SearchTerminals")
+// Поиск терминалов
+const RequestTerminals = require("./RequestTerminals")
+
+// --------------
+// Местоположения
+// --------------
+// Географические справочники
 const Places = require("./Places")
 const Streets = require("./Streets")
+const CitiesCashlessOnly = require("./CitiesCashlessOnly")
+// Поиск географических объектов
+const ReferencesCountries = require("./ReferencesCountries")
+const Kladr = require("./Kladr")
+const KladrStreet = require("./KladrStreet")
+
+
+
+
 // -----------------
 // Справочные методы
 // -----------------
 // Подбор даты отправки
-
+const RequestAddressDates = require("./RequestAddressDates")
+const RequestTerminalDates = require("./RequestTerminalDates")
 // Подбор даты доставки
-
+const RequestDeliveryDates = require("./RequestDeliveryDates")
 // Подбор времени приезда водителя
 const RequestTimeInterval = require("./RequestTimeInterval")
 const RequestDeliveryTimeInterval = require("./RequestDeliveryTimeInterval")
@@ -65,16 +120,13 @@ module.exports = class Dl {
         // console.log("DL CURL RUN");
 
         let response
-
         let headers = {'content-type': 'application/json;charset=utf-8'}
-
         let options = { 
             url: this.url + data.method,
             method: "post", 
             headers,
             data
         }
-
         try {
             await axios(options)
                 .then(data => {
@@ -91,7 +143,7 @@ module.exports = class Dl {
         // console.log("DL CURL RESPONSE: ",response);
         return response
     }
-    
+
 // ------------- +
 //
 //  Авторизация  |
@@ -120,7 +172,7 @@ module.exports = class Dl {
     /* 
     ** Удаление сессии авторизации
     **
-    ** input: sessionID
+    ** input: { sessionID }
     **
     ** return { metadata: { status, generated_at }, data: { state } }
     */
@@ -134,17 +186,105 @@ module.exports = class Dl {
         return response
     }
 
+    /* 
+    ** Данные сессии
+    **
+    ** input: { sessionID }
+    **
+    ** return { metadata: { status, generated_at }, data: { session: { expireTime, expired } } }
+    */
+    static async authSessionInfo(params) {
+        // console.log("DL authSessionInfo RUN");
+       
+        let response = await this.curl(
+            new AuthSessionInfo(params)
+        )
 
+        return response
+    }
 
+// -------------------
+// Cписок контрагентов
+// -------------------
 
+    /* 
+    ** Cписок контрагентов
+    **
+    ** input: { sessionID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { counteragents: [ { 
+    **          balance: { opening: { date, sum }, closing: { date, sum } }, 
+    **          info: { 
+    **              sharedTo: [ { phone, name, email }, ], accessLevel, requestComment, managerEmail, 
+    **              managerPhone, sharedFrom: { phone, name, email }, managerName 
+    **          },
+    **          isCurrent, uid, juridical, inn, 
+    **          document: { type, serial, number },
+    **          name, cashOnDeliveryAvailable
+    **      }, ] } 
+    ** }
+    */
+    static async counteragents(params) {
+        // console.log("DL counteragents RUN");
+       
+        let response = await this.curl(
+            new Counteragents(params)
+        )
+
+        return response
+    }
+
+// -------------------- +
+//
+//  Выполнение расчета  |
+//
+// -------------------- +
+
+// ----------------------------------------
+// Калькулятор стоимости и сроков перевозки
+// ----------------------------------------
     
-
-
-    // Калькулятор стоимости и сроков перевозки
+    /* 
+    ** Калькулятор стоимости и сроков перевозки
+    **
+    ** input: { delivery, cargo }
+    **
+    ** CostsCalculation = { price, contractPrice, premium, discount, premiumDetails: [], discountDetails: [] }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { 
+    **          derival: { 
+    **              terminal, price, contractPrice, servicePrice, premiumDetails: [], terminals: [], 
+    **              handling: CostsCalculation, contractPrice 
+    **          },
+    **          arrival: { 
+    **              terminal, price, contractPrice, 
+    **              premiumDetails: [ { name, value, date, announcement, public }, ], 
+    **              terminals: [ { id, name, address,streetCode, price, contractPrice, default, express, isPVZ }, ], 
+    **              contractPrice 
+    **          },
+    **          orderDates:{ 
+    **              pickup, senderAddressTime, senderTerminalTime, arrivalToOspSender, derrivalFromOspSender, arrivalToOspReceiver, 
+    **              arrivalToAirport, arrivalToAirportMax, giveoutFromOspReceiver, giveoutFromOspReceiverMax, derrivalFromOspReceiver,
+    **              createTo, derrivalToAddress, derivalToAddressMax
+    **          },
+    **          intercity: CostsCalculation, small: CostsCalculation, air: CostsCalculation,
+    **          express: CostsCalculation, letter: CostsCalculation, price, priceMinimal, packages: {}, 
+    **          deliveryTerm, accompanyingDocuments: { send: CostsCalculation, return: CostsCalculation },
+    **          insurance, insuranceComponents: { cargoInsurance, termInsurance },
+    **          notify: { price, contractPrice, premium, discount, premiumDetails: [], discountDetails: [] },
+    **          simpleShippingAvailable, availableDeliveryTypes: { auto, small, avia, express, letter },
+    **          foundAddresses: [ { field, source, result }, ], information: []
+    **      } 
+    ** }
+    */
     static async calculator(parameters) { 
         // console.log("DL calculator RUN");
         
-        // *** EXAMPLE ***
+        // *** EXAMPLE *** - input data
         // parameters = {
         //     delivery: {
         //         derival: {
@@ -170,46 +310,259 @@ module.exports = class Dl {
         return response
     }
 
-    static async microCalc(parameters) { // Калькулятор ориентировочной стоимости и сроков заказа
-        // console.log("DL micro_calc RUN");
+// -------------------------------
+// Калькулятор услуги Доставка
+// -------------------------------
 
-        let { arrival_city, derival_city, sessionID } = parameters
+    /* 
+    ** Калькулятор услуги Доставка до адреса
+    **
+    ** input: { arrivalPoint, docSQLUid , calculateDate }
+    **
+    ** return { 
+    **      derival: { terminal }, 
+    **      arrival: { 
+    **          premium, premiumDetails: [ { date, announcement, name, value, public }, ], 
+    **          discountDetails: [ { name, value, date, announcement, public }, ], 
+    **          price, terminal, discount
+    **      },
+    **      loadunload: { arrival, discount, premium, premiumDetails: [], discountDetails: [] }
+    ** }
+    */
+    static async calculatorSf(parameters) { 
+        // console.log("DL calculatorSf RUN");
         
-        if (!arrival_city) return { error: "Не задан arrival_city" }
-        if (!derival_city) return { error: "Не задан derival_city" }
+        let response = await this.curl(
+            new CalculatorSf(parameters)
+        )
+        
+        return response 
+    }
+
+// ---------------------------------
+// Ориентировочные сроки и стоимость
+// ---------------------------------
+
+    /* 
+    ** Калькулятор ориентировочной стоимости и сроков заказа
+    **
+    ** input: { derival, arrival }
+    **
+    ** PeriodPrice = { period_from, period_to, price }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { 
+    **          terminals_standard: PeriodPrice, terminals_documents: PeriodPrice, 
+    **          terminals_express: PeriodPrice, terminals_avia: PeriodPrice, 
+    **          door_to_door_standard: PeriodPrice, door_to_door_documents: PeriodPrice, 
+    **          door_to_door_parcel: PeriodPrice, door_to_door_express: PeriodPrice, 
+    **          door_to_door_avia: PeriodPrice 
+    **      }
+    ** }
+    */
+    static async microCalc(parameters) {
+        // console.log("DL microCalc RUN");
 
         let response = await this.curl(
-            new Micro_calc({
-                derival: {
-                    city: derival_city
-                },
-                arrival: {
-                    city: arrival_city
-                },
-                sessionID
-            })
+            new MicroCalc(parameters)
         )
 
         return response
     }
 
-    static async kladr(parameters) { // Поиск населённых пунктов
-        // console.log("DL kladr RUN");
+// ------------------- +
+//
+//  Оформление заявок  |
+//
+// ------------------- +
 
-        let { q, cityID, code, limit } = parameters
-        
-        if (!q && !cityID && !code) return { error: "Не задан ни один из трёх параметров (q, cityID, code)" }
-        
-        let response = await this.curl(
-            new Kladr(parameters)
-        )
-        
-        if (response.cities !== undefined) return response.cities // массив городов
+// ------------------------
+// Перевозка сборных грузов
+// ------------------------
+    // Request
 
-        return response
-    }
+// ---------------------------------
+// Междугородняя перевозка еврофурой
+// ---------------------------------
+    // RequestFtl
 
-    static async terminals() { // Справочник терминалов
+// -----------------------------------
+// Перевозка малотоннажным транспортом
+// -----------------------------------
+    // RequestTs
+
+// ---------------------------
+// Почасовая аренда транспорта
+// ---------------------------
+    // 
+
+// ---------------------------
+// Дополнение заказа доставкой
+// ---------------------------
+    // 
+
+// ------------
+// Мультизаявка
+// ------------
+    // 
+
+// ------------------------
+// Пакетный заказ Pre-Alert
+// ------------------------
+    // 
+
+
+
+// ----------------------- +
+//
+//  Информация по заказам  |
+//
+// ----------------------- +
+
+// --------------
+// Журнал заказов
+// --------------
+
+// -----------------------------
+// Поиск по параметрам перевозки
+// -----------------------------
+
+// ------------------------
+// История изменений заказа
+// ------------------------
+
+// --------------
+// Печатные формы
+// --------------
+
+// ------
+// Отчеты
+// ------
+
+
+
+
+
+// -------------------- +
+//
+//  Управление заказом  |
+//
+// -------------------- +
+
+// -------------
+// Повтор заказа
+// -------------
+
+// -------------------
+// Доступные изменения
+// -------------------
+
+// --------------------
+// Изменение получателя
+// --------------------
+
+// ---------------------
+// Изменение плательщика
+// ---------------------
+
+// -------------------------------
+// Изменение контактной информации
+// -------------------------------
+
+// -----------------------------------
+// Изменение адреса и времени отправки
+// -----------------------------------
+
+// -----------------------------------
+// Изменение адреса и времени доставки
+// -----------------------------------
+
+// ------------------------------
+// Отмена заказа и доставки груза
+// ------------------------------
+
+// -----------------------------------
+// Приостановка и возобновление выдачи
+// -----------------------------------
+
+// ----------------------
+// Добавление в Избранное
+// ----------------------
+
+
+
+
+// ---------------- +
+//
+//  Адресная книга  |
+//
+// ---------------- +
+
+// -----------
+// Контрагенты
+// -----------
+
+
+// -----------------
+// Контактные данные
+// -----------------
+
+
+// ------
+// Адреса
+// ------
+
+
+// -----------------
+// Удаление объектов
+// -----------------
+
+
+
+
+
+// --------- +
+//
+//  Платежи  |
+//
+// --------- +
+
+// -------------
+// Взаиморасчеты
+// -------------
+
+
+// ----------------------
+// Периоды взаиморасчётов
+// ----------------------
+
+
+// --------------------------
+// Получение ссылки на оплату
+// --------------------------
+
+
+
+
+
+
+// ----------- +
+//
+//  Терминалы  |
+//
+// ----------- +
+
+// ---------------------
+// Справочник терминалов
+// ---------------------
+
+    /* 
+    ** Справочник терминалов
+    **
+    ** return { hash, url }
+    */
+    static async terminals() {
         // console.log("DL terminals RUN");
 
         let response = await this.curl(
@@ -219,56 +572,47 @@ module.exports = class Dl {
         return response
     }
     
-    static async terminalsCatalog(parameters) { // Справочник терминалов
-        // console.log("DL terminals RUN");
+// ----------------
+// Поиск терминалов
+// ----------------
 
-        if (!parameters.url) return { error: "Не передан url." }
+    /* 
+    ** Поиск терминалов
+    **
+    ** return { hash, url }
+    */
+    static async requestTerminals(parameters) { 
+        // console.log("DL requestTerminals RUN");
 
-        let response
-
-        let headers = {'content-type': 'application/json;charset=utf-8'}
-
-        let options = { 
-            url: parameters.url,
-            method: "get", 
-            headers
-        }
-
-        try {
-            await axios(options)
-                .then(data => {
-                    response = data.data
-                })
-                .catch(error => {
-                    // console.log("DL CURL ERROR: ",error);
-                    response = { error }
-                })
-        }catch(e) {  
-            // console.log("DL CURL THROW: ",e);
-            return { error:e }
-        }
-
-        if (response.city !== undefined) return response.city
-        
-        return response
-    }
-    
-    // Справочник терминалов
-    static async searchTerminals(parameters) { 
-        // console.log("DL terminals RUN");
-
-        if (!parameters.code && !parameters.cityID) return { error: "Не передан КЛАДР или cityID" }
-        
         let response = await this.curl(
-            new SearchTerminals(parameters)
+            new RequestTerminals(parameters)
         )
 
-        if (response.terminals !== undefined) return response.terminals
-
         return response
     }
+
+// ------------------
+// Терминалы на карте
+// ------------------
     
-    // Справочник населённых пунктов (возвращает url для скачивания файла plases.csv)
+    // https://dev.dellin.ru/api/terminals/map/
+
+    
+// ---------------- +
+//
+//  Местоположения  |
+//
+// ---------------- +
+
+// --------------------------
+// Географические справочники
+// --------------------------
+    
+    /* 
+    ** Справочник населённых пунктов
+    **
+    ** return { hash, url }
+    */
     static async places() { 
         // console.log("DL places RUN");
         
@@ -276,29 +620,14 @@ module.exports = class Dl {
             new Places()
         )
 
-        if (response.url !== undefined) return response.url
-
         return response
     }
-
-    // Справочник населённых пунктов (поиск)
-    static async getPlaces(query) { 
-        let { data } = await axios.get(process.env.URL + "/deliveries/dl/places.csv")
-
-        let response = parseCsv(data, `"cityID"`, `,`)
-        
-        return response.message.filter(i => {
-            if (query.search && query.regname) {
-                if (i.searchString.includes(query.search) && i.regname.includes(query.regname)) return true
-            }else if (query.search) {
-                if (i.searchString.includes(query.search)) return true
-            }else if (query.regname) {
-                if (i.regname.includes(query.regname)) return true
-            }
-        })
-    }
-    
-    // Справочник улиц
+   
+    /* 
+    ** Справочник улиц
+    **
+    ** return { hash, url }
+    */
     static async streets() { 
         // console.log("DL streets RUN");
         
@@ -306,11 +635,90 @@ module.exports = class Dl {
             new Streets()
         )
 
-        if (response.url !== undefined) return response.url
+        return response
+    }
+    
+    /* 
+    ** Справочник населенных пунктов с ограничениями по оплате
+    **
+    ** return { hash, url }
+    */
+    static async citiesCashlessOnly() { 
+        // console.log("DL citiesCashlessOnly RUN");
+        
+        let response = await this.curl(
+            new CitiesCashlessOnly()
+        )
+
+        return response
+    }
+
+// -----------------------------
+// Поиск географических объектов
+// -----------------------------
+
+    /* 
+    ** Поиск стран
+    **
+    ** input: { filter* }
+    **
+    ** return { metadata: { status, generated_at }, data: [ { countryUID, country }, ]}
+    */
+    static async referencesCountries(parameters) { 
+        // console.log("DL referencesCountries RUN");
+        
+        let response = await this.curl(
+            new ReferencesCountries(parameters)
+        )
+
+        return response
+    }
+
+    /* 
+    ** Поиск населённых пунктов
+    **
+    ** input: { q | cityID | code }
+    **
+    ** return { 
+    **      cities: [ { 
+    **          code, aString, isTerminal, zoneID, region_name, searchString, 
+    **          regionID, cityID, cityUID, postalCode, inPrice, street 
+    **      }, ] 
+    ** }
+    */
+    static async kladr(parameters) {
+        // console.log("DL kladr RUN");
+
+        let response = await this.curl(
+            new Kladr(parameters)
+        )
 
         return response
     }
     
+    /* 
+    ** Поиск улиц
+    **
+    ** input: { (cityID | code) & limit } if (cityID) {...input, street}
+    **
+    ** return { streets: [ { code, cityID, searchString, aString }, ] }
+    */
+    static async kladrStreet(parameters) {
+        // console.log("DL kladrStreet RUN");
+
+        let response = await this.curl(
+            new KladrStreet(parameters)
+        )
+
+        return response
+    }
+
+// -----------
+// Поиск КЛАДР
+// -----------
+
+    // https://dev.dellin.ru/api/places/kladr/
+
 
 // ------------------- +
 //
@@ -318,23 +726,75 @@ module.exports = class Dl {
 //
 // ------------------- +
 
-
 // --------------------
 // Подбор даты отправки
 // --------------------
 
+    /* 
+    ** Даты отправки от адреса
+    **
+    ** input: { (delivery | search), cargo } (в моём случае cargo не обязателен)
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { 
+    **          dates: [], foundAddresses: [ { field, source, result }, ]
+    **      } 
+    ** }
+    */
+    static async requestAddressDates(parameters) { 
+        // console.log("DL requestAddressDates RUN");
+        
+        let response = await this.curl(
+            new RequestAddressDates(parameters)
+        )
+        
+        return response 
+    }
 
+    /* 
+    ** Даты отправки от терминала
+    **
+    ** input: { (terminalID | delivery) } ( в оригинальном API вместо terminalID - delivery: { derival: { terminalID } })
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { dates: [] } 
+    ** }
+    */
+    static async requestTerminalDates(parameters) { 
+        // console.log("DL requestTerminalDates RUN");
+        
+        let response = await this.curl(
+            new RequestTerminalDates(parameters)
+        )
+        
+        return response 
+    }
 
 // --------------------
 // Подбор даты доставки
 // --------------------
 
-
-
-
-
-
-
+    /* 
+    ** Даты доставки
+    **
+    ** input: { sessionID, docID, (delivery | search) } ( в оригинальном API вместо search - delivery: { arrival: { address: { search } } })
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      dates: [], foundAddresses: [ { field, source, result }, ]
+    ** }
+    */
+    static async requestDeliveryDates(parameters) { 
+        // console.log("DL requestDeliveryDates RUN");
+        
+        let response = await this.curl(
+            new RequestDeliveryDates(parameters)
+        )
+        
+        return response 
+    }
 
 // -------------------------------
 // Подбор времени приезда водителя
@@ -709,5 +1169,102 @@ module.exports = class Dl {
         
         return response 
     }
+
+
+
+// ------------ +
+//
+//  Мои методы  |
+//
+// ------------ +
+    
+// ------------------------
+// Поиск населённых пунктов
+// ------------------------
+    
+    /* 
+    ** Поиск населённых пунктов в справочнике (парсинг файла static/deliveries/dl/places.csv)
+    **
+    ** input
+    **
+    ** return 
+    */
+    static async getPlaces(query) {
+
+        let { data } = await axios.get(process.env.URL + "/deliveries/dl/places.csv")
+
+        let response = parseCsv(data, `"cityID"`, `,`)
+        
+        return response.message.filter(i => {
+            if (query.search && query.regname) {
+                if (i.searchString.includes(query.search) && i.regname.includes(query.regname)) return true
+            }else if (query.search) {
+                if (i.searchString.includes(query.search)) return true
+            }else if (query.regname) {
+                if (i.regname.includes(query.regname)) return true
+            }
+        })
+    }
+    
+
+// ----------------
+// Поиск терминалов
+// ----------------
+    
+    /* 
+    **  Поиск терминалов в справочнике ( по заданному url )
+    **
+    ** return { hash, url }
+    */
+    static async terminalsCatalog(parameters) { 
+        // console.log("DL terminalsCatalog RUN");
+
+        if (!parameters.url) return { error: "Не передан url." }
+
+        let response = await this.curlGet(parameters.url)
+
+        if (response.city !== undefined) return response.city
+        
+        return response
+    }
+    
+
+// ----------------
+// GET запрос к url
+// ----------------
+    
+    /* 
+    **  GET запрос к заданному url
+    **
+    ** input: { url }
+    **
+    ** return object
+    */
+    static async curlGet(url) { 
+        // console.log("DL curlGet RUN");
+
+        let response
+        let headers = {'content-type': 'application/json;charset=utf-8'}
+        let options = { url, method: "get", headers }
+        try {
+            await axios(options)
+                .then(data => {
+                    response = data.data
+                })
+                .catch(error => {
+                    // console.log("DL curlGet ERROR: ",error);
+                    response = { error }
+                })
+        }catch(e) {  
+            // console.log("DL curlGet THROW: ",e);
+            return { error:e }
+        }
+        
+        return response
+    }
+
+
+
+
 
 }

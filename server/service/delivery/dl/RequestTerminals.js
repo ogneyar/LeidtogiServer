@@ -1,4 +1,7 @@
-module.exports = class SearchTerminals { // Поиск терминалов
+
+
+
+module.exports = class RequestTerminals { // Поиск терминалов
     
     method // метод для доступа к api-сервисам
     appkey // ключ для доступа к api-сервисам

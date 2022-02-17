@@ -3,7 +3,7 @@ const Delivery = require("./classes/Delivery")
 const Cargo = require("./classes/Cargo")
 
 
-module.exports = class Calculator {
+module.exports = class Calculator { // Калькулятор стоимости и сроков перевозки
     
     appkey // ключ для доступа к api-сервисам
     method // метод для доступа к api-сервисам
