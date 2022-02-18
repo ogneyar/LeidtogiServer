@@ -1,7 +1,7 @@
 
-const Arrival = require("./classes/Derival")
+const Arrival = require("../classes/Derival")
 
-module.exports = class RequestDeliveryTimeInterval { // Интервалы передачи груза на адресе получателя
+module.exports = class RequestDeliveryAddressTimeInterval { // Интервалы передачи груза на адресе получателя
     
     method // метод для доступа к api-сервисам
     appkey // ключ для доступа к api-сервисам

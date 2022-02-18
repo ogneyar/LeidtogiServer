@@ -1,6 +1,6 @@
 
 
-const Cargo = require("./classes/Cargo")
+const Cargo = require("../classes/Cargo")
 
 
 module.exports = class RequestAddressDates { // Даты отправки от адреса

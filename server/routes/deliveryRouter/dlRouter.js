@@ -12,9 +12,9 @@ const checkRole = require('../../middleware/checkRoleMiddleware')
 if (process.env.URL === "http://localhost:5000") router.get('/auth_login', dlController.authLogin) // Авторизация пользователя
 else router.get('/auth_login', authMiddlewarre, dlController.authLogin) // Авторизация пользователя
 router.get('/auth_logout', dlController.authLogout) // Удаление сессии авторизации
-router.get('/auth_session_info', dlController.authSessionInfo) // Данные сессии (?)
+router.get('/auth_session_info', dlController.authSessionInfo) // Данные сессии
 // Cписок контрагентов
-router.get('/counteragents', dlController.counteragents) // Cписок контрагентов (?)
+router.get('/counteragents', dlController.counteragents) // Cписок контрагентов
 
 // ------------------
 // Выполнение расчета
@@ -80,17 +80,23 @@ router.get('/micro_calc', dlController.microCalc) // Калькулятор ор
 
 // Добавление в Избранное
 
+
 // --------------
 // Адресная книга
 // --------------
 // Контрагенты
-
+router.get('/book_counteragents', dlController.bookCounteragents) // Список контрагентов из адресной книги
+router.post('/book_counteragent_update', dlController.bookCounteragentUpdate) // Создание и редактирование контрагентов
+router.get('/book_counteragents_search', dlController.bookCounteragentsSearch) // Поиск контрагентов
 // Контактные данные
-
+router.get('/book_contacts', dlController.bookContacts) // Получение списка контактных лиц и телефонов
+router.get('/book_contact_update', dlController.bookContactUpdate) // Создание и редактирование контактных лиц
+router.get('/book_phone_update', dlController.bookPhoneUpdate) // Создание и редактирование телефонов
 // Адреса
-
+router.get('/book_addresses', dlController.bookAddresses) // Список адресов
+router.get('/book_address_update', dlController.bookAddressUpdate) // Создание и редактирование адреса
 // Удаление объектов
-
+router.get('/book_delete', dlController.bookDelete) // Удаление объектов из адресной книги
 
 // -------
 // Платежи
@@ -133,10 +139,10 @@ router.get('/kladr_street', dlController.kladrStreet) // Поиск улиц
 router.get('/request_address_dates', dlController.requestAddressDates) // Даты отправки от адреса
 router.get('/request_terminal_dates', dlController.requestTerminalDates) // Даты отправки от терминала
 // Подбор даты доставки
-router.get('/request_delivery_dates', dlController.requestDeliveryDates) // Даты доставки (?)
+router.get('/request_delivery_address_dates', dlController.requestDeliveryAddressDates) // Даты доставки (?)
 // Подбор времени приезда водителя
-router.get('/request_time_interval', dlController.requestTimeInterval) // Интервалы передачи груза на адресе отправителя
-router.get('/request_delivery_time_interval', dlController.requestDeliveryTimeInterval) // Интервалы передачи груза на адресе получателя
+router.get('/request_address_time_interval', dlController.requestAddressTimeInterval) // Интервалы передачи груза на адресе отправителя
+router.get('/request_delivery_address_time_interval', dlController.requestDeliveryAddressTimeInterval) // Интервалы передачи груза на адресе получателя
 // Проверка ограничений
 router.get('/request_conditions', dlController.requestConditions) // Ограничения по параметрам заказа
 // Доступные упаковки

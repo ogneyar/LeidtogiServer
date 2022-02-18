@@ -4,9 +4,9 @@ const axios  = require("axios")
 //  Авторизация
 // ------------
 // Авторизация пользователя
-const AuthLogin = require('./AuthLogin')
-const AuthLogout = require('./AuthLogout')
-const AuthSessionInfo = require('./AuthSessionInfo')
+const AuthLogin = require('./auth/Login')
+const AuthLogout = require('./auth/Logout')
+const AuthSessionInfo = require('./auth/SessionInfo')
 // Cписок контрагентов
 const Counteragents = require('./Counteragents')
 
@@ -16,7 +16,7 @@ const Counteragents = require('./Counteragents')
 // Калькулятор стоимости и сроков перевозки
 const Calculator = require('./Calculator')
 // Калькулятор услуги Доставка
-const CalculatorSf = require('./CalculatorSf')
+const CalculatorSf = require('./public/CalculatorSf')
 // Ориентировочные сроки и стоимость
 const MicroCalc = require('./MicroCalc')
 
@@ -38,7 +38,19 @@ const MicroCalc = require('./MicroCalc')
 // --------------
 // Адресная книга
 // --------------
-//
+// Контрагенты
+const BookCounteragents = require("./book/Counteragents")
+const BookCounteragentUpdate = require("./book/CounteragentUpdate")
+const BookCounteragentsSearch = require("./book/CounteragentsSearch")
+// Контактные данные
+const BookContacts = require("./book/Contacts")
+const BookContactUpdate = require("./book/ContactUpdate")
+const BookPhoneUpdate = require("./book/PhoneUpdate")
+// Адреса
+const BookAddresses = require("./book/Addresses")
+const BookAddressUpdate = require("./book/AddressUpdate")
+// Удаление объектов
+const BookDelete = require("./book/Delete")
 
 // -------
 // Платежи
@@ -49,21 +61,21 @@ const MicroCalc = require('./MicroCalc')
 // Терминалы
 // ---------
 // Справочник терминалов
-const Terminals = require("./Terminals")
+const Terminals = require("./public/Terminals")
 // Поиск терминалов
-const RequestTerminals = require("./RequestTerminals")
+const RequestTerminals = require("./public/RequestTerminals")
 
 // --------------
 // Местоположения
 // --------------
 // Географические справочники
-const Places = require("./Places")
-const Streets = require("./Streets")
-const CitiesCashlessOnly = require("./CitiesCashlessOnly")
+const Places = require("./public/Places")
+const Streets = require("./public/Streets")
+const CitiesCashlessOnly = require("./public/CitiesCashlessOnly")
 // Поиск географических объектов
-const ReferencesCountries = require("./ReferencesCountries")
-const Kladr = require("./Kladr")
-const KladrStreet = require("./KladrStreet")
+const ReferencesCountries = require("./references/Countries")
+const Kladr = require("./public/Kladr")
+const KladrStreet = require("./public/KladrStreet")
 
 
 
@@ -72,38 +84,38 @@ const KladrStreet = require("./KladrStreet")
 // Справочные методы
 // -----------------
 // Подбор даты отправки
-const RequestAddressDates = require("./RequestAddressDates")
-const RequestTerminalDates = require("./RequestTerminalDates")
+const RequestAddressDates = require("./request/AddressDates")
+const RequestTerminalDates = require("./request/TerminalDates")
 // Подбор даты доставки
-const RequestDeliveryDates = require("./RequestDeliveryDates")
+const RequestDeliveryAddressDates = require("./request_delivery/AddressDates")
 // Подбор времени приезда водителя
-const RequestTimeInterval = require("./RequestTimeInterval")
-const RequestDeliveryTimeInterval = require("./RequestDeliveryTimeInterval")
+const RequestAddressTimeInterval = require("./request/AddressTimeInterval")
+const RequestDeliveryAddressTimeInterval = require("./request_delivery/AddressTimeInterval")
 // Проверка ограничений
-const RequestConditions = require("./RequestConditions")
+const RequestConditions = require("./request/RequestConditions")
 // Доступные упаковки
-const PackagesAvailable = require("./PackagesAvailable")
+const PackagesAvailable = require("./public/PackagesAvailable")
 // Поиск ОПФ
-const ReferencesOpfList = require("./ReferencesOpfList")
+const ReferencesOpfList = require("./references/OpfList")
 // Поиск характера груза
-const FreightTypesSearch = require("./FreightTypesSearch")
-const FreightTypesFtl = require("./FreightTypesFtl")
+const FreightTypesSearch = require("./public/FreightTypesSearch")
+const FreightTypesFtl = require("./ftl/FreightTypes")
 // Справочники
-const RequestDeliveryTypes = require("./RequestDeliveryTypes")
-const RequestServices = require("./RequestServices")
-const FreightTypes = require("./FreightTypes")
-const LoadParams = require("./LoadParams")
-const PayerTypes = require("./PayerTypes")
-const PaymentTypes = require("./PaymentTypes")
-const DocumentsForReceive = require("./DocumentsForReceive")
-const ReportParams = require("./ReportParams")
-const ReferencesLoadTypes = require("./ReferencesLoadTypes")
-const ReferencesServises = require("./ReferencesServises")
-const ReferencesPackages = require("./ReferencesPackages")
-const ReferencesStatuses = require("./ReferencesStatuses")
+const RequestDeliveryTypes = require("./public/RequestDeliveryTypes")
+const RequestServices = require("./public/RequestServices")
+const FreightTypes = require("./public/FreightTypes")
+const LoadParams = require("./public/LoadParams")
+const PayerTypes = require("./public/PayerTypes")
+const PaymentTypes = require("./public/PaymentTypes")
+const DocumentsForReceive = require("./public/DocumentsForReceive")
+const ReportParams = require("./public/ReportParams")
+const ReferencesLoadTypes = require("./references/LoadTypes")
+const ReferencesServises = require("./references/Servises")
+const ReferencesPackages = require("./references/Packages")
+const ReferencesStatuses = require("./references/Statuses")
 // Прайс-лист
-const Pricelist = require("./Pricelist")
-const Cities = require("./Cities")
+const Pricelist = require("./public/Pricelist")
+const Cities = require("./public/Cities")
 
 const parseCsv = require("../../csv/parseCsv")
 
@@ -125,7 +137,7 @@ module.exports = class Dl {
             url: this.url + data.method,
             method: "post", 
             headers,
-            data
+            data: {...data, method: undefined}
         }
         try {
             await axios(options)
@@ -503,24 +515,209 @@ module.exports = class Dl {
 // Контрагенты
 // -----------
 
+    /* 
+    ** Список контрагентов из адресной книги
+    **
+    ** input: { sessionID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: [ { 
+    **          id, isAnonym, form, formUID, name, phone, email, juridical, addresses, inn, 
+    **          document, lastUpdate, countryUid, uid, dataForReceipt: { phoneNumber, email } 
+    **      }, ] 
+    ** }
+    */
+    static async bookCounteragents(parameters) {
+        // console.log("DL bookCounteragents RUN");
+
+        let response = await this.curl(
+            new BookCounteragents(parameters)
+        )
+        
+        return response
+    }
+
+    /* 
+    ** Создание и редактирование контрагентов
+    **
+    ** input: { sessionID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { counteragentID, state, foundAddresses, [ { field, source, result }, ] }
+    ** }
+    */
+    static async bookCounteragentUpdate(parameters) {
+        // console.log("DL bookCounteragentUpdate RUN");
+
+        let response = await this.curl(
+            new BookCounteragentUpdate(parameters)
+        )
+        
+        return response
+    }
+
+    /* 
+    ** Поиск контрагентов
+    **
+    ** input: { query }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: [ { inn, kpp, name, opfUid, opfName, state }, ]
+    ** }
+    */
+    static async bookCounteragentsSearch(parameters) {
+        // console.log("DL bookCounteragentsSearch RUN");
+
+        let response = await this.curl(
+            new BookCounteragentsSearch(parameters)
+        )
+        
+        return response
+    }
 
 // -----------------
 // Контактные данные
 // -----------------
 
+    /* 
+    ** Получение списка контактных лиц и телефонов
+    **
+    ** input: { sessionID, addressID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { contacts: [ { id, contact }, ], lastUpdate, phones: [ { id, phoneNumber, phoneFormatted, ext }, ] }
+    ** }
+    */
+    static async bookContacts(parameters) {
+        // console.log("DL bookContacts RUN");
+
+        let response = await this.curl(
+            new BookContacts(parameters)
+        )
+        
+        return response
+    }
+
+    /* 
+    ** Создание и редактирование контактных лиц
+    **
+    ** input: { sessionID, contact }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { state, contactID }
+    ** }
+    */
+    static async bookContactUpdate(parameters) {
+        // console.log("DL bookContactUpdate RUN");
+
+        let response = await this.curl(
+            new BookContactUpdate(parameters)
+        )
+        
+        return response
+    }
+
+    /* 
+    ** Создание и редактирование телефонов
+    **
+    ** input: { sessionID, phoneNumber }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { state, phoneID }
+    ** }
+    */
+    static async bookPhoneUpdate(parameters) {
+        // console.log("DL bookPhoneUpdate RUN");
+
+        let response = await this.curl(
+            new BookPhoneUpdate(parameters)
+        )
+        
+        return response
+    }
 
 // ------
 // Адреса
 // ------
 
+    /* 
+    ** Список адресов
+    **
+    ** input: { sessionID, counteragentID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: [ {
+    **          address: {
+    **              id, juridical, cityID, code, address, street, house, building, structure, flat, 
+    **              contacts, phones, regionName, cityName, cityCode, terminalUID, terminalID
+    **          }
+    **      }, ]
+    ** }
+    */
+    static async bookAddresses(parameters) {
+        // console.log("DL bookAddresses RUN");
+
+        let response = await this.curl(
+            new BookAddresses(parameters)
+        )
+        
+        return response
+    }
+
+    /* 
+    ** Создание и редактирование адреса
+    **
+    ** input: { sessionID, (search | terminalID | (street & house)), (counteragentID | addressID) }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { state, addressID, foundAddresses: [ { source, result }, ] }
+    ** }
+    */
+    static async bookAddressUpdate(parameters) {
+        // console.log("DL bookAddressUpdate RUN");
+
+        let response = await this.curl(
+            new BookAddressUpdate(parameters)
+        )
+        
+        return response
+    }
 
 // -----------------
 // Удаление объектов
 // -----------------
 
+    /* 
+    ** Удаление объектов из адресной книги
+    **
+    ** input: { sessionID, (counteragentIDs &| addressIDs &| phoneIDs &| contactIDs) }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { 
+    **          deleted: { counteragentIDs: [], addressIDs: [], phoneIDs: [], contactIDs: [] },
+    **          notDeleted: { counteragentIDs: [], addressIDs: [], phoneIDs: [], contactIDs: [] },
+    **      }
+    ** }
+    */
+    static async bookDelete(parameters) {
+        // console.log("DL bookDelete RUN");
 
-
-
+        let response = await this.curl(
+            new BookDelete(parameters)
+        )
+        
+        return response
+    }
+    
 
 // --------- +
 //
@@ -786,11 +983,11 @@ module.exports = class Dl {
     **      dates: [], foundAddresses: [ { field, source, result }, ]
     ** }
     */
-    static async requestDeliveryDates(parameters) { 
-        // console.log("DL requestDeliveryDates RUN");
+    static async requestDeliveryAddressDates(parameters) { 
+        // console.log("DL requestDeliveryAddressDates RUN");
         
         let response = await this.curl(
-            new RequestDeliveryDates(parameters)
+            new RequestDeliveryAddressDates(parameters)
         )
         
         return response 
@@ -813,11 +1010,11 @@ module.exports = class Dl {
     **      } 
     ** }
     */
-    static async requestTimeInterval(parameters) { 
-        // console.log("DL requestTimeInterval RUN");
+    static async requestAddressTimeInterval(parameters) { 
+        // console.log("DL requestAddressTimeInterval RUN");
         
         let response = await this.curl(
-            new RequestTimeInterval(parameters)
+            new RequestAddressTimeInterval(parameters)
         )
         
         return response 
@@ -838,11 +1035,11 @@ module.exports = class Dl {
     **      } 
     ** }
     */
-    static async requestDeliveryTimeInterval(parameters) { 
-        // console.log("DL requestDeliveryTimeInterval RUN");
+    static async requestDeliveryAddressTimeInterval(parameters) { 
+        // console.log("DL requestDeliveryAddressTimeInterval RUN");
         
         let response = await this.curl(
-            new RequestDeliveryTimeInterval(parameters)
+            new RequestDeliveryAddressTimeInterval(parameters)
         )
         
         return response 
@@ -907,6 +1104,11 @@ module.exports = class Dl {
         let response = await this.curl(
             new ReferencesOpfList(parameters)
         )
+        
+        if (parameters.search !== undefined) {
+            let RussiaUID = "0x8f51001438c4d49511dbd774581edb7a"
+            response = {...response, data: response.data.filter(i => i.title.includes(parameters.search) && i.countryUID === RussiaUID)}
+        }
         
         return response 
     }

@@ -333,23 +333,190 @@ class DlController {
 // Контрагенты
 // -----------
 
+    /* 
+    ** Список контрагентов из адресной книги
+    **
+    ** input: { sessionID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: [ { 
+    **          id, isAnonym, form, formUID, name, phone, email, juridical, addresses, inn, 
+    **          document, lastUpdate, countryUid, uid, dataForReceipt: { phoneNumber, email } 
+    **      }, ] 
+    ** }
+    */
+    async bookCounteragents(req, res, next) {
+        try {
+            return res.json(await Dl.bookCounteragents(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookCounteragents! ' + error}))
+        }
+    }
+    
+    /* 
+    ** Создание и редактирование контрагентов
+    **
+    ** input: { sessionID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { counteragentID, state, foundAddresses, [ { field, source, result }, ] }
+    ** }
+    */
+    async bookCounteragentUpdate(req, res, next) {
+        try {
+            return res.json(await Dl.bookCounteragentUpdate(req.body)) // POST запрос - поэтому передаётся req.body
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookCounteragentUpdate! ' + error}))
+        }
+    }
+    
+    /* 
+    ** Поиск контрагентов
+    **
+    ** input: { query }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: [ { inn, kpp, name, opfUid, opfName, state }, ]
+    ** }
+    */
+    async bookCounteragentsSearch(req, res, next) {
+        try {
+            return res.json(await Dl.bookCounteragentsSearch(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookCounteragentsSearch! ' + error}))
+        }
+    }
 
 // -----------------
 // Контактные данные
 // -----------------
 
+    /* 
+    ** Получение списка контактных лиц и телефонов
+    **
+    ** input: { sessionID, addressID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { contacts: [ { id, contact }, ], lastUpdate, phones: [ { id, phoneNumber, phoneFormatted, ext }, ] }
+    ** }
+    */
+    async bookContacts(req, res, next) {
+        try {
+            return res.json(await Dl.bookContacts(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookContacts! ' + error}))
+        }
+    }
+    
+    /* 
+    ** Создание и редактирование контактных лиц
+    **
+    ** input: { sessionID, contact }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { state, contactID }
+    ** }
+    */
+    async bookContactUpdate(req, res, next) {
+        try {
+            return res.json(await Dl.bookContactUpdate(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookContactUpdate! ' + error}))
+        }
+    }
+    
+    /* 
+    ** Создание и редактирование телефонов
+    **
+    ** input: { sessionID, phoneNumber }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { state, phoneID }
+    ** }
+    */
+    async bookPhoneUpdate(req, res, next) {
+        try {
+            return res.json(await Dl.bookPhoneUpdate(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookPhoneUpdate! ' + error}))
+        }
+    }
 
 // ------
 // Адреса
 // ------
 
+    /* 
+    ** Список адресов
+    **
+    ** input: { sessionID, counteragentID }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: [ {
+    **          address: {
+    **              id, juridical, cityID, code, address, street, house, building, structure, flat, 
+    **              contacts, phones, regionName, cityName, cityCode, terminalUID, terminalID
+    **          }
+    **      }, ]
+    ** }
+    */
+    async bookAddresses(req, res, next) {
+        try {
+            return res.json(await Dl.bookAddresses(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookAddresses! ' + error}))
+        }
+    }
+
+    /* 
+    ** Создание и редактирование адреса
+    **
+    ** input: { sessionID, (search | terminalID | (street & house)), (counteragentID | addressID) }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { state, addressID, foundAddresses: [ { source, result }, ] }
+    ** }
+    */
+    async bookAddressUpdate(req, res, next) {
+        try {
+            return res.json(await Dl.bookAddressUpdate(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookAddressUpdate! ' + error}))
+        }
+    }
 
 // -----------------
 // Удаление объектов
 // -----------------
 
-
-
+    /* 
+    ** Удаление объектов из адресной книги
+    **
+    ** input: { sessionID, (counteragentIDs &| addressIDs &| phoneIDs &| contactIDs) }
+    **
+    ** return { 
+    **      metadata: { status, generated_at }, 
+    **      data: { 
+    **          deleted: { counteragentIDs: [], addressIDs: [], phoneIDs: [], contactIDs: [] },
+    **          notDeleted: { counteragentIDs: [], addressIDs: [], phoneIDs: [], contactIDs: [] },
+    **      }
+    ** }
+    */
+    async bookDelete(req, res, next) {
+        try {
+            return res.json(await Dl.bookDelete(req.query))
+        }catch(error) {
+            return next(res.json({error:'Ошибка метода bookDelete! ' + error}))
+        }
+    }
 
 
 // --------- +
@@ -597,11 +764,11 @@ class DlController {
     **      dates: [], foundAddresses: [ { field, source, result }, ]
     ** }
     */
-    async requestDeliveryDates(req, res, next) { 
+    async requestDeliveryAddressDates(req, res, next) { 
         try {
-            return res.json(await Dl.requestDeliveryDates(req.query)) 
+            return res.json(await Dl.requestDeliveryAddressDates(req.query)) 
         }catch(error) {
-            return next(res.json({error:'Ошибка метода requestDeliveryDates! ' + error}))
+            return next(res.json({error:'Ошибка метода requestDeliveryAddressDates! ' + error}))
         }
     }
 
@@ -625,11 +792,11 @@ class DlController {
     **      } 
     ** }
     */
-    async requestTimeInterval(req, res, next) { 
+    async requestAddressTimeInterval(req, res, next) { 
         try {
-            return res.json(await Dl.requestTimeInterval(req.query)) 
+            return res.json(await Dl.requestAddressTimeInterval(req.query)) 
         }catch(error) {
-            return next(res.json({error:'Ошибка метода requestTimeInterval! ' + error}))
+            return next(res.json({error:'Ошибка метода requestAddressTimeInterval! ' + error}))
         }
     }
 
@@ -648,11 +815,11 @@ class DlController {
     **      } 
     ** }
     */
-    async requestDeliveryTimeInterval(req, res, next) { 
+    async requestDeliveryAddressTimeInterval(req, res, next) { 
         try {
-            return res.json(await Dl.requestDeliveryTimeInterval(req.query)) 
+            return res.json(await Dl.requestDeliveryAddressTimeInterval(req.query)) 
         }catch(error) {
-            return next(res.json({error:'Ошибка метода requestDeliveryTimeInterval! ' + error}))
+            return next(res.json({error:'Ошибка метода requestDeliveryAddressTimeInterval! ' + error}))
         }
     }
 
@@ -706,7 +873,7 @@ class DlController {
     */
     async referencesOpfList(req, res, next) { 
         try {
-            return res.json(await Dl.referencesOpfList()) 
+            return res.json(await Dl.referencesOpfList(req.query)) 
             // 
         }catch(error) {
             return next(res.json({error:'Ошибка метода referencesOpfList! ' + error}))

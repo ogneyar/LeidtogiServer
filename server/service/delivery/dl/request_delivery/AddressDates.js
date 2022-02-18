@@ -1,7 +1,7 @@
 
 
 
-module.exports = class RequestDeliveryDates { // Даты доставки
+module.exports = class RequestDeliveryAddressDates { // Даты доставки
     
     method // метод для доступа к api-сервисам
     appkey // ключ для доступа к api-сервисам
