@@ -26,7 +26,8 @@ module.exports = class Delivery { // Информация по перевозк�
         this.derival = new DerivalArrival(data.derival)
 
         if (data.arrival === undefined) throw "Отсутствует обязательный параметр arrival."
-        this.arrival = new DerivalArrival(data.arrival)
+        if (data.arrival.variant === undefined) {this.arrival = new DerivalArrival({...data.arrival, variant: "terminal"})}
+        else this.arrival = new DerivalArrival(data.arrival)
 
         this.packages = data.packages || undefined
         this.accompanyingDocuments = data.accompanyingDocuments || undefined

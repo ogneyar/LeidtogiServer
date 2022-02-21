@@ -137,6 +137,7 @@ class DlController {
     */
     async calculator(req, res, next) { 
         try {
+            // console.log("req.query",req.query)
             return res.json(await Dl.calculator(req.query))
         }catch(error) {
             return next(res.json({error:'Ошибка метода calculator! ' + error}))

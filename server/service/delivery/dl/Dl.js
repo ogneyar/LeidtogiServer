@@ -125,11 +125,11 @@ module.exports = class Dl {
     static url = process.env.DL_URL
     
     constructor() {
-        // console.log("DL START");
+        // console.log("DL START")
     }
 
     static async curl(data) {
-        // console.log("DL CURL RUN");
+        // console.log("DL CURL RUN")
 
         let response
         let headers = {'content-type': 'application/json;charset=utf-8'}
@@ -145,14 +145,16 @@ module.exports = class Dl {
                     response = data.data
                 })
                 .catch(error => {
-                    // console.log("DL CURL ERROR: ",error);
-                    response = { error }
+                    // console.log("DL CURL ERROR: ",error.response.data.errors)
+                    if (error.response !== undefined && error.response.data !== undefined && error.response.data.errors !== undefined) {
+                        response = { error: error.response.data.errors[0].title }
+                    }else response = { error }
                 })
         }catch(e) {  
-            // console.log("DL CURL THROW: ",e);
+            // console.log("DL CURL THROW: ",e)
             return { error:e }
         }
-        // console.log("DL CURL RESPONSE: ",response);
+        // console.log("DL CURL RESPONSE: ",response)
         return response
     }
 
@@ -303,7 +305,10 @@ module.exports = class Dl {
         //             address: { street: "5000003200000000000000000" },
         //             produceDate: "2022-02-09"
         //         },
-        //         arrival: { address: { street: "6100500010300010000000000" } }
+        //         arrival: { 
+        //              variant: "terminal", 
+        //              address: { street: "6100500010300010000000000" } 
+        //         }
         //     },
         //     cargo: {
         //         quantity: 1,

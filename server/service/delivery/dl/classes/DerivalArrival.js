@@ -5,7 +5,7 @@ const Time = require("./Time")
 
 module.exports = class DerivalArrival {
     variant // Способ доставки груза. ("address", "terminal", "airport")
-    // в данном случае выбор variant отсутствует, только - "address"
+    // в данном случае variant по умолчанию - "address"
     
     // -------------------
     // обязательные поля
@@ -26,7 +26,7 @@ module.exports = class DerivalArrival {
 
 
     constructor(data) {
-        this.variant = "address"
+        this.variant = data.variant || "address"
 
         if (data.address.search === undefined && data.address.street === undefined) throw "Отсутствует обязательный параметр address."
         this.address = new Address(data.address)
