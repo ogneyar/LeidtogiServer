@@ -164,7 +164,7 @@ module.exports = class KVT {
             if (i.article === article) one_price = i.price 
         })
 
-        if ( ! one_price ) throw "Не найдена цена товара."
+        if ( ! one_price ) return { error: "Не найдена цена товара." }
 
         let sub_category = one.sub_category
         let category = one.category
@@ -191,11 +191,11 @@ module.exports = class KVT {
             categoryId = id[0].id
         }
 
-        if (categoryId === 0) throw "Не найдена категория товара."
+        if (categoryId === 0) return { error: "Не найдена категория товара." }
 
         let brand = await Brand.findOne({ where: { name: "KVT" } })
         
-        if (brand.id === undefined) throw "Не найден бренд товара."
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
         article = "kvt" + article
 
@@ -209,7 +209,7 @@ module.exports = class KVT {
 
         let product = await Product.findOne({ where: { url } })
 
-        if (product.id !== undefined) return { error: "Такой товар уже есть." }
+        if (product && product.id !== undefined) return { error: "Такой товар уже есть." }
 
         let country = one.country
 
@@ -217,7 +217,7 @@ module.exports = class KVT {
 
         let image = one.image
 
-        if ( ! image ) image = one.main_image
+        if ( ! image || image === "—" ) image = one.main_image
 
         createFoldersAndDeleteOldFiles("kvt", article)
 
@@ -236,8 +236,8 @@ module.exports = class KVT {
         files += `{"big":"kvt/${article}/big/${imageName}","small":"kvt/${article}/small/${imageName}"}`
         
         let plan = one.plan
-
-        if (plan) {
+        
+        if (plan && plan !== "—") {
             let planName = uuid.v4() + '.jpg'
 
             let planBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kvt', article, 'big', planName))
@@ -317,35 +317,44 @@ module.exports = class KVT {
             let array = []
 
             for(let i = number; i < number+quantity; i++) {
+                
+                try {
+                    let print = await this.print(i)
+                
+                    if (print.error !== undefined) {
+                        array.push(`{${i}: ${print.error}}`)
+                        continue
+                    }
 
-                let print = await this.print(number)
-
-                if (print.error !== undefined) {
-                    array.push(`{${i}: ${print.error}}`)
+                    let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+            
+                    let response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
+                
+                    array.push(`{${i}: ${response.url} - ${response.price}}р.`)
                     continue
+
+                }catch(e) {
+                    array.push(`{${i}: ${e}}`)
                 }
 
-                let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
-        
-                let response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
-                
-                array.push(`{${i}: ${response.url} - ${response.price}}р.`)
             }
             
             return array
 
         }else {
+            try {
+                let print = await this.print(number)
+            
+                if (print.error !== undefined) return `{${number}: ${print.error}}`
 
-            let print = await this.print(number)
-
-            if (print.error !== undefined) return `{${number}: ${print.error}}`
-
-            let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
-        
-            let response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
-
-            return `{${number}: ${response.url} - ${response.price}р.}`
-
+                let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+            
+                let response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
+                
+                return `{${number}: ${response.url} - ${response.price}р.}`
+            }catch(e) {
+                return `{${number}: ${e}}`
+            }
         }
     }
 
