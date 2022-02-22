@@ -29,8 +29,9 @@ module.exports = class RequestAddressDates { // Даты отправки от �
         this.cargo = new Cargo(parameters.cargo)
 
         if (parameters.search === undefined && parameters.delivery === undefined) throw "Отсутствует один из обязательных параметров delivery или search."
-        if (parameters.delivery !== undefined) this.delivery = parameters.delivery
-        else if (parameters.search !== undefined) {
+        if (parameters.delivery !== undefined) {
+            this.delivery = typeof(parameters.delivery) === "string" ? JSON.parse(parameters.delivery) : parameters.delivery
+        }else if (parameters.search !== undefined) {
             let type = "auto"
             if (parameters.type !== undefined) type = parameters.type
             this.delivery = { deliveryType: { type }, derival: { address: { search: parameters.search } } }

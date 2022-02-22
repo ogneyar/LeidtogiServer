@@ -16,7 +16,7 @@ class kvtController {
     // РусГеоКом
     async kvt(req, res, next) {
         try {
-            let { number, add } = req.query
+            let { number, add } = req.query 
 
             let response, kvt
             // создание экземпляра класса KVT
@@ -28,8 +28,8 @@ class kvtController {
             response = await kvt.run_price()
             if ( ! response ) return res.json({error: 'Ошибка! ParseXlsx не вернул данные!'}) // вывод ошибки
             // добавление нового товара
-            if (add && number) {
-                return res.json(await kvt.add(Number(number)))
+            if (add !== undefined && number) {
+                return res.json(await kvt.add(Number(number), Number(add)))
             }
             // вывод информации о товаре на экран
             if (number) {

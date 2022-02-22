@@ -6,11 +6,12 @@ class BrandController {
 
     async create(req, res, next) {
         try {
-            const {name} = req.body
-            const brand = await Brand.create({name})
+            let { name } = req.body
+            if ( ! name ) name = req.query && req.query.name
+            const brand = await Brand.create( { name } )
             return res.json([brand]) // return array
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода create!'));
+            return next(ApiError.badRequest('Ошибка метода create! ' + e));
         }
     }
 
@@ -18,7 +19,7 @@ class BrandController {
         try {
             return res.json(await Brand.findAll()) // return
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода getAll!'));
+            return next(ApiError.badRequest('Ошибка метода getAll! ' + e));
         }
     }
 
@@ -28,7 +29,7 @@ class BrandController {
                 where: { id: req.query.id }
             })) // return
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода getOne!'));
+            return next(ApiError.badRequest('Ошибка метода getOne! ' + e));
         }
     }
 
@@ -40,7 +41,7 @@ class BrandController {
             })
             return res.json(brand) // return boolean
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода delete!'));
+            return next(ApiError.badRequest('Ошибка метода delete! ' + e));
         }
     }
     
@@ -53,7 +54,7 @@ class BrandController {
             })
             return res.json(brand) // return boolean
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода edit!'));
+            return next(ApiError.badRequest('Ошибка метода edit! ' + e));
         }
     }
 

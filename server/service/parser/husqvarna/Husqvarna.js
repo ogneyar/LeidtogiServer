@@ -283,12 +283,6 @@ module.exports = class Husqvarna {
             let promo = undefined
             
             let url = translit(name) + "_" + article
-
-            // console.log(" ")
-            // console.log("-------------")
-            // console.log("link",link)
-            // console.log("-------------")
-            // console.log(" ")
             
             response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
 

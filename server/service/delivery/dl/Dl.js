@@ -139,6 +139,7 @@ module.exports = class Dl {
             headers,
             data: {...data, method: undefined}
         }
+        // console.log("data",data)
         try {
             await axios(options)
                 .then(data => {
