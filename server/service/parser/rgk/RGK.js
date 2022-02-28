@@ -30,31 +30,33 @@ module.exports = class RGK {
         this.url = process.env.RGK_FEED_URL
     }
 
-    async update() {
-
+    async update() { // не работает (редирект на стороне сервера)
         let feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv')
         // let file = fs.createWriteStream(feed)
-
-        await new Promise((resolve, reject) => {
+        return await new Promise((resolve, reject) => {
             try {
-                https.get(this.url, res => {
+                http.get(this.url, res => {
                     res.pipe(fs.createWriteStream(feed))
                     res.on("end", () => {
                         console.log("Записал данные в файл feed.csv")
-                        resolve()
+                        resolve(true)
                     })
                 })
             }catch(e) {
                 console.log("Не смог записать данные в файл feed.csv")
                 console.log(" ")
                 console.log(e);
-                resolve()
+                resolve(false)
             }
         })
     }
 
-    async run() {
+    async run(update) {
         let response, fullResponse, yes, feed
+
+        if (update) {
+            response = await this.update()
+        }
 
         feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv')
         // console.log("fullResponse: ",fullResponse);
