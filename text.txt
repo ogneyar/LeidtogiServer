@@ -38,6 +38,8 @@ INSERT INTO `categories` (`id`, `name`, `url`, `is_product`, `sub_category_id`, 
 (NULL, 'category_name', ''category_url', '0', '0', '2022-02-21 12:04:23.000000', '2022-02-21 12:04:23.000000'), 
 (NULL, 'category_name2', 'category_url2', '0', '0', '2022-02-21 12:04:23.000000', '2022-02-21 12:04:23.000000');
 
+//
+ALTER TABLE `products` CHANGE `price` `price` DECIMAL(10,2) NOT NULL;
 
 // сжатие изображений
 npm install sharp
