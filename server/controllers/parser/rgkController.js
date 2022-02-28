@@ -28,10 +28,12 @@ class rgkController {
             let response, rgk
             // создание экземпляра класса RGK
             rgk = new RGK()
+
             // обновление файла feed.csv
-            if (update) await rgk.update() 
+            // if (update) await rgk.update()
+
             // обработка данных файла feed.csv
-            response = await rgk.run()
+            response = await rgk.run(update)
             if (response.error !== undefined) return res.json(response) // вывод ошибки
             // обновление цен
             if (change) {
