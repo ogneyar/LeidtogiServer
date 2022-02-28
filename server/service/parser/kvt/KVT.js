@@ -5,7 +5,8 @@ const path = require('path')
 // const http = require('http')
 const https = require('https')
 const uuid = require('uuid')
-const sharp = require('sharp')
+let sharp
+if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
 
 const { Brand, Category, Product } = require('../../../models/models')
 
@@ -228,7 +229,8 @@ module.exports = class KVT {
 
         https.get(image, (res) => {
             res.pipe(imageBig)
-            res.pipe(sharp().resize(100)).pipe(imageSmall)
+            if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
+            else res.pipe(imageSmall)
         })
 
         let files = `[`
@@ -237,7 +239,7 @@ module.exports = class KVT {
         
         let plan = one.plan
         
-        if (plan && plan !== "—") {
+        if (plan && plan !== "—" && process.env.URL !== "https://api.leidtogi.site") {
             let planName = uuid.v4() + '.jpg'
 
             let planBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kvt', article, 'big', planName))
