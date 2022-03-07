@@ -5,6 +5,8 @@ const path = require('path')
 // const http = require('http')
 const https = require('https')
 const uuid = require('uuid')
+const Math = require('mathjs')
+
 let sharp
 if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
 
@@ -17,7 +19,7 @@ const translit = require('../../translit.js')
 
 // const getProducts = require('../../csv/parseCsv')
 const parseXlsx = require('../../xlsx/parseXlsx')
-const { forEach } = require('mathjs')
+
 
 
 
@@ -129,6 +131,7 @@ module.exports = class KVT {
                 "Код товара",
                 "Наименование",
                 "РРЦ",
+                "Упаковка",
             ])
             
             if (response && Array.isArray(response)) {
@@ -137,6 +140,7 @@ module.exports = class KVT {
                         article: i["Код товара"],
                         name: i["Наименование"],
                         price: i["РРЦ"],
+                        quantity: i["Упаковка"],
                     }
                 })
                 return true
@@ -149,10 +153,14 @@ module.exports = class KVT {
         return false
     }
 
-    // количество записей
+    // количество записей в feed.xlsx
     async getLength() {
         return this.product.length
-        // return this.price.length
+    }
+
+    // количество записей в price.xlsx
+    async getLengthPrice() {
+        return this.price.length
     }
 
     // вывод данных на экран
@@ -358,6 +366,40 @@ module.exports = class KVT {
                 return `{${number}: ${e}}`
             }
         }
+    }
+
+    // смена цен
+    async changePrice() {
+        let response = `[`
+        
+        let brand = await Brand.findOne({ where: { name: "KVT" } })        
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
+
+        let products = await Product.findAll({ where: { brandId: brand.id } })
+
+        this.price.forEach(newProduct => {
+            if (response !== `[`) response += ",<br />"
+            let yes = false
+            products.forEach(oldProduct => {
+                if (oldProduct.article === `kvt${newProduct.article}`) {
+                    let newPrice = newProduct.price * newProduct.quantity
+                    newPrice = Math.round(newPrice * 100) / 100
+                    if (newPrice != oldProduct.price) {
+                        response += `{Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        Product.update({ price: newPrice },
+                            { where: { id: oldProduct.id } }
+                        ).then(()=>{}).catch(()=>{})
+                    }else {
+                        response += `{Цена осталась неизменна: ${oldProduct.price}}`
+                    }
+                    yes = true
+                }
+            })
+            if ( ! yes) response += `{Не найден артикул: kvt${newProduct.article}}`
+        })
+        response = response + `]`
+
+        return response
     }
 
 
