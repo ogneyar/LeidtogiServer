@@ -15,7 +15,7 @@ class husqvarnaController {
             let { add, change, number, all } = req.query
             let feed = req.files && req.files.feed || undefined
 
-            // if (!feed) return res.json(false)
+            // if (!feed) return res.json(false) 
             
             let response
 
