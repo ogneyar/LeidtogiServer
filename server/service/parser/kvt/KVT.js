@@ -372,7 +372,7 @@ module.exports = class KVT {
     async changePrice() {
         let response = `[`
         
-        let brand = await Brand.findOne({ where: { name: "KVT" } })        
+        let brand = await Brand.findOne({ where: { name: "KVT" } })
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
         let products = await Product.findAll({ where: { brandId: brand.id } })
