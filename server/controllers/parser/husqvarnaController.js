@@ -25,7 +25,7 @@ class husqvarnaController {
             if(response) {
                 // добавление товара в БД
                 if (add) {
-                    if (number) {
+                    if (number) { 
                         return res.json(await husqvarna.addProduct(number))
                     }else if (all) {
                         return res.send(await husqvarna.addAllProduct())
