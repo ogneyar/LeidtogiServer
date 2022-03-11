@@ -21,3 +21,6 @@ mern.sql
 
 # very big file
 */static/deliveries/dl/streets.csv
+
+# how to generate a payment link
+link.txt
