@@ -170,19 +170,38 @@ class OrderController {
                 if (data && data.id !== undefined) {
                     let id = `Оплата заказа №${data.id} произведена.\n\n`
                     let name = ""
-                    if (data.name !== undefined) {
+                    if (data.name !== undefined && data.name !== null) {
                         name = `Имя клиента ${data.name}\n\n`
                     }
                     let email = ""
-                    if (data.email !== undefined ) {
+                    if (data.email !== undefined && data.email !== null) {
                         email = `Email клиента ${data.email}\n\n`
                     }
                     let phone = ""
-                    if (data.phone !== undefined) {
+                    if (data.phone !== undefined && data.phone !== null) {
                         phone = data.phone.toString().replace('7', '8')
-                        phone = `Телефон клиента ${phone}`
+                        phone = `Телефон клиента ${phone}\n\n`
                     }
-                    let response = await sendMessage(id + name + email + phone)
+                    let delivery = ""
+                    if (data.delivery !== undefined && data.delivery !== null) {
+                        delivery = `Доставка: ${data.delivery === "pickup" ? "самовывоз" : data.delivery}\n\n`
+                    }
+                    let address = ""
+                    if (data.address !== undefined && data.address !== null) {
+                        address = `Адрес доставки: ${data.address}\n\n`
+                    }
+                    let cart = ""
+                    if (data.cart !== undefined && data.cart !== null) {
+                        if (Array.isArray(data.cart)) {
+                            cart = data.cart
+                        }else {
+                            cart = JSON.parse(data.cart)
+                        }
+                        cart = `Корзина: \n${cart.map(i => {
+                            return "Артикул: " + i.itemCode + ". Наименование: " + i.name + " - " + i.quantity.value + ` шт. (Цена за штуку - ${i.itemPrice/100}р.) - ` + i.quantity.value * i.itemPrice/100 + "р.\n"
+                        })}\n\n`
+                    }
+                    let response = await sendMessage(id + name + email + phone + delivery + address + cart)
                     if (response.ok !== undefined && response.ok === true) return res.json(order) // return 
                     else {
                         sendMessage("Ошибка, не смог отправить сообщение об успешном заказе")
