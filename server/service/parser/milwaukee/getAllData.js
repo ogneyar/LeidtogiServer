@@ -1,8 +1,10 @@
 const axios = require('axios')
 
-const getUrlVseinstrumenti = require('./getUrlVseinstrumenti.js')
-const getArrayImages = require('./getArrayImages.js')
-const getSizes = require('./getSizes.js')
+// const getUrlVseinstrumenti = require('./old/getUrlVseinstrumenti.js')
+const getUrlMilwrussia = require('./getUrlMilwrussia.js')
+// const getArrayImages = require('./old/getArrayImages.js')
+const getImages = require('./getImages.js')
+// const getSizes = require('./old/getSizes.js')
 const getPrice = require('./getPrice.js')
 const getUrlMlkShop = require('./getUrlMlkShop.js')
 const getDescription = require('./getDescription.js')
@@ -16,27 +18,56 @@ async function getAllData(article) {
     let urlMlkShop, string
 
     // https://rostov.vseinstrumenti.ru/search_main.php?what=4933471077
-    await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {params: {
-        what: article
-    }}).then(res => Html = res.data)
+    // await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', {
+    //     params: {
+    //         what: article
+    //     }
+    // }).then(res => Html = res.data)
 
-    Html = getUrlVseinstrumenti(Html, article)
+    // Html = getUrlVseinstrumenti(Html, article)
 
-    if (!Html) return {error:`getUrlVseinstrumenti не вернула результат поиска по артикулу ${article}`}
+    // if (!Html) return {error:`getUrlVseinstrumenti не вернула результат поиска по артикулу ${article}`}
 
     // https://rostov.vseinstrumenti.ru/instrument/akkumulyatornyj/shlifmashiny/bolgarki-ushm/milwaukee/m18-fhsag125-xb-0x-fuel-4933471077/
-    response = "https://rostov.vseinstrumenti.ru" + Html
+    // response = "https://rostov.vseinstrumenti.ru" + Html
 
-    await axios.get(response)
-    .then(res => Html = res.data)
+    // await axios.get(response)
+    // .then(res => Html = res.data)
 
-    if (!Html) return {error:"Запрос axios.get(https://rostov.vseinstrumenti.ru) не вернул результат"}
+    // if (!Html) return {error:"Запрос axios.get(https://rostov.vseinstrumenti.ru) не вернул результат"}
             
-    images = getArrayImages(article, Html)
+    // images = getArrayImages(article, Html)
+    // if (!images[0]) return {error:'Нет фотографий товара',string:images}
+    
+    
+    // https://milwrussia.ru/search/?search=49005456
+    await axios.get('https://milwrussia.ru/search', {
+        params: {
+            search: article
+        }
+    }).then(res => Html = res.data)
 
-    if (!images[0]) return {error:'Нет фотографий товара',string:images}
+    Html = getUrlMilwrussia(Html, article)
+    if (!Html) return {error:`getUrlMilwrussia не вернула результат поиска по артикулу ${article}`}
+        
+    // return { error: Html }
+    // throw Html
 
-    sizes = getSizes(Html)
+    // https://milwrussia.ru/akkumuljatornaja-udarnaja-drel-shurupovert-milwaukee-m12-fuel-fpd-0
+    await axios.get(Html)
+        .then(res => Html = res.data)
+    
+    if (!Html) return {error:"Запрос axios.get(https://milwrussia.ru) не вернул результат"}
+
+    // throw Html
+    
+    // images = []
+    images = getImages(article, Html)
+    
+    // throw images
+
+    sizes = []
+    // sizes = getSizes(Html)
 
     // https://mlk-shop.ru/search?search=4933451439
     await axios.get('https://mlk-shop.ru/search', {params: {

@@ -3,144 +3,97 @@ const path = require('path')
 const XLSX = require('xlsx')
 const encoding = require('encoding')
 
-const { Product } = require('../../../models/models')
+const { Product, ProductInfo, Brand, Category } = require('../../../models/models')
 
+// const addNewProduct = require('../../../service/parser/milwaukee/addNewProduct')
+const getAllData = require('./getAllData.js')
+const createProduct = require('../../product/createProduct.js')
+const translit = require('../../translit')
+const parseXlsx = require('../../xlsx/parseXlsx')
 
 // класс для получения данных из фида xlsx 
-// и для обновления цен
+// для добавления товара
+// и обновления цен
 
 module.exports = class Milwaukee {
     
-    static brand // наименование бренда
-    static workbook // рабочая книга
-    static worksheet // рабочая вкладка
-    static start // стартовая позиция (номер строки)
-    static categorySymbol // имя столбца категория (A, B, C,..)
-    static groupSymbol // имя столбца группа (A, B, C,..)
-    static articleSymbol // имя столбца артикула (A, B, C,..)
-    static modelSymbol // имя столбца модель (A, B, C,..)
-    static priceSymbol // имя столбца цены (A, B, C,..)
-
+    static brand = "milwaukee" // наименование бренда
+    static product = [] // массив товаров
     
     constructor() {
-        this.brand = "milwaukee"
     }
 
-    async run(feed) {
-        // let feed
-        // feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'feed.xlsx')
+    async run(feed = {}) {
+        
+        let feedWithCategory = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'old', 'newMILWAUKEE.xlsx')
+        let arrayWithCategories = await parseXlsx(feedWithCategory, [ "Артикул", "Категории" ])
 
-        if (feed.name !== undefined) {
+        let fullPath, response
+
+        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'feed.xlsx')
+
+        if (feed && feed.name !== undefined) {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk'))
-            let fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk', feed.name)
+            fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'mlk', feed.name)
             await feed.mv(fullPath)
-            this.workbook = XLSX.readFile(fullPath)
+        }
+
+        if (fs.existsSync(fullPath)) { 
+            
+            response = await parseXlsx(fullPath, [
+                "Артикул",
+                "Модель",
+                "Цена с учетом НДС, руб.",
+                // "Категории",
+            ])
+            
+            if (response && Array.isArray(response)) {
+                this.product = response.map(i => {
+                    let article, category
+                    article = i["Артикул"]
+                    if (arrayWithCategories && Array.isArray(arrayWithCategories)) {
+                        arrayWithCategories.forEach(j => {
+                            if (article === j["Артикул"]) {
+                                category = j["Категории"]
+                            }
+                        })
+                    }
+                    return {
+                        article,
+                        name: i["Модель"],
+                        price: i["Цена с учетом НДС, руб."],
+                        category,
+                    }
+                })
+                return true
+            }
+
         }else {
-            if (fs.existsSync(feed)) { 
-                this.workbook = XLSX.readFile(feed)
-            }else {
-                return { error: `Файл ${feed} отсутствует или пуст!` }
-            }
+            throw `Файл ${fullPath} отсутствует или пуст!`
         }
-        
-        let first_sheet_name = this.workbook.SheetNames[0] // наименование первой вкладки
-        this.worksheet = this.workbook.Sheets[first_sheet_name] // рабочая вкладка
 
-        let array = ["A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]
-        for (let number = 1; number <= 20; number++) {
-            for (let i = 0; i < array.length; i++) {
-                let address = array[i] + number // A1, B1, .., K1, A2, B2, ... 
-                let desired = this.worksheet[address] // искомое
-                let value = (desired ? desired.v : undefined)
+        return false
 
-                if (value && typeof(value) === "string") {
-                    if (value.includes("Категория")) {
-                        this.start = number + 1
-                        this.categorySymbol = array[i]
-                        continue
-                    }
-                    if (value.includes("Группа")) {
-                        this.groupSymbol = array[i]
-                        continue
-                    }
-                    if (value.includes("Артикул")) {
-                        this.articleSymbol = array[i]
-                        continue
-                    }
-                    if (value === "Модель") {
-                        this.modelSymbol = array[i]
-                        continue
-                    }
-                    if (value.includes("Цена")) {
-                        this.priceSymbol = array[i]
-                        break
-                    }
-                }
-
-            }
-        }
-        
-        if ( ! this.articleSymbol || ! this.priceSymbol || ! this.categorySymbol || ! this.groupSymbol || ! this.modelSymbol ) return false
-        
-        // console.log(" ");
-        // console.log("start", this.start);
-        // console.log("articleSymbol", this.articleSymbol);
-        // console.log("priceSymbol", this.priceSymbol);
-        // console.log(" ");
-        
-        // console.log("article", this.worksheet[this.articleSymbol+this.start].v);
-        // console.log("price", this.worksheet[this.priceSymbol+this.start].v); 
-        // console.log(" ");
-
-        return true
+        // return true
 
     }
     
     // количество записей
     async getLength() {
-
-        let value, article = "", number = 0
-
-        do {
-            value = this.worksheet[ this.articleSymbol + ( this.start + number ) ]
-            if (value) article = value.v
-            else article = ""
-
-            number++
-        }while(article)
-
-        return number - 1
+        return this.product.length
     }
 
     // одна запись
     async getOne(number) { // number - номер строки
-        
-        let object, string
-
-        object = await this.print(number)
-        
-        if (object.article) {
-            string = `${number}. Товар с артикулом ${object.article} стоит ${object.price}.`
-            console.log('\x1b[34m%s\x1b[0m', string)
-        }else {
-            string = `${number}. ${object}`
-            console.log('\x1b[33m%s\x1b[0m', string)
-        }
-
-        return object
-        // return string
+        return this.product[ number - 1 ]
     }
 
     // часть записей
     async getPart(number, party) { // number - номер начальной строки, party - количество строк
-        
-        let array = [], object, string, response = ""
-
+        let array = [], object, string
         for(let i = Number(number); i < Number(number) + Number(party); i++) {
-
             object = await this.print(i)
-        
             if (object.article) {
                 string = `${i}. Товар с артикулом ${object.article} стоит ${object.price}.`
                 // console.log('\x1b[34m%s\x1b[0m', string)
@@ -148,7 +101,6 @@ module.exports = class Milwaukee {
                 string = `${i}. ${object}`
                 // console.log('\x1b[33m%s\x1b[0m', string)
             }
-
             response += string + "<br />"
             array.push(object)
         }
@@ -163,21 +115,101 @@ module.exports = class Milwaukee {
     
     // вывод данных
     async print(number) {
+        return await this.getOne(number)
+    }
 
-        let article = this.worksheet[ this.articleSymbol + ( this.start + Number(number) - 1 ) ]
-        let price = this.worksheet[ this.priceSymbol + ( this.start + Number(number) - 1 ) ]
-        let category = this.worksheet[ this.categorySymbol + ( this.start + Number(number) - 1 ) ]
-        let group = this.worksheet[ this.groupSymbol + ( this.start + Number(number) - 1 ) ]
-        let model = this.worksheet[ this.modelSymbol + ( this.start + Number(number) - 1 ) ]
+    async add(number) {
+        let product, message, response
 
-        if ( ! article || ! price || ! category || ! group || ! model ) return "Ошибка, не найдены записи."
+        try{
+            let article = this.product[ Number(number) - 1 ].article
+            let name = this.product[ Number(number) - 1 ].name
+            let price = this.product[ Number(number) - 1 ].price
+            let categoryUrl = this.product[ Number(number) - 1 ].category || undefined
+        
+            if (article) {
+                const oldProduct = await Product.findOne({
+                    where: {article}
+                })
+                if (oldProduct) {
+                    const productInfo = await ProductInfo.findOne({
+                        where: {productId:oldProduct.id,title:"description"}
+                    })
+                    if (productInfo && oldProduct.price) throw `Товар с артикулом ${article} уже существует!`
+                }
+            }else {
+                throw "Не найден артикул товара."
+            }
+        
+            // парсинг сайта
+            let response = await getAllData(article)
+        
+            if (response.error) throw response.error
+        
+            let {images, sizes, description, characteristics, equipment} = response
+        
+            let have = 1
+            let promo = ""
+            let country = "Германия"
+        
+            const brand = await Brand.findOne({
+                where: {name: "milwaukee"}
+            })
+            let brandId = brand.id
+        
+            const category = await Category.findOne({
+                where: {url: categoryUrl}
+            })
+            let categoryId = category.id
+        
+            let files = JSON.stringify(images)
+        
+            let desc, charac, equip = null
+            if (description) desc = {"title":"description","body":description}
+            if (characteristics) charac = {"title":"characteristics","body":characteristics}
+            if (equipment) equip = {"title":"equipment","body":equipment}
+        
+            let info = JSON.stringify([desc,charac,equip])
+        
+            let size = JSON.stringify(sizes)
+        
+            let url = translit(name) + "_" + article.toString()
+            
+            return { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size }
 
-        return { 
-            article: article.v,
-            price: price.v,
-            category: category.v,
-            group: group.v,
-            model: model.v,
+            // product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
+
+            
+        }catch(e) {
+            product = e
+        }
+        
+        if (product.article) {
+            message = `${number}. Товар с артикулом ${product.article} добавлен.`
+            console.log('\x1b[34m%s\x1b[0m', message)
+        }else {
+            message = `${number}. Ошибка: ${product}`
+            console.log('\x1b[33m%s\x1b[0m', message)
+        }
+            message = message + "<br />"
+
+        if (response) response = response + message
+        else response = message
+
+
+        return response
+    }
+
+    async addParty(number, party = 10) {
+        for(let i = Number(number); i < Number(number)+Number(party); i++) {
+            await this.add(i)
+        }
+    }
+
+    async addAll() {
+        let party = 10
+        for(let i = 1; i <= this.product.length; i=i+party) {
+            await this.addParty(i, party)
         }
     }
 
@@ -187,7 +219,7 @@ module.exports = class Milwaukee {
         let print = await this.print(number)
         if (print.article === undefined) return { article: undefined, update: "warning" }
 
-        let { article, price, category, group, model } = print
+        let { article, price, category } = print
 
         const product = await Product.findOne({
             where: { article }
@@ -204,7 +236,7 @@ module.exports = class Milwaukee {
             
             return { article, update: "yes" }
         }else {
-            return { article, category, group, model, price, update: "unknown" }
+            return { article, category, price, update: "unknown" }
         }
         
     }
@@ -221,7 +253,7 @@ module.exports = class Milwaukee {
             array.push(string)
         }
 
-        let urlChange, urlUnknown, urlError
+        let urlChange, urlUnknown
 
         let date = new Date()
         let folderName = date.getFullYear() + "." + (date.getMonth()+1) + "." + date.getDate() + "_" + date.getHours() + "." + date.getMinutes()
@@ -249,19 +281,13 @@ module.exports = class Milwaukee {
 
         let unknown = path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee', folderName, 'unknown.csv')
 
-        let text = "Категория;Группа;Артикул;Модель;Цена;Ссылка\r\n" + array.map(i => {
+        let text = "Артикул;Цена;Ссылка\r\n" + array.map(i => {
             if (i.update === "unknown") {
-                return `"${i.category.replace(/\"/g, "&quot;")}";"${i.group.replace(/\"/g, "&quot;")}";"${i.article}";"${i.model.replace(/\"/g, "&quot;")}";"${i.price}";\r\n`
+                return `"${i.article}";"${i.price}";"${i.category}"\r\n`
             }
             return null
         }).filter(j => j !== null).join("")
 
-        // try {
-        //     fs.writeFileSync( unknown, encoding.convert(text, 'WINDOWS-1251', 'UTF-8') )
-        //     urlUnknown = `<a href="${process.env.URL}/info/milwaukee/${folderName}/unknown.csv" >unknown.csv</a><br />`
-        // }catch(e) {
-        //     urlUnknown = `Создать файл unknown.csv не удалось.<br />`
-        // }
         fs.writeFile( unknown, encoding.convert(text, 'WINDOWS-1251', 'UTF-8'), () => {})
         urlUnknown = `<a href="${process.env.URL}/info/milwaukee/${folderName}/unknown.csv" >unknown.csv</a><br />`
 
@@ -276,21 +302,6 @@ module.exports = class Milwaukee {
             urlChange = `Создать файл changes.json не удалось.<br />`
         }
 
-        // let error = path.resolve(__dirname, '..', '..', '..', 'static', 'info', 'milwaukee', folderName, 'error.json')
-        // try {
-        //     fs.writeFileSync(error, "[" + array.map(i => {
-        //         if (i.update === "error" || i.update === "warning") {
-        //             return "\n    " + JSON.stringify(i)
-        //         }
-        //         return null
-        //     }).filter(j => j !== null) + "]")
-        //     urlError = `<a href="${process.env.URL}/info/milwaukee/${folderName}/error.json" >error.json</a>`
-        // }catch(e) {
-        //     urlError = `Создать файл error.json не удалось.`
-        // }
-
-        // return array
-        // return urlChange + urlUnknown + urlError
         return urlChange + urlUnknown
     }
 

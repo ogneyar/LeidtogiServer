@@ -1,10 +1,10 @@
 // const XLSX = require('xlsx')
 
-const { Product, ProductInfo, Brand, Category } = require('../../../models/models')
+const { Product, ProductInfo, Brand, Category } = require('../../../../models/models')
 
-const getAllData = require('./getAllData.js')
-const createProduct = require('../../product/createProduct.js');
-const translit = require('../../translit');
+const getAllData = require('../getAllData.js')
+const createProduct = require('../../../product/createProduct.js');
+const translit = require('../../../translit');
 
 
 async function addNewProduct(workbook, number) {
@@ -17,9 +17,9 @@ async function addNewProduct(workbook, number) {
     let first_sheet_name = workbook.SheetNames[0];
     let worksheet = workbook.Sheets[first_sheet_name];
 
-    let address_of_article = 'J'+number;
-    let address_of_name = 'K'+number;
-    let address_of_category = 'P'+number;
+    let address_of_article = 'I'+number;
+    let address_of_name = 'J'+number;
+    let address_of_category = 'S'+number;
 
     let desired_article = worksheet[address_of_article];
     let desired_name = worksheet[address_of_name];
@@ -41,8 +41,11 @@ async function addNewProduct(workbook, number) {
             })
             if (productInfo && oldProduct.price) return `Товар с артикулом ${article} уже существует!`
         }
+    }else {
+        throw "Не найден артикул товара."
     }
 
+    // парсинг сайта
     let response = await getAllData(article)
 
     if (response.error) return response.error
@@ -74,7 +77,7 @@ async function addNewProduct(workbook, number) {
 
     let size = JSON.stringify(sizes)
 
-    let url = translite(name) + "_" + article.toString()
+    let url = translit(name) + "_" + article.toString()
     
     return await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
