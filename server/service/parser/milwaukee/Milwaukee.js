@@ -135,7 +135,7 @@ module.exports = class Milwaukee {
                     const productInfo = await ProductInfo.findOne({
                         where: {productId:oldProduct.id,title:"description"}
                     })
-                    // if (productInfo && oldProduct.price) throw `Товар с артикулом ${article} уже существует!`
+                    if (productInfo && oldProduct.price) throw `Товар с артикулом ${article} уже существует!`
                 }
             }else {
                 throw "Не найден артикул товара."

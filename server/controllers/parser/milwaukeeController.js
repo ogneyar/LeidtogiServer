@@ -48,9 +48,9 @@ class milwaukeeController {
             }
             // добавление товара
             if (add) {
-                if (number == 0) throw "Не задан number при заданном add"
+                if ( ! number || number == 0) throw "Не задан number при заданном add"
 
-                if (party != 0) return res.json(await mlk.addParty(number, party))
+                if (party && party != 0) return res.json(await mlk.addParty(number, party))
                 else return res.json(await mlk.add(number))
             }
             // получение одной записи из файла
