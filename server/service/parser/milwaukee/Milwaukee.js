@@ -90,33 +90,33 @@ module.exports = class Milwaukee {
     }
 
     // часть записей
-    async getPart(number, party) { // number - номер начальной строки, party - количество строк
-        let array = [], object, string
-        for(let i = Number(number); i < Number(number) + Number(party); i++) {
-            object = await this.print(i)
-            if (object.article) {
-                string = `${i}. Товар с артикулом ${object.article} стоит ${object.price}.`
-                // console.log('\x1b[34m%s\x1b[0m', string)
-            }else {
-                string = `${i}. ${object}`
-                // console.log('\x1b[33m%s\x1b[0m', string)
-            }
-            response += string + "<br />"
-            array.push(object)
-        }
+    // async getPart(number, party) { // number - номер начальной строки, party - количество строк
+    //     let array = [], object, string
+    //     for(let i = Number(number); i < Number(number) + Number(party); i++) {
+    //         object = await this.print(i)
+    //         if (object.article) {
+    //             string = `${i}. Товар с артикулом ${object.article} стоит ${object.price}.`
+    //             // console.log('\x1b[34m%s\x1b[0m', string)
+    //         }else {
+    //             string = `${i}. ${object}`
+    //             // console.log('\x1b[33m%s\x1b[0m', string)
+    //         }
+    //         response += string + "<br />"
+    //         array.push(object)
+    //     }
 
-        return array
-    }
+    //     return array
+    // }
 
     // все записи
-    async getAll() { 
-        return await this.getPart(1, await this.getLength())
-    }
+    // async getAll() { 
+    //     return await this.getPart(1, await this.getLength())
+    // }
     
     // вывод данных
-    async print(number) {
-        return await this.getOne(number)
-    }
+    // async print(number) {
+    //     return await this.getOne(number)
+    // }
 
     async add(number) {
         let product, message, response
@@ -135,7 +135,7 @@ module.exports = class Milwaukee {
                     const productInfo = await ProductInfo.findOne({
                         where: {productId:oldProduct.id,title:"description"}
                     })
-                    if (productInfo && oldProduct.price) throw `Товар с артикулом ${article} уже существует!`
+                    // if (productInfo && oldProduct.price) throw `Товар с артикулом ${article} уже существует!`
                 }
             }else {
                 throw "Не найден артикул товара."
@@ -175,9 +175,9 @@ module.exports = class Milwaukee {
         
             let url = translit(name) + "_" + article.toString()
             
-            return { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size }
+            // return { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size }
 
-            // product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
+            product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
 
             
         }catch(e) {
@@ -200,18 +200,26 @@ module.exports = class Milwaukee {
         return response
     }
 
+
     async addParty(number, party = 10) {
+        let response
+
+        console.log("number",number)
+
         for(let i = Number(number); i < Number(number)+Number(party); i++) {
-            await this.add(i)
+            response += await this.add(i)
         }
+        return response
     }
 
-    async addAll() {
-        let party = 10
-        for(let i = 1; i <= this.product.length; i=i+party) {
-            await this.addParty(i, party)
-        }
-    }
+
+    // async addAll() {
+    //     console.log("addAll")
+    //     let party = 10
+    //     for(let i = 1; i <= this.product.length; i=i+party) {
+    //         await this.addParty(i, party)
+    //     }
+    // }
 
 
     async changePrice(number) {

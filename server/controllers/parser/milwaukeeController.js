@@ -24,7 +24,7 @@ class milwaukeeController {
     // получение данных из фида xlsx, добавление товаров и обновление цен
     async milwaukee(req, res, next) {
 
-        let { all, party, change, number, add } = req.query
+        let { change, number, add, party } = req.query
         let feed = req.files && req.files.feed || undefined
 
         if (!feed) feed = path.resolve(__dirname, '..', '..', 'prices', 'milwaukee', 'feed.xlsx')
@@ -35,12 +35,12 @@ class milwaukeeController {
         
         if (response && response.error === undefined) {
             // получение всех данных из файла
-            if (all) return res.json(await mlk.getAll())
+            // if (all) return res.json(await mlk.getAll())
             // получение части данных из файла
-            if (party) {
-                if (number) return res.json(await mlk.getPart(number, party))
-                else return res.json({error: 'Ошибка, не задан number при заданном party!'})
-            }
+            // if (party) {
+            //     if (number) return res.json(await mlk.getPart(number, party))
+            //     else return res.json({error: 'Ошибка, не задан number при заданном party!'})
+            // }
             // обновление цен 
             if (change) {
                 if (number) return res.json(await mlk.changePrice(number))
@@ -48,8 +48,10 @@ class milwaukeeController {
             }
             // добавление товара
             if (add) {
-                if (number) return res.json(await mlk.add(number))
-                else return res.json(await mlk.addAll())
+                if (number == 0) throw "Не задан number при заданном add"
+
+                if (party != 0) return res.json(await mlk.addParty(number, party))
+                else return res.json(await mlk.add(number))
             }
             // получение одной записи из файла
             if (number) return res.json(await mlk.getOne(number))

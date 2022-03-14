@@ -42,8 +42,8 @@ function getImages(article, Html) {
         
         fileName = uuid.v4() + '.jpg'
         
-        filePathBig = brand + '/' + "temp"+article + '/big/' + fileName
-        filePathSmall = brand + '/' + "temp"+article + '/small/' + fileName
+        filePathBig = brand + '/' + article + '/big/' + fileName
+        filePathSmall = brand + '/' + article + '/small/' + fileName
 
         imageBig = fs.createWriteStream(path.resolve(__dirname, '../../..', 'static', brand, article, 'big', fileName));
         imageSmall = fs.createWriteStream(path.resolve(__dirname, '../../..', 'static', brand, article, 'small', fileName));
