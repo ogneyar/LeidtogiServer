@@ -5,7 +5,7 @@ const checkRole = require('../../middleware/checkRoleMiddleware')
 
 
 
-if (process.env.URL === "http://localhost:5000") {
+if (process.env.URL === "http://localhost:5000" || process.env.URL === "https://api.leidtogi.site") {
     router.get('/', rgkController.rgk) // парсер RGK
 }else {
     router.get('/', checkRole('ADMIN'), rgkController.rgk) // парсер RGK

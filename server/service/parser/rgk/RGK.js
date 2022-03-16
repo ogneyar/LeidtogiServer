@@ -304,6 +304,12 @@ module.exports = class RGK {
 
         price = this.product[number - 1]["offer price"]
 
+        // ---------------------
+        // временно завышаю цену
+        // ---------------------
+        price = Number(price) * 1.3
+        // console.log("price", price)
+
         const product = await Product.findOne({
             where: { article }
         })
