@@ -1,5 +1,6 @@
 const Router = require('express')
 const router = new Router()
+
 const productRouter = require('./productRouter')
 const productInfoRouter = require('./productInfoRouter')
 const productSizeRouter = require('./productSizeRouter')
@@ -14,6 +15,7 @@ const deliveryRouter = require('./deliveryRouter')
 const orderRouter = require('./orderRouter')
 const testRouter = require('./testRouter')
 const telegramRouter = require('./telegramRouter')
+const mailRouter = require('./mailRouter')
 
 
 router.use('/user', userRouter)
@@ -32,6 +34,7 @@ router.use('/order', orderRouter)
 router.use('/test', testRouter)
 
 router.use('/telegram', telegramRouter)
+router.use('/mail', mailRouter)
 
 
 module.exports = router

@@ -42,6 +42,9 @@ INSERT INTO `categories` (`id`, `name`, `url`, `is_product`, `sub_category_id`, 
 
 // обнови базу на работе, полностью
 
+// для теста RequestPrice
+UPDATE `products` SET `request` = '1' WHERE `products`.`id` = 70;
+
 
 // сжатие изображений
 npm install sharp
