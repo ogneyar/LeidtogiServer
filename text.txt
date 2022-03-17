@@ -24,7 +24,7 @@ sudo /usr/bin/certbot renew --dry-run
 certbot --force-renewal -d leidtogi.ru,server.leidtogi.ru,www.leidtogi.ru
 
 
-
+// ----------------------------
 // добавление колонки в таблицу
 ALTER TABLE carts ADD value varchar(1024) not null AFTER id;
 // удаление таблицы
@@ -37,9 +37,11 @@ DELETE FROM `table_name`;
 INSERT INTO `categories` (`id`, `name`, `url`, `is_product`, `sub_category_id`, `createdAt`, `updatedAt`) VALUES 
 (NULL, 'category_name', ''category_url', '0', '0', '2022-02-21 12:04:23.000000', '2022-02-21 12:04:23.000000'), 
 (NULL, 'category_name2', 'category_url2', '0', '0', '2022-02-21 12:04:23.000000', '2022-02-21 12:04:23.000000');
+// ----------------------------
 
-//
-ALTER TABLE `products` CHANGE `price` `price` DECIMAL(10,2) NOT NULL;
+
+// обнови базу на работе, полностью
+
 
 // сжатие изображений
 npm install sharp
