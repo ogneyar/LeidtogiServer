@@ -1,1 +1,0 @@
-[{"big":"gedore/87672214/big.jpg","small":"gedore/87672214/small.jpg"}]

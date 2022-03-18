@@ -1,9 +1,0 @@
-Gedore 4549 - 4551 Динамометрический ключ TORCOFIX K 40-200 Нм (с поверкой)
-
-34000
-
-[{"big":"gedore/17943159/big.jpg","small":"gedore/17943159/small.jpg"}]
-
-characteristics
-
-<tbody><tr><td>Квадрат</td><td>1/2 дюйма</td></tr><tr><td>Усилие</td><td>40-200 Нм</td></tr></tbody>

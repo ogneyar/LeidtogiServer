@@ -1,9 +1,0 @@
-Gedore 4100 - 4301 Динамометрический ключ TORCOFIX SE 40-200 Нм с насадками (с поверкой)
-
-51000
-
-[{"big":"gedore/92733146/big.jpg","small":"gedore/92733146/small.jpg"}]
-
-equipment
-
-<tbody><tr><td>Ключ 40-200 Нм, шт</td><td>1</td></tr><tr><td>Головки 13,14,15 мм, шт</td><td>1</td></tr></tbody>

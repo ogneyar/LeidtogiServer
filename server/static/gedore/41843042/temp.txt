@@ -1,8 +1,0 @@
-Набор динамометрических ключей Rothenberger 175001, с набором насадок
-28000
-
-[{"big":"gedore/41843042/big.jpg","small":"gedore/41843042/small.jpg"}]
-
-characteristics
-
-<tbody><tr><td>Усилие</td><td>18-65 Нм</td></tr><tr><td>Квадрат</td><td>1/2 дюйма</td></tr><tr><td>Соответствие</td><td>DIN 366</td></tr></tbody>

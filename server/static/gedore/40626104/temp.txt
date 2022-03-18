@@ -1,7 +1,0 @@
-Набор торцевых головок ударных, Gedore
-8500
-[{"big":"gedore/40626104/big.jpg","small":"gedore/40626104/small.jpg"}]
-
-equipment
-
-<tbody><tr><td>Головки ударные торцевые 1/2" (10-21), шт</td><td>11</td></tr></tbody>

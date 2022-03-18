@@ -1,9 +1,0 @@
-Gedore 4549 - 4551 Динамометрический ключ TORCOFIX K 10-50 Нм (с поверкой)
-
-32000
-
-[{"big":"gedore/42858545/big.jpg","small":"gedore/42858545/small.jpg"}]
-
-characteristics
-
-<tbody><tr><td>Квадрат</td><td>3/8 дюйма</td></tr><tr><td>Усилие</td><td>10-50 Нм</td></tr></tbody>

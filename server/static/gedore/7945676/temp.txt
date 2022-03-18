@@ -1,7 +1,0 @@
-Набор головок ударных 1/2", 10шт. Gedore К19
-8500
-[{"big":"gedore/7945676/big.jpg","small":"gedore/7945676/small.jpg"}]
-
-equipment
-
-<tbody><tr><td>Гударные торцевые 1/2" (10-22), шт</td><td>10</td></tr></tbody>
