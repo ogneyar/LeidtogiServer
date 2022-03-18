@@ -46,7 +46,7 @@ class milwaukeeController {
                 if (number) return res.json(await mlk.changePrice(number))
                 else return res.json(await mlk.changePriceAll())
             }
-            // добавление товара
+            // добавление товара 
             if (add) {
                 if ( ! number || number == 0) throw "Не задан number при заданном add"
 

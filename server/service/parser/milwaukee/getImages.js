@@ -19,15 +19,21 @@ function getImages(article, Html) {
         let entry
         if (i === 0) entry = `<div class="image-additional`
         else entry = undefined
+        try{
+            response = parseHtml(rest, {
+                entry,
+                start: `href="`,
+                end: `"`,
+                return: true
+            })
+        }catch(e) {
+            if (i === 0 || img === []) throw "Не найдено ни одного изображения. (getImages)"
+            break
+        }
+        // если в ответе нет слова "milwrussia", то покидаем цикл
+        if (response.search.indexOf("milwrussia") === -1) break
 
-        response = parseHtml(rest, {
-            entry,
-            start: `href="`,
-            end: `"`,
-            return: true
-        })
-        if (response.search.indexOf("milwrussia") !== -1) img.push(response.search)
-        else break
+        img.push(response.search)
 
         rest = response.rest
     }
@@ -61,6 +67,8 @@ function getImages(article, Html) {
     return arrayImages // возвращаем массив объектов
     // или
     return JSON.stringify(arrayImages) // возвращаем строку
+    
 }
+
 
 module.exports = getImages

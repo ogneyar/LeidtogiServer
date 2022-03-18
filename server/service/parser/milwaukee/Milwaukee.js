@@ -132,6 +132,7 @@ module.exports = class Milwaukee {
                     where: {article}
                 })
                 if (oldProduct) {
+                    throw `Товар с артикулом ${article} уже существует!`
                     const productInfo = await ProductInfo.findOne({
                         where: {productId:oldProduct.id,title:"description"}
                     })
@@ -142,7 +143,7 @@ module.exports = class Milwaukee {
             }
         
             // парсинг сайта
-            let response = await getAllData(article)
+            let response = await getAllData(article, price)
         
             if (response.error) throw response.error
         
@@ -169,7 +170,8 @@ module.exports = class Milwaukee {
             if (characteristics) charac = {"title":"characteristics","body":characteristics}
             if (equipment) equip = {"title":"equipment","body":equipment}
         
-            let info = JSON.stringify([desc,charac,equip])
+            let info = null
+            if (desc || charac || equip) info = JSON.stringify([desc,charac,equip])
         
             let size = JSON.stringify(sizes)
         
@@ -177,7 +179,7 @@ module.exports = class Milwaukee {
             
             // return { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size }
 
-            product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
+            product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size) 
 
             
         }catch(e) {
@@ -200,15 +202,14 @@ module.exports = class Milwaukee {
         return response
     }
 
-
+    // добавление товаров частями
     async addParty(number, party = 10) {
-        let response
-
-        console.log("number",number)
+        let response = ""
 
         for(let i = Number(number); i < Number(number)+Number(party); i++) {
             response += await this.add(i)
         }
+
         return response
     }
 

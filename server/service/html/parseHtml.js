@@ -11,10 +11,11 @@
 //
 function parseHtml(string, args) { 
 
-    let entryPoint = null, startSearch = undefined, endSearch = undefined, inclusive = false, returnString = false
+    let entryPoint = null, entryOr = null, startSearch = undefined, endSearch = undefined, inclusive = false, returnString = false
 
     if ( ! args.entry && ! args.start && ! args.end ) throw `Нет необходимых параметров! (parseHtml)`
     if (args.entry !== undefined) entryPoint = args.entry // точка входа (от куда начинать поиск)
+    if (args.entryOr !== undefined) entryOr = args.entryOr // дополнительная точка входа (от куда начинать поиск)
     if (args.start !== undefined) startSearch = args.start //  стартовая строка
     if (args.end !== undefined) endSearch = args.end //  финишная строка
     if (args.inclusive !== undefined) inclusive = args.inclusive // включительно или исключая стартовую и финишную строки
@@ -26,7 +27,14 @@ function parseHtml(string, args) {
         number = string.indexOf(entryPoint)
         if (number === -1) {
             if ( ! startSearch && ! endSearch) return false
-            else throw `Не найден '${entryPoint}'! (parseHtml)`
+            else {
+                if (entryOr) {
+                    number = string.indexOf(entryOr)
+                    if (number === -1) throw `Не найден ни '${entryPoint}', ни '${entryOr}'! (parseHtml)`
+                }else {
+                    throw `Не найден '${entryPoint}'! (parseHtml)`
+                }
+            }
         }else {
             if ( ! startSearch && ! endSearch) return true
         }
