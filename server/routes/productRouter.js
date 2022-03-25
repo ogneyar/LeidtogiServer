@@ -22,5 +22,7 @@ router.put('/edit_on_article/:article', checkRole('ADMIN'), productController.ed
 router.put('/edit_all/:id', checkRole('ADMIN'), productController.editAll)
 router.put('/rating/:id', authMiddleware, productController.editRating)
 
+router.get('/price/:id', productController.getPrice)
+
 
 module.exports = router

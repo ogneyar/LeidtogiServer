@@ -487,6 +487,18 @@ class ProductController {
     }
 
 
+    async getPrice(req, res, next) {
+        try {
+            const {id} = req.params
+            const product = await Product.findOne({ where: { id } })
+    
+            return res.json(product.price)
+            
+        }catch(e) {
+            return next(res.json({error:'Ошибка метода getPrice!'}))
+        }
+    }
+
     async temp(req, res, next) {
         try {
             
