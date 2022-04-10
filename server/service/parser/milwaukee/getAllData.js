@@ -1,24 +1,33 @@
 const axios = require('axios')
-
-// const getUrlVseinstrumenti = require('./old/getUrlVseinstrumenti.js')
-// const getArrayImages = require('./old/getArrayImages.js')
-// const getSizes = require('./old/getSizes.js')
-const getUrlMilwrussia = require('./getUrlMilwrussia.js')
-const getUrlMinimaks = require('./getUrlMinimaks.js')
-const getImages = require('./getImages.js')
-const getSizesMinimaks = require('./getSizesMinimaks.js')
-const getPrice = require('./getPrice.js')
-const getUrlMlkShop = require('./getUrlMlkShop.js')
-const getDescription = require('./getDescription.js')
-const getCharacteristics = require('./getCharacteristics.js')
-const getEquipment = require('./getEquipment.js')
 const parseHtml = require('../../html/parseHtml.js')
+// VseInstrumenti
+// const getUrlVseinstrumenti = require('./vseInstrumenti/getUrlVseinstrumenti.js')
+// const getArrayImages = require('./vseInstrumenti/getArrayImages.js')
+// const getSizes = require('./vseInstrumenti/getSizes.js')
+// MiniMaks
+const getUrlMiniMaks = require('./miniMaks/getUrlMiniMaks.js')
+const getSizesMiniMaks = require('./miniMaks/getSizesMiniMaks.js')
+// MlkShop
+const getUrlMlkShop = require('./mlkShop/getUrlMlkShop.js')
+const getPriceMlkShop = require('./mlkShop/getPriceMlkShop.js')
+const getDescriptionMlkShop = require('./mlkShop/getDescriptionMlkShop.js')
+const getCharacteristicsMlkShop = require('./mlkShop/getCharacteristicsMlkShop.js')
+const getEquipmentMlkShop = require('./mlkShop/getEquipmentMlkShop.js')
+const getWeightMlkShop = require('./mlkShop/getWeightMlkShop.js')
+// MilwRussia
+const getUrlMilwRussia = require('./milwRussia/getUrlMilwRussia.js')
+const getImagesMilwRussia = require('./milwRussia/getImagesMilwRussia.js')
+// MilTools
+const getUrlMilTools = require('./milTools/getUrlMilTools')
+const getDescriptionMilTools = require('./milTools/getDescriptionMilTools.js')
+const getCharacteristicsMilTools = require('./milTools/getCharacteristicsMilTools.js')
+const getWeightMilTools = require('./milTools/getWeightMilTools.js')
 
 
 async function getAllData(article, price) {
 
     let Html, images, sizes, description, characteristics, equipment
-    let urlMlkShop, string
+    let urlMlkShop, urlMilTools, string
 
     // получение изображений с сайта rostov.vseinstrumenti.ru
     // await axios.get('https://rostov.vseinstrumenti.ru/search_main.php', { params: { what: article } })
@@ -34,9 +43,9 @@ async function getAllData(article, price) {
     await axios.get('https://www.minimaks.ru/catalog', { params: { q: article } })
         .then(res => Html = res.data)
     try {
-        Html = "https://www.minimaks.ru" + getUrlMinimaks(Html) 
+        Html = "https://www.minimaks.ru" + getUrlMiniMaks(Html) 
         await axios.get(Html).then(res => Html = res.data)
-        sizes = getSizesMinimaks(Html)
+        sizes = getSizesMiniMaks(Html)
     }catch(e) {
         sizes = null
     }
@@ -46,61 +55,76 @@ async function getAllData(article, price) {
         search: article
     }}).then(res => Html = res.data)
 
-    if (!Html) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)',string:Html}
+    if (!Html) return {error:'Не сработал axios.get(https://mlk-shop.ru/search)'}
 
     if ( ! price ) {
-        price = getPrice(Html,article)
+        price = getPriceMlkShop(Html,article)
         if (price.error) return price
         else price = price.message
     }
 
     string = getUrlMlkShop(Html)
 
-    if (string.error !== undefined) return string
-    else urlMlkShop = string.message
+    if (string.error === undefined) {
 
-    // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
-    await axios.get(urlMlkShop).then(res => string = res.data)
+        urlMlkShop = string.message
 
-    if (!string) return {error:`Не сработал axios.get(${urlMlkShop})`}
+        // https://mlk-shop.ru/akkumulyatornaya-uglovaya-shlifovalnaya-mashina-ushm-bolgarka-milwaukee-m18-fuel-cag125x-0x?search=4933451439
+        await axios.get(urlMlkShop).then(res => string = res.data)
 
-    description = getDescription(string)
-    // if (description.error) return description
-    if (description.error) description = ""
-    else description = description.message
+        if (!string) return {error:`Не сработал axios.get(${urlMlkShop})`}
 
-    characteristics = getCharacteristics(string)
-    // if (characteristics.error) return characteristics
-    if (characteristics.error) characteristics = ""
-    else {
-        characteristics = characteristics.message
-        if (sizes === null) {
-            try {
-                let weight = parseHtml(characteristics, {
-                    entry: `Вес, кг`,
-                    entryOr: `Общий вес, кг`,
-                    start: `<td>`,
-                    end: `</td>`
-                })
-                sizes = { weight, width: 0, length: 0, height: 0, volume: 0 }
-            }catch(e) {
-                throw `${e} (article: ${article})`
-            }
+        description = getDescriptionMlkShop(string)
+        if (description.error) description = ""
+
+        characteristics = getCharacteristicsMlkShop(string)
+        if (characteristics.error && sizes === null) return characteristics
+        else {
+            if (sizes === null) sizes = getWeightMlkShop(characteristics, article)
+            else characteristics = ""
         }
+
+        equipment = getEquipmentMlkShop(string)
+        if (equipment.error) equipment = ""
+        else equipment = equipment.message
+    
+    }else { // if getUrlMlkShop error
+
+        // https://mil-tools.ru/catalog/?q=4933478986&s=Найти
+        await axios.get('https://mil-tools.ru/catalog/', {params: {
+            q: article,
+            s: "Найти"
+        }}).then(res => Html = res.data)
+        
+        if (!Html) return {error:'Не сработал axios.get(https://mil-tools.ru/catalog/)'}
+        
+        string = getUrlMilTools(Html)
+        if (string.error !== undefined) return string
+
+        urlMilTools = "https://mil-tools.ru" + string
+        // https://mil-tools.ru/catalog/malaya-mekhanizatsiya/akkumulyatornye-ustanovki-almaznogo-bureniya/ustanovka_almaznogo_sverleniya_milwaukee_mxf_dcd150_0c/
+        await axios.get(urlMilTools).then(res => string = res.data)
+
+        if (!string) return {error:`Не сработал axios.get(${urlMilTools})`}
+
+        description = getDescriptionMilTools(string, article)
+        if (description.error !== undefined) description = ""
+
+        characteristics = getCharacteristicsMilTools(string, article)
+        if (characteristics.error && sizes === null) return characteristics
+        else {
+            if (sizes === null) sizes = getWeightMilTools(characteristics, article)
+            else characteristics = ""
+        }
+
     }
-
-    equipment = getEquipment(string)
-    // if (equipment.error) return equipment
-    if (equipment.error) equipment = ""
-    else equipment = equipment.message
-
     
     // получение изображений с сайта milwrussia.ru
     await axios.get('https://milwrussia.ru/search', { params: { search: article } })
         .then(res => Html = res.data)
-    Html = getUrlMilwrussia(Html, article)
+    Html = getUrlMilwRussia(Html, article)
     await axios.get(Html).then(res => Html = res.data)
-    images = getImages(article, Html)
+    images = getImagesMilwRussia(article, Html)
 
 
     return {images, sizes, price, description, characteristics, equipment}

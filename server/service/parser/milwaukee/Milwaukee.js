@@ -23,10 +23,13 @@ module.exports = class Milwaukee {
     constructor() {
     }
 
-    async run(feed = {}) {
+    async run(feed = {}, withOldCategories = false) {
         
-        let feedWithCategory = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'old', 'newMILWAUKEE.xlsx')
-        let arrayWithCategories = await parseXlsx(feedWithCategory, [ "Артикул", "Категории" ])
+        let feedWithCategory, arrayWithCategories
+        if (withOldCategories) { // использовать ли категории из старого фида?
+            feedWithCategory = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'old', 'newMILWAUKEE.xlsx')
+            arrayWithCategories = await parseXlsx(feedWithCategory, [ "Артикул", "Категории" ])
+        }
 
         let fullPath, response
 
@@ -40,13 +43,11 @@ module.exports = class Milwaukee {
         }
 
         if (fs.existsSync(fullPath)) { 
-            
-            response = await parseXlsx(fullPath, [
-                "Артикул",
-                "Модель",
-                "Цена с учетом НДС, руб.",
-                // "Категории",
-            ])
+
+            let array = [ "Артикул", "Модель", "Цена с учетом НДС, руб.", ] // массив полей
+            if ( ! withOldCategories ) array.push("Категории") // если без использования старых категорий, то искать их в исходном файле
+
+            response = await parseXlsx(fullPath, array)
             
             if (response && Array.isArray(response)) {
                 this.product = response.map(i => {
@@ -58,6 +59,8 @@ module.exports = class Milwaukee {
                                 category = j["Категории"]
                             }
                         })
+                    }else {
+                        category = i["Категории"]
                     }
                     return {
                         article,
@@ -190,6 +193,7 @@ module.exports = class Milwaukee {
             message = `${number}. Товар с артикулом ${product.article} добавлен.`
             console.log('\x1b[34m%s\x1b[0m', message)
         }else {
+            if (typeof(product) === "string") product = product.replace("<","&lt;").replace(">","&gt;")
             message = `${number}. Ошибка: ${product}`
             console.log('\x1b[33m%s\x1b[0m', message)
         }
@@ -207,7 +211,7 @@ module.exports = class Milwaukee {
         let response = ""
 
         for(let i = Number(number); i < Number(number)+Number(party); i++) {
-            response += await this.add(i)
+            if (i <= this.product.length) response += await this.add(i)
         }
 
         return response

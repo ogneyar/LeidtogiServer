@@ -50,7 +50,7 @@ class husqvarnaController {
         
             return res.json({ error: "Нет ответа от метода run класса Husqvarna!" })
         }catch(error) {
-            return res.json({ error })
+            return res.json({ error: error.replace("<","&lt;").replace(">","&gt;") })
             // return res.json({ error: `${e} (метод husqvarna)` })
         }
     }

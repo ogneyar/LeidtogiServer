@@ -49,7 +49,8 @@ async function parseXlsx(file, arraySearch) {
 
         }
     }
-    let yes = true
+    let yes = true // да, не найден конец строки
+    let one = false // найдена ли одна пустая строка?
     let i = 1
     while(yes) {
         let object = {}
@@ -62,7 +63,15 @@ async function parseXlsx(file, arraySearch) {
             if (end === arraySearch.length) yes = false 
         }
 
-        if (yes) response.push(object)
+        if (yes) {
+            response.push(object)
+            one = false // не найдена пустая строка
+        }else {
+            if ( ! one ) { // если до этого небыло найдено ни одной пустой строки
+                one = true
+                yes = true
+            }
+        }
         i++
     }
 

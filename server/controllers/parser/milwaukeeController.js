@@ -5,7 +5,7 @@ const iconv = require('iconv-lite')
 const encoding = require('encoding')
 
 
-const parseXlsxAndAddNewProduct = require('../../service/parser/milwaukee/old/addNewProduct')
+const parseXlsxAndAddNewProduct = require('../../service/parser/milwaukee/vseInstrumenti/addNewProduct')
 const getAllData = require('../../service/parser/milwaukee/getAllData.js')
 const Milwaukee = require('../../service/parser/milwaukee/Milwaukee')
 
@@ -48,6 +48,7 @@ class milwaukeeController {
             }
             // добавление товара 
             if (add) {
+                // return res.json(await mlk.product)
                 if ( ! number || number == 0) throw "Не задан number при заданном add"
 
                 if (party && party != 0) return res.json(await mlk.addParty(number, party))
