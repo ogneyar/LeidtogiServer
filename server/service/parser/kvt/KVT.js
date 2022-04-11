@@ -1,8 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-// const iconv = require('iconv-lite')
-// const axios = require('axios')
-// const http = require('http')
 const https = require('https')
 const uuid = require('uuid')
 const Math = require('mathjs')
@@ -13,14 +10,10 @@ if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
 const { Brand, Category, Product } = require('../../../models/models')
 
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
-// const findProductByArticle = require('../../product/findProductByArticle.js')
 const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 
-// const getProducts = require('../../csv/parseCsv')
 const parseXlsx = require('../../xlsx/parseXlsx')
-
-
 
 
 module.exports = class KVT {
