@@ -13,13 +13,14 @@ function parseHtml(string, args) {
 
     let entryPoint = null, entryOr = null, startSearch = undefined, endSearch = undefined, inclusive = false, returnString = false
 
+    if ( ! string ) throw `Отсутствует искомая строка! (parseHtml)`
     if ( ! args.entry && ! args.start && ! args.end ) throw `Нет необходимых параметров! (parseHtml)`
     if (args.entry !== undefined) entryPoint = args.entry // точка входа (от куда начинать поиск)
     if (args.entryOr !== undefined) entryOr = args.entryOr // дополнительная точка входа (от куда начинать поиск)
     if (args.start !== undefined) startSearch = args.start //  стартовая строка
     if (args.end !== undefined) endSearch = args.end //  финишная строка
     if (args.inclusive !== undefined) inclusive = args.inclusive // включительно или исключая стартовую и финишную строки
-    if (args.return !== undefined) returnString = args.return // включительно или исключая стартовую и финишную строки
+    if (args.return !== undefined) returnString = args.return // вернуть остальную строку
 
     let number, rest
 

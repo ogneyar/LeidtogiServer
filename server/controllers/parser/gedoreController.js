@@ -8,7 +8,6 @@ class gedoreController {
         try {
             let { number, add, change } = req.query
             let feed = req.files && req.files.feed || undefined
-            let price = req.files && req.files.price || undefined
 
             let response, gedore
             // создание экземпляра класса Gedore
@@ -20,8 +19,8 @@ class gedoreController {
             }
 
             // добавление нового товара
-            if (add !== undefined && number) {
-                return res.json(await gedore.add(Number(number), Number(add)))
+            if (add !== undefined && number) { // add = quantity; ~ от 1 до 10 
+                return res.json(await gedore.addParty(Number(number), Number(add)))
             }
 
             // смена цен

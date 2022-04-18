@@ -26,6 +26,7 @@ async function getDataGedoreCom(article) {
             start: `href="`,
             end: `"`
         })
+        if ( ! response.includes("catalog") ) throw "Не найдена ссылка товара! (getDataGedoreCom)"
     }else {
         response = response.search
     }

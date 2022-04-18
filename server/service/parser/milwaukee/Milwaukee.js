@@ -92,34 +92,6 @@ module.exports = class Milwaukee {
         return this.product[ number - 1 ]
     }
 
-    // часть записей
-    // async getPart(number, party) { // number - номер начальной строки, party - количество строк
-    //     let array = [], object, string
-    //     for(let i = Number(number); i < Number(number) + Number(party); i++) {
-    //         object = await this.print(i)
-    //         if (object.article) {
-    //             string = `${i}. Товар с артикулом ${object.article} стоит ${object.price}.`
-    //             // console.log('\x1b[34m%s\x1b[0m', string)
-    //         }else {
-    //             string = `${i}. ${object}`
-    //             // console.log('\x1b[33m%s\x1b[0m', string)
-    //         }
-    //         response += string + "<br />"
-    //         array.push(object)
-    //     }
-
-    //     return array
-    // }
-
-    // все записи
-    // async getAll() { 
-    //     return await this.getPart(1, await this.getLength())
-    // }
-    
-    // вывод данных
-    // async print(number) {
-    //     return await this.getOne(number)
-    // }
 
     async add(number) {
         let product, message, response
@@ -197,7 +169,7 @@ module.exports = class Milwaukee {
             message = `${number}. Ошибка: ${product}`
             console.log('\x1b[33m%s\x1b[0m', message)
         }
-            message = message + "<br />"
+        message = message + "<br />"
 
         if (response) response = response + message
         else response = message

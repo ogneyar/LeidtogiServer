@@ -1,6 +1,6 @@
 
-
 const axios = require("axios")
+const needle = require('needle')
 const parseHtml = require("../../../html/parseHtml")
 
 
@@ -10,13 +10,17 @@ async function getSizesGedoreCom(article) {
     let response
     let size = []
 
-    await axios.get('http://www.gedore.com.ru/search/', { params: {
+    await needle('get', "http://www.gedore.com.ru/search/?q=" + article)
+        .then(res => Html = res.body)
 
-        q: article
-
-    } }).then(res => Html = res.data)
+    // await axios.get('http://www.gedore.com.ru/search/', { params: {
+    //     q: article
+    // } }).then(res => Html = res.data)
         
     if (!Html) throw 'Не сработал axios.get(http://www.gedore.com.ru)'
+    
+    if (parseHtml(Html, { entry: `К сожалению, на ваш поисковый запрос ничего не найдено` })) 
+        throw "К сожалению, на ваш поисковый запрос ничего не найдено (getSizesGedoreCom)"
     
     response = parseHtml(Html, {
         entry: `<form action="" method="get">`,
@@ -33,6 +37,8 @@ async function getSizesGedoreCom(article) {
     }else {
         response = response.search
     }
+
+    if ( ! response.includes("product") ) throw "Не найдена ссылка на товар. (getSizesGedoreCom)"
     
     await axios.get("http://www.gedore.com.ru" + response).then(res => Html = res.data)
 
@@ -48,19 +54,24 @@ async function getSizesGedoreCom(article) {
         end: `</table>`
     })
 
-    for(let i = 0; i < 6; i++) {
-        response = parseHtml(response, {
-            start: `<tr>`,
-            end: `</tr>`,
-            return: true
-        })
-        if (i > 1) {
-            size.push(parseHtml(response.search, {
-                start: `<b>`,
-                end: ` `
-            }))
+    try{
+        for(let i = 0; i < 6; i++) {
+            response = parseHtml(response, {
+                start: `<tr>`,
+                end: `</tr>`,
+                return: true
+            })
+            if (i > 1) {
+                size.push(parseHtml(response.search, {
+                    start: `<b>`,
+                    end: ` `
+                }))
+            }
+            response = response.rest
         }
-        response = response.rest
+    }catch(e) {
+        if (size[0]) return { weight: size[0], length: "", width: "", height: "", volume: "" }
+        else throw e
     }
     
     return { 
