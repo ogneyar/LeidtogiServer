@@ -12,11 +12,9 @@ class gedoreController {
             let response, gedore
             // создание экземпляра класса Gedore
             gedore = new Gedore()
-            if ( ! change ) { // если НЕ смена цен
-                // обработка данных файла feed.xlsx
-                response = await gedore.run(feed)
-                if ( ! response ) return res.json({error: 'Ошибка! ParseXlsx не вернул данные!'}) // вывод ошибки
-            }
+            // обработка данных файла feed.xlsx
+            response = await gedore.run(feed)
+            if ( ! response ) return res.json({error: 'Ошибка! ParseXlsx не вернул данные!'}) // вывод ошибки
 
             // добавление нового товара
             if (add !== undefined && number) { // add = quantity; ~ от 1 до 10 

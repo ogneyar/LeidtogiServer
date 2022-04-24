@@ -44,7 +44,7 @@ module.exports = class Gedore {
             
         if (fs.existsSync(fullPath)) { 
             
-            response = await parseXlsx(fullPath, [
+            response = await parseXlsx(fullPath, [ 
                 "Code",
                 "РУС",
                 "РРЦ с НДС Розница",
@@ -225,31 +225,31 @@ module.exports = class Gedore {
     async changePrice() {
         let response = `[`
         
-        // let brand = await Brand.findOne({ where: { name: "KVT" } })
-        // if (brand.id === undefined) return { error: "Не найден бренд товара." }
+        let brand = await Brand.findOne({ where: { name: "Gedore" } })
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
-        // let products = await Product.findAll({ where: { brandId: brand.id } })
+        let old = await Product.findAll({ where: { brandId: brand.id } })
 
-        // this.price.forEach(newProduct => {
-        //     if (response !== `[`) response += ",<br />"
-        //     let yes = false
-        //     products.forEach(oldProduct => {
-        //         if (oldProduct.article === `kvt${newProduct.article}`) {
-        //             let newPrice = newProduct.price * newProduct.quantity
-        //             newPrice = Math.round(newPrice * 100) / 100
-        //             if (newPrice != oldProduct.price) {
-        //                 response += `{Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
-        //                 Product.update({ price: newPrice },
-        //                     { where: { id: oldProduct.id } }
-        //                 ).then(()=>{}).catch(()=>{})
-        //             }else {
-        //                 response += `{Цена осталась неизменна: ${oldProduct.price}}`
-        //             }
-        //             yes = true
-        //         }
-        //     })
-        //     if ( ! yes) response += `{Не найден артикул: kvt${newProduct.article}}`
-        // })
+        if (this.product !== undefined) this.product.forEach(newProduct => {
+            if (response !== `[`) response += ",<br />"
+            let yes = false
+            old.forEach(oldProduct => {
+                if (oldProduct.article === `ged${newProduct.article}`) {
+                    let newPrice = newProduct.price
+                    newPrice = Math.round(newPrice * 100) / 100
+                    if (newPrice != oldProduct.price) {
+                       response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        Product.update({ price: newPrice },
+                            { where: { id: oldProduct.id } }
+                        ).then(()=>{}).catch(()=>{})
+                    }else {
+                        response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                    }
+                    yes = true
+                }
+            })
+            if ( ! yes) response += `{Не найден артикул: ged${newProduct.article}}`
+        })
 
         response = response + `]`
 
