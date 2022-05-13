@@ -1,0 +1,145 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "root",
+    "title": "Корень",
+    "type": "object",
+    "properties": {
+        "categories": {
+            "$id": "#root/categories",
+            "title": "Категории",
+            "type": "array",
+            "default": [],
+            "items": {
+                "$id": "#root/categories/items",
+                "title": "Категория",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$id": "#root/categories/items/id",
+                        "title": "ID Категории",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "parent_id": {
+                        "$id": "#root/categories/items/parent_id",
+                        "title": "ID Родительской категории",
+                        "type": "integer",
+                        "default": null
+                    },
+                    "title": {
+                        "$id": "#root/categories/items/title",
+                        "title": "Название категории",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    }
+                }
+            }
+        },
+        "products": {
+            "$id": "#root/products",
+            "title": "Товары",
+            "type": "array",
+            "default": [],
+            "items": {
+                "$id": "#root/products/items",
+                "title": "Товар",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$id": "#root/products/items/id",
+                        "title": "ID товара",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "category_id": {
+                        "$id": "#root/products/items/category_id",
+                        "title": "ID категории",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "url": {
+                        "$id": "#root/products/items/url",
+                        "title": "URL товара",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "title": {
+                        "$id": "#root/products/items/title",
+                        "title": "Название товара",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "price": {
+                        "$id": "#root/products/items/price",
+                        "title": "Цена",
+                        "type": "float",
+                        "default": 0.0
+                    },
+                    "vendor": {
+                        "$id": "#root/products/items/vendor",
+                        "title": "Название бренда",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "vendor_code": {
+                        "$id": "#root/products/items/vendor_code",
+                        "title": "Артикул бренда",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "price_purchase": {
+                        "$id": "#root/products/items/price_purchase",
+                        "title": "Цена закупочная",
+                        "type": "float",
+                        "default": 0.0
+                    },
+                    "pictures": {
+                        "$id": "#root/products/items/pictures",
+                        "title": "Изображения",
+                        "type": "array",
+                        "default": [],
+                        "items": {
+                            "$id": "#root/products/items/pictures/items",
+                            "title": "URL изображения",
+                            "type": "string",
+                            "default": "",
+                            "pattern": "^.*$"
+                        }
+                    },
+                    "attributes": {
+                        "$id": "#root/products/items/attributes",
+                        "title": "Атрибуты",
+                        "type": "array",
+                        "default": [],
+                        "items": {
+                            "$id": "#root/products/items/attributes/items",
+                            "title": "Атрибут",
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "$id": "#root/products/items/attributes/items/title",
+                                    "title": "Название атрибута",
+                                    "type": "string",
+                                    "default": "",
+                                    "pattern": "^.*$"
+                                },
+                                "value": {
+                                    "$id": "#root/products/items/attributes/items/value",
+                                    "title": "Значение атрибута",
+                                    "type": "string",
+                                    "default": "",
+                                    "pattern": "^.*$"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
