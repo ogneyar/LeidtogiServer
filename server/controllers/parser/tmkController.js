@@ -31,7 +31,8 @@ class tmkController {
             }
 
             if (categories) {
-                return res.send(await tmk.getAllCategories()) 
+                return res.send(await tmk.getAllCategories())
+                // return res.json(await tmk.getAllCategories())
             }
 
             // вывод на экран общего количества товаров (например: 372)

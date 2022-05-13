@@ -12,6 +12,7 @@ const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldF
 const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
+const createCategory = require('../../category/createCategory')
 
 // const getDataGedoreTool = require('./gedoreTool/getDataGedoreTool')
 // const getImagesGedoreTool = require('./gedoreTool/getImagesGedoreTool')
@@ -76,53 +77,41 @@ module.exports = class Tmk {
     // список всех категорий
     async getAllCategories() {
 
-        return getCategoryList(this.categories)
-
-        // let obj = {}
-        // let arr = this.categories.filter(i => i.parent_id === null)
-        // // return arr
-
-        // let arr2 = this.categories.filter(i => i.parent_id === arr[0].id)
-        // // return arr2
-
-        // let arr3 = this.categories.filter(i => i.parent_id === arr2[0].id)
-        // // return arr3
-
-        // let arr4 = this.categories.filter(i => i.parent_id === arr3[2].id)
-        // // return arr3
-
-        let arr = this.categories.filter(i => i.parent_id === null).map(n => {
-
-            let arr = this.categories.filter(i => i.parent_id === n.id).map(t => {
-
-                let arr = this.categories.filter(i => i.parent_id === t.id).map(s => {
-
-                    let arr = this.categories.filter(i => i.parent_id === s.id).map(q => {
-                        // this.categories.filter(i => i.parent_id === q.id)
-            
-                        // obj[`${n.title}`] = ""
-                        return {title: q.title}
-            
-                    })
-        
-                    // obj[`${n.title}`] = ""
-                    return {title: s.title, value: arr}
-        
-                })
-    
-                // obj[`${n.title}`] = ""
-                return {title: t.title, value: arr}
-    
+        const getCategory = (cat = this.categories, number = null) => {
+            return cat.filter(i => i.parent_id === number).map(j => {
+                let arr = getCategory(cat, j.id)
+                return { id: j.id, title: j.title, parent_id: j.parent_id, value: arr }
             })
+        }
 
-            // obj[`${n.title}`] = ""
-            return {title: n.title, value: arr}
+        let category = getCategory()
 
-        })
+        const addCategories = async (cat = category, sub_id = 0) => {
+            await cat.forEach(async i => {
+                let isProduct = 0
+                if (Array.isArray(i.value) && i.value[0] === undefined) isProduct = 1
+                let response = await createCategory(i.title, translit(i.title), isProduct, sub_id)
+                if (response) {
+                    if (Array.isArray(i.value) && i.value[0] !== undefined) {
+                        await addCategories(i.value, response.id)
+                    }
+                }
+            })
+            
+        }
 
-        return JSON.stringify(arr) //.map(i => "<br />" + i)
+        // добавление новых категорий
+        // await addCategories()
 
-        return "this.categories.filter(i => i.parent_id === arr4[2].id)"
+        // вывод всех категорий в удобочитаемом виде
+        const getCategoryList = (cat = this.categories, number = null, offset = "") => {
+            return cat.filter(i => i.parent_id === number).map(j => {
+                let arr = getCategoryList(cat, j.id, offset + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+                return `${offset}"${j.title}" - (${translit(j.title)})${arr[0] !== undefined ? ": {<br/>" + arr + `${offset}}<br/>` : "<br/>"}`
+            }).join("")
+        }
+
+        return getCategoryList(this.categories)
     }
 
 
@@ -345,12 +334,4 @@ module.exports = class Tmk {
     }
 
 
-}
-
-
-const getCategoryList = (cat = this.categories, number = null, offset = "") => {
-    return cat.filter(i => i.parent_id === number).map(j => {
-        let arr = getCategoryList(cat, j.id, offset + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
-        return `${offset}"${j.title}"${arr[0] !== undefined ? ": {<br/>" + arr + `${offset}}<br/>` : "<br/>"}`
-    }).join("")
 }
