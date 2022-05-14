@@ -60,3 +60,8 @@ UPDATE `products` SET `request` = '1' WHERE `products`.`id` = 70;
 // запись в реестр автозагрузку
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v mySQLd /d "C:/Program Files/MySQL/MySQL Server 5.5/bin/mysqld" /f
 
+
+
+
+
+Расходные материалы и принадлежности / Для станков - убрать галочку

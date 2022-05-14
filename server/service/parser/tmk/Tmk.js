@@ -105,7 +105,7 @@ module.exports = class Tmk {
         const getCategoryList = (cat = this.categories, number = null, offset = "") => {
             return cat.filter(i => i.parent_id === number).map(j => {
                 let arr = getCategoryList(cat, j.id, offset + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
-                let url
+                let url = translit(j.title)
 
                 switch(j.title) {
                     // Электроинструмент
@@ -189,13 +189,118 @@ module.exports = class Tmk {
                     case 'Шуруповерты пневматические': url = "pnevmoinstrument_shurupoverty"; break
                     case 'Пневматические гайковерты': url = "pnevmoinstrument_gaykoverty"; break
                     // Расходные материалы и оснастка
+                    case 'Для нейлеров и степлеров пневматических': url = "dlya-neylerov-i-steplerov"; break
+                    case 'Прочая оснастка для пневмомолотков': url = "prochaya-osnastka"; break
+                    case 'Расходные материалы для сварки TIG': url = "rashodnye-materialy"; break
+                    case 'Расходные материалы для плазменной резки': url = "rashodnye-materialy"; break
+                    case 'Расходные материалы для сварки MIG/MAG': url = "rashodnye-materialy"; break
+                    case 'Прочие сварочные аксессуары': url = "prochie-aksessuary"; break
 
-
-
-                    default: url = translit(j.title)
+                    case 'Средства индивидуальной защиты': url = "sredstva-zaschity"; break
+                    
+                    // default: url = translit(j.title)
+                    default: break
                 }
 
-                return `${offset}"${j.title}" - (${url})${arr[0] !== undefined ? ": {<br/>" + arr + `${offset}}<br/>` : "<br/>"}`
+                switch(j.id) {
+                    case 744: url = "dlya-pnevmokraskopultov"; break
+                    case 745: url = "dlya-pnevmokraskopultov"; break
+
+                    case 759: url = "patrony-i-klyuchi"; break
+                    case 760: url = "patrony-i-klyuchi"; break
+
+                    case 501: url = "akkumulyatory"; break
+                    case 590: url = "akkumulyatory"; break
+                    case 766: url = "akkumulyatory"; break
+
+                    case 638: url = "universalnye-zapasnye-chasti"; break
+                    case 667: url = "universalnye-zapasnye-chasti"; break
+
+                    case 556: url = "dlya-nasosov-i-nasosnyh-stanciy"; break
+                    case 602: url = "dlya-nasosov-i-nasosnyh-stanciy"; break
+
+                    case 618: url = "diski"; break
+                    case 111: url = "diski"; break
+                    case 622: url = "chashki"; break
+                    case 606: url = "chashki"; break
+
+                    case 628: url = "dlya-bolgarok-ushm_schetki"; break
+                    case 120: url = "dlya-bolgarok-ushm_schetki"; break
+
+                    case 611: url = "dlya-renovatorov-mfi"; break
+                    case 612: url = "dlya-renovatorov-mfi"; break
+                    case 613: url = "dlya-renovatorov-mfi"; break
+
+                    case 615: url = "dlya-ekscentrikovyh"; break
+                    case 616: url = "dlya-ekscentrikovyh"; break
+
+                    case 118: url = "shlifovalnye-krugi"; break
+
+                    case 664: url = "dlya-rubankov"; break
+                    case 665: url = "dlya-rubankov"; break
+
+                    case 670: url = "dlya-kraskopultov"; break
+                    case 671: url = "dlya-kraskopultov"; break
+
+                    case 662: url = "rashodnye-materialy-i-prinadlezhnosti_cirkulyarnye-pily"; break
+                    case 663: url = "dlya-diskovyh-pil"; break
+
+                    case 635: url = "koronki"; break
+                    case 100: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 101: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 102: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 586: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 637: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 646: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 647: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 648: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 649: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 650: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 788: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 652: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 653: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 654: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 655: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 657: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+                    case 658: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+
+                    case 123: url = "koronki"; break
+
+                    case 641: url = "koronki-i-pilnye-vency"; break
+                    case 642: url = "koronki-i-pilnye-vency"; break
+                    case 643: url = "koronki-i-pilnye-vency"; break
+
+                    case 639: url = "dlya-shurupovertov-i-dreley_patrony-i-klyuchi"; break
+                    case 640: url = "dlya-shurupovertov-i-dreley_patrony-i-klyuchi"; break
+
+                    case 129: url = "po-betonu"; break
+                    case 630: url = "po-betonu"; break
+
+                    case 130: url = "po-drevesine"; break
+                    case 631: url = "po-drevesine"; break
+                    
+                    case 131: url = "po-metallu"; break
+                    case 632: url = "po-metallu"; break
+
+                    case 132: url = "universalnye"; break
+                    case 634: url = "universalnye"; break
+
+                    case 633: url = "po-steklu-i-keramike"; break
+                    case 550: url = "akkumulyatory"; break
+                    case 636: url = "dlya-shurupovertov-i-dreley_schetki"; break
+                    case 892: url = "dlya-shurupovertov-i-dreley_stoyki"; break
+
+                    case 751: url = "rashodnye-materialy-i-prinadlezhnosti_cirkulyarnye-pily"; break
+                    case 752: url = "dlya-torcovochnyh-pil"; break
+
+                    // Для садовой техники{672}
+
+
+                    default: break
+                }
+
+
+                return `${offset}"${j.title}{${j.id}}" - (${url})${arr[0] !== undefined ? ": {<br/>" + arr + `${offset}}<br/>` : "<br/>"}`
             }).join("")
         }
 
