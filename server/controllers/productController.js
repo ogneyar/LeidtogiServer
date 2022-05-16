@@ -3,7 +3,8 @@ const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
-// const sharp = require('sharp')
+let sharp
+if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
 
 const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
 const deleteOldFiles = require('../service/deleteOldFiles.js')
@@ -27,7 +28,7 @@ class ProductController {
                 createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
 
                 for(let i = 0; i < 4; i++) {
-
+ 
                     switch(i) {
                         case 0:
                             if (req.files.image1) imgBig = req.files.image1
@@ -60,6 +61,7 @@ class ProductController {
                     //     .toBuffer()
                     // imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
                      
+                    // imgSmall = sharp(imgBig).resize(100)
                     imgSmall = imgBig
 
                     fileName = uuid.v4() + '.jpg'
