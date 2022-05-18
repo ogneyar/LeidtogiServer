@@ -1,4 +1,5 @@
 const { Product, ProductInfo, ProductSize, Brand } = require('../models/models')
+const {Sequelize} = require('sequelize')
 const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
@@ -500,6 +501,36 @@ class ProductController {
             return next(res.json({error:'Ошибка метода getPrice!'}))
         }
     }
+
+
+    async getPromo(req, res, next) {
+        try {
+            const products = await Product.findAll({ 
+				where: { 
+					promo: {
+						[Sequelize.Op.ne]: ""
+					} 
+				} 
+			})
+			
+			//const brand = await Brand.findAll()
+    
+            return res.json(products)
+			/*return res.json(products.map(i => {
+				let brandName
+				brand.forEach(j => {
+					if (j.id === i.brandId) {
+						brandName = j.name
+					}
+				})
+				return { ...i, brand: brandName }
+			}))*/
+            
+        }catch(e) {
+            return next(res.json({error:'Ошибка метода getPromo!'}))
+        }
+    }
+	
 
     async temp(req, res, next) {
         try {
