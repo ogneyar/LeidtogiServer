@@ -63,5 +63,8 @@ REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v my
 
 
 
-
+// дома сделай!!!
 Расходные материалы и принадлежности / Для станков - убрать галочку
+
+
+
