@@ -6,10 +6,9 @@ const uuid = require('uuid')
 let sharp
 if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
 const { Brand, Category, Product } = require('../../../models/models')
-// // const findProductByUrl = require('../../product/findProductByUrl')
 const findProductByArticle = require('../../product/findProductByArticle')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
-// const createProduct = require('../../product/createProduct.js')
+const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 
@@ -184,47 +183,47 @@ module.exports = class Leidtogi {
             files,
             price,
             size,
-            info
+            info,
+            // filter: undefined
         }
 
     }
 
     // добавление товара в БД
     async add(number) {
-        // try {
-        //     let print = await this.print(number)
+        try {
+            let print = await this.print(number)
 
-        //     let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+            let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
         
-        //     let product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
+            let product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
             
-        //     let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
-        //     console.log('\x1b[34m%s\x1b[0m', response)
+            let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
+            console.log('\x1b[34m%s\x1b[0m', response)
 
-        //     return response
-        // }catch(e) {
-        //     let response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`
-        //     console.log('\x1b[33m%s\x1b[0m', response)
-        //     return response
-        // }
+            return response
+        }catch(e) {
+            let response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`
+            console.log('\x1b[33m%s\x1b[0m', response)
+            return response
+        }
     }
 
     
     // добавление партии товара в БД
     async addParty(number, quantity) {
 
-        // if (quantity === 1) return await this.add(number)
+        if (quantity === 1) return await this.add(number)
         
-        // let array = []
+        let array = []
 
-        // for(let i = number; i < number+quantity; i++) {
-        //     let response = await this.add(i)
-        //     array.push(response)
-        // }
+        for(let i = number; i < number+quantity; i++) {
+            let response = await this.add(i)
+            array.push(response)
+        }
         
-        // return array
+        return array
 
-        return "array"
     }
 
 
@@ -232,31 +231,31 @@ module.exports = class Leidtogi {
     async changePrice() {
         let response = `[`
         
-        // let brand = await Brand.findOne({ where: { name: "Gedore" } })
-        // if (brand.id === undefined) return { error: "Не найден бренд товара." }
+        let brand = await Brand.findOne({ where: { name: "Leidtogi" } })
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
-        // let old = await Product.findAll({ where: { brandId: brand.id } })
+        let old = await Product.findAll({ where: { brandId: brand.id } })
 
-        // if (this.product !== undefined) this.product.forEach(newProduct => {
-        //     if (response !== `[`) response += ",<br />"
-        //     let yes = false
-        //     old.forEach(oldProduct => {
-        //         if (oldProduct.article === `ged${newProduct.article}`) {
-        //             let newPrice = newProduct.price
-        //             newPrice = Math.round(newPrice * 100) / 100
-        //             if (newPrice != oldProduct.price) {
-        //                response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
-        //                 Product.update({ price: newPrice },
-        //                     { where: { id: oldProduct.id } }
-        //                 ).then(()=>{}).catch(()=>{})
-        //             }else {
-        //                 response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
-        //             }
-        //             yes = true
-        //         }
-        //     })
-        //     if ( ! yes) response += `{Не найден артикул: ged${newProduct.article}}`
-        // })
+        if (this.product !== undefined) this.product.forEach(newProduct => {
+            if (response !== `[`) response += ",<br />"
+            let yes = false
+            old.forEach(oldProduct => {
+                if (oldProduct.article === newProduct.article) {
+                    let newPrice = newProduct.price
+                    newPrice = Math.round(newPrice * 100) / 100
+                    if (newPrice != oldProduct.price) {
+                       response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        Product.update({ price: newPrice },
+                            { where: { id: oldProduct.id } }
+                        ).then(()=>{}).catch(()=>{})
+                    }else {
+                        response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                    }
+                    yes = true
+                }
+            })
+            if ( ! yes) response += `{Не найден артикул: ${newProduct.article}}`
+        })
 
         response = response + `]`
 

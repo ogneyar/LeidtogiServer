@@ -18,12 +18,12 @@ class leidtogiController {
 
             // добавление нового товара
             if (add !== undefined && number) { // add = quantity; ~ от 1 до 10 
-                // return res.json(await leidtogi.addParty(Number(number), Number(add)))
+                return res.json(await leidtogi.addParty(Number(number), Number(add)))
             }
 
             // смена цен
             if (change !== undefined) {
-                // return res.send(await leidtogi.changePrice())
+                return res.send(await leidtogi.changePrice())
             }
 
             // вывод информации о товаре на экран
