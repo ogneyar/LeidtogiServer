@@ -26,8 +26,12 @@ link.txt
 
 # command files
 *.bat
+*/*.bat
 dump
 ldump
 
 # Apach file settings
 .htaccess
+*/.htaccess
+
+*/robots.txt
