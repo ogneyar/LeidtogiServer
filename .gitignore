@@ -1,26 +1,33 @@
-
 # dependencies
+node_modules
 */node_modules
 
-# next.js
-*/.next/
-*/out/
-
-# production
-*/build
-
-# misc
+# environment
+.env
 */.env
 
+# dump
 mern.sql
 */mern.sql
 
+# dumps
+DumpDB
 */DumpDB
 
+package-lock.json
 */package-lock.json
 
 # very big file
+static/deliveries/dl/streets.csv
 */static/deliveries/dl/streets.csv
 
 # how to generate a payment link
 link.txt
+
+# command files
+*.bat
+dump
+ldump
+
+# Apach file settings
+.htaccess
