@@ -12,6 +12,7 @@ const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 const createCategory = require('../../category/createCategory')
+const getUrl = require('./getUrl')
 
 
 
@@ -62,7 +63,7 @@ module.exports = class Tmk {
 
 
     // список всех категорий
-    async getAllCategories() {
+    async getAllCategories() { 
 
         const getCategory = (cat = this.categories, number = null) => {
             return cat.filter(i => i.parent_id === number).map(j => {
@@ -94,200 +95,8 @@ module.exports = class Tmk {
         const getCategoryList = (cat = this.categories, number = null, offset = "") => {
             return cat.filter(i => i.parent_id === number).map(j => {
                 let arr = getCategoryList(cat, j.id, offset + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
-                let url = translit(j.title)
 
-                switch(j.title) {
-                    // Электроинструмент
-                    case 'Пилы отрезные (монтажные)': url = "otreznye-mashiny"; break
-                    case 'Аккумуляторные дрели': url = "akkumulyatornyy-instrument_dreli"; break
-                    case 'Аккумуляторные шуруповерты': 
-                    case 'Шуруповерты для зимней рыбалки': 
-                    case 'Угловые аккумуляторные шуруповерты': 
-                    case 'Дрели-шуруповерты для гипсокартона': 
-                    case 'Дрели-шуруповерты ленточные': 
-                    case 'Дрели-шуруповерты угловые': 
-                    case 'Дрели-шуруповерты ударные': url = "shurupoverty"; break
-                    case 'Аккумуляторные отвертки': url = "otvertki"; break
-                    case 'Аккумуляторные гайковерты': url = "gaykoverty"; break
-                    case 'Пневматические гайковерты': url = "pnevmoinstrument_gaykoverty"; break
-                    case 'Ударные гайковерты': 
-                    case 'Угловые гайковерты': url = "setevoy-instrument_gaykoverty"; break
-                    case 'Аккумуляторные дисковые пилы': url = "cirkulyarnye-pily"; break
-                    case 'Алмазные дисковые пилы': 
-                    case 'Дисковые пилы для дома': 
-                    case 'Дисковые пилы по металлу': 
-                    case 'Дисковые пилы со стационарным креплением': 
-                    case 'Погружные дисковые пилы': 
-                    case 'Профессиональные дисковые пилы': url = "setevoy-instrument_cirkulyarnye-pily"; break
-                    case 'Дрели алмазного сверления': url = "dreli"; break
-                    case 'Аккумуляторные лобзики': url = "lobziki"; break
-                    case 'Лобзики для дома': 
-                    case 'Лобзики с лазером': 
-                    case 'Сетевые лобзики': url = "setevoy-instrument_lobziki"; break
-                    case 'Ножницы по металлу': url = "ruchnoy-instrument_nozhnicy"; break
-                    case 'Отбойные молотки': url = "setevoy-instrument_otboynye-molotki"; break
-                    case 'Перфораторы SDSmax': 
-                    case 'Перфораторы SDSplus': url = "setevoy-instrument_perforatory"; break
-                    case 'Рубанки': url = "setevoy-instrument_rubanki"; break
-                    case 'Сабельные пилы (электроножовки)': url = "setevoy-instrument_sabelnye-pily"; break
-                    case 'Безударные дрели': url = "dreli"; break
-                    case 'Сетевые шуруповерты': url = "setevoy-instrument_shurupoverty"; break
-                    case 'Строительные миксеры (дрели-миксеры)': url = "setevoy-instrument_miksery"; break
-                    case 'Ударные дрели': 
-                    case 'Сетевые угловые дрели': url = "dreli"; break
-                    case 'Фены строительные': url = "setevoy-instrument_feny"; break
-                    case 'Кромочные фрезеры': 
-                    case 'Ламельные фрезеры': 
-                    case 'Универсальные фрезеры': url = "frezery"; break
-                    case 'Ленточные': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Машины шлифовальные угловые': url = "setevoy-instrument_ugloshlifovalnye-mashiny"; break
-                    case 'Реноваторы': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Плоскошлифовальные': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Полировальные': url = "setevoy-instrument_polirovalnye-mashiny"; break
-                    case 'Прямошлифовальные': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Шлифовальные машины по бетону': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Эксцентриковые': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Граверы': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Щеточные': url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Электрические краскопульты': url = "kraskopulty"; break
-                    case 'Нейлеры, заклепочники, пистолеты для вязки арматуры': url = "setevoy-instrument_drugoe"; break
-                    case 'Заклепочники': url = "setevoy-instrument_zaklepochniki"; break
-                    case 'Степлеры электрические (Нейлеры)': url = "setevoy-instrument_steplery"; break
-                    case 'Пистолеты для герметика': 
-                    case 'Пистолеты клеевые (термопистолеты)': url = "setevoy-instrument_kleevye-pistolety"; break
-                    case 'Прочий монтажный инструмент': url = "setevoy-instrument_drugoe"; break
-                    // Измерительная техника
-                    case 'Рейки и штативы': url = "drugaya-izmeritelnaya-tehnika"; break
-                    case 'Ротационные нивелиры': url = "rotacionnye-urovni"; break
-                    case 'Угломеры': url = "uglomery-i-uklonomery"; break
-                    // Малая строительная техника
-                    case 'Для грязной воды': url = "motopompy"; break
-                    case 'Для чистой воды': url = "motopompy"; break
-                    case 'Бензорезы': url = "benzoinstrument_otreznye-mashiny"; break
-                    case 'Электрические резчики': url = "setevoy-instrument_otreznye-mashiny"; break
-                    case 'Штроборезы (бороздоделы)': url = "stenoreznye-mashiny"; break
-                    // Пневмоинструмент
-                    case 'Дрели пневматические': url = "pnevmoinstrument_dreli"; break
-                    case 'Заклепочники': url = "pnevmoinstrument_zaklepochniki"; break
-                    case 'Гвоздезабиватели (нейлеры), степлеры': url = "gvozdezabivateli-steplery"; break
-                    case 'Машины шлифовальные пневматические': url = "pnevmoinstrument_pryamoshlifovalnye-mashiny"; break
-                    case 'Отбойные молотки пневматические': url = "pnevmoinstrument_otboynye-molotki"; break
-                    case 'Пневматические гвоздезабивные пистолеты (нейлеры)': url = "gvozdezabivateli-steplery"; break
-                    case 'Пневматические краскопульты': url = "pnevmoinstrument_kraskopulty"; break
-                    case 'Степлеры пневматические': url = "gvozdezabivateli-steplery"; break
-                    case 'Шуруповерты пневматические': url = "pnevmoinstrument_shurupoverty"; break
-                    case 'Пневматические гайковерты': url = "pnevmoinstrument_gaykoverty"; break
-                    // Расходные материалы и оснастка
-                    case 'Для нейлеров и степлеров пневматических': url = "dlya-neylerov-i-steplerov"; break
-                    case 'Прочая оснастка для пневмомолотков': url = "prochaya-osnastka"; break
-                    case 'Расходные материалы для сварки TIG': url = "rashodnye-materialy"; break
-                    case 'Расходные материалы для плазменной резки': url = "rashodnye-materialy"; break
-                    case 'Расходные материалы для сварки MIG/MAG': url = "rashodnye-materialy"; break
-                    case 'Прочие сварочные аксессуары': url = "prochie-aksessuary"; break
-
-                    case 'Средства индивидуальной защиты': url = "sredstva-zaschity"; break
-                    
-                    // default: url = translit(j.title)
-                    default: break
-                }
-
-                switch(j.id) {
-                    case 744: url = "dlya-pnevmokraskopultov"; break
-                    case 745: url = "dlya-pnevmokraskopultov"; break
-
-                    case 759: url = "patrony-i-klyuchi"; break
-                    case 760: url = "patrony-i-klyuchi"; break
-
-                    case 501: url = "akkumulyatory"; break
-                    case 590: url = "akkumulyatory"; break
-                    case 766: url = "akkumulyatory"; break
-
-                    case 638: url = "universalnye-zapasnye-chasti"; break
-                    case 667: url = "universalnye-zapasnye-chasti"; break
-
-                    case 556: url = "dlya-nasosov-i-nasosnyh-stanciy"; break
-                    case 602: url = "dlya-nasosov-i-nasosnyh-stanciy"; break
-
-                    case 618: url = "diski"; break
-                    case 111: url = "diski"; break
-                    case 622: url = "chashki"; break
-                    case 606: url = "chashki"; break
-
-                    case 628: url = "dlya-bolgarok-ushm_schetki"; break
-                    case 120: url = "dlya-bolgarok-ushm_schetki"; break
-
-                    case 611: url = "dlya-renovatorov-mfi"; break
-                    case 612: url = "dlya-renovatorov-mfi"; break
-                    case 613: url = "dlya-renovatorov-mfi"; break
-
-                    case 615: url = "dlya-ekscentrikovyh"; break
-                    case 616: url = "dlya-ekscentrikovyh"; break
-
-                    case 118: url = "shlifovalnye-krugi"; break
-
-                    case 664: url = "dlya-rubankov"; break
-                    case 665: url = "dlya-rubankov"; break
-
-                    case 670: url = "dlya-kraskopultov"; break
-                    case 671: url = "dlya-kraskopultov"; break
-
-                    case 662: url = "rashodnye-materialy-i-prinadlezhnosti_cirkulyarnye-pily"; break
-                    case 663: url = "dlya-diskovyh-pil"; break
-
-                    case 635: url = "koronki"; break
-                    case 100: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 101: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 102: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 586: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 637: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 646: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 647: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 648: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 649: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 650: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 788: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 652: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 653: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 654: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 655: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 657: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-                    case 658: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
-
-                    case 123: url = "koronki"; break
-
-                    case 641: url = "koronki-i-pilnye-vency"; break
-                    case 642: url = "koronki-i-pilnye-vency"; break
-                    case 643: url = "koronki-i-pilnye-vency"; break
-
-                    case 639: url = "dlya-shurupovertov-i-dreley_patrony-i-klyuchi"; break
-                    case 640: url = "dlya-shurupovertov-i-dreley_patrony-i-klyuchi"; break
-
-                    case 129: url = "po-betonu"; break
-                    case 630: url = "po-betonu"; break
-
-                    case 130: url = "po-drevesine"; break
-                    case 631: url = "po-drevesine"; break
-                    
-                    case 131: url = "po-metallu"; break
-                    case 632: url = "po-metallu"; break
-
-                    case 132: url = "universalnye"; break
-                    case 634: url = "universalnye"; break
-
-                    case 633: url = "po-steklu-i-keramike"; break
-                    case 550: url = "akkumulyatory"; break
-                    case 636: url = "dlya-shurupovertov-i-dreley_schetki"; break
-                    case 892: url = "dlya-shurupovertov-i-dreley_stoyki"; break
-
-                    case 751: url = "rashodnye-materialy-i-prinadlezhnosti_cirkulyarnye-pily"; break
-                    case 752: url = "dlya-torcovochnyh-pil"; break
-
-                    // Для садовой техники{672}
-
-
-                    default: break
-                }
-
+                let url = getUrl(j)
 
                 return `${offset}"${j.title}{${j.id}}" - (${url})${arr[0] !== undefined ? ": {<br/>" + arr + `${offset}}<br/>` : "<br/>"}`
             }).join("")
