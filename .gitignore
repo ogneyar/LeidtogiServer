@@ -11,8 +11,8 @@ mern.sql
 */mern.sql
 
 # dumps
-DumpDB
-*/DumpDB
+dumps
+*/dumps
 
 package-lock.json
 */package-lock.json
@@ -35,3 +35,5 @@ ldump
 */.htaccess
 
 */robots.txt
+
+prices

@@ -6,23 +6,12 @@ const uuid = require('uuid')
 let sharp
 if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
 const { Brand, Category, Product } = require('../../../models/models')
-// const findProductByUrl = require('../../product/findProductByUrl')
 const findProductByArticle = require('../../product/findProductByArticle')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 const createCategory = require('../../category/createCategory')
-
-// const getDataGedoreTool = require('./gedoreTool/getDataGedoreTool')
-// const getImagesGedoreTool = require('./gedoreTool/getImagesGedoreTool')
-// const getDescriptionGedoreTool = require('./gedoreTool/getDescriptionGedoreTool')
-// const getNameGedoreTool = require('./gedoreTool/getNameGedoreTool')
-// const getSizesGedoreCom = require('./gedoreCom/getSizesGedoreCom')
-// const getDataGedoreCom = require('./gedoreCom/getDataGedoreCom')
-// const getImagesGedoreCom = require('./gedoreCom/getImagesGedoreCom')
-// const getDescriptionGedoreCom = require('./gedoreCom/getDescriptionGedoreCom')
-// const getNameGedoreCom = require('./gedoreCom/getNameGedoreCom')
 
 
 
@@ -59,7 +48,7 @@ module.exports = class Tmk {
 
         }else {
             // необходимо от сюда взять и сохранить в файл feed.json
-            // https://b2b.tmknn.ru/json/catalog/products/own/52473/fa5de0c62dce29585cd9eee499210789
+            // process.env.TMK_FEED_URL
             throw `Файл ${feed} отсутствует или пуст!`
         }
 
