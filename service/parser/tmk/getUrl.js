@@ -148,9 +148,107 @@ module.exports = function getUrl(j) {
         case 734: case 735: url = "dlya-zatirochnyh-i-shlifovalnyh-mashin"; break
         case 732: url = "dlya-dreley-almaznogo-bureniya_prochaya-osnastka"; break
         case 722: url = "dlya-benzorezov-i-shvonarezchikov_prochaya-osnastka"; break
-        case 728: case 729: url = "dlya-glubinnyh-vibratorov"; break
-
+        case 728: case 729: url = "dlya-glubinnyh-vibratorov"; break        
         // Ручной инструмент{138}
+        case 832: case 833: case 834: case 835: case 836: url = "nozhovki"; break
+        case 166: url = "ruchnoy-instrument_nozhnicy"; break
+        case 827: case 828: case 829: case 830: case 831: url = "nozhi-i-multituly"; break
+        case 813: case 814: case 815: case 816: case 817: case 818: url = "ruchnoy-instrument_razmetochnyy-instrument"; break
+        case 795: case 796: url = "zaklepochniki-i-steplery"; break
+        case 185: case 154: case 791: case 792: case 793: case 794: case 852: url = "dlya-shlifovaniya"; break
+        case 802: url = "izmeritelnyy-instrument_mikrometry"; break
+        case 797: case 798: case 799: url = "izolyacionnye-lenty"; break
+        case 148: url = "klyuchi_nabory"; break
+        case 149: url = "rozhkovye"; break
+        case 150: url = "torcevye"; break
+        case 765: url = "ruchnoy-instrument_torcevye-golovki"; break
+        case 152: url = "trubnye"; break
+        case 841: url = "kombinirovannye"; break
+        case 842: url = "nakidnye"; break
+        case 843: url = "razvodnye"; break
+        case 844: url = "klyuchi_universalnye"; break
+        case 804: case 805: case 806: case 807: url = "molotki"; break
+        case 822: case 823: url = "fonari-i-osveschenie"; break
+        case 157: case 158: case 159: case 160: case 161: case 162: case 808: url = "ruchnoy-instrument_otvertki"; break
+        case 168: url = "ruchnoy-instrument_rubanki"; break
+        case 809: case 810: case 811: case 812: url = "plitkorezy-i-steklorezy"; break
+        case 839: url = "stameski"; break
+        case 820: case 821: url = "udliniteli-i-vilki-silovye"; break
+        case 179: url = "nabory-instrumentov"; break
+        case 181: case 182: case 183: case 184: case 186: case 187: case 188: case 189: case 190: url = "sharnirno-gubcevyy-instrument"; break
+        case 824: case 825: case 826: url = "yaschiki-i-keysy"; break        
+        // Садовая техника{187}
+        case 880: case 881: case 882: url = "snegouborschiki"; break
+        case 190: case 191: case 192: url = "benzopily"; break
+        case 194: case 195: case 539: case 588: url = "gazonogosilki"; break
+        case 883: case 884: case 885: case 886: case 887: url = "kustorezy"; break
+        case 785: case 786: case 787: url = "kultivatory"; break
+        // насосы
+        case 214: case 215: url = "poverhnostnye"; break
+        case 217: case 218: case 219: case 220: url = "pogruzhnye"; break
+        case 563: url = "vibracionnye"; break
+        case 564: url = "drenazhnye"; break
+        case 565: url = "samovsasyvayuschie"; break
+        case 566: url = "skvazhinnye"; break
+        case 567: url = "cirkulyacionnye"; break
+        case 223: url = "opryskivateli-i-raspyliteli"; break
+        // садовый инвентарь
+        case 225: url = "grabli"; break
+        case 889: case 890: case 891: url = "tachki-i-kolesa"; break
+        case 660: url = "sadovyy-inventar_schetki"; break
+        case 231: case 232: case 587: url = "trimmery"; break
+        case 894: case 895: url = "elektropily"; break
+        case 904: case 905: url = "skarifikatory-i-aeratory"; break
+        // оборудование для полива
+        case 859: case 860: url = "nasadki-dlya-poliva"; break
+        case 862: case 863: case 864: case 865: case 866: case 867: url = "oborudovanie-dlya-poliva_fitingi"; break        
+        // Силовая техника{234}
+        case 238: url = "svarochnye"; break
+        case 541: url = "gazovye"; break
+        // Станки{252}
+        case 253: url = "zatochnye"; break
+        case 254: url = "stanki_lentochnye-pily"; break
+        case 255: url = "metalloobrabatyvayuschie"; break
+        case 256: url = "mnogofunkcionalnye"; break
+        case 259: url = "sverlilnye"; break
+        case 260: url = "stanki_torcovochnye-pily"; break
+        case 261: url = "plitkorezy"; break
+        case 503: url = "shlifovalnye"; break
+        case 603: url = "frezernye"; break        
+        // Уборка и клининг{262}
+        case 263: url = "pylesosy"; break
+        case 264: url = "vozduhoduvki"; break
+        case 266: url = "promyshlennye-pylesosy"; break        
+        case 548: url = "proizvodstvennaya-mebel_telezhki"; break
+        
+        // Уцененные товары{267}
+        case 273: case 274: url = "izmeritelnyy-instrument"; break
+        case 277: url = "stroitelnoe-oborudovanie_drugoe"; break
+        case 278: url = "vibroreyki"; break
+        case 279: url = "vibroplity"; break
+        case 280: url = "zatirochnye-mashiny"; break
+        case 283: url = "gvozdezabivateli-steplery"; break
+        case 284: case 286: url = "pnevmoinstrument_drugoe"; break
+        case 285: url = "pnevmoinstrument_otboynye-molotki"; break
+        case 287: url = "raznye"; break
+        case 288: url = "pnevmoinstrument_kraskopulty"; break
+        case 290: url = "rashodnye-materialy-i-prinadlezhnosti_drugoe"; break
+        case 295: url = "dlya-benzorezov-i-shvonarezchikov_prochaya-osnastka"; break
+        case 298: url = "rezhuschie-diski-i-nozhi"; break
+        case 299: url = "dlya-gazonokosilok-i-trimmerov_drugoe"; break
+        case 301: case 302: case 303: case 307: case 312: url = "rashodnye-materialy-i-prinadlezhnosti_drugoe"; break
+        case 305: url = "dlya-motoblokov-i-motokultivatorov_dvigateli"; break
+        case 309: case 310: case 311: url = "dlya-perforatorov-i-otboynyh-molotkov"; break
+        case 314: url = "zatochnye-komplekty-i-napilniki"; break
+        case 316: url = "raznoe"; break
+        case 320: case 321: case 322: case 323: case 324: case 325: case 326: case 327: case 328: case 329: url = "dlya-shlifovalnyh-mashin_raznoe"; break
+        case 331: case 332: case 333: case 334: case 335: case 336: case 337: case 338: case 339: case 340: case 341: url = "dlya-shurupovertov-i-dreley_raznoe"; break
+        case 343: url = "dlya-neylerov-i-steplerov"; break
+        case 344: url = "masla-smazki-avtohimiya-aksessuary_raznoe"; break
+        case 345: url = "sredstva-zaschity"; break
+        case 346: url = "rashodnye-materialy-i-prinadlezhnosti_drugoe"; break
+
+        // Уцененные товары - Ручной инструмент{347}
 
         default: break
     }
