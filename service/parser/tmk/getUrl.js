@@ -249,7 +249,70 @@ module.exports = function getUrl(j) {
         case 346: url = "rashodnye-materialy-i-prinadlezhnosti_drugoe"; break
 
         // Уцененные товары - Ручной инструмент{347}
+        case 348: url = "dlya-shlifovaniya"; break
+        case 350: url = "izmeritelnyy-instrument_raznoe"; break
+        case 351: url = "ruchnoy-instrument_razmetochnyy-instrument"; break
+        case 355: url = "ruchnoy-instrument_drugoe"; break
+        case 357: url = "klyuchi_nabory"; break
+        case 358: case 361: url = "klyuchi_raznye"; break
+        case 359: url = "torcevye"; break
+        case 362: url = "molotki"; break
+        case 364: url = "fonari-i-osveschenie"; break
+        case 366: case 367: case 368: case 369: case 370: case 371: url = "ruchnoy-instrument_otvertki"; break
+        case 373: case 374: case 375: case 376: url = "rezhuschiy-instrument"; break
+        case 377: url = "ruchnoy-instrument_rubanki"; break
+        case 379: url = "zaklepochniki-i-steplery"; break
+        case 380: url = "montirovki-i-gvozdodery"; break
+        case 382: case 383: url = "ruchnoy-instrument_drugoe"; break
+        case 384: url = "plitkorezy-i-steklorezy"; break
+        case 387: url = "udliniteli-i-vilki-silovye"; break
+        case 388: url = "nabory-instrumentov"; break
+        case 390: case 391: case 392: case 393: url = "sharnirno-gubcevyy-instrument"; break
+        case 394: url = "ruchnoy-instrument_drugoe"; break
+        case 395: url = "yaschiki-i-keysy"; break
 
+        // Уцененные товары - Садовая техника{396}
+        case 397: url = "moyki-vysokogo-davleniya"; break
+        case 398: url = "sadovyy-instrument_drugoe"; break
+        case 400: case 401: url = "gazonogosilki"; break
+        case 406: url = "sekatory-i-suchkorezy"; break
+        case 407: url = "sadovyy-instrument_drugoe"; break
+        case 409: url = "kustorezy"; break
+        case 410: url = "lestnicy_raznye"; break
+        case 413: url = "kultivatory"; break
+        case 414: case 415: case 419: url = "nasosy_raznye"; break
+        case 417: url = "drenazhnye"; break
+        case 418: url = "samovsasyvayuschie"; break
+        case 420: url = "cirkulyacionnye"; break
+        case 421: case 428: case 543: url = "sadovyy-instrument_drugoe"; break
+        case 424: case 425: url = "trimmery"; break
+        
+        // Уцененные товары - Силовая техника{429}
+        case 876: case 877: case 878: case 879: url = "vozduhonagrevateli"; break
+        case 434: url = "svarochnye"; break
+        case 437: case 438: url = "svarochnoe-oborudovanie_raznoe"; break
+        case 441: url = "svarochnye-transformatory"; break
+        
+        // Уцененные товары - Станки{443}
+        case 447: case 448: url = "stanki_raznye"; break
+        case 449: url = "stanki_torcovochnye-pily"; break
+        
+        // Уцененные товары - Электроинструмент{452}
+        case 453: url = "setevoy-instrument_cirkulyarnye-pily"; break
+        case 455: case 456: case 457: url = "dreli"; break
+        case 458: url = "setevoy-instrument_lobziki"; break
+        case 459: url = "setevoy-instrument_nozhnicy"; break
+        case 461: case 462: case 463: url = "setevoy-instrument_perforatory"; break
+        case 464: url = "setevoy-instrument_drugoe"; break
+        case 465: url = "setevoy-instrument_rubanki"; break
+        case 466: url = "setevoy-instrument_sabelnye-pily"; break
+        case 467: case 470: case 472: case 473: case 476: url = "setevoy-instrument_drugoe"; break
+        case 471: url = "setevoy-instrument_ugloshlifovalnye-mashiny"; break
+        case 474: url = "setevoy-instrument_polirovalnye-mashiny"; break
+        case 475: url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
+        case 478: case 479: case 480: case 481: case 482: case 483: case 661: url = "setevoy-instrument_drugoe"; break
+
+        
         default: break
     }
 
