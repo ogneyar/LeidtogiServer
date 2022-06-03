@@ -12,7 +12,7 @@ const deleteOldFiles = require('../service/deleteOldFiles.js')
 const createProduct = require('../service/product/createProduct.js')
 const translit = require('../service/translit.js')
 const renameFolder = require('../service/renameFolder')
-const productDto = require('../dtos/productDto')
+const ProductDto = require('../dtos/productDto')
 
 
 class ProductController {
@@ -83,7 +83,7 @@ class ProductController {
 
             let url = translit(name) + "_" + article.toString()
             
-            let pro = productDto({name, url, price, have, article, promo, country, brandId, categoryId, img:files, info, size, filter, request})
+            let pro = new ProductDto({name, url, price, have, article, promo, country, brandId, categoryId, img:files, info, size, filter, request})
 
             const product = await createProduct(pro)
 

@@ -13,7 +13,7 @@ const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 const createCategory = require('../../category/createCategory')
 const getUrl = require('./getUrl')
-const productDto = require('../../../dtos/productDto')
+const ProductDto = require('../../../dtos/productDto')
 
 
 
@@ -253,8 +253,8 @@ module.exports = class Tmk {
 
         //     // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
         
-        //     let pro = productDto(print)
-        //     let product = await createProduct(pro)
+        //     let proDto = new ProductDto(print)
+        //     let product = await createProduct(proDto)
             
         //     let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
         //     console.log('\x1b[34m%s\x1b[0m', response)

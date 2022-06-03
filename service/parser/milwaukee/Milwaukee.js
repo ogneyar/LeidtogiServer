@@ -10,7 +10,7 @@ const getAllData = require('./getAllData.js')
 const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit')
 const parseXlsx = require('../../xlsx/parseXlsx')
-const productDto = require('../../../dtos/productDto')
+const ProductDto = require('../../../dtos/productDto')
 
 // класс для получения данных из фида xlsx 
 // для добавления товара
@@ -155,9 +155,9 @@ module.exports = class Milwaukee {
             
             // return { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size }
 
-            let pro = productDto({name, url, price, have, article, promo, country, brandId, categoryId, files, info, size})
+            let proDto = new ProductDto({name, url, price, have, article, promo, country, brandId, categoryId, files, info, size})
             
-            product = await createProduct(pro) 
+            product = await createProduct(proDto) 
 
             
         }catch(e) {

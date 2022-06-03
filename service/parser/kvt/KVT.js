@@ -14,7 +14,7 @@ const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 
 const parseXlsx = require('../../xlsx/parseXlsx')
-const productDto = require('../../../dtos/productDto')
+const ProductDto = require('../../../dtos/productDto')
 
 
 module.exports = class KVT {
@@ -332,9 +332,9 @@ module.exports = class KVT {
 
                     // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
             
-                    let pro = productDto(print)
+                    let proDto = new ProductDto(print)
 
-                    let response = await createProduct(pro)
+                    let response = await createProduct(proDto)
                 
                     array.push(`{${i}: ${response.url} - ${response.price}}р.`)
                     continue
