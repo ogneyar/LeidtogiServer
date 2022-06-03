@@ -11,6 +11,7 @@ const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldF
 const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
+const productDto = require('../../../dtos/productDto')
 
 
 
@@ -194,9 +195,11 @@ module.exports = class Leidtogi {
         try {
             let print = await this.print(number)
 
-            let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+            // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
         
-            let product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
+            let pro = productDto(print)
+
+            let product = await createProduct(pro)
             
             let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
             console.log('\x1b[34m%s\x1b[0m', response)

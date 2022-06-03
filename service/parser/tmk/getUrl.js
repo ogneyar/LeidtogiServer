@@ -1,11 +1,11 @@
 const translit = require("../../translit")
 
 
-module.exports = function getUrl(j) {
+module.exports = function getUrl(id, title = null) {
 
-    let url = translit(j.title)
+    let url = null
 
-    switch(j.id) {
+    switch(id) {
         // Электроинструмент
         case 257: url = "otreznye-mashiny"; break
         case 4: url = "akkumulyatornyy-instrument_dreli"; break
@@ -315,6 +315,8 @@ module.exports = function getUrl(j) {
         
         default: break
     }
+
+    if ( ! url && title ) url = translit(title)
 
     return url
 

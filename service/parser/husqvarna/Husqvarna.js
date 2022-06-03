@@ -17,6 +17,7 @@ const findProductByArticle = require('../../product/findProductByArticle')
 const translit = require('../../translit')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles')
 const parseHtml = require('../../html/parseHtml')
+const productDto = require('../../../dtos/productDto')
 // const deleteProduct = require('../../product/deleteProduct')
 
 
@@ -414,7 +415,9 @@ module.exports = class Husqvarna {
             
             let url = translit(name) + "_" + article
             
-            response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
+            let pro = productDto({name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter})
+            
+            response = await createProduct(pro)
 
             if ( ! response ) throw `Не смог сохранить товар с артикулом ${article}!`
 

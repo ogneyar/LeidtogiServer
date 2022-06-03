@@ -12,13 +12,14 @@ const deleteOldFiles = require('../service/deleteOldFiles.js')
 const createProduct = require('../service/product/createProduct.js')
 const translit = require('../service/translit.js')
 const renameFolder = require('../service/renameFolder')
+const productDto = require('../dtos/productDto')
 
 
 class ProductController {
 
     async create(req, res, next) {  
         try {
-            let {name, price, brandId, categoryId, have, article, promo, country, files, info, size} = req.body
+            let { name, price, brandId, categoryId, have, article, promo, country, files, info, size, filter, request } = req.body
             let imgBig, imgSmall, fileName
             let link = ''
             if (req.files && req.files.image1) {
@@ -82,14 +83,13 @@ class ProductController {
 
             let url = translit(name) + "_" + article.toString()
             
-            const product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size)
+            let pro = productDto({name, url, price, have, article, promo, country, brandId, categoryId, img:files, info, size, filter, request})
+
+            const product = await createProduct(pro)
 
             return res.json(product)
-            // return res.json("files: " + files)
 
         }catch (e) {
-            // console.log(e.message);
-            // return next(ApiError.badRequest(e.message))
             return res.json({error: 'Ошибка метода create! ' + e.message})
         }
     }
@@ -310,7 +310,7 @@ class ProductController {
     async editAll(req, res, next) {
         const {id} = req.params
         try {
-            let {name, price, brandId, categoryId, info, have, article, description, promo, country, size, equipment} = req.body
+            let { name, price, brandId, categoryId, info, have, article, description, promo, country, size, equipment, request } = req.body
             let files
             let imgBig, imgSmall, fileName
             let link = ''
@@ -407,7 +407,7 @@ class ProductController {
             let url = translit(name) + "_" + article.toString()
 
             let response = await Product.update(
-                {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId, img: files}, 
+                {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId, img: files, request}, 
                 {where: { id }}
             )
     

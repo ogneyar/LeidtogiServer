@@ -21,6 +21,7 @@ const getDataGedoreCom = require('./gedoreCom/getDataGedoreCom')
 const getImagesGedoreCom = require('./gedoreCom/getImagesGedoreCom')
 const getDescriptionGedoreCom = require('./gedoreCom/getDescriptionGedoreCom')
 const getNameGedoreCom = require('./gedoreCom/getNameGedoreCom')
+const productDto = require('../../../dtos/productDto')
 
 
 
@@ -189,9 +190,11 @@ module.exports = class Gedore {
         try {
             let print = await this.print(number)
 
-            let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+            // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter, request } = print
+
+            let pro = productDto(print)
         
-            let product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
+            let product = await createProduct(pro)
             
             let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
             console.log('\x1b[34m%s\x1b[0m', response)

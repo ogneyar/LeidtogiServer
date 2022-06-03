@@ -16,6 +16,7 @@ const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldF
 const findProductByArticle = require('../../product/findProductByArticle.js')
 const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
+const productDto = require('../../../dtos/productDto')
 
 
 
@@ -284,7 +285,8 @@ module.exports = class RGK {
         
         let product
         try {
-            product = await createProduct(name, urlTranslit, price, have, article, promo, country, brandId, categoryId, files, info, size)
+            let pro = productDto({name, urlTranslit, price, have, article, promo, country, brandId, categoryId, files, info, size})
+            product = await createProduct(pro)
         }catch(e) {
             return { error: "Ошибка: не смог добавить товар!!!" }
         }

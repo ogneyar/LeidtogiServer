@@ -13,6 +13,7 @@ const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 const createCategory = require('../../category/createCategory')
 const getUrl = require('./getUrl')
+const productDto = require('../../../dtos/productDto')
 
 
 
@@ -42,7 +43,10 @@ module.exports = class Tmk {
                 this.categories = response.categories
 
                 let keys = Object.keys(response.products)
-                this.products = keys.map(i => response.products[`${i}`])
+                this.products = keys.map(i => response.products[`${i}`]).filter(i => 
+                    i.category_id !== null 
+                    // && i.pictures[0] !== undefined
+                    )
 
                 return true
             }
@@ -96,7 +100,8 @@ module.exports = class Tmk {
             return cat.filter(i => i.parent_id === number).map(j => {
                 let arr = getCategoryList(cat, j.id, offset + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
 
-                let url = getUrl(j)
+                let url = getUrl(j.id, j.title)
+                // if ( ! url ) translit(j.title)
 
                 return `${offset}"${j.title}{${j.id}}" - (${url})${arr[0] !== undefined ? ": {<br/>" + arr + `${offset}}<br/>` : "<br/>"}`
             }).join("")
@@ -106,6 +111,18 @@ module.exports = class Tmk {
     }
 
 
+    // вывод всех данных на экран
+    async printAll() {
+        let length = await this.getLength()
+        // console.log(length)
+        let response = []
+        let i
+        for (i = 1; i <= length; i++) {
+            response.push(await this.print(i))
+        }
+        if (i > length) return response
+        // return this.products.map(i => {}) 
+    }
 
 
     // вывод данных на экран
@@ -117,58 +134,35 @@ module.exports = class Tmk {
 
         let article = one.code
         let ean = one.ean
-        // let name = one.name
-        // // if (name === "#Н/Д" || name === "42") throw "Не найдено наименование!"
-        // let price = one.price
+        let name = one.title
+        let price = one.price
         
-        let categoryId = one.category_id
-        let category, subCategory
+        let tmkCategoryId = one.category_id
 
-        this.categories.forEach(i => {
-            if (i.id === categoryId) {
-                category = i.title
-                subCategory = i.parent_id
-                if (subCategory) {
-                    this.categories.forEach(j => {
-                        if (j.id === subCategory) {
-                            category = j.title + "/" + category
-                            subCategory = j.parent_id
-                            if (subCategory) {
-                                this.categories.forEach(k => {
-                                    if (k.id === subCategory) {
-                                        category = k.title + "/" + category
-                                        subCategory = k.parent_id
-                                        if (subCategory) {
-                                            this.categories.forEach(m => {
-                                                if (m.id === subCategory) {
-                                                    category = m.title + "/" + category
-                                                    subCategory = m.parent_id
-                                                }
-                                            })
-                                        }
-                                    }
-                                })
-                            }
-                        }
-                    })
+        let urlCategory = getUrl(tmkCategoryId)
+
+        if ( ! urlCategory ) {
+            let title = ""
+            this.categories.forEach(i => {
+                if (i.id === tmkCategoryId) {
+                    title = i.title
                 }
+            })
+            urlCategory = translit(title)
+        }
+
+
+        let categoryId
+
+        let cat = await Category.findAll()
+        cat.forEach(i => {
+            if (i.url === urlCategory) {
+                categoryId = i.id
             }
         })
+        
+        if (categoryId === 0) throw "Не найден номер категории!"
 
-        // if (category) { 
-
-        //     let cat = await Category.findAll()
-        //     cat.forEach(i => {
-        //         if (i.url === category) {
-        //             categoryId = i.id
-        //         }
-        //     })
-            
-        //     if (categoryId === 0) throw "Не найден номер категории!"
-
-        // }else {
-        //     categoryId = 157 // category = "ruchnoy-instrument_drugoe"
-        // }
 
         // // let brand = await Brand.findOne({ where: { name: "Gedore" } })
         // let brandId = 3 // brand.id
@@ -232,19 +226,19 @@ module.exports = class Tmk {
         // files += `]`
 
         return { 
+            tmkCategoryId,
+            urlCategory,
             categoryId,
-            category,
-            subCategory,
             // brandId,
             article, 
             ean, 
-            // name,
+            name,
             // url,
             // have: 1,
             // promo: "",
             // country,
             // files,
-            // price,
+            price,
             // size,
             // info,
             // filter: undefined,
@@ -257,9 +251,10 @@ module.exports = class Tmk {
         // try {
         //     let print = await this.print(number)
 
-        //     let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+        //     // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
         
-        //     let product = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
+        //     let pro = productDto(print)
+        //     let product = await createProduct(pro)
             
         //     let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
         //     console.log('\x1b[34m%s\x1b[0m', response)

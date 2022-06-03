@@ -3,7 +3,9 @@ const { Product, ProductInfo, ProductSize, ProductFilter } = require('../../mode
 const findProductByArticle = require('./findProductByArticle')
 
 
-async function createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter = null) {
+async function createProduct(args) {
+
+    let { name, url, price, have, article, promo, country, brandId, categoryId, img, info, size, filter, request } = args
     
     const oldProduct = await findProductByArticle(article) 
     if (oldProduct) {
@@ -25,7 +27,7 @@ async function createProduct(name, url, price, have, article, promo, country, br
     // console.log("price",price);
     // console.log(" ");
 
-    const product = await Product.create({name, url, price, have, article, promo, country, brandId, categoryId, img: files})
+    const product = await Product.create({name, url, price, have, article, promo, country, brandId, categoryId, img, request}) 
 
     if (info) {
         let inf
