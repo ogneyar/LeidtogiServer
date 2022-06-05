@@ -6,7 +6,7 @@ class tmkController {
 
     async tmk(req, res, next) {
         try {
-            let { number, add, change, categories, print } = req.query
+            let { number, add, change, categories } = req.query
 
             let response, tmk
             // создание экземпляра класса Tmk
@@ -17,7 +17,7 @@ class tmkController {
 
             // добавление нового товара
             if (add !== undefined && number) { // add = quantity; ~ от 1 до 10 
-                // return res.json(await tmk.addParty(Number(number), Number(add)))
+                return res.json(await tmk.addParty(Number(number), Number(add)))
             }
 
             // смена цен
@@ -28,11 +28,6 @@ class tmkController {
             // вывод информации о товаре на экран
             if (number) {
                 return res.json(await tmk.print(Number(number)))
-            }
-
-            // вывод информации о ВСЕХ товарах
-            if (print) {
-                return res.json(await tmk.printAll())
             }
 
             if (categories) {
