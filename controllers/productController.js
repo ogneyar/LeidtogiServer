@@ -410,22 +410,46 @@ class ProductController {
                 {name, url, price, have, article, description, promo, equipment, country, brandId, categoryId, img: files, request}, 
                 {where: { id }}
             )
-    
-            await ProductInfo.destroy({
-                where: {productId: id}
-            })
 
             if (info) {
+
+                let oldInfo = await ProductInfo.findAll({
+                    where: {productId: id}
+                })
+
                 let inf = JSON.parse(info)
-                if (Array.isArray(inf)) {
-                    for (let i = 0; i < inf.length; i++) {
-                        ProductInfo.create({
-                            title: inf[i].title,
-                            body: inf[i].body,
-                            productId: id 
-                        })
-                    }
+                if (inf && Array.isArray(inf)) {
+
+                    inf.forEach(newI => {
+                        let idInfo = 0
+                        if (oldInfo && Array.isArray(oldInfo)) {
+                            oldInfo.forEach(oldI => {
+                                if (newI.title === oldI.title) {
+                                    idInfo = oldI.id
+                                }
+                            })
+                        }
+                        if (idInfo === 0) {
+                            ProductInfo.create({
+                                title: newI.title,
+                                body: newI.body,
+                                productId: id 
+                            })
+                        }else {
+                            ProductInfo.update({ body: newI.body }, { where: { id: idInfo } })
+                        }
+                    })
+
+                }else {
+                    await ProductInfo.destroy({
+                        where: {productId: id}
+                    })
                 }
+
+            }else {
+                await ProductInfo.destroy({
+                    where: {productId: id}
+                })
             }
     
             if (size) {

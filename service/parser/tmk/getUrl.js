@@ -1,7 +1,9 @@
 const translit = require("../../translit")
 
 
-module.exports = function getUrl(id = 806, title = null) { // 806 - Прочее (url = 'prochee')
+module.exports = function getUrl(id, title = null) { 
+
+    if ( ! id ) return "prochee"
 
     let url = null
 
@@ -311,9 +313,6 @@ module.exports = function getUrl(id = 806, title = null) { // 806 - Прочее
         case 474: url = "setevoy-instrument_polirovalnye-mashiny"; break
         case 475: url = "setevoy-instrument_pryamoshlifovalnye-mashiny"; break
         case 478: case 479: case 480: case 481: case 482: case 483: case 661: url = "setevoy-instrument_drugoe"; break
-
-
-        case 806: url = "prochee"; break
 
         
         default: break

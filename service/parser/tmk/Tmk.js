@@ -112,14 +112,10 @@ module.exports = class Tmk {
         }
 
 
-        let categoryId
+        let categoryId = 0
 
-        let cat = await Category.findAll()
-        cat.forEach(i => {
-            if (i.url === urlCategory) {
-                categoryId = i.id
-            }
-        })
+        let cat = await Category.findOne({ where: { url: urlCategory } })
+        if (cat) categoryId = cat.id
         
         if (categoryId === 0) throw "Не найден номер категории!"
 
