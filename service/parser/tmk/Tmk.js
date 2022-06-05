@@ -132,7 +132,7 @@ module.exports = class Tmk {
         
         let size
 
-        if ( ! one.weight ) throw "Отсутствуют данные о весе товара."
+        if ( ! one.weight ) throw `Отсутствуют данные о весе товара (${article}).`
 
         size = {
             weight: one.weight / 1000,
