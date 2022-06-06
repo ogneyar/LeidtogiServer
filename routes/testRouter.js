@@ -21,7 +21,17 @@ const testPost = async (req, res, next) => {
 const testGet = async (req, res, next) => {
     try {
         // const {name} = req.body
-        return res.json([{"test":"get"}]) // return array
+        let obj = { 
+            ok: true,
+            result: {
+                id: 42,
+                first_name: "her",
+                username: "o"
+            }
+        }
+        obj = { ...obj, result: { article: "t142", url: "http://her.com", price: 42} }
+        return res.json(obj) // return object
+        // return res.json([{"test":"get"}]) // return array
     }catch(e) {
         return next(ApiError.badRequest('Ошибка метода testGet!'));
     }
