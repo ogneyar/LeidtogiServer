@@ -5,7 +5,6 @@ const axios = require('axios')
 const {Product, Brand, Category} = require('../models/models')
 const Sdek = require("../service/delivery/sdek/Sdek")
 const Dl = require("../service/delivery/dl/Dl")
-const translit = require('../service/translit')
 
 
 class TesterController {
@@ -16,25 +15,19 @@ class TesterController {
             const brands = await Brand.findAll()
             const categories = await Category.findAll()
             
-            let errors = []
-
             products = products.filter(i => {
                 let img                    
                 try {
                     img = JSON.parse(i.img)
-                }catch(e) {
-                    errors.push(i.article)
+                }catch(e) {}
+                if (img && Array.isArray(img) && img[0].big !== undefined) { 
+                    if ( ! i.request && i.price > 0 ) return true 
                 }
-                if (img && Array.isArray(img) && img[0].big !== undefined) {
-                    if ( ! i.request && i.price > 0 ) return true
-                }
+                // если нет изображений
+                // если "цена по запросу" или нет цены
+                // тогда убираем из списка
                 return false                
             })
-
-            // return res.json({
-            //     length: products.length,
-            //     errors
-            // })
 
             let date = new Date().toISOString()
             let formatDate = date.substring(0, date.indexOf("."))
@@ -95,6 +88,7 @@ class TesterController {
         }
     }
 
+    
     // временный роут для исправления JSON объекта поля img
     // и удаления лишних фотографий товара
     // п.с. нет ничего более постоянного, чем временное...
