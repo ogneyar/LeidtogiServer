@@ -95,11 +95,12 @@ class TesterController {
         }
     }
 
-    async temp (req, res, next) {
+    // временный роут для исправления JSON объекта поля img
+    // и удаления лишних фотографий товара
+    // п.с. нет ничего более постоянного, чем временное...
+    async temp (req, res, next) {  
         try {
             let products = await Product.findAll()
-            const brands = await Brand.findAll()
-            const categories = await Category.findAll()
             
             let errors = []
 
@@ -116,7 +117,6 @@ class TesterController {
                     img = img.filter((j,idx) => idx < 4)
 
                     let files = fs.readdirSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "big"))
-                    // let filesSmall = fs.readdirSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "small"))
 
                     files.forEach(j => {
                         let yes = null // удалять файл?
@@ -124,7 +124,6 @@ class TesterController {
                             if (`tmk/${i.article}/big/${j}` === k.big) yes = false
                             if (index === 3 && yes !== false) yes = true
                         })
-                        // console.log(`tmk/${i.article}/big/${j}`)
                         if (yes) {
                             try {
                                 fs.unlinkSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "big", j))
@@ -137,29 +136,15 @@ class TesterController {
                         }
                     })
 
-                    img = JSON.stringify(img)                    
+                    img = JSON.stringify(img)
+                           
+                    Product.update({img}, {
+                        where: { id: i.id }
+                    }).then(() => console.log(`Обновил товар с артикулом ${i.article}.`))
 
-                    // if (body.name !== undefined) {
-                    //     const product = await Product.findOne({
-                    //         where: {id}
-                    //     })
-                    //     if (product.name !== body.name) {
-                    //         let url = translit(body.name) + "_" + body.article.toString()
-                    //         body = { ...body, url }
-                    //     }
-                    // }
-        
-                    // const response = await Product.update(body, {
-                    //     where: { id }
-                    // })
-
-                    errors.push({
-                        img,
-                        files
-                    }) 
+                    errors.push(i.article) 
                 }             
             })
-
 
             return res.json(errors)
 
@@ -168,6 +153,7 @@ class TesterController {
         }
     }
 
+    // 
     async setLocationCitiesSdek (req, res, next) {
         try {
             let array, response
