@@ -5,15 +5,36 @@ const axios = require('axios')
 const {Product, Brand, Category} = require('../models/models')
 const Sdek = require("../service/delivery/sdek/Sdek")
 const Dl = require("../service/delivery/dl/Dl")
+const translit = require('../service/translit')
 
 
 class TesterController {
     
     async setFeed(req, res, next) {
         try {
-            const products = await Product.findAll()
+            let products = await Product.findAll()
             const brands = await Brand.findAll()
             const categories = await Category.findAll()
+            
+            let errors = []
+
+            products = products.filter(i => {
+                let img                    
+                try {
+                    img = JSON.parse(i.img)
+                }catch(e) {
+                    errors.push(i.article)
+                }
+                if (img && Array.isArray(img) && img[0].big !== undefined) {
+                    if ( ! i.request && i.price > 0 ) return true
+                }
+                return false                
+            })
+
+            // return res.json({
+            //     length: products.length,
+            //     errors
+            // })
 
             let date = new Date().toISOString()
             let formatDate = date.substring(0, date.indexOf("."))
@@ -59,7 +80,7 @@ class TesterController {
                 <pickup>true</pickup>
                 <delivery>true</delivery>
                 <manufacturer_warranty>true</manufacturer_warranty>
-                <country_of_origin>${i.country}</country_of_origin>
+                <country_of_origin>${i.country || "Китай"}</country_of_origin>
             </offer>`)
         }).join("")}
         </offers>
@@ -70,18 +91,82 @@ class TesterController {
 
             return res.json(true)
         }catch(e) {
-            return  res.json({error:'Ошибка метода setFeed!'})
+            return  res.json({ error: `Ошибка метода setFeed! (${e})` })
         }
     }
 
-    // async getFeed (req, res, next) {
-    //     try {
-    //         const response = fs.readFileSync(path.resolve(__dirname, '..', 'static', 'feed', 'yml.xml'))
-    //         return res.json(response)
-    //     }catch(e) {
-    //         return  res.json({error:'Ошибка метода getFeed!'})
-    //     }
-    // }
+    async temp (req, res, next) {
+        try {
+            let products = await Product.findAll()
+            const brands = await Brand.findAll()
+            const categories = await Category.findAll()
+            
+            let errors = []
+
+            products.forEach(i => {
+                try {
+                    JSON.parse(i.img)
+                }catch(e) {
+
+                    let lastIndex = i.img.lastIndexOf(",{")
+                    let img = i.img.substring(0, lastIndex) + "]"
+
+                    img = JSON.parse(img)
+
+                    img = img.filter((j,idx) => idx < 4)
+
+                    let files = fs.readdirSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "big"))
+                    // let filesSmall = fs.readdirSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "small"))
+
+                    files.forEach(j => {
+                        let yes = null // удалять файл?
+                        img.forEach((k,index) => {
+                            if (`tmk/${i.article}/big/${j}` === k.big) yes = false
+                            if (index === 3 && yes !== false) yes = true
+                        })
+                        // console.log(`tmk/${i.article}/big/${j}`)
+                        if (yes) {
+                            try {
+                                fs.unlinkSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "big", j))
+                                console.log(`Удалил BIG файл ${j}.`)
+                                fs.unlinkSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "small", j))
+                                console.log(`Удалил SMALL файл ${j}.`)
+                            }catch(e) {
+                                console.log(`Удаляемый файл ${j} не найден.`)
+                            }
+                        }
+                    })
+
+                    img = JSON.stringify(img)                    
+
+                    // if (body.name !== undefined) {
+                    //     const product = await Product.findOne({
+                    //         where: {id}
+                    //     })
+                    //     if (product.name !== body.name) {
+                    //         let url = translit(body.name) + "_" + body.article.toString()
+                    //         body = { ...body, url }
+                    //     }
+                    // }
+        
+                    // const response = await Product.update(body, {
+                    //     where: { id }
+                    // })
+
+                    errors.push({
+                        img,
+                        files
+                    }) 
+                }             
+            })
+
+
+            return res.json(errors)
+
+        }catch(e) {
+            return  res.json({error:'Ошибка метода temp!'})
+        }
+    }
 
     async setLocationCitiesSdek (req, res, next) {
         try {
