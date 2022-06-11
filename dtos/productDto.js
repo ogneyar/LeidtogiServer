@@ -1,5 +1,5 @@
 
-module.exports = class productDto {
+module.exports = class ProductDto {
     id
     name
     url
@@ -20,6 +20,7 @@ module.exports = class productDto {
     filter
 
     constructor(model) {
+        if ( ! model ) throw "Model is undefined (ProductDto)"
         this.id = model.id || undefined
         this.name = model.name
         this.url = model.url
