@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "server leidtogi",
   "main": "server.js",
   "scripts": {
@@ -35,5 +35,9 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.16"
+  },
+  "nodemonConfig": {
+    "ext": "js, mjs, json, css",
+    "ignore": ["tmp/*", "prices/*"]
   }
-}
+} 
