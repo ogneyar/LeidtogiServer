@@ -98,7 +98,9 @@ module.exports = class Advanta {
 
             return response
         }catch(e) {
-            let response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`
+            let response = `{${number}: `
+            if (typeof(e) === "string") response += `${e.replace("<","&lt;").replace(">","&gt;")}`
+            response += ` (error)}`
             console.log('\x1b[33m%s\x1b[0m', response)
             return response
         }

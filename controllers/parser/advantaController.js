@@ -18,7 +18,7 @@ class advantaController {
 
             // добавление нового товара
             if (add !== undefined && number) { // add = quantity; ~ от 1 до 10 
-                // return res.json(await advanta.addParty(Number(number), Number(add)))
+                return res.json(await advanta.addParty(Number(number), Number(add)))
             }
 
             // смена цен
@@ -27,7 +27,7 @@ class advantaController {
             }
 
             // вывод информации о товаре на экран
-            if (number && number !== 0) {
+            if (number && number != 0) {
                 return res.json(await advanta.print(Number(number)))
             }
 
