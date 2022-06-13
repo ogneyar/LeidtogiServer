@@ -1,5 +1,4 @@
-// printKolesa
-
+// printSklad
 
 const { Category } = require('../../../../models/models')
 const createCategory = require('../../../category/createCategory')
@@ -20,17 +19,21 @@ module.exports = async (one) => {
     let have = one["Наличие"]
     let image = one["Картинка"]
 
-    let weight = one["Общий вес, г"]
-    if (weight) weight /= 1000
+    let weight = one["Вес, кг"]
 
-    let length = one["Диаметр колеса, мм"]
-    let width = one["Диаметр колеса, мм"]
-    let height = one["Ширина обода, мм"]
-    if (one["Ширина ступицы, мм"] && height < one["Ширина ступицы, мм"]) height = one["Ширина ступицы, мм"]
+    let length = one["Общая длина, мм"]
+    let width = one["Общая ширина, мм"]
+    let height = one["Общая высота, мм"] || one["Высота, мм"] || one["Минимальная высота, мм"]
 
-    let brandName = one["Бренд"]
+    if (! length && one["Габариты, мм"]) {
+        let gabarites = one["Габариты, мм"].split("x")
+        length = gabarites[0]
+        width = gabarites[1]
+    }
 
-    let country = one["Страна-производитель"] || "Китай"
+    let model = one["Модель"]
+
+    let country = ""
 
     if (category) {
         category = category.split(",")[0]
@@ -41,7 +44,7 @@ module.exports = async (one) => {
             
     let categoryId = 0
     
-    if (category && category !== "Колесные опоры") { 
+    if (category && category !== "Складская техника") { 
 
         let index = category.indexOf("/")
         category = category.slice(index + 1, category.length)
@@ -57,13 +60,13 @@ module.exports = async (one) => {
         
         if (categoryId === 0) {
             // throw "Не найден номер категории!"
-        let cat = await createCategory(category, translit_category, 1, 811) // 811 = "kolesnye-opory"
+        let cat = await createCategory(category, translit_category, 1, 815) // 815 = "skladskaya-tehnika"
 
         categoryId = cat.id
         }
 
     }else {
-        categoryId = 812 // category = "prochie"
+        categoryId = 816 // 816 = "prochaya"
     }
 
     // let brand = await Brand.findOne({ where: { name: "Advanta" } })
@@ -80,7 +83,7 @@ module.exports = async (one) => {
     let size
     
     if (weight || length || width || height) {
-        let volume
+        let volume = ""
         if (length && width && height) volume = ((length * width * height) / 1e9).toFixed(4)
         size = {
             weight,
@@ -92,7 +95,7 @@ module.exports = async (one) => {
     }
 
     
-    let characteristics = ""        
+    let characteristics = ""
     let keys = Object.keys(one)
 
     keys.forEach(i => {
@@ -104,6 +107,7 @@ module.exports = async (one) => {
             && i !== "Картинка"
             && i !== "Категории товаров"
             && i !== "Наличие"
+            && i !== "Excerpt"
         ) {
             if (characteristics) characteristics += ";"
             characteristics += i + ";" + one[i].replace(/;/g, ".")
@@ -111,6 +115,8 @@ module.exports = async (one) => {
     })
     
     if (characteristics) info.push( { title: "characteristics", body: characteristics } )
+
+    if (one["Excerpt"]) info.push( { title: "description", body: one["Excerpt"].replace(/\n/g, "<br/>").replace(/;/g, ".") } )
 
     
     let files = await getFiles(image, article)

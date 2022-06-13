@@ -110,7 +110,7 @@ module.exports = async (one) => {
     }
 
     
-    let characteristics = ""        
+    let characteristics = ""
     let keys = Object.keys(one)
 
     keys.forEach(i => {
@@ -128,12 +128,12 @@ module.exports = async (one) => {
         ) {
             // response[`${i}`] = one[i]
             if (characteristics) characteristics += ";"
-            characteristics += i + ";" + one[i]
+            characteristics += i + ";" + one[i].replace(/;/g, ".")
         }
     })
     
-    if (description) info.push( { title: "description", body: description } )
     if (characteristics) info.push( { title: "characteristics", body: characteristics } )
+    if (description) info.push( { title: "description", body: description.replace(/;/g, ".") } )
 
     
     let files = await getFiles(image, article)

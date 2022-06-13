@@ -8,6 +8,7 @@ const ProductDto = require('../../../dtos/productDto')
 const getArrayColumnName = require('./getArrayColumnName')
 const printGpo = require('./print/printGpo')
 const printKolesa = require('./print/printKolesa')
+const printSklad = require('./print/printSklad')
 
 
 
@@ -67,11 +68,12 @@ module.exports = class Advanta {
     async print(number) {
 
         let one = this.product[number - 1]
-        // return one 
+        // return one
 
         let response
         if (this.chapter === "gpo") response = await printGpo(one)
         if (this.chapter === "kolesa") response = await printKolesa(one)
+        if (this.chapter === "sklad") response = await printSklad(one)
 
         return response 
         // return new ProductDto(response)
