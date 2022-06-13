@@ -27,7 +27,7 @@ class advantaController {
             }
 
             // вывод информации о товаре на экран
-            if (number) {
+            if (number && number !== 0) {
                 return res.json(await advanta.print(Number(number)))
             }
 

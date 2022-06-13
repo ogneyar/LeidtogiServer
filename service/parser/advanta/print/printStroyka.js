@@ -1,3 +1,5 @@
+// printStroyka
+
 
 const { Category } = require('../../../../models/models')
 const createCategory = require('../../../category/createCategory')
@@ -7,7 +9,7 @@ const getFiles = require('./getFiles')
 
 
 module.exports = async (one) => {
-
+    
     let id = one["id"]
     let articleOld = one["Артикул"]
     let article = "adv000" + id
@@ -17,21 +19,23 @@ module.exports = async (one) => {
     let category = one["Категории товаров"]
     let have = one["Наличие"]
     let image = one["Картинка"]
-    let description = one["Описание"]
 
-    let brutto = one["Масса брутто, кг"]
-    let netto = one["Масса нетто, кг"]
-    let weight = one["Вес, кг"] || brutto || netto
+    let weight = one["Вес, кг"] || one["Масса нетто, кг"]
 
     let length = one["Длина, м"]
     let width = one["Ширина, м"]
-    let gabarits = one["Габариты, мм"]
-    let packageL = one["Размеры упаковки, мм"]
+    let height =one["Транспортная высота, м"] || one["Высота в сложенном состоянии, мм"]
+
+    if (one["Габариты, мм"] && ! (length || width || height)) {
+        let gabarites = one["Габариты, мм"].replace(/х/g, "x").split("x") // замена русской "х" на ихний "x"
+        length = gabarites[0]
+        width = gabarites[1]
+        height = gabarites[2]
+    }
 
     let brandName = one["Бренд"]
-    let model = one["Модель"]
 
-    let country = one["Страна-производитель"] || "Китай"
+    let country = ""
 
     if (category) {
         category = category.split(",")[0]
@@ -39,10 +43,10 @@ module.exports = async (one) => {
         let idx = category.indexOf(">")
         if (idx !== -1) category = category.slice(0, idx)
     }
-    
+            
     let categoryId = 0
     
-    if (category && category !== "Грузоподъемное оборудование") { 
+    if (category && category !== "Строительное оборудование") { 
 
         let index = category.indexOf("/")
         category = category.slice(index + 1, category.length)
@@ -58,13 +62,13 @@ module.exports = async (one) => {
         
         if (categoryId === 0) {
             // throw "Не найден номер категории!"
-        let cat = await createCategory(category, translit_category, 1, 807) // 807 = "gruzopodemnoe-oborudovanie"
+            let cat = await createCategory(category, translit_category, 1, 12) // 12 = "stroitelnoe-oborudovanie_too"
 
-        categoryId = cat.id
+            categoryId = cat.id
         }
 
     }else {
-        categoryId = 808 // category = "gruzopodemnoe-oborudovanie_prochee"
+        categoryId = 269 // 269 = "stroitelnoe-oborudovanie_drugoe"
     }
 
     // let brand = await Brand.findOne({ where: { name: "Advanta" } })
@@ -79,33 +83,16 @@ module.exports = async (one) => {
     let info = []
     
     let size
-    if (packageL) {
-        let pack = packageL.split("*")
+    
+    if (weight || length || width || height) {
+        let volume = ""
+        if (length && width && height) volume = ((length * width * height) / 1e9).toFixed(4)
         size = {
             weight,
-            length: pack[0],
-            width: pack[1],
-            height: pack[2],
-            volume: ((pack[0] * pack[1] * pack[2]) / 1e9).toFixed(4)
-        }
-    }else if (gabarits) {
-        let gab = gabarits.replace(/х/g, "x").split("x") // замена русской "х" на ихний "x"
-        size = {
-            weight,
-            length: gab[0],
-            width: gab[1],
-            height: gab[2],
-            volume: ((gab[0] * gab[1] * gab[2]) / 1e9).toFixed(4)
-        }
-    }else {
-        if (weight || length || width) {
-            size = {
-                weight,
-                length,
-                width,
-                height: "",
-                volume: ""
-            }
+            length,
+            width,
+            height,
+            volume
         }
     }
 
@@ -121,19 +108,17 @@ module.exports = async (one) => {
             && i !== "Наличие"
             && i !== "Картинка"
             && i !== "Категории товаров"
-            && i !== "Описание"
-            && i !== "Размеры упаковки, мм"
-            && i !== "Габариты, мм"
             && i !== "Наличие"
+            && i !== "Excerpt"
         ) {
-            // response[`${i}`] = one[i]
             if (characteristics) characteristics += ";"
             characteristics += i + ";" + one[i].replace(/;/g, ".")
         }
     })
     
     if (characteristics) info.push( { title: "characteristics", body: characteristics } )
-    if (description) info.push( { title: "description", body: description.replace(/;/g, ".") } )
+
+    if (one["Excerpt"]) info.push( { title: "description", body: one["Excerpt"].replace(/\n/g, "<br/>").replace(/;/g, ".") } )
 
     
     let files = await getFiles(image, article)

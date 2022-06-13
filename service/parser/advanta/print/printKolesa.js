@@ -92,7 +92,7 @@ module.exports = async (one) => {
     }
 
     
-    let characteristics = ""        
+    let characteristics = ""
     let keys = Object.keys(one)
 
     keys.forEach(i => {

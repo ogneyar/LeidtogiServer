@@ -26,7 +26,7 @@ module.exports = async (one) => {
     let height = one["Общая высота, мм"] || one["Высота, мм"] || one["Минимальная высота, мм"]
 
     if (! length && one["Габариты, мм"]) {
-        let gabarites = one["Габариты, мм"].split("x")
+        let gabarites = one["Габариты, мм"].replace(/х/g, "x").split("x") // замена русской "х" на ихний "x"
         length = gabarites[0]
         width = gabarites[1]
     }

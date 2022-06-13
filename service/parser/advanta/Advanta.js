@@ -9,6 +9,7 @@ const getArrayColumnName = require('./getArrayColumnName')
 const printGpo = require('./print/printGpo')
 const printKolesa = require('./print/printKolesa')
 const printSklad = require('./print/printSklad')
+const printStroyka = require('./print/printStroyka')
 
 
 
@@ -74,6 +75,7 @@ module.exports = class Advanta {
         if (this.chapter === "gpo") response = await printGpo(one)
         if (this.chapter === "kolesa") response = await printKolesa(one)
         if (this.chapter === "sklad") response = await printSklad(one)
+        if (this.chapter === "stroyka") response = await printStroyka(one)
 
         return response 
         // return new ProductDto(response)
@@ -82,38 +84,38 @@ module.exports = class Advanta {
 
     // добавление товара в БД
     async add(number) {
-        // try {
-        //     let print = await this.print(number)
+        try {
+            let print = await this.print(number)
 
-        //     // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter, request } = print
+            // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter, request } = print
 
-        //     let proDto = new ProductDto(print)
+            let proDto = new ProductDto(print)
         
-        //     let product = await createProduct(proDto)
+            let product = await createProduct(proDto)
             
-        //     let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
-        //     console.log('\x1b[34m%s\x1b[0m', response)
+            let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
+            console.log('\x1b[34m%s\x1b[0m', response)
 
-        //     return response
-        // }catch(e) {
-        //     let response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`
-        //     console.log('\x1b[33m%s\x1b[0m', response)
-        //     return response
-        // }
+            return response
+        }catch(e) {
+            let response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`
+            console.log('\x1b[33m%s\x1b[0m', response)
+            return response
+        }
     }
 
     
     // добавление партии товара в БД
     async addParty(number, quantity) {
 
-        // if (quantity === 1) return await this.add(number)
+        if (quantity === 1) return await this.add(number)
         
         let array = []
 
-        // for(let i = number; i < number+quantity; i++) {
-        //     let response = await this.add(i)
-        //     array.push(response)
-        // }
+        for(let i = number; i < number+quantity; i++) {
+            let response = await this.add(i)
+            array.push(response)
+        }
         
         return array
     }
