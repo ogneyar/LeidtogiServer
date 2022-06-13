@@ -1,5 +1,0 @@
-{
-    "ext": "js, mjs, json, css",
-    "delay": 1500,
-    "ignore": ["tmp/*", "prices/*"]
-}
