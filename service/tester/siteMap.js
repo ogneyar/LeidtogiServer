@@ -28,7 +28,7 @@ module.exports = async () => {
     let date = new Date().toISOString()
     let formatDate = date.substring(0, date.indexOf("."))
     
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://leidtogi.ru/prochee</loc>
@@ -37,6 +37,16 @@ module.exports = async () => {
 </urlset>`
 
     fs.writeFileSync(path.resolve(__dirname, '..', '..', 'static', 'sitemaps', 'categories.xml'), xml)
+
+    xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://leidtogi.ru/shop</loc>
+        <lastmod>${formatDate}</lastmod>
+    </url>
+</urlset>`
+
+    fs.writeFileSync(path.resolve(__dirname, '..', '..', 'static', 'sitemaps', 'products.xml'), xml)
 
 
 }

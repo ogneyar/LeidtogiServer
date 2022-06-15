@@ -44,15 +44,12 @@ app.use(fileUpload({}))
 app.use('/api', router)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname,'static','welcome.html'))
-    // if (CORS_URL === "http://localhost:3000") {
-        // res.send("MERN server - приветствует тебя!")
-        // res.sendFile(path.join(__dirname,'static','welcome.html'))
-    // }else {
-    //     res.redirect(CORS_URL)
-    // }    
 })
 app.get('/undefined', (req, res) => {
     res.status(200)
+})
+app.get('/echo', (req, res) => {
+    res.sendFile(path.join(__dirname,'static','echo.json'))
 })
 
 // Обработка ошибок, последний middleware
