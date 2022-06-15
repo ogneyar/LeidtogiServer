@@ -38,6 +38,9 @@
   },
   "nodemonConfig": {
     "ext": "js, mjs, json, css",
-    "ignore": ["tmp/*", "prices/*"]
+    "ignore": [
+      "tmp/*",
+      "prices/*"
+    ]
   }
-} 
+}

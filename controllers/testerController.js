@@ -2,9 +2,10 @@ const path = require('path')
 const fs = require('fs')
 const axios = require('axios')
 
-const {Product, Brand, Category} = require('../models/models')
+const { Product, Brand, Category } = require('../models/models')
 const Sdek = require("../service/delivery/sdek/Sdek")
 const Dl = require("../service/delivery/dl/Dl")
+const siteMap = require('../service/tester/siteMap')
 
 
 class TesterController {
@@ -85,6 +86,17 @@ class TesterController {
             return res.json(true)
         }catch(e) {
             return  res.json({ error: `Ошибка метода setFeed! (${e})` })
+        }
+    }
+
+
+    async setSitemap(req, res, next) {
+        try {
+            await siteMap()
+
+            return res.json(true)
+        }catch(e) {
+            return  res.json({ error: `Ошибка метода setSitemap! (${e})` })
         }
     }
 
