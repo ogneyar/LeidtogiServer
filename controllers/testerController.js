@@ -92,11 +92,15 @@ class TesterController {
 
     async setSitemap(req, res, next) {
         try {
-            await siteMap()
+            let args
+            if (req.query && req.query.routes !== undefined) args = req.query
+            else args = req.body
+            
+            await siteMap(args)
 
             return res.json(true)
         }catch(e) {
-            return  res.json({ error: `Ошибка метода setSitemap! (${e})` })
+            return next(res.json({ error: `Ошибка метода setSitemap! (${e})` }))
         }
     }
 
