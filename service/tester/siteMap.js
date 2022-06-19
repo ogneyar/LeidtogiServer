@@ -7,6 +7,14 @@ const { Product, Brand, Category } = require("../../models/models")
 
 module.exports = async (body) => {
 
+    if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'sitemaps'))){
+        try {
+            fs.mkdirSync(path.resolve(__dirname, '..', '..', 'static', 'sitemaps'))
+        }catch(e) {
+            console.log(`Создать папку 'sitemaps' не удалось.`)
+        }
+    }
+
     let { routes } = body
     let xml    
     let date = new Date().toISOString()
