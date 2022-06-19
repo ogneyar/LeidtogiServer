@@ -16,6 +16,7 @@ const orderRouter = require('./orderRouter')
 const testRouter = require('./testRouter')
 const telegramRouter = require('./telegramRouter')
 const mailRouter = require('./mailRouter')
+const searchRouter = require('./searchRouter')
 
 
 router.use('/user', userRouter)
@@ -30,11 +31,10 @@ router.use('/parser', parserRouter)
 router.use('/tester', testerRouter)
 router.use('/delivery', deliveryRouter)
 router.use('/order', orderRouter)
-
 router.use('/test', testRouter)
-
 router.use('/telegram', telegramRouter)
 router.use('/mail', mailRouter)
+router.use('/search', searchRouter)
 
 
 module.exports = router
