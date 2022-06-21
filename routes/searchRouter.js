@@ -1,11 +1,12 @@
 const Router = require('express')
 const router = new Router()
 const searchController = require('../controllers/searchController')
-const authMiddleware = require('../middleware/authMiddleware')
 
-// router.post('/', authMiddleware, searchController.search)
 
+router.post('/article', searchController.article) 
 router.get('/article', searchController.article) 
+
+router.post('/name', searchController.name) 
 router.get('/name', searchController.name) 
 
 
