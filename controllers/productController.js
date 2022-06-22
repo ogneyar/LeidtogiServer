@@ -13,6 +13,7 @@ const createProduct = require('../service/product/createProduct.js')
 const translit = require('../service/translit.js')
 const renameFolder = require('../service/renameFolder')
 const ProductDto = require('../dtos/productDto')
+const sortProducts = require('../service/product/sortProducts')
 
 
 class ProductController {
@@ -96,7 +97,7 @@ class ProductController {
 
     async getAll(req, res, next) {
         try {
-            let {brandId, categoryId, limit, page} = req.query
+            let { brandId, categoryId, limit, page, sort } = req.query
             page = Number(page) || 1
             limit = Number(limit) || 8
     
@@ -106,18 +107,30 @@ class ProductController {
                 products = await Product.findAll()
             }else {
                 if (!brandId && !categoryId) {
-                    products = await Product.findAndCountAll({limit, offset})
+                    // console.log("idx")
+                    // products = await Product.findAndCountAll({limit, offset})
+                    products = await Product.findAndCountAll()
+                    if (sort) sortProducts(products.rows)
+                    let array = []
+                    for (let idx = offset; idx < offset + limit; idx++) {
+                        // console.log(idx)
+                        array.push(products.rows[idx])
+                    }
+                    products.rows = array
                 }
                 if (brandId && !categoryId) {
                     products = await Product.findAndCountAll({where:{brandId}, limit, offset})
                 }
                 if (!brandId && categoryId) {
+                    // тут надо проработать механизм...
                     products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
                 }
                 if (brandId && categoryId) {
+                    // тут надо проработать механизм...
                     products = await Product.findAndCountAll({where:{brandId, categoryId}, limit, offset})
                 }
             }
+
             return res.json(products)
         }catch(e) {
             // return next(ApiError.badRequest('Ошибка метода getAll!'));
