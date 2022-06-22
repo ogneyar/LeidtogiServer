@@ -110,7 +110,8 @@ class ProductController {
                     // console.log("idx")
                     // products = await Product.findAndCountAll({limit, offset})
                     products = await Product.findAndCountAll()
-                    if (sort) sortProducts(products.rows)
+                    // if (sort) sortProducts(products.rows)
+                    sortProducts(products.rows)
                     let array = []
                     for (let idx = offset; idx < offset + limit; idx++) {
                         // console.log(idx)
