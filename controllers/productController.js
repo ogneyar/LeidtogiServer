@@ -113,7 +113,7 @@ class ProductController {
                     products = await Product.findAndCountAll()
                     if (sort) sortProducts(products.rows)
 					if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
-                    mixPromo(products.rows)
+                    if (page === 1) mixPromo(products.rows)
                     let array = []
                     for (let idx = offset; idx < offset + limit; idx++) {
                         array.push(products.rows[idx])
