@@ -14,6 +14,8 @@ const translit = require('../service/translit.js')
 const renameFolder = require('../service/renameFolder')
 const ProductDto = require('../dtos/productDto')
 const sortProducts = require('../service/product/sortProducts')
+const sortProductsWithOutImage = require('../service/product/sortProductsWithOutImage')
+const mixPromo = require('../service/product/mixPromo')
 
 
 class ProductController {
@@ -97,7 +99,7 @@ class ProductController {
 
     async getAll(req, res, next) {
         try {
-            let { brandId, categoryId, limit, page, sort } = req.query
+            let { brandId, categoryId, limit, page, sort, mix_no_img } = req.query
             page = Number(page) || 1
             limit = Number(limit) || 8
     
@@ -107,20 +109,27 @@ class ProductController {
                 products = await Product.findAll()
             }else {
                 if (!brandId && !categoryId) {
-                    // console.log("idx")
                     // products = await Product.findAndCountAll({limit, offset})
                     products = await Product.findAndCountAll()
-                    // if (sort) sortProducts(products.rows)
-                    sortProducts(products.rows)
+                    if (sort) sortProducts(products.rows)
+					if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
+                    mixPromo(products.rows)
                     let array = []
                     for (let idx = offset; idx < offset + limit; idx++) {
-                        // console.log(idx)
                         array.push(products.rows[idx])
                     }
                     products.rows = array
                 }
                 if (brandId && !categoryId) {
-                    products = await Product.findAndCountAll({where:{brandId}, limit, offset})
+                    // products = await Product.findAndCountAll({where:{brandId}, limit, offset})
+					products = await Product.findAndCountAll({where:{brandId}})
+                    if (sort) sortProducts(products.rows)
+					if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
+                    let array = []
+                    for (let idx = offset; idx < offset + limit; idx++) {
+                        array.push(products.rows[idx])
+                    }
+                    products.rows = array
                 }
                 if (!brandId && categoryId) {
                     // тут надо проработать механизм...
