@@ -8,7 +8,7 @@ const sortProductsWithOutImage = require("./sortProductsWithOutImage")
 async function getAll({ brandId, categoryId, limit, page, sort, mix_no_img }) {
     
     page = Number(page) || 1
-    limit = Number(limit) || 8
+    limit = Number(limit) || 12
     brandId = brandId && Number(brandId)
     categoryId = categoryId && Number(categoryId)
 
