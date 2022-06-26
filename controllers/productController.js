@@ -1,4 +1,4 @@
-const { Product, ProductInfo, ProductSize, Brand } = require('../models/models')
+const { Product, ProductInfo, ProductSize, Brand, Category } = require('../models/models')
 const {Sequelize} = require('sequelize')
 const ApiError = require('../error/apiError')
 const uuid = require('uuid')
@@ -13,9 +13,7 @@ const createProduct = require('../service/product/createProduct.js')
 const translit = require('../service/translit.js')
 const renameFolder = require('../service/renameFolder')
 const ProductDto = require('../dtos/productDto')
-const sortProducts = require('../service/product/sortProducts')
-const sortProductsWithOutImage = require('../service/product/sortProductsWithOutImage')
-const mixPromo = require('../service/product/mixPromo')
+const getAll = require('../service/product/getAll')
 
 
 class ProductController {
@@ -97,53 +95,16 @@ class ProductController {
         }
     }
 
-    async getAll(req, res, next) {
+    async getAll(req, res) {
         try {
             let { brandId, categoryId, limit, page, sort, mix_no_img } = req.query
-            page = Number(page) || 1
-            limit = Number(limit) || 8
     
-            let offset = page * limit - limit
-            let products;
-            if (limit === -1) {
-                products = await Product.findAll()
-            }else {
-                if (!brandId && !categoryId) {
-                    // products = await Product.findAndCountAll({limit, offset})
-                    products = await Product.findAndCountAll()
-                    if (sort) sortProducts(products.rows)
-					if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
-                    if (page === 1) mixPromo(products.rows)
-                    let array = []
-                    for (let idx = offset; idx < offset + limit; idx++) {
-                        array.push(products.rows[idx])
-                    }
-                    products.rows = array
-                }
-                if (brandId && !categoryId) {
-                    // products = await Product.findAndCountAll({where:{brandId}, limit, offset})
-					products = await Product.findAndCountAll({where:{brandId}})
-                    if (sort) sortProducts(products.rows)
-					if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
-                    let array = []
-                    for (let idx = offset; idx < offset + limit; idx++) {
-                        array.push(products.rows[idx])
-                    }
-                    products.rows = array
-                }
-                if (!brandId && categoryId) {
-                    // тут надо проработать механизм...
-                    products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
-                }
-                if (brandId && categoryId) {
-                    // тут надо проработать механизм...
-                    products = await Product.findAndCountAll({where:{brandId, categoryId}, limit, offset})
-                }
-            }
+            let products = await getAll({
+                brandId, categoryId, limit, page, sort, mix_no_img
+            })
 
             return res.json(products)
         }catch(e) {
-            // return next(ApiError.badRequest('Ошибка метода getAll!'));
             return res.json({error: 'Ошибка метода getAll!'})
         }
     }
