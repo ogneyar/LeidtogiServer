@@ -45,12 +45,11 @@ async function getAll({ brandId, categoryId, limit, page, sort, mix_no_img }) {
             products.rows = array
         }
         if (!brandId && categoryId) {
-            // тут надо проработать механизм...
             // products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
             products = await Product.findAndCountAll()
             if (sort) sortProducts(products.rows)
             if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
-            
+
             let categories = await Category.findAll()
             
             const filterSubCategory = (id) => { // функция фильтрует из store все категории, которые не подходят для подкатегории id
@@ -90,7 +89,6 @@ async function getAll({ brandId, categoryId, limit, page, sort, mix_no_img }) {
                         reArray(array) // наращиваем массив рекурсивной функцией
                     )
                 }
-                
                 let returnArrayProducts =[]
                 if (Array.isArray(selectedCategory)) {
                     returnArrayProducts = products.rows.filter(i => {
@@ -104,8 +102,11 @@ async function getAll({ brandId, categoryId, limit, page, sort, mix_no_img }) {
                 }else {
                     returnArrayProducts = products.rows.filter(i => i.categoryId === selectedCategory)
                 }
-                
-                if (page === 1) mixPromo(returnArrayProducts)
+
+                // отключил добавление акциоонных товаров в первые ряды, так как
+                // категория может содержать только лишь акционные товары, 
+                // в связи с этим возникает ошибка
+                // if (page === 1) mixPromo(returnArrayProducts)
 
                 let array = []
                 for (let idx = offset; idx < offset + limit; idx++) {

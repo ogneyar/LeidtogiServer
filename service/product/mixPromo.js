@@ -6,7 +6,9 @@ function mixPromo(data) {
     
     for (let i = 0; i < data.length; i++) {
         if (data[i].promo) {
-            if (JSON.parse(data[i].promo).old_price !== undefined) {
+            let promo = typeof(data[i].promo) === "string" ? JSON.parse(data[i].promo) : data[i].promo
+            // if (typeof(promo) === "string") promo = JSON.parse(promo)
+            if (typeof(promo) === "object" && promo.old_price !== undefined) {
                 if (startOne === 0) {
                     [data[i], data[startOne + 1]] = [data[startOne + 1], data[i]]
                 }else {
