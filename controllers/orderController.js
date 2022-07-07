@@ -1,6 +1,7 @@
 const axios = require('axios')
 const { v4 } = require('uuid')
 const qs = require('qs')
+const Math = require('mathjs')
 
 const { Order } = require('../models/models')
 const ApiError = require('../error/apiError')
@@ -12,12 +13,13 @@ class OrderController {
 
     async create(req, res, next) {
         try {
-            const body = req.body
+            let body = req.body //|| req.query
             if (body === undefined) return res.json({error: "Отсутствует тело запроса"}) 
             if (body.cart === undefined) return res.json({error: "Отсутствует корзина в теле запроса"}) 
             if (body.email === undefined) return res.json({error: "Отсутствует email в теле запроса"})
             if (body.url === undefined) return res.json({error: "Отсутствует url в теле запроса"})
             let lastIndex
+					
             let items = JSON.parse(body.cart).map((item, index) => {
                 lastIndex = index + 1
                 return {
@@ -26,7 +28,7 @@ class OrderController {
                     quantity: { value: item.value, measure: "штук" },
                     itemCode: item.article,
                     tax: { taxType: 6 }, 
-                    itemPrice: item.price * 100 // перевод в копейки
+                    itemPrice: Math.round(item.price * 100) // перевод в копейки
                 }
             })
             if (body.deliverySum !== undefined) {
@@ -36,9 +38,10 @@ class OrderController {
                     quantity: { value: 1, measure: "штук" },
                     itemCode: "0001",
                     tax: { taxType: 6 }, 
-                    itemPrice: body.deliverySum * 100 // перевод в копейки
+                    itemPrice: Math.round(body.deliverySum * 100) // перевод в копейки
                 }]
             }
+			
             let cart = JSON.stringify(items)
             let uuid = v4()
             let email = body.email

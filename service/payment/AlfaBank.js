@@ -1,5 +1,7 @@
 const axios  = require("axios")
 const qs = require('qs')
+const Math = require('mathjs')
+
 
 module.exports = class AlfaBank {
     
@@ -54,7 +56,7 @@ module.exports = class AlfaBank {
         if (!parameters.orderBundle.cartItems.items) return {error: "Отсутствует объект orderBundle.cartItems.items"}
         if (!Array.isArray(parameters.orderBundle.cartItems.items)) return {error: "Объект orderBundle.cartItems.items должен быть массивом"}
         
-        let amount
+        let amount = 0
 
         try {
             parameters.orderBundle.cartItems.items.forEach(item => {
@@ -65,14 +67,15 @@ module.exports = class AlfaBank {
                 if (!item.itemCode) throw("В корзине отсутствует поле itemCode")
                 if (!item.tax) throw("В корзине отсутствует поле tax")
                 if (!item.quantity.value) throw("В корзине отсутствует поле quantity.value")
-
-                if (amount) amount = (item.quantity.value * item.itemPrice) + amount
-                else amount = item.quantity.value * item.itemPrice
+                
+				amount += Math.round(item.quantity.value * item.itemPrice)
             })
         }catch(error) {  
             // console.log("ALFA BANK REGISTER THROW: ",e);
             return { error }
         }
+		
+		//console.log(`\namount: ${amount}\n`)
 
         let data = {
             token: this.token,
