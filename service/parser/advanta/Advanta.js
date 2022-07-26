@@ -32,7 +32,7 @@ module.exports = class Advanta {
 
         if (feed && feed.name !== undefined) {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
-            if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'advanta'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'gedore'))
+            if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'advanta'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'advanta'))
             fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'advanta', feed.name)
             await feed.mv(fullPath)
         }
