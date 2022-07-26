@@ -103,17 +103,18 @@ async function getAll({ brandId, categoryId, limit, page, sort, mix_no_img }) {
                     returnArrayProducts = products.rows.filter(i => i.categoryId === selectedCategory)
                 }
 
-                // отключил добавление акциоонных товаров в первые ряды, так как
+                // отключил добавление акционных товаров в первые ряды, так как
                 // категория может содержать только лишь акционные товары, 
                 // в связи с этим возникает ошибка
                 // if (page === 1) mixPromo(returnArrayProducts)
 
                 let array = []
+
                 for (let idx = offset; idx < offset + limit; idx++) {
-                    array.push(returnArrayProducts[idx])
+                    if (returnArrayProducts[idx]) array.push(returnArrayProducts[idx])
                 }
+                
                 products.rows = array
-                // products.rows = returnArrayProducts
                 products.count = returnArrayProducts.length
 
             }else {
