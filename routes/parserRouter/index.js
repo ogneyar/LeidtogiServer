@@ -10,6 +10,7 @@ const gedoreRouter = require('./gedoreRouter')
 const tmkRouter = require('./tmkRouter')
 const leidtogiRouter = require('./leidtogiRouter')
 const advantaRouter = require('./advantaRouter')
+const euroboorRouter = require('./euroboorRouter')
 
 
 router.use('/parse', parseRouter) // Парсер mail.ru, ya.ru и т.п.
@@ -21,6 +22,7 @@ router.use('/gedore', gedoreRouter) // Gedore
 router.use('/tmk', tmkRouter) // Tmk
 router.use('/leidtogi', leidtogiRouter) // LeidTogi
 router.use('/advanta', advantaRouter) // Advanta-M
+router.use('/euroboor', euroboorRouter) // Euroboor
 
 
 
