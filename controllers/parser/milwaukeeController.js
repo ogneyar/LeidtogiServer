@@ -43,8 +43,12 @@ class milwaukeeController {
             // }
             // обновление цен 
             if (change) {
-                if (number) return res.json(await mlk.changePrice(number))
-                else return res.json(await mlk.changePriceAll())
+                if (number && number > 0) return res.json(await mlk.changePrice(number))
+                else {
+                    if (! number || number == 0) return res.json(await mlk.changePriceAll())
+                    if (number && number == -1) return res.json(await mlk.changePriceAll(1))
+                    if (number && number == -2) return res.json(await mlk.changePriceAll(2))
+                }
             }
             // добавление товара 
             if (add) {

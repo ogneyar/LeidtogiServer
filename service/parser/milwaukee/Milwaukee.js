@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const XLSX = require('xlsx')
 const encoding = require('encoding')
+const Math = require('mathjs')
 
 const { Product, ProductInfo, Brand, Category } = require('../../../models/models')
 
@@ -204,10 +205,10 @@ module.exports = class Milwaukee {
 
     async changePrice(number) {
 
-        let print = await this.print(number)
-        if (print.article === undefined) return { article: undefined, update: "warning" }
+        let one = await this.getOne(number)
+        if ( (! one) || (one && one.article === undefined) ) return { article: undefined, update: "warning" }
 
-        let { article, price, category } = print
+        let { article, price, category } = one
 
         const product = await Product.findOne({
             where: { article }
@@ -230,13 +231,18 @@ module.exports = class Milwaukee {
     }
 
 
-    async changePriceAll() {
+    async changePriceAll(pol = null) {
 
         let length, array = [], string = ""
 
         length = await this.getLength()
 
-        for (let number = 1; number <= length; number++) {
+        if (pol && pol == 1) length = Math.round(length / 2)
+        if (pol && pol == 2) pol = Math.round(length / 2) + 1
+
+        if (! pol) pol = 1
+
+        for (let number = pol; number <= length; number++) {
             string = await this.changePrice(number)
             array.push(string)
         }
