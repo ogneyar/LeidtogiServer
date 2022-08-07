@@ -5,7 +5,7 @@ const { Brand, Category, Product } = require('../../../models/models')
 const createProduct = require('../../product/createProduct.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 const ProductDto = require('../../../dtos/productDto')
-const print = require('./print')
+const printOne = require('./printOne')
 
 
 
@@ -80,7 +80,7 @@ module.exports = class Euroboor {
 
         if (flag)  return "Данные о товаре отсутствуют!" 
 
-        let response = await print(one, this.kursEuro)
+        let response = await printOne(one, this.kursEuro)
 
         return response 
         // return new ProductDto(response)
@@ -88,25 +88,26 @@ module.exports = class Euroboor {
     }
 
     // добавление товара в БД
-    async add(number) {
-        // try {
-        //     let print = await this.print(number)
+    async add(number) { 
+        try {
+            let print = await this.print(number)
 
-        //     let proDto = new ProductDto(print)
+            let proDto = new ProductDto(print)
         
-        //     let product = await createProduct(proDto)
+            let product = await createProduct(proDto)
             
-        //     let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
-        //     console.log('\x1b[34m%s\x1b[0m', response)
+            let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
+            console.log('\x1b[34m%s\x1b[0m', response)
 
-        //     return response
-        // }catch(e) {
+            return response
+        }catch(e) {
             let response = `{${number}: `
-            // if (typeof(e) === "string") response += `${e.replace("<","&lt;").replace(">","&gt;")}`
-            response += ` (error)}`
+            if (typeof(e) === "string") response += `${e.replace("<","&lt;").replace(">","&gt;")}`
+            else response += JSON.stringify(e)
+            // response += ` (error)}`
             console.log('\x1b[33m%s\x1b[0m', response)
             return response
-        // }
+        }
     }
 
     

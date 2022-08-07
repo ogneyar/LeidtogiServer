@@ -55,7 +55,7 @@ async function getFiles(html, article) {
     })
 
 
-    return response
+    return JSON.stringify(response)
 }
 
 module.exports = getFiles
