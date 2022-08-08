@@ -54,7 +54,7 @@ async function getFiles(html, article) {
         }
     })
 
-    if (response[0].big === undefined) response = [{}]
+    if ( ! response[0] || (response[0] && response[0].big === undefined)) response = [{}]
 
     return JSON.stringify(response)
 }
