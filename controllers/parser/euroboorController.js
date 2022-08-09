@@ -23,7 +23,7 @@ class euroboorController {
 
             // смена цен
             if (change !== undefined) {
-                // return res.send(await euroboor.changePrice())
+                return res.send(await euroboor.changePrice())
             }
 
             // вывод информации о товаре на экран

@@ -1,4 +1,5 @@
 //
+const Math = require('mathjs')
 const fs = require('fs')
 const path = require('path')
 const { Brand, Category, Product } = require('../../../models/models')
@@ -45,7 +46,19 @@ module.exports = class Euroboor {
             let response = await parseXlsx(fullPath, arrayColumnName)
             
             if (response && Array.isArray(response)) {
-                this.product = response
+                this.product = response.map(i => {
+                    let article, category, price, name
+                    article = i["Артикул"]
+                    name = i["Наименование"]
+                    price = i["Цена"]
+                    category = i["Категория"]
+                    return {
+                        article,
+                        name,
+                        price,
+                        category,
+                    }
+                })
 
                 return true
             }
@@ -72,7 +85,7 @@ module.exports = class Euroboor {
 
         let flag = true
         do {
-            if (one["Наименование"] == "" || one["Цена"] == "") {
+            if (one.name == "" || one.price == "") {
                 num++
                 one = this.product[num]
             }else flag = false
@@ -131,31 +144,44 @@ module.exports = class Euroboor {
     async changePrice() {
         let response = `[`
         
-        // let brand = await Brand.findOne({ where: { name: "Gedore" } })
-        // if (brand.id === undefined) return { error: "Не найден бренд товара." }
+        let brand = await Brand.findOne({ where: { name: "Euroboor" } })
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
-        // let old = await Product.findAll({ where: { brandId: brand.id } })
+        let old = await Product.findAll({ where: { brandId: brand.id } })
 
-        // if (this.product !== undefined) this.product.forEach(newProduct => {
-        //     if (response !== `[`) response += ",<br />"
-        //     let yes = false
-        //     old.forEach(oldProduct => {
-        //         if (oldProduct.article === `ged${newProduct.article}`) {
-        //             let newPrice = newProduct.price
-        //             newPrice = Math.round(newPrice * 100) / 100
-        //             if (newPrice != oldProduct.price) {
-        //                response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
-        //                 Product.update({ price: newPrice },
-        //                     { where: { id: oldProduct.id } }
-        //                 ).then(()=>{}).catch(()=>{})
-        //             }else {
-        //                 response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
-        //             }
-        //             yes = true
-        //         }
-        //     })
-        //     if ( ! yes) response += `{Не найден артикул: ged${newProduct.article}}`
-        // })
+        if (this.product !== undefined) {
+            
+            this.product.forEach(newProduct => {
+          
+                if (newProduct.name == "" || newProduct.price == "") { // если пустая строка
+                    // continue // пропусти
+                }else {
+
+                let myArticle = "erb" + newProduct.article.replace("/", "_").replace(" ", "_")
+
+                let newPrice = Math.round( (newProduct.price * this.kursEuro) * 100 ) /100
+
+                if (response !== `[`) response += ",<br />"
+                let yes = false
+                old.forEach(oldProduct => {
+                    if (oldProduct.article === myArticle) {
+                        
+                        if (newPrice != oldProduct.price) {
+                            response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                            Product.update({ price: newPrice },
+                                { where: { id: oldProduct.id } }
+                            ).then(()=>{}).catch(()=>{})
+                        }else {
+                            response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                        }
+                        yes = true
+
+                    }
+                })
+                if ( ! yes) response += `{Не найден артикул: ${myArticle}}`
+                }
+            })
+        }
 
         response = response + `]`
 

@@ -19,12 +19,12 @@ const getFilesERU = require('./euroboorRus/getFiles')
 
 module.exports = async (one, kursEuro) => {
     
-    let article = one["Артикул"]
-    let name = one["Наименование"] + " (" + article + ")"
+    let article = one.article
+    let name = one.name + " (" + article + ")"
     let url = translit(name) //+ "_" + article.replace("/", "_")
-    let priceEuro = one["Цена"]
+    let priceEuro = one.price
     let price = Math.round( (priceEuro * kursEuro) * 100 ) /100
-    let category = one["Категория"]
+    let category = one.category
     let have = true
     
     let country = "Нидерланды" || "Китай"
