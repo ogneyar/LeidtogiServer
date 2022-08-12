@@ -70,6 +70,8 @@ function parseHtml(string, args) {
     if (returnString) {
         rest = rest.replace(/\r|\n|\t/g,"")
 
+        if ( ! inclusive ) rest = rest.replace(`${endSearch}`,"")
+
         return { rest, search: string }
     }
 
