@@ -29,15 +29,16 @@
     "qs": "^6.10.1",
     "sequelize": "^6.9.0",
     "serve-favicon": "^2.5.0",
-    "sharp": "^0.30.1",
+    "sharp": "^0.30.7",
     "uuid": "^8.3.2",
-    "xlsx": "^0.17.1"
+    "xlsx": "^0.17.1",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.19"
   },
   "nodemonConfig": {
-    "ext": "js, mjs, json, css",
+    "ext": "js, mjs, json, css, html",
     "ignore": [
       "tmp/*",
       "prices/*"
