@@ -2,8 +2,23 @@
 // |   Подсказки   |
 // +---------------+
 
+// редактор файлов (nano)
+sudo nano /etc/mysql/my.cnf - example
+
 // установка БД
 https://losst.ru/ustanovka-mysql-ubuntu-16-04#Установка_MySQL_57_в_Ubuntu
+// недопроверил работоспособность установки
+sudo apt remove --autoremove mysql-server mysql-client
+sudo rm -Rf /var/lib/mysql
+sudo wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+// Если у вас Ubuntu 20.04 или выше, выбирайте версию для Ubuntu 18.04 - bionic
+// Выберите MySQL Server and Cluster
+// После этого останется выбрать нужную версию MySQL, например 5.7
+// Потом нажмите ОК
+sudo apt update
+sudo apt-cache policy mysql-server
+sudo apt install mysql-server=5.7.31-1ubuntu18.04 mysql-community-server=5.7.31-1ubuntu18.04 mysql-client=5.7.31-1ubuntu18.04
 
 
 // удаление всех процессов (для SPH)
