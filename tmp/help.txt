@@ -2,6 +2,10 @@
 // |   Подсказки   |
 // +---------------+
 
+// установка БД
+https://losst.ru/ustanovka-mysql-ubuntu-16-04#Установка_MySQL_57_в_Ubuntu
+
+
 // удаление всех процессов (для SPH)
 killall -2 node
 
