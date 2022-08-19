@@ -30,8 +30,9 @@ class TesterController {
                 return false                
             })
 
-            let date = new Date().toISOString()
-            let formatDate = date.substring(0, date.indexOf("."))
+            let formatDate = new Date().toISOString()
+            // formatDate = formatDate.substring(0, formatDate.indexOf("."))
+            formatDate = formatDate.substring(0, formatDate.lastIndexOf(":")) + "+00:00"
             // <name>${i.name.include(/"/g,"&quot;").include(/&/g,"&amp;").include(/>/g,"&gt;").include(/</g,"&lt;").include(/'/g,"&apos;")}</name>
 
             const xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
