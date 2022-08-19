@@ -28,7 +28,7 @@ async function getAll({ brandId, categoryId, limit, page, sort, mix_no_img }) {
             if (page === 1) mixPromo(products.rows)
             let array = []
             for (let idx = offset; idx < offset + limit; idx++) {
-                array.push(products.rows[idx])
+                if (products.rows[idx]) array.push(products.rows[idx])
             }
             products.rows = array
         }
@@ -40,7 +40,7 @@ async function getAll({ brandId, categoryId, limit, page, sort, mix_no_img }) {
             if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
             let array = []
             for (let idx = offset; idx < offset + limit; idx++) {
-                array.push(products.rows[idx])
+                if (products.rows[idx]) array.push(products.rows[idx])
             }
             products.rows = array
         }
