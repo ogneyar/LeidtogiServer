@@ -2,12 +2,12 @@
 const { Category } = require('../../models/models')
 const findCategoryByUrl = require('./findCategoryByUrl')
 
-
-async function createCategory(name, url, is_product, sub_category_id) {
+// except - номер категории в БД, до которой все предыдущие считаются старыми категориями
+async function createCategory(name, url, is_product, sub_category_id, except = "") {
     
     const oldCategory = await findCategoryByUrl(url)
     if (oldCategory) {
-        return oldCategory
+        if ( ! except || oldCategory.id >= except) return oldCategory
         url += "_too"
     }
 
