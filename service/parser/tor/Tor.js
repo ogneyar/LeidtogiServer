@@ -108,7 +108,7 @@ module.exports = class Tor {
 
 
     // количество записей в feed.xml
-    async getLength() {
+    async getLength() { 
         return this.product.length
     }
 

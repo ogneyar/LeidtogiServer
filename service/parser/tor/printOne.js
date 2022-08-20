@@ -37,7 +37,7 @@ async function printOne(one) {
     let myArticle = "tor" + one.article
     let product = await findProductByArticle(myArticle)
 
-    // if (product && product.id !== undefined) throw "Такой товар уже есть."
+    if (product && product.id !== undefined) throw "Такой товар уже есть."
     
     let info = []
     if (one.description) info.push( { title: "description", body: one.description } )
@@ -68,25 +68,21 @@ async function printOne(one) {
 
     let imageBig = fs.createWriteStream(bigFile)
     let imageSmall = fs.createWriteStream(smallFile)
-        https.get(one.image, (res) => {
+    
+    https.get(one.image, (res) => {
         res.pipe(imageBig)
         if (process.env.URL !== "https://api.leidtogi.site") {
-            try{
-                res.pipe(sharp().resize(100)).pipe(imageSmall)
-            }catch(e) {
-                res.pipe(imageSmall)
-            }
+            res.pipe(sharp().resize(100).on('error', err => { console.error(err) })).pipe(imageSmall)
         }else res.pipe(imageSmall)
-    })
-
+    }).on('error', (e) => { console.error(e) })
+    
     files += `{"big":"${brand}/${myArticle}/big/${imageName}","small":"${brand}/${myArticle}/small/${imageName}"}`
    
     files += `]`
     
     
-
     return { 
-        ...one, 
+        ...one,
         categoryId: category.id,
         article: myArticle,
         url,
