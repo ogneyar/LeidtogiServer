@@ -15,8 +15,7 @@ async function parseXml(file) {
         return { error: `Файл ${file} отсутствует или пуст!` }
     }
 
-    xml = xml.replace(/\r/g,"").replace(/\n/g,"")
-    xml = xml.replace(/\r/g,"").replace(/\n/g,"")
+    xml = xml.replace(/\r|\n/g,"")
     
     
     var result1 = convert.xml2json(xml, {compact: true, spaces: 0})

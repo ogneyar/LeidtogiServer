@@ -3,22 +3,26 @@ const Math = require('mathjs')
 const fs = require('fs')
 const path = require('path')
 const { Brand, Category, Product } = require('../../../models/models')
+const { Op } = require('sequelize')
 const createProduct = require('../../product/createProduct.js')
 const parseXml = require('../../xml/parseXml')
 const ProductDto = require('../../../dtos/productDto')
+const createCategoriesForTor = require('./createCategoriesForTor')
+const printOne = require('./printOne')
 // const printOne = require('./printOne')
 
 
 
 module.exports = class Tor {
     
+    static categories = []
     static product = []
     
     constructor() {}
 
     async run(args = {}) { 
         
-        let { feed } = args
+        let { feed, create_categories } = args
 
         let fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'tor', 'feed.xml')
 
@@ -30,34 +34,69 @@ module.exports = class Tor {
         }
             
         if (fs.existsSync(fullPath)) { 
-            // return "response"
 
-            // let arrayColumnName = [ 
-            //     "Артикул",
-            //     "Наименование",
-            //     "Цена",
-            //     "Категория"
-            // ]
-
-            let response = await parseXml(fullPath)//, arrayColumnName)
+            let { shop } = await parseXml(fullPath)//, arrayColumnName)
             
-            // if (response && Array.isArray(response)) {
-            //     this.product = response.map(i => {
-            //         let article, category, price, name
-            //         article = i["Артикул"]
-            //         name = i["Наименование"]
-            //         price = i["Цена"]
-            //         category = i["Категория"]
-            //         return {
-            //             article,
-            //             name,
-            //             price,
-            //             category,
-            //         }
-            //     })
-            //     return true
-            // }
-            this.product = response
+            // this.product = shop.offers["ДетальнаяЗапись"]
+            if (shop && Array.isArray(shop.offers["ДетальнаяЗапись"])) {
+                this.product = shop.offers["ДетальнаяЗапись"].map(i => {
+
+                    let article, code, price, name, id, pageUrl, image, description, descriptionMore, brand
+                    let weight, length, height, width, imageMore, characteristics, categoryName
+
+                    id = i["ID"]._text
+                    name = i["Наименование"]._text
+                    article = i["Артикул"]._text
+                    price = i["Цена"]._text
+                    code = i["Кодраздела"]._text
+                    categoryName = i["Названиераздела"]._text
+                    pageUrl = i["DETAIL_PAGE_URL"]._text
+                    image = i["Основноеизображение"]._text
+                    description = i["ПодробноеОписание"]._text
+                    descriptionMore = i["ДополнительноеОписаниеНоменклатуры"]._text
+                    if (!description && descriptionMore) description = descriptionMore
+                    brand = i["ПроизводительКод"]._text
+                    weight = i["Вес"]._text
+                    length = i["Длина"]._text
+                    height = i["Высота"]._text
+                    width = i["Ширина"]._text
+                    if (i["Дополнительныеизображения"] && i["Дополнительныеизображения"]["Изображение"] && i["Дополнительныеизображения"]["Изображение"]["URL"]) imageMore = i["Дополнительныеизображения"]["Изображение"]["URL"]._text
+                    if (i["Характеристики"] && i["Характеристики"]["Характеристика"] && Array.isArray(i["Характеристики"]["Характеристика"])) {
+                        characteristics = i["Характеристики"]["Характеристика"].map(i => {
+                            if ( ! length && i["Название"]._text === "Глубина упаковки, мм") length = i["Значение"]._text
+                            if ( ! height && i["Название"]._text === "Высота упаковки, мм") height = i["Значение"]._text
+                            if ( ! width && i["Название"]._text === "Ширина упаковки, мм") width = i["Значение"]._text
+                            return i["Название"]._text.replace(/;/g, ".") + ";" + i["Значение"]._text.replace(/;/g, ".")
+                        }).join(";")
+                    }
+
+                    return {
+                        // id,
+                        name,
+                        article,
+                        price,
+                        code,
+                        categoryName,
+                        // pageUrl,
+                        image,
+                        description,
+                        // descriptionMore,
+                        // brand,
+                        weight,
+                        length,
+                        height,
+                        width,
+                        // imageMore,
+                        characteristics
+                    }
+
+                })
+                // return true
+            }
+            
+            // this.categories = shop["Разделы"]["Раздел"]
+            if (create_categories) this.categories = await createCategoriesForTor(shop["Разделы"]["Раздел"])
+            
             return true
 
         }else {
@@ -69,74 +108,62 @@ module.exports = class Tor {
 
 
     // количество записей в feed.xml
-    async getLength() {
+    async getLength() { 
         return this.product.length
     }
 
 
     // вывод данных на экран
     async print(number) {
-        return this.product
-         
-        // let num = number - 1
-        // let one = this.product[num]
-        // // return one
 
-        // let flag = true
-        // do {
-        //     if (one.name == "" || one.price == "") {
-        //         num++
-        //         one = this.product[num]
-        //     }else flag = false
-        // }while (flag && (num - number) <= 2)
+        let one = this.product[number - 1]
+        // return one
 
-        // if (flag)  return "Данные о товаре отсутствуют!" 
+        let response = await printOne(one)
 
-        // let response = await printOne(one, this.kursEuro)
-
-        // return response 
+        return response
         // return new ProductDto(response)
 
     }
 
     // добавление товара в БД
     async add(number) { 
-        return "add"
-        // try {
-        //     let print = await this.print(number)
+        // return "add"
+        try {
+            let print = await this.print(number)
 
-        //     let proDto = new ProductDto(print)
+            let proDto = new ProductDto(print)
         
-        //     let product = await createProduct(proDto)
+            let product = await createProduct(proDto)
             
-        //     let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
-        //     console.log('\x1b[34m%s\x1b[0m', response)
+            let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
+            console.log('\x1b[34m%s\x1b[0m', response)
 
-        //     return response
-        // }catch(e) {
-        //     let response = `{${number}: `
-        //     if (typeof(e) === "string") response += `${e.replace("<","&lt;").replace(">","&gt;")}`
-        //     else response += JSON.stringify(e)
-        //     // response += ` (error)}`
-        //     console.log('\x1b[33m%s\x1b[0m', response)
-        //     return response
-        // }
+            return response
+        }catch(e) {
+            let response = `{${number}: `
+            if (typeof(e) === "string") response += `${e.replace("<","&lt;").replace(">","&gt;")}`
+            else response += JSON.stringify(e)
+            // response += ` (error)}`
+            console.log('\x1b[33m%s\x1b[0m', response)
+            return response
+        }
     }
 
     
     // добавление партии товара в БД
     async addParty(number, quantity) {
-        return "addParty"
-        // if (quantity === 1) return await this.add(number)
+        // return "addParty"
+        if (quantity === 1) return await this.add(number)
         
-        // let array = []
+        let array = []
 
-        // for(let i = number; i < number+quantity; i++) {
-        //     let response = await this.add(i)
-        //     array.push(response)
-        // }
+        for(let i = number; i < number+quantity; i++) {
+            let response = await this.add(i)
+            array.push(response)
+        }
         
-        // return array
+        return array
     }
 
 

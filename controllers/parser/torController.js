@@ -6,18 +6,18 @@ class torController {
 
     async tor(req, res, next) {
         try {
-            let { number, add, change } = req.query
+            let { number, add, change, create_categories } = req.query
             let feed = req.files && req.files.feed || undefined
             let response, tor
             // создание экземпляра класса Tor
             tor = new Tor()
             // обработка данных файла feed.xml
-            response = await tor.run({ feed })
+            response = await tor.run({ feed, create_categories })
             if ( ! response ) return res.json({error: 'Ошибка! ParseXml не вернул данные!'}) // вывод ошибки
 
             // добавление нового товара
             if (add !== undefined && number) { // add = quantity; ~ от 1 до 10 
-                return res.json(await tor.addParty(Number(number), Number(add)))
+                return res.json(await tor.addParty(Number(number), Number(add))) 
             }
 
             // смена цен

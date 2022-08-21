@@ -29,6 +29,7 @@ link.txt
 */*.bat
 dump
 ldump
+m
 
 # Apach file settings
 .htaccess
