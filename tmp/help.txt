@@ -7,7 +7,7 @@ sudo nano /etc/mysql/my.cnf - example
 
 // установка БД
 https://losst.ru/ustanovka-mysql-ubuntu-16-04#Установка_MySQL_57_в_Ubuntu
-// недопроверил работоспособность установки
+
 sudo apt remove --autoremove mysql-server mysql-client
 sudo rm -Rf /var/lib/mysql
 sudo wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
@@ -18,7 +18,14 @@ sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
 // Потом нажмите ОК
 sudo apt update
 sudo apt-cache policy mysql-server
-sudo apt install mysql-server=5.7.31-1ubuntu18.04 mysql-community-server=5.7.31-1ubuntu18.04 mysql-client=5.7.31-1ubuntu18.04
+sudo apt install mysql-server=5.7.39-1ubuntu18.04 mysql-community-server=5.7.39-1ubuntu18.04 mysql-client=5.7.39-1ubuntu18.04
+// программа запросит пароль для root пользователя
+sudo mysql_secure_installation - u root -p
+// На первом шаге настраивается плагин валидации пароля. Чтобы его включить нажмите Y, или его можно не включать. Затем надо задать сложность пароля, который позволит установить этот плагин. Здесь 0 означает слабый пароль, а 2 - сложный. Когда плагин будет настроен введите пароль root и подтвердите, что хотите использовать именно его
+// Введите Y для отключения анонимного доступа к MySQL, затем ещё раз Y чтобы запретить подключаться к базе от имени root удаленно
+// Снова Y, чтобы удалить тестовую базу данных. Затем, обновите привилегии для пользователей
+sudo mysql -u root -p
+CREATE USER 'merm'@'localhost' IDENTIFIED BY 'mern';
 
 
 // удаление всех процессов (для SPH)
