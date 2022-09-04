@@ -15,6 +15,9 @@ router.post('/set_sitemap', checkRole("ADMIN"), testerController.setSitemap)
 router.get('/set_location_cities_sdek', checkRole("ADMIN"), testerController.setLocationCitiesSdek)
 router.get('/set_places_dl', checkRole("ADMIN"), testerController.setPlacesDl)
 
+router.get('/get_length_tor', checkRole("ADMIN"), testerController.getLengthTor)
+router.get('/edit_weight_tor', checkRole("ADMIN"), testerController.editWeightTor)
+
 router.get('/temp', testerController.temp)
 
 

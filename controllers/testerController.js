@@ -1,8 +1,9 @@
 const path = require('path')
 const fs = require('fs')
 const axios = require('axios')
+const Math = require('mathjs')
 
-const { Product, Brand, Category } = require('../models/models')
+const { Product, Brand, Category, ProductSize } = require('../models/models')
 const Sdek = require("../service/delivery/sdek/Sdek")
 const Dl = require("../service/delivery/dl/Dl")
 const siteMap = require('../service/tester/siteMap')
@@ -105,65 +106,7 @@ class TesterController {
         }
     }
 
-    
-    // временный роут для исправления JSON объекта поля img
-    // и удаления лишних фотографий товара
-    // п.с. нет ничего более постоянного, чем временное...
-    async temp (req, res, next) {  
-        try {
-            let products = await Product.findAll()
-            
-            let errors = []
-
-            products.forEach(i => {
-                try {
-                    JSON.parse(i.img)
-                }catch(e) {
-
-                    let lastIndex = i.img.lastIndexOf(",{")
-                    let img = i.img.substring(0, lastIndex) + "]"
-
-                    img = JSON.parse(img)
-
-                    img = img.filter((j,idx) => idx < 4)
-
-                    let files = fs.readdirSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "big"))
-
-                    files.forEach(j => {
-                        let yes = null // удалять файл?
-                        img.forEach((k,index) => {
-                            if (`tmk/${i.article}/big/${j}` === k.big) yes = false
-                            if (index === 3 && yes !== false) yes = true
-                        })
-                        if (yes) {
-                            try {
-                                fs.unlinkSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "big", j))
-                                console.log(`Удалил BIG файл ${j}.`)
-                                fs.unlinkSync(path.resolve(__dirname, "..", "static", `tmk`, i.article, "small", j))
-                                console.log(`Удалил SMALL файл ${j}.`)
-                            }catch(e) {
-                                console.log(`Удаляемый файл ${j} не найден.`)
-                            }
-                        }
-                    })
-
-                    img = JSON.stringify(img)
-                           
-                    Product.update({img}, {
-                        where: { id: i.id }
-                    }).then(() => console.log(`Обновил товар с артикулом ${i.article}.`))
-
-                    errors.push(i.article) 
-                }             
-            })
-
-            return res.json(errors)
-
-        }catch(e) {
-            return  res.json({error:'Ошибка метода temp!'})
-        }
-    }
-
+        
     // 
     async setLocationCitiesSdek (req, res, next) {
         try {
@@ -247,6 +190,73 @@ class TesterController {
             return  res.json({error:'Ошибка метода placesDl!'})
         }
     }
+		
+	
+	async getLengthTor(req, res, next) {
+        try {
+            let products = await Product.findAll({
+                where: {brandId: 13}
+            })
+			
+            return res.json(products.length)
+
+        }catch(e) {
+            return  res.json({error:'Ошибка метода getLengthTor!'})
+        }
+    }
+	
+	
+    async editWeightTor (req, res, next) {  
+        try {			
+			let response = ""
+			let args = req.query
+			
+			if ( args.start === undefined || args.stop === undefined) return res.json({error: "Нет необходимых query параметров!"})
+				
+            let products = await Product.findAll({
+                where: {brandId: 13}
+            })
+			
+			let size = await ProductSize.findAll()
+			
+			for(let i = args.start; i <= args.stop; i++) {
+				let weight = 0
+				size.forEach(j => {
+					if (j.productId === products[i].id) weight = j.weight
+				})
+				if (weight > 0) {					
+					let newWeight = Math.round((weight / 1000)*100)/100
+					
+					ProductSize.update({weight:newWeight}, {
+                        where: { productId: products[i].id }
+                    }).then(() => console.log(`Обновил вес товара с артикулом ${products[i].article}. Был: ${weight}, стал: ${newWeight}. `))	
+
+					response += `Обновил вес товара с артикулом ${products[i].article}. Был: ${weight}, стал: ${newWeight}. `
+				}		
+			}
+            
+
+            if (response) return res.json(response)
+			else  return res.json(`С ${args.start} по ${args.stop} нет данных для обновления!`)
+
+        }catch(e) {
+            return  res.json({error:'Ошибка метода editWeightTor!'})
+        }
+    }
+	
+	
+	// временный роут 
+    // п.с. нет ничего более постоянного, чем временное...	
+    async temp(req, res, next) {
+        try {
+            
+            return res.json("temp")
+
+        }catch(e) {
+            return  res.json({error:'Ошибка метода temp!'})
+        }
+    }
+	
 
 }
 
