@@ -5,7 +5,7 @@ const https = require('https')
 const uuid = require('uuid')
 let sharp
 if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
-const { Category } = require('../../../models/models')
+const { Category, Brand, Product } = require('../../../models/models')
 const findProductByArticle = require('../../product/findProductByArticle')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 const createProduct = require('../../product/createProduct.js')
@@ -278,31 +278,31 @@ module.exports = class Tmk {
     async changePrice() {
         let response = `[`
         
-        // let brand = await Brand.findOne({ where: { name: "TMK" } })
-        // if (brand.id === undefined) return { error: "Не найден бренд товара." }
+        let brand = await Brand.findOne({ where: { name: "TMK" } })
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
-        // let old = await Product.findAll({ where: { brandId: brand.id } })
+        let old = await Product.findAll({ where: { brandId: brand.id } })
 
-        // if (this.product !== undefined) this.product.forEach(newProduct => {
-        //     if (response !== `[`) response += ",<br />"
-        //     let yes = false
-        //     old.forEach(oldProduct => {
-        //         if (oldProduct.article === `ged${newProduct.article}`) {
-        //             let newPrice = newProduct.price
-        //             newPrice = Math.round(newPrice * 100) / 100
-        //             if (newPrice != oldProduct.price) {
-        //                response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
-        //                 Product.update({ price: newPrice },
-        //                     { where: { id: oldProduct.id } }
-        //                 ).then(()=>{}).catch(()=>{})
-        //             }else {
-        //                 response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
-        //             }
-        //             yes = true
-        //         }
-        //     })
-        //     if ( ! yes) response += `{Не найден артикул: ged${newProduct.article}}`
-        // })
+        if (this.products !== undefined) this.products.forEach(newProduct => {
+            if (response !== `[`) response += ",<br />"
+            let yes = false
+            old.forEach(oldProduct => {
+                if (oldProduct.article === `tmk${newProduct.code}`) {
+                    let newPrice = newProduct.price
+                    newPrice = Math.round(newPrice * 100) / 100
+                    if (newPrice != oldProduct.price) {
+                       response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        Product.update({ price: newPrice },
+                            { where: { id: oldProduct.id } }
+                        ).then(()=>{}).catch(()=>{})
+                    }else {
+                        response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                    }
+                    yes = true
+                }
+            })
+            if ( ! yes) response += `{Не найден артикул: tmk${newProduct.code}}`
+        })
 
         response = response + `]`
 

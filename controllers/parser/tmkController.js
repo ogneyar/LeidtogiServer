@@ -22,7 +22,7 @@ class tmkController {
 
             // смена цен
             if (change !== undefined) {
-                // return res.send(await tmk.changePrice())
+                return res.send(await tmk.changePrice())
             }
 
             // вывод информации о товаре на экран
