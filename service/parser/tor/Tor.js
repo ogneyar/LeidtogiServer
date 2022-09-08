@@ -169,51 +169,50 @@ module.exports = class Tor {
 
     // смена цен
     async changePrice() {
-        return "changePrice"
-        // let response = `[`
+        let response = `[`
         
-        // let brand = await Brand.findOne({ where: { name: "Euroboor" } })
-        // if (brand.id === undefined) return { error: "Не найден бренд товара." }
+        let brand = await Brand.findOne({ where: { name: "Tor" } })
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
-        // let old = await Product.findAll({ where: { brandId: brand.id } })
+        let old = await Product.findAll({ where: { brandId: brand.id } })
 
-        // if (this.product !== undefined) {
+        if (this.product !== undefined) {
             
-        //     this.product.forEach(newProduct => {
+            this.product.forEach(newProduct => {
           
-        //         if (newProduct.name == "" || newProduct.price == "") { // если пустая строка
-        //             // continue // пропусти
-        //         }else {
+                if (newProduct.name == "" || newProduct.price == "") { // если пустая строка
+                    // continue // пропусти
+                }else {
 
-        //         let myArticle = "erb" + newProduct.article.replace("/", "_").replace(" ", "_")
+                let myArticle = "tor" + newProduct.article
 
-        //         let newPrice = Math.round( (newProduct.price * this.kursEuro) * 100 ) /100
+                let newPrice = Math.round( newProduct.price * 100 ) /100
 
-        //         if (response !== `[`) response += ",<br />"
-        //         let yes = false
-        //         old.forEach(oldProduct => {
-        //             if (oldProduct.article === myArticle) {
+                if (response !== `[`) response += ",<br />"
+                let yes = false
+                old.forEach(oldProduct => {
+                    if (oldProduct.article === myArticle) {
                         
-        //                 if (newPrice != oldProduct.price) {
-        //                     response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
-        //                     Product.update({ price: newPrice },
-        //                         { where: { id: oldProduct.id } }
-        //                     ).then(()=>{}).catch(()=>{})
-        //                 }else {
-        //                     response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
-        //                 }
-        //                 yes = true
+                        if (newPrice != oldProduct.price) {
+                            response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                            Product.update({ price: newPrice },
+                                { where: { id: oldProduct.id } }
+                            ).then(()=>{}).catch(()=>{})
+                        }else {
+                            response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                        }
+                        yes = true
 
-        //             }
-        //         })
-        //         if ( ! yes) response += `{Не найден артикул: ${myArticle}}`
-        //         }
-        //     })
-        // }
+                    }
+                })
+                if ( ! yes) response += `{Не найден артикул: ${myArticle}}`
+                }
+            })
+        }
 
-        // response = response + `]`
+        response = response + `]`
 
-        // return response
+        return response
     }
 
 
