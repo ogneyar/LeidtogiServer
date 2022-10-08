@@ -17,6 +17,79 @@ class OrderController {
             if (body === undefined) return res.json({error: "Отсутствует тело запроса"}) 
             if (body.cart === undefined) return res.json({error: "Отсутствует корзина в теле запроса"}) 
             if (body.email === undefined) return res.json({error: "Отсутствует email в теле запроса"})
+            let lastIndex
+		
+            let items = JSON.parse(body.cart).map((item, index) => {
+                lastIndex = index + 1
+                return {
+                    positionId: lastIndex,
+                    name: item.name,
+                    quantity: { value: item.value, measure: "штук" },
+                    itemCode: item.article,
+                    tax: { taxType: 6 }, 
+                    itemPrice: Math.round(item.price * 100) // перевод в копейки
+                }
+            })
+            if (body.deliverySum !== undefined) {
+                items = [ ...items, {
+                    positionId: lastIndex + 1,
+                    name: "Доставка",
+                    quantity: { value: 1, measure: "штук" },
+                    itemCode: "0001",
+                    tax: { taxType: 6 }, 
+                    itemPrice: Math.round(body.deliverySum * 100) // перевод в копейки
+                }]
+            }
+			
+            let create = { 
+				cart: JSON.stringify(items), 
+				uuid: v4(), 
+				email: body.email 
+			}
+            // client - user_id
+            if (body.client !== undefined) create = {...create, client: body.client}
+            if (body.phone !== undefined) create = {...create, phone: body.phone}
+            if (body.role !== undefined) create = {...create, role: body.role}
+            if (body.address !== undefined) create = {...create, address: body.address}
+            if (body.delivery !== undefined) create = {...create, delivery: body.delivery} 
+            if (body.name !== undefined) create = {...create, name: body.name} 
+            if (body.trackNumber !== undefined) create = {...create, trackNumber: body.trackNumber} 
+
+            const order = await Order.create(create)
+
+            if (!order.id) return res.json({error: "Отсутствует номер заказа (order.id) в ответе от БД"}) 
+			
+            let name = "", email = "", phone = "", delivery = "", address = "", cart = ""
+			
+            let id = `Запрос ПОДТВЕРЖДЕНИЯ заказа №${order.id}.\n\n`
+            if (body.name !== undefined && body.name !== null) name = `Имя клиента ${body.name}\n\n`
+			email = `Email клиента ${body.email}\n\n`
+            if (body.phone !== undefined && body.phone !== null) phone = `Телефон клиента ${body.phone}\n\n`
+            if (body.delivery !== undefined && body.delivery !== null) delivery = `Доставка: ${body.delivery === "pickup" ? "самовывоз" : body.delivery}\n\n`
+            if (body.address !== undefined && body.address !== null) address = `Адрес доставки: ${body.address}\n\n`
+            
+            cart = `Корзина: \n${items.map(i => {
+                return "Артикул: " + i.itemCode + ". Наименование: " + i.name + " - " + i.quantity.value + ` шт. (Цена за штуку - ${i.itemPrice/100}р.) - ` + i.quantity.value * i.itemPrice/100 + "р.\n"
+            })}\n\n`
+				
+            //let response = await sendMessage(id + name + email + phone + delivery + address + cart)
+            //if (response.ok === undefined && response.ok !== true) sendMessage("Ошибка, не смог отправить сообщение об успешном заказе")
+			sendMessage(id + name + email + phone + delivery + address + cart)			
+			
+			return res.json({id: order.id})
+
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода create! ' + "Error: " + e.message));
+        }
+    }
+
+
+    async getPaymentLink(req, res, next) {
+        try {
+            let body = req.body //|| req.query
+            if (body === undefined) return res.json({error: "Отсутствует тело запроса"}) 
+            if (body.cart === undefined) return res.json({error: "Отсутствует корзина в теле запроса"}) 
+            if (body.email === undefined) return res.json({error: "Отсутствует email в теле запроса"})
             if (body.url === undefined) return res.json({error: "Отсутствует url в теле запроса"})
             let lastIndex
 					
@@ -86,10 +159,10 @@ class OrderController {
             return res.json(response) // return 
 
         }catch(e) {
-            return next(ApiError.badRequest('Ошибка метода create! ' + "Error: " + e.message));
+            return next(ApiError.badRequest('Ошибка метода getPaymentLink! ' + "Error: " + e.message));
         }
     }
-
+	
     // 
     async getAll(req, res, next) {
         try {
@@ -144,19 +217,27 @@ class OrderController {
     
     }
 
-    //
+    //getOrder
     async getOrder(req, res, next) {
         try {
             const { id } = req.params
-            const order = await Order.findOne({
-                where: { id }
-            })
-            if (order) {
-                return res.json(order) // return 
-            }
+			let order = await Order.findOne({ where: { id } })
+            if (order) return res.json(order) // return 
             return res.json(null) // return 
         }catch(e) {
             return next(ApiError.badRequest('Ошибка метода getOrder! ' + "Error: " + e.message));
+        }
+    }
+	
+    //getOrderByUuid
+    async getOrderByUuid(req, res, next) {
+        try {
+            const { uuid } = req.params
+			let order = await Order.findOne({ where: { uuid } })
+            if (order) return res.json(order) // return 
+            return res.json(null) // return 
+        }catch(e) {
+            return next(ApiError.badRequest('Ошибка метода getOrderByUuid! ' + "Error: " + e.message));
         }
     }
     
