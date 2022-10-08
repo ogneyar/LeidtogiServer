@@ -9,7 +9,7 @@ const Order = sequelize.define('order', {
     delivery: {type: DataTypes.STRING, defaultValue: "pickup"},
     address: {type: DataTypes.STRING, allowNull: true},
     role: {type: DataTypes.STRING, defaultValue: "USER"},
-    state: {type: DataTypes.STRING, defaultValue: "forming"}, // forming, confirmed, pay, delivered
+    state: {type: DataTypes.STRING, defaultValue: "forming"}, // forming, confirmed, onway, delivered, taken (сформирован, подтверждён, в пути, доставлен, получен)
     pay: {type: DataTypes.TINYINT, defaultValue: false},
     client: {type: DataTypes.INTEGER, defaultValue: null},
     email: {type: DataTypes.STRING, defaultValue: null},
