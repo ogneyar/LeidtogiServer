@@ -61,6 +61,14 @@ class UserController {
                 candidate = await User.findOne({ where: { email: guest.email } })
                 if (candidate) {
                     user = await User.update(guest, { where: { id: candidate.id } })
+                    if (user) {
+                        user = new UserDto({
+                            id: candidate.id,
+                            ...guest
+                        })
+                    }else {
+                        res.json({error:'Ошибка обновления данных о госте! ' + guest.email})
+                    }
                 }else {
                     user = await User.create(guest)
                 }
