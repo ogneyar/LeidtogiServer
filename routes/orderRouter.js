@@ -9,15 +9,15 @@ router.post('/get_payment_link', orderController.getPaymentLink) // создан
 
 router.get('/', checkRole("ADMIN"), orderController.getAll) // получение всех записей
 router.get('/user/:user_id', authMiddleware, orderController.getOrdersForUser) // получение записей у заданного пользователя
+router.get('/:id', orderController.getOrder) // получение записи по задданному id
+router.get('/by_uuid/:uuid', orderController.getOrderByUuid) // получение записи по задданному uuid
 
 router.put('/:id', checkRole("ADMIN"), orderController.editOrder) // редактирование записей
+router.put('/cart/:id', checkRole("ADMIN"), orderController.editOrderCart) // редактирование корзины заказа
 router.put('/pay/:uuid', orderController.setPay) // установка флага оплаченного товара
 router.put('/taken/:id', orderController.setTaken) // установка статуса полученого товара
 
 router.get('/test', orderController.test) // 
-
-router.get('/:id', orderController.getOrder) // получение записи по задданному id
-router.get('/by_uuid/:uuid', orderController.getOrderByUuid) // получение записи по задданному uuid
 
 // router.delete('/:id', checkRole('ADMIN'), orderController.delete) // удаление записи
 
