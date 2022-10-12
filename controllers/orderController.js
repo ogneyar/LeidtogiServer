@@ -164,25 +164,40 @@ class OrderController {
             const body = req.body
             if (body === undefined) return res.json({error: "Отсутствует тело запроса"}) 
 
-            let { positionId, deletePosition, addPosition, editQuantity, article, quantity } = body
-            if ((deletePosition || editQuantity) && positionId ===  undefined) return res.json({error: "Отсутствует поле positionId"}) 
+            let { 
+				positionId, // обязательный параметр, кроме как при addPosition
+				addPosition, 
+				deletePosition, 
+				editQuantity, 
+				editPrice, 
+				article, 
+				quantity, 
+				price // в копейках
+			} = body
+            if ( ! addPosition && positionId === undefined) return res.json({error: "Отсутствует поле positionId"}) 
             if (addPosition) {
                 if (!article) return res.json({error: "Отсутствует поле article"}) 
                 if (!quantity) quantity = 1
+            }
+			if (editQuantity) {
+                if (!quantity) return res.json({error: "Отсутствует поле quantity"}) 
+            }
+			if (editPrice) {
+                if (!price) return res.json({error: "Отсутствует поле price"}) 
             }
 
             let order = await Order.findOne({ where: { id } })
             let cart = order.cart
             if (typeof(cart) === "string") cart = JSON.parse(cart)
 
-            if (deletePosition) {
+            if (deletePosition) { // удаление позиции
                 if (cart.length === 1) return res.json({error: "В корзине всего одна позиция, необходимо удалить весь заказ!"}) 
                 cart = cart.map(i => {
                     if (i.positionId === positionId) return null
                     if (i.positionId > positionId) return { ...i, positionId: i.positionId-1}
                     return i
                 }).filter(i => i !== null)
-            }else if (addPosition) {
+            }else if (addPosition) { // добавление позиции
                 let product = await Product.findOne({ where: { article } })
                 if (!product) res.json({error: `Не смог найти артикул ${article} в БД`}) 
                 let save
@@ -198,19 +213,40 @@ class OrderController {
                     tax: { taxType: 6 },
                     itemPrice: Math.round(product.price * 100) // перевод в копейки
                 })
-                if (order.delivery !== "pickup") cart.push(save)
+                if (order.delivery !== "pickup") cart.push({...save, positionId: save.positionId+1})
 
                 // console.log(cart);
 
-            }else if (editQuantity) {
-                // не реализовано
+            }else if (editQuantity) { // изменение количества
+				cart = cart.map(i => {
+                    if (i.positionId === positionId) 
+						return { 
+							...i, 
+							quantity: { ...i.quantity, value: quantity }
+						}
+                    return i
+                })
+            }else if (editPrice) { // изменение цены
+				cart = cart.map(i => {
+                    if (i.positionId === positionId) 
+						return { 
+							...i, 
+							itemPrice: price 
+						}
+                    return i
+                })
             }
 
             cart = JSON.stringify(cart)
 
-            const newOrder = await Order.update({cart}, {
+            let response = await Order.update({cart}, {
                 where: { id }
             })
+			let newOrder = null
+			if (response[0]) {
+				newOrder = await Order.findOne({ where: { id } })
+			}
+				
             return res.json(newOrder) // return 
         }catch(e) {
             return next(res.json({error:'Ошибка метода editOrderCart! ' + e}))
