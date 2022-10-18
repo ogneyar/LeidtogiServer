@@ -52,6 +52,11 @@ app.get('/echo', (req, res) => {
     res.sendFile(path.join(__dirname,'static','echo.json'))
 })
 
+// for w80x_duino
+app.get('/temp.json', (req, res) => {
+    res.sendFile(path.join(__dirname,'static','temp.json'))
+})
+
 // Обработка ошибок, последний middleware
 app.use(errorHandler)
 
