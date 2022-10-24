@@ -59,7 +59,7 @@ module.exports = class RGK {
             response = await this.update()
         }
 
-        feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv')
+        feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv') 
         // console.log("fullResponse: ",fullResponse);
         if (fs.existsSync(feed) && iconv.decode(fs.readFileSync(feed), 'win1251') !== "") {
             fullResponse = fs.readFileSync(feed)
@@ -309,7 +309,7 @@ module.exports = class RGK {
         // ---------------------
         // временно завышаю цену
         // ---------------------
-        price = Number(price) * 1.3
+        //price = Number(price) * 1.3
         // console.log("price", price)
 
         const product = await Product.findOne({

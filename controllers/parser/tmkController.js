@@ -12,7 +12,7 @@ class tmkController {
             // создание экземпляра класса Tmk
             tmk = new Tmk()
             // обработка данных файла feed.json
-            response = await tmk.run()
+            response = await tmk.run() 
             if ( ! response ) return res.json({error: 'Ошибка! Метод run() не вернул данные!'}) // вывод ошибки
 
             // добавление нового товара
@@ -22,6 +22,7 @@ class tmkController {
 
             // смена цен
             if (change !== undefined) {
+                console.log("hjgjghjgjh");
                 return res.send(await tmk.changePrice())
             }
 

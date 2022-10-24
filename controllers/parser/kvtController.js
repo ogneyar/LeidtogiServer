@@ -4,7 +4,6 @@ const KVT = require('../../service/parser/kvt/KVT')
 
 class kvtController {
 
-    // РусГеоКом
     async kvt(req, res, next) {
         try {
             let { number, add, change } = req.query

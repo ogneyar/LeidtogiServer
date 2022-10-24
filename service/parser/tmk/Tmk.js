@@ -17,7 +17,7 @@ const ProductDto = require('../../../dtos/productDto')
 
 
 
-module.exports = class Tmk {
+module.exports = class Tmk { 
     
     static categories = []
     static products = []
@@ -37,7 +37,7 @@ module.exports = class Tmk {
                 throw `Не смог прочесть файл ${feed}!`
             }
 
-            if (response) {
+            if (response) { 
                 response = JSON.parse(response.toString())
 
                 this.categories = response.categories
@@ -291,7 +291,7 @@ module.exports = class Tmk {
                     let newPrice = newProduct.price
                     newPrice = Math.round(newPrice * 100) / 100
                     if (newPrice != oldProduct.price) {
-                       response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
                         Product.update({ price: newPrice },
                             { where: { id: oldProduct.id } }
                         ).then(()=>{}).catch(()=>{})
@@ -305,7 +305,7 @@ module.exports = class Tmk {
         })
 
         response = response + `]`
-
+console.log("end");
         return response
     }
 
