@@ -11,8 +11,8 @@ class DealerController {
                 where: { name: "Leidtogi"} // id = 10
             })
 
-            let products = []; products[0] = await Product.findOne( { // для теста (показ одной записи)
-            // let products = await Product.findAll( { 
+            // let products = []; products[0] = await Product.findOne( { // для теста (показ одной записи)
+            let products = await Product.findAll( { 
                 where: { brandId: brand.id, have: 1 },
                 include: [
                     { model: Category, as: 'category' },

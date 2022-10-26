@@ -31,7 +31,7 @@ module.exports = class FeedDto {
         this.image = process.env.URL + "/" + (typeof(model.img) === "string" ? JSON.parse(model.img) : model.img)[0].big || null
         this.country = model.country
         this.category = { name: model.category.name, uri: model.category.url, url: process.env.CORS_URL + "/" + model.category.url }
-        this.url = process.env.CORS_URL + "/" + model.url
+        this.url = process.env.CORS_URL + "/leidtogi/" + model.url
     }
 }
 
