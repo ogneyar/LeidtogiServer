@@ -24,14 +24,14 @@ class ProductController {
             let imgBig, imgSmall, fileName
             let link = ''
             if (req.files && req.files.image1) {
-   
+
                 const brand = await Brand.findOne({
                     where: {id: brandId}
                 })
                 createFoldersAndDeleteOldFiles(brand.name.toLowerCase(), article)
 
                 for(let i = 0; i < 4; i++) {
- 
+
                     switch(i) {
                         case 0:
                             if (req.files.image1) imgBig = req.files.image1
@@ -63,7 +63,7 @@ class ProductController {
                     //     .resize(200, 200)
                     //     .toBuffer()
                     // imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
-                     
+                    
                     // imgSmall = sharp(imgBig).resize(100)
                     imgSmall = imgBig
 
@@ -97,10 +97,12 @@ class ProductController {
 
     async getAll(req, res) {
         try {
-            let { brandId, categoryId, limit, page, sort, mix_no_img } = req.query
+            let { brandId, categoryId, limit, page, mix_all, mix_no_img } = req.query
+
+            // console.log("mix_all",mix_all)
     
             let products = await getAll({
-                brandId, categoryId, limit, page, sort, mix_no_img
+                brandId, categoryId, limit, page, mix_all, mix_no_img//: false
             })
 
             return res.json(products)
@@ -188,7 +190,7 @@ class ProductController {
             const brand = await Brand.findOne({
                 where: {id:product.brandId}
             })
-          
+            
             deleteOldFiles(brand.name.toLowerCase(), product.article)
     
             await ProductInfo.destroy({

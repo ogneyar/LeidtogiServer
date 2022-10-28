@@ -1,5 +1,5 @@
 
-function sortProducts(data) {
+function mixAllProducts(data) {
 
     // алгоритм под названием "Тасование Фишера — Йетса"
     for (let i = data.length - 1; i > 0; i--) {
@@ -9,4 +9,4 @@ function sortProducts(data) {
     
 }
 
-module.exports = sortProducts
+module.exports = mixAllProducts
