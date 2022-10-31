@@ -1,3 +1,5 @@
+
+const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
 const http = require('http')
@@ -24,17 +26,32 @@ module.exports = class Tmk {
     
     constructor() {}
 
-    async run() {
-        let feed, response
+    async run(feed = {}) {
+        let fullPath, response
+        
+        if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
+        if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'tmk'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'tmk'))
 
-        feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'tmk', 'feed.json')
+        if (feed && feed.name !== undefined) {
+            fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'tmk', feed.name)
+            await feed.mv(fullPath)
+        }else {
+            fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'tmk', 'feed.json')
+            // качаем файл с их сервера
+            /* server response status code 403 - forbidden (доступ запрещён)
+            let Json
+            await axios.get(process.env.TMK_FEED_URL)
+                .then(res => Json = res.data)
+            console.log(Json)
+            */
+        }
             
-        if (fs.existsSync(feed)) { 
+        if (fs.existsSync(fullPath)) { 
             
             try {
-                response = fs.readFileSync(feed)
+                response = fs.readFileSync(fullPath)
             }catch(e) {
-                throw `Не смог прочесть файл ${feed}!`
+                throw `Не смог прочесть файл ${fullPath}!`
             }
 
             if (response) { 
@@ -44,18 +61,12 @@ module.exports = class Tmk {
 
                 let keys = Object.keys(response.products)
                 this.products = keys.map(i => response.products[`${i}`])
-                    // .filter(i => 
-                    //     i.category_id !== null 
-                    //     && i.pictures[0] !== undefined
-                    // )
 
                 return true
             }
 
         }else {
-            // необходимо от сюда взять и сохранить в файл feed.json
-            // process.env.TMK_FEED_URL
-            throw `Файл ${feed} отсутствует или пуст!`
+            throw `Файл ${fullPath} отсутствует или пуст!`
         }
 
         return false
@@ -179,32 +190,32 @@ module.exports = class Tmk {
 
             let first = true
 
-            pictures.forEach(image => {
+            pictures.forEach((image, idx) => {
+                if (idx < 4) {
+                    if (first) first = false
+                    else files += `,`
 
-                if (first) first = false
-                else files += `,`
+                    let imageName = uuid.v4()  + '.jpg'
 
-                let imageName = uuid.v4()  + '.jpg'
+                    let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'tmk', article, 'big', imageName))
+                    let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'tmk', article, 'small', imageName))
 
-                let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'tmk', article, 'big', imageName))
-                let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'tmk', article, 'small', imageName))
+                    if (image.includes("https")) {
+                        https.get(image, (res) => {
+                            res.pipe(imageBig)
+                            if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
+                            else res.pipe(imageSmall)
+                        })
+                    }else {
+                        http.get(image, (res) => {
+                            res.pipe(imageBig)
+                            if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
+                            else res.pipe(imageSmall)
+                        })
+                    }
 
-                if (image.includes("https")) {
-                    https.get(image, (res) => {
-                        res.pipe(imageBig)
-                        if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-                        else res.pipe(imageSmall)
-                    })
-                }else {
-                    http.get(image, (res) => {
-                        res.pipe(imageBig)
-                        if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-                        else res.pipe(imageSmall)
-                    })
+                    files += `{"big":"tmk/${article}/big/${imageName}","small":"tmk/${article}/small/${imageName}"}`
                 }
-
-                files += `{"big":"tmk/${article}/big/${imageName}","small":"tmk/${article}/small/${imageName}"}`
-
             })
         }else {
             files += `{}`
