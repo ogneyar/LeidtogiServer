@@ -15,22 +15,16 @@ const CORS_URL = process.env.CORS_URL || "http://leidtogi.ru"
 const CORS_URL_SECURE = process.env.CORS_URL_SECURE || "https://leidtogi.ru"
 
 let whitelist = [
-    CORS_URL, CORS_URL_SECURE, 'http://192.168.143.38:3000',
-    'http://web.pzmarket.ru', 'https://web.pzmarket.ru',
-    'http://pzmarket.ru', 'https://pzmarket.ru',
-    'http://leidtogi.site', 'https://leidtogi.site',
-	'http://www.leidtogi.site', 'https://www.leidtogi.site',
-    'http://www.leidtogi.ru', 'https://www.leidtogi.ru',
-    'http://leidtogi.ru', 'https://leidtogi.ru',
+    CORS_URL, CORS_URL_SECURE, 'http://192.168.0.244:3000', 'http://www.leidtogi.ru', 'https://www.leidtogi.ru',
 ]
 let corsOptionsDelegate = function (req, callback) {
-  let corsOptions;
-  if (whitelist.indexOf(req.header('Origin')) !== -1) {
-    corsOptions = { origin: true, credentials: true } 
-  } else {
-    corsOptions = { origin: false } 
-  }
-  callback(null, corsOptions) 
+    let corsOptions;
+    if (whitelist.indexOf(req.header('Origin')) !== -1) {
+        corsOptions = { origin: true, credentials: true } 
+    } else {
+        corsOptions = { origin: false } 
+    }
+    callback(null, corsOptions) 
 }
 
 const app = express()
