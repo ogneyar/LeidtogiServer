@@ -9,6 +9,8 @@
 //      return: false // return the rest of the string // вернуть остальную строку
 // }
 //
+// return string or object { rest, search }
+//
 function parseHtml(string, args) { 
 
     let entryPoint = null, entryOr = null, startSearch = undefined, endSearch = undefined, inclusive = false, returnString = false
