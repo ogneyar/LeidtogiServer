@@ -46,11 +46,11 @@ function getSizes(Html) {
     serchString = `</li>`
     number = height.indexOf(serchString)
     height = height.substring(0, number).trim()
-   
+    
 
     response = {
         "weight": weight,
-        "volume": ((length*width*height)/1e9).toFixed(3),
+        "volume": ((length*width*height)/1e9).toFixed(4),
         "length": length,
         "width": width,
         "height": height

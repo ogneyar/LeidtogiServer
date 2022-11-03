@@ -55,7 +55,7 @@ function getSizesMiniMaks(string) {
     })
     height = Number(response.replace(",",".").trim()) * 10 // переводим в миллиметры
 
-    volume = ((length*width*height)/1e9).toFixed(3)
+    volume = ((length*width*height)/1e9).toFixed(4)
 
     return { weight, width, length, height, volume }
 

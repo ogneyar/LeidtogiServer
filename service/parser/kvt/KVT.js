@@ -15,6 +15,7 @@ const translit = require('../../translit.js')
 
 const parseXlsx = require('../../xlsx/parseXlsx')
 const ProductDto = require('../../../dtos/productDto')
+const saveInfoInFile = require('../../saveInfoInFile')
 
 
 module.exports = class KVT {
@@ -366,7 +367,7 @@ module.exports = class KVT {
 
     // смена цен
     async changePrice() {
-        let response = `[`
+        let response = `{<br />`
         
         let brand = await Brand.findOne({ where: { name: "KVT" } })
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
@@ -374,26 +375,28 @@ module.exports = class KVT {
         let products = await Product.findAll({ where: { brandId: brand.id } })
 
         this.price.forEach(newProduct => {
-            if (response !== `[`) response += ",<br />"
+            if (response !== `{<br />`) response += ",<br />"
             let yes = false
             products.forEach(oldProduct => {
                 if (oldProduct.article === `kvt${newProduct.article}`) {
                     let newPrice = newProduct.price * newProduct.quantity
                     newPrice = Math.round(newPrice * 100) / 100
                     if (newPrice != oldProduct.price) {
-                        response += `{Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        response += `"kvt${newProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}.`
                         Product.update({ price: newPrice },
                             { where: { id: oldProduct.id } }
                         ).then(()=>{}).catch(()=>{})
                     }else {
-                        response += `{Цена осталась неизменна: ${oldProduct.price}}`
+                        response += `"kvt${newProduct.article}": "Цена осталась прежняя = ${oldProduct.price}."`
                     }
                     yes = true
                 }
             })
-            if ( ! yes) response += `{Не найден артикул: kvt${newProduct.article}}`
+            if ( ! yes) response += `"kvt${newProduct.article}": "Не найден артикул."`
         })
-        response = response + `]`
+        response = response + `<br />}`
+
+        saveInfoInFile(brand.name, "update_price", response)
 
         return response
     }

@@ -17,6 +17,7 @@ const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 const ProductDto = require('../../../dtos/productDto')
 const getImages = require('./getImages')
+const saveInfoInFile = require('../../saveInfoInFile')
 
 
 module.exports = class Krause {
@@ -201,17 +202,39 @@ module.exports = class Krause {
             }
             info.push( { title: "characteristics",body: characteristics } )
         }
-
+        let size = {}
         if (characteristics) {
-        // let size = { 
-        //     weight: one.weight,
-        //     width: one.width * 10, // переводим сантиметры в миллиметры
-        //     height: one.height * 10, // переводим сантиметры в миллиметры
-        //     length: one.length * 10, // переводим сантиметры в миллиметры
-        //     volume: one.volume 
-        // }
+            one.name_char.forEach((char, idx) => {
+                if (char.toLowerCase().trim() === "транспортные габариты") {
+                    let split
+                    if (one.value_char[idx].includes("x")) split = one.value_char[idx].split("x")      // ангийский x прописной
+                    else if (one.value_char[idx].includes("X")) split = one.value_char[idx].split("X") // ангийский X заглавный
+                    else if (one.value_char[idx].includes("х")) split = one.value_char[idx].split("х") // русская х прописная
+                    else split = one.value_char[idx].split("Х")                                        // русская Х заглавная
+                    if (split.length > 1) {
+                        let length = split[0].trim()
+                        let width = split[1].trim()
+                        let height = split[2].trim()
+                        let volume = (length*width*height).toFixed(4)
+                        size = { 
+                            ...size,
+                            width: width * 1000,  // переводим метры в миллиметры
+                            height: height * 1000, 
+                            length: length * 1000, 
+                            volume 
+                        }
+                    }
+                }else if (char.toLowerCase().trim() === "вес") {
+                    let weight = one.value_char[idx].trim()
+                    size = { 
+                        ...size,
+                        weight
+                    }
+                }
+            })
         }
-
+        
+        
         return { 
             categoryId,
             brandId: brand.id, 
@@ -223,7 +246,7 @@ module.exports = class Krause {
             country,
             files,
             price,
-            // size,
+            size,
             info,
             filter: undefined
         }
@@ -232,84 +255,73 @@ module.exports = class Krause {
     // добавление товара в БД
     async add(number, quantity) {
 
-        // if (quantity) {
-
-        //     let array = []
-
-        //     for(let i = number; i < number+quantity; i++) {
-                
-        //         try {
-        //             let print = await this.print(i)
-                
-        //             if (print.error !== undefined) {
-        //                 array.push(`{${i}: ${print.error}}`)
-        //                 continue
-        //             }
-
-        //             // let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+        if (quantity) {
+            let array = []
+            for(let i = number; i < number+quantity; i++) {
+                try {
+                    let print = await this.print(i)
+                    if (print.error !== undefined) {
+                        array.push(`{${i}: ${print.error}}`)
+                        continue
+                    }
+                    let proDto = new ProductDto(print)
+                    // создание записи
+                    let response = await createProduct(proDto)
+                    array.push(`{${i}: ${response.url} - ${response.price}}р.`)
+                }catch(e) {
+                    array.push(`{${i}: ${e}}`)
+                }
+            }
             
-        //             let proDto = new ProductDto(print)
+            return array
 
-        //             let response = await createProduct(proDto)
-                
-        //             array.push(`{${i}: ${response.url} - ${response.price}}р.`)
-        //             continue
+        }else {
+            try {
+                let print = await this.print(number)
+                if (print.error !== undefined) return `{${number}: ${print.error}}`
+                let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
+                // создание записи
+                let response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
 
-        //         }catch(e) {
-        //             array.push(`{${i}: ${e}}`)
-        //         }
-
-        //     }
-            
-        //     return array
-
-        // }else {
-        //     try {
-        //         let print = await this.print(number)
-            
-        //         if (print.error !== undefined) return `{${number}: ${print.error}}`
-
-        //         let { name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter } = print
-            
-        //         let response = await createProduct(name, url, price, have, article, promo, country, brandId, categoryId, files, info, size, filter)
-                
-        //         return `{${number}: ${response.url} - ${response.price}р.}`
-        //     }catch(e) {
-        //         return `{${number}: ${e}}`
-        //     }
-        // }
+                return `{${number}: ${response.url} - ${response.price}р.}`
+            }catch(e) {
+                return `{${number}: ${e}}`
+            }
+        }
     }
 
     // смена цен
     async changePrice() {
-        let response = `[`
+        let response = `{<br />`
         
-        // let brand = await Brand.findOne({ where: { name: "KVT" } })
-        // if (brand.id === undefined) return { error: "Не найден бренд товара." }
+        let brand = await Brand.findOne({ where: { name: "Krause" } })
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
-        // let products = await Product.findAll({ where: { brandId: brand.id } })
+        let products = await Product.findAll({ where: { brandId: brand.id } })
 
-        // this.price.forEach(newProduct => {
-        //     if (response !== `[`) response += ",<br />"
-        //     let yes = false
-        //     products.forEach(oldProduct => {
-        //         if (oldProduct.article === `kvt${newProduct.article}`) {
-        //             let newPrice = newProduct.price * newProduct.quantity
-        //             newPrice = Math.round(newPrice * 100) / 100
-        //             if (newPrice != oldProduct.price) {
-        //                 response += `{Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
-        //                 Product.update({ price: newPrice },
-        //                     { where: { id: oldProduct.id } }
-        //                 ).then(()=>{}).catch(()=>{})
-        //             }else {
-        //                 response += `{Цена осталась неизменна: ${oldProduct.price}}`
-        //             }
-        //             yes = true
-        //         }
-        //     })
-        //     if ( ! yes) response += `{Не найден артикул: kvt${newProduct.article}}`
-        // })
-        // response = response + `]`
+        this.price.forEach(newProduct => {
+            if (response !== `{<br />`) response += ",<br />"
+            let yes = false
+            products.forEach(oldProduct => {
+                if (oldProduct.article === `krs${newProduct.article}`) {
+                    let newPrice = newProduct.price
+                    newPrice = Math.round(newPrice * 100) / 100
+                    if (newPrice != oldProduct.price) {
+                        response += `"krs${newProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}.`
+                        Product.update({ price: newPrice },
+                            { where: { id: oldProduct.id } }
+                        ).then(()=>{}).catch(()=>{})
+                    }else {
+                        response += `"krs${newProduct.article}": "Цена осталась прежняя = ${oldProduct.price}."`
+                    }
+                    yes = true
+                }
+            })
+            if ( ! yes) response += `"krs${newProduct.article}": "Не найден артикул."`
+        })
+        response = response + `<br />}`
+
+        saveInfoInFile(brand.name, "update_price", response)
 
         return response
     }
