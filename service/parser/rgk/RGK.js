@@ -309,7 +309,7 @@ module.exports = class RGK {
         // ---------------------
         // Саня попросил завысить цену на 30%
         // ---------------------
-        price = Number(price) * 1.3
+        // price = Number(price) * 1.3 // позже сказал ненадо
         // console.log("price", price)
 
         const product = await Product.findOne({

@@ -5,4 +5,3 @@
 ### MySQL Express React NodeJS
 
 ## Серверная часть
-s

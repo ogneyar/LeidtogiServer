@@ -178,7 +178,8 @@ module.exports = class Krause {
                 if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
                 else res.pipe(imageSmall)
             })
-
+			
+			if (files !== `[`) files += `,`
             files += `{"big":"krause/${article}/big/${imageName}","small":"krause/${article}/small/${imageName}"}`
         }
 
