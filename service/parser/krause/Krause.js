@@ -194,12 +194,14 @@ module.exports = class Krause {
             info.push( { title: "description", body: description } )
         }
         let characteristics = ""
-        if (one.name_char) {
+        if (one.name_char) { // если есть массив данных
             for (let i = 0; i < one.name_char.length; i++) {
-                if (characteristics) characteristics += ";"
-                characteristics += one.name_char[i]
-                if (one.measure_char[i]) characteristics += ", " + one.measure_char[i]
-                characteristics += ";" + one.value_char[i]
+                if (one.name_char[i]) { // если есть запись в массиве
+                    if (characteristics) characteristics += ";"
+                    characteristics += one.name_char[i]
+                    if (one.measure_char[i]) characteristics += ", " + one.measure_char[i]
+                    characteristics += ";" + one.value_char[i]
+                }
             }
             info.push( { title: "characteristics",body: characteristics } )
         }

@@ -1,6 +1,9 @@
 const Router = require('express')
 const router = new Router()
 
+const Product = require('../../models/Product')
+const ProductInfo = require('../../models/ProductInfo')
+
 const parseRouter = require('./parseRouter')
 const milwaukeeRouter = require('./milwaukeeRouter')
 const rgkRouter = require('./rgkRouter')
@@ -27,6 +30,38 @@ router.use('/advanta', advantaRouter) // Advanta-M
 router.use('/euroboor', euroboorRouter) // Euroboor
 router.use('/tor', torRouter) // Tor
 router.use('/krause', krauseRouter) // Krause
+
+
+// api/parser/temp/
+router.get('/temp', async (req, res, next) => { // временный роут (:
+
+    const product = await Product.findAll({
+        where: {
+            brandId: 14
+        }
+    })
+    
+    product.forEach(async i => {
+        let info = await ProductInfo.findOne({
+            where: {
+                productId: i.id,
+                title: "characteristics"
+            }
+        })
+        if (info.body[info.body.length-1] === ";") {
+            let split = info.body.split(";")
+            let body = split.filter(i => i).join(";")
+            // console.log(body) 
+            await ProductInfo.update({body}, {
+                where: {
+                    id: info.id
+                }
+            })
+        }
+    })
+
+    return res.json("ok")
+})
 
 
 
