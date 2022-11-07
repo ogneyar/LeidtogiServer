@@ -3,8 +3,7 @@ const path = require('path')
 const http = require('http')
 const https = require('https')
 const uuid = require('uuid')
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
+let sharp = require('sharp')
 const { Brand, Category, Product } = require('../../../models/models')
 // const findProductByUrl = require('../../product/findProductByUrl')
 const findProductByArticle = require('../../product/findProductByArticle')
@@ -149,14 +148,12 @@ module.exports = class Gedore {
         if (image.includes("https")) {
             https.get(image, (res) => {
                 res.pipe(imageBig)
-                if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-                else res.pipe(imageSmall)
+                res.pipe(sharp().resize(100)).pipe(imageSmall)
             })
         }else {
             http.get(image, (res) => {
                 res.pipe(imageBig)
-                if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-                else res.pipe(imageSmall)
+                res.pipe(sharp().resize(100)).pipe(imageSmall)
             })
         }
         
@@ -241,7 +238,7 @@ module.exports = class Gedore {
                     let newPrice = newProduct.price
                     newPrice = Math.round(newPrice * 100) / 100
                     if (newPrice != oldProduct.price) {
-                       response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
                         Product.update({ price: newPrice },
                             { where: { id: oldProduct.id } }
                         ).then(()=>{}).catch(()=>{})

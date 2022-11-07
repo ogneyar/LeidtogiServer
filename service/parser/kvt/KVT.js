@@ -4,8 +4,7 @@ const https = require('https')
 const uuid = require('uuid')
 const Math = require('mathjs')
 
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
+let sharp = require('sharp')
 
 const { Brand, Category, Product } = require('../../../models/models')
 
@@ -232,8 +231,7 @@ module.exports = class KVT {
 
         https.get(image, (res) => {
             res.pipe(imageBig)
-            if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-            else res.pipe(imageSmall)
+            res.pipe(sharp().resize(100)).pipe(imageSmall)
         })
 
         let files = `[`
@@ -242,7 +240,7 @@ module.exports = class KVT {
         
         let plan = one.plan
         
-        if (plan && plan !== "—" && process.env.URL !== "https://api.leidtogi.site") {
+        if (plan && plan !== "—") {
             let planName = uuid.v4() + '.jpg'
 
             let planBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kvt', article, 'big', planName))
@@ -257,7 +255,7 @@ module.exports = class KVT {
         }
 
         files += `]`
-       
+        
 
         let size = { 
             weight: one.weight,
@@ -395,7 +393,7 @@ module.exports = class KVT {
             if ( ! yes) response += `"kvt${newProduct.article}": "Не найден артикул."`
         })
         response = response + `<br />}`
- 
+
         saveInfoInFile(brand.name, "update_price", response) 
 
         return response

@@ -3,8 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const http = require('http')
 const https = require('https')
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
+let sharp = require('sharp')
 const { Op } = require('sequelize')
 const { Brand, Category, Product } = require('../../../models/models')
 const findProductByArticle = require('../../product/findProductByArticle')
@@ -71,13 +70,11 @@ async function printOne(one) {
     
     https.get(one.image, (res) => {
         res.pipe(imageBig)
-        if (process.env.URL !== "https://api.leidtogi.site") {
-            res.pipe(sharp().resize(100).on('error', err => { console.error(err) })).pipe(imageSmall)
-        }else res.pipe(imageSmall)
+        res.pipe(sharp().resize(100).on('error', err => { console.error(err) })).pipe(imageSmall)
     }).on('error', (e) => { console.error(e) })
     
     files += `{"big":"${brand}/${myArticle}/big/${imageName}","small":"${brand}/${myArticle}/small/${imageName}"}`
-   
+    
     files += `]`
     
     

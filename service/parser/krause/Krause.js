@@ -5,8 +5,7 @@ const https = require('https')
 const uuid = require('uuid')
 const Math = require('mathjs')
 
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
+let sharp = require('sharp')
 
 const { Brand, Category, Product } = require('../../../models/models')
 
@@ -175,8 +174,7 @@ module.exports = class Krause {
 
             https.get(images[i], (res) => {
                 res.pipe(imageBig)
-                if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-                else res.pipe(imageSmall)
+                res.pipe(sharp().resize(100)).pipe(imageSmall)
             })
 			
 			if (files !== `[`) files += `,`

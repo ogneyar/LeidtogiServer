@@ -6,8 +6,7 @@ const https = require('https')
 const uuid = require('uuid')
 const axios = require('axios')
 
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
+let sharp = require('sharp')
 
 const { Product, Category, Brand } = require('../../../models/models')
 
@@ -142,28 +141,12 @@ module.exports = class Husqvarna {
                 throw `Нет товара с артикулом ${article}`
             } // else throw `Товар с артикулом ${article} уже есть`
 
-            // let link = parseHtml(response, {
-            //     entry: `<div class="product-preview">`,
-            //     start: `href="`,
-            //     end: `"`
-            // })
-
             let link = this.url + parseHtml(response, {
                 entry: `<div class="search-item">`,
                 start: `href="`,
                 end: `"`
             })
             
-            // link = this.url + link
-
-            // let image = parseHtml(response, {
-            //     entry: `<div class="product-preview">`,
-            //     start: `<img src="`,
-            //     end: `"`
-            // })
-
-            // throw link
-
             await axios.get(link)
                 .then(res => response = res.data)
                 .catch(err => response = { error: err })
@@ -171,15 +154,11 @@ module.exports = class Husqvarna {
             
             response = response.replace(/(&quot;)/g,`"`)
 
-            // throw response
-
             let imagesUL = parseHtml(response, {
                 entry: `<div class='det_left'`,
                 start: `<ul class='det_slider'>`,
                 end: `</ul>`
             })
-
-            // throw imagesUL
 
             let images = []
             try {
@@ -201,25 +180,10 @@ module.exports = class Husqvarna {
                 if (images.length === 0) throw "Не найдено изображение товара."
             }
             
-            // return images
-
             let name = parseHtml(response, {
                 start: `<h1 itemprop="name">`,
                 end: `</h1>`
             }).trim()
-
-            // return name
-            
-            // let description = parseHtml(response, { start: `id="tab-description">`, end: `</section>` })
-            // try {
-            //     description = parseHtml(description, { start: `<ul`, end: `</ul>`, inclusive: true })
-            // }catch(error) { 
-            //     try { description = parseHtml(description, { start: "<p", end: "</p>", inclusive: true })
-            //     }catch(error) { 
-            //         console.log("Error: ",error)
-            //         description = undefined
-            //     }
-            // }
 
             let description
             try {
@@ -231,18 +195,6 @@ module.exports = class Husqvarna {
                 })
             }catch(error) { console.log("Error: ",error) }
 
-            // return description
-
-            // let characteristics
-            // try {
-            //     characteristics = parseHtml(response, {
-            //         entry: `class="text-uppercase">Характеристики`,
-            //         start: `<tbody`,
-            //         end: `</tbody>`,
-            //         inclusive: true
-            //     })
-            // }catch(error) { console.log("Error: ",error) }
-
             let characteristics
             try {
                 characteristics = parseHtml(response, {
@@ -253,63 +205,10 @@ module.exports = class Husqvarna {
                 })
             }catch(error) { console.log("Error: ",error) }
 
-            // return characteristics || null
-
             let info = []
             if (description) info.push({title:"description",body:description})
             if (characteristics) info.push({title:"characteristics",body:characteristics})
             
-           
-            // let filter
-            // let rest // остаток (если Фильтры будут найдены, поиск будет осуществлён с parseHtml -> return: true, что возвращает объект с остатком rest )
-            // try {
-            //     rest = parseHtml(response, {
-            //         entry: `>Фильтры</strong>`,
-            //         start: "<tbody>",
-            //         end: "</tbody>"
-            //     })
-            // }catch(error) { console.log("Error: ",error) }
-
-            // if (rest) {
-            //     let resp = { rest}
-            //     filter = []
-            //     let yes =true
-
-            //     while (yes) {
-            //         let name, value
-            //         try {
-            //             resp = parseHtml(resp.rest, {
-            //                 start: "<td >",
-            //                 end: "</td>",
-            //                 return: true
-            //             })
-            //             name = resp.search
-            //             resp = parseHtml(resp.rest, {
-            //                 start: "<td >",
-            //                 end: "</td>",
-            //                 return: true
-            //             })
-            //             value = resp.search
-            //         }catch(error) {
-            //             yes = false
-            //         }
-            //         if (yes) {
-            //             filter.push({ name, value })
-            //         }
-            //     }
-            // }
-            
-            // return filter
-
-            // let size
-            // try {
-            //     size = parseHtml(response, {
-            //         entry: `>Габариты и вес`,
-            //         start: `<tbody>`,
-            //         end: `</tbody>`
-            //     })
-            // }catch(error) { console.log("Error: ",error) }
-
             let size, weight = "", width = "", height = "", length = "", volume = ""
             try {
                 if (characteristics) {
@@ -338,8 +237,6 @@ module.exports = class Husqvarna {
                 }
             }catch(error) { console.log("Error: ",error) }
 
-            // return size
-
             try {
                 if (characteristics) {
                     weight = parseHtml(response, { // вес в кг
@@ -351,35 +248,9 @@ module.exports = class Husqvarna {
                 }
             }catch(error) { console.log("Error: ",error) }
 
-            // return weight
 
             size = { weight, width, height, length, volume }
 
-            // return size
-
-            // if (size) {
-            //     try { weight = parseHtml(size, { entry: "Вес", start: "<td >", end: "</td>" }) 
-            //     }catch(error) { 
-            //         try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
-            //         }catch(error) { console.log("Error: ",error) }
-            //     }
-            //     try { width = parseHtml(size, { entry: "Ширина", start: "<td >", end: "</td>" })
-            //     }catch(error) { console.log("Error: ",error) }
-            //     try { height = parseHtml(size, { entry: "Высота", start: "<td >", end: "</td>" })
-            //     }catch(error) { console.log("Error: ",error) }
-            //     try { length = parseHtml(size, { entry: "Длина", start: "<td >", end: "</td>" })
-            //     }catch(error) { console.log("Error: ",error) }
-
-            //     if (width, height, length) volume = Math.round( ( Number(width) / 1000 ) * ( Number(height) / 1000 ) * ( Number(length) / 1000 ), 4 )
-
-            //     size = { weight, width, height, length, volume }
-            // }else if (characteristics) {
-            //     try { weight = parseHtml(characteristics, { entry: "Рабочая масса", start: "<td >", end: "</td>" })
-            //     }catch(error) { console.log("Error: ",error) }
-            //     if (weight){
-            //         size = { weight, width: 0, height: 0, length: 0, volume: 0 }
-            //     }
-            // }
 
             article = "hqv" + article
             createFoldersAndDeleteOldFiles(this.brand, article)
@@ -397,8 +268,7 @@ module.exports = class Husqvarna {
 
                 https.get(image, (res) => {
                     res.pipe(imageBig)
-                    if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-                    else res.pipe(imageSmall)
+                    res.pipe(sharp().resize(100)).pipe(imageSmall)
                 })
 
                 files += `{"big":"${this.brand}/${article}/big/${imageName}","small":"${this.brand}/${article}/small/${imageName}"}`
@@ -406,8 +276,6 @@ module.exports = class Husqvarna {
             })
 
             files += `]`
-
-            // throw files
 
             let country = "Швеция"
 

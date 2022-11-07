@@ -3,8 +3,7 @@ const path = require('path')
 const http = require('http')
 // const https = require('https')
 const uuid = require('uuid')
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
+let sharp = require('sharp')
 const { Brand, Category, Product } = require('../../../models/models')
 const findProductByArticle = require('../../product/findProductByArticle')
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
@@ -145,7 +144,7 @@ module.exports = class Leidtogi {
         let files = `[`
 
         if (fs.existsSync(img)) {
-              
+            
             let bigFile = path.resolve(__dirname, '..', '..', '..', 'static', 'leidtogi', article, 'big', imageName)
             let smallFile = path.resolve(__dirname, '..', '..', '..', 'static', 'leidtogi', article, 'small', imageName)
 
@@ -155,8 +154,7 @@ module.exports = class Leidtogi {
         
             http.get(process.env.URL + "/leidtogi/images/" + article + ".jpg", (res) => {
                 res.pipe(imageBig)
-                if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-                else res.pipe(imageSmall)
+                res.pipe(sharp().resize(100)).pipe(imageSmall)
             })
 
             // fs.copyFile(img, bigFile, err => {
@@ -168,7 +166,7 @@ module.exports = class Leidtogi {
         }else {
             files += `{}`
         }
-       
+        
         files += `]`
         
 

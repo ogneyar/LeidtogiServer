@@ -4,8 +4,6 @@ const ApiError = require('../error/apiError')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
 
 const createFoldersAndDeleteOldFiles = require('../service/createFoldersAndDeleteOldFiles.js')
 const deleteOldFiles = require('../service/deleteOldFiles.js')
@@ -59,12 +57,6 @@ class ProductController {
                         break;
                     }
                     
-                    // let imgSmallData = await sharp(imgBig.data)
-                    //     .resize(200, 200)
-                    //     .toBuffer()
-                    // imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
-                    
-                    // imgSmall = sharp(imgBig).resize(100)
                     imgSmall = imgBig
 
                     fileName = uuid.v4() + '.jpg'
@@ -368,11 +360,6 @@ class ProductController {
                         default: break;
                     }
                     
-                    // let imgSmallData = await sharp(imgBig.data)
-                    //     .resize(200, 200)
-                    //     .toBuffer()
-                    // imgSmall = {...imgBig, data: imgSmallData, size: imgSmallData.length}
-
                     imgSmall = imgBig
                     
                     fileName = uuid.v4() + '.jpg'
@@ -522,19 +509,8 @@ class ProductController {
 					} 
 				} 
 			})
-			
-			//const brand = await Brand.findAll()
     
             return res.json(products)
-			/*return res.json(products.map(i => {
-				let brandName
-				brand.forEach(j => {
-					if (j.id === i.brandId) {
-						brandName = j.name
-					}
-				})
-				return { ...i, brand: brandName }
-			}))*/
             
         }catch(e) {
             return next(res.json({error:'Ошибка метода getPromo!'}))
@@ -544,16 +520,6 @@ class ProductController {
 
     async temp(req, res, next) {
         try {
-            
-            // const products = await ProductSize.findAll({
-            //     where: {productId: null}
-            // })
-    
-            // await ProductSize.destroy({
-            //     where: {productId: null}
-            // })
-
-            // return res.json(products)
             
             return res.json("temp")
 

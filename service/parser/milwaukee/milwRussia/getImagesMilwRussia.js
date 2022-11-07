@@ -5,8 +5,7 @@ const https = require('https')
 const createFoldersAndDeleteOldFiles = require('../../../createFoldersAndDeleteOldFiles.js')
 const parseHtml = require('../../../html/parseHtml.js')
 
-let sharp
-if (process.env.URL !== "https://api.leidtogi.site") sharp = require('sharp')
+let sharp = require('sharp')
 
 
 function getImagesMilwRussia(article, Html) {
@@ -67,8 +66,7 @@ function getImagesMilwRussia(article, Html) {
         
         https.get(image, (res) => {
             res.pipe(imageBig)
-            if (process.env.URL !== "https://api.leidtogi.site") res.pipe(sharp().resize(100)).pipe(imageSmall)
-            else res.pipe(imageSmall)
+            res.pipe(sharp().resize(100)).pipe(imageSmall)
         })
     
         arrayImages = [...arrayImages, {"big": filePathBig,"small": filePathSmall}]
