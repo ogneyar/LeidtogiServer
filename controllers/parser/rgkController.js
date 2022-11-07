@@ -8,6 +8,7 @@ const RGK = require('../../service/parser/rgk/RGK')
 
 // const parseCsv = require('../../service/csv/parseCsv')
 const parseXlsx = require('../../service/xlsx/parseXlsx')
+const saveInfoInFile = require('../../service/saveInfoInFile')
 
 
 
@@ -113,6 +114,18 @@ class rgkController {
         }
 
         return res.json(response)
+    }
+
+    
+    async saveInfo(req, res, next) {
+        
+        if (!req.body || ! req.body.text) return res.json("нет данных")
+
+        let text = req.body.text
+
+        saveInfoInFile("RGK", "update_price", text)
+
+        return res.json("ok")
     }
 
 }

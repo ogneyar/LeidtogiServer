@@ -316,16 +316,16 @@ module.exports = class RGK {
             where: { article }
         })
         if (product) {
-            if (Number(price) === Number(product.price)) return `Артикул: ${article}. Цена не изменилась.`
+            if (Number(price) === Number(product.price)) return `"${article}": "Цена осталась прежняя = ${price}."`
             response = await Product.update({ price }, {
                 where: { id: product.id }
             })
         }else {
-            return `Артикул: ${article}. Такого товара нет.`
+            return `"${article}": "Не найден артикул."`
         }
         
         // if (response) return { article, oldPrice: product.price, newPrice: price }
-        if (response) return `Артикул: ${article}. Старая цена: ${product.price}. Новая цена: ${price}`
+        if (response) return `"${article}": "Старая цена = ${product.price}, новая цена = ${price}."`
     }
 
 

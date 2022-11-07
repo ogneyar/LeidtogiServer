@@ -9,6 +9,7 @@ const parseXml = require('../../xml/parseXml')
 const ProductDto = require('../../../dtos/productDto')
 const createCategoriesForTor = require('./createCategoriesForTor')
 const printOne = require('./printOne')
+const saveInfoInFile = require('../../saveInfoInFile')
 // const printOne = require('./printOne')
 
 
@@ -169,7 +170,7 @@ module.exports = class Tor {
 
     // смена цен
     async changePrice() {
-        let response = `[`
+        let response = `{<br />`
         
         let brand = await Brand.findOne({ where: { name: "Tor" } })
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
@@ -179,7 +180,7 @@ module.exports = class Tor {
         if (this.product !== undefined) {
             
             this.product.forEach(newProduct => {
-          
+            
                 if (newProduct.name == "" || newProduct.price == "") { // если пустая строка
                     // continue // пропусти
                 }else {
@@ -188,29 +189,32 @@ module.exports = class Tor {
 
                 let newPrice = Math.round( newProduct.price * 100 ) /100
 
-                if (response !== `[`) response += ",<br />"
+                if (response !== `{<br />`) response += ",<br />"
                 let yes = false
                 old.forEach(oldProduct => {
                     if (oldProduct.article === myArticle) {
                         
                         if (newPrice != oldProduct.price) {
-                            response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                            response += `"${oldProduct.article}": "Старая цена: ${oldProduct.price}, новая цена: ${newPrice}"`
                             Product.update({ price: newPrice },
                                 { where: { id: oldProduct.id } }
                             ).then(()=>{}).catch(()=>{})
                         }else {
-                            response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                            response += `"${oldProduct.article}": "Цена осталась прежняя = ${oldProduct.price}"`
                         }
                         yes = true
 
                     }
                 })
-                if ( ! yes) response += `{Не найден артикул: ${myArticle}}`
+                if ( ! yes) response += `"${myArticle}": "Не найден артикул."`
+                
                 }
             })
         }
 
-        response = response + `]`
+        response = response + `<br />}`
+        
+        saveInfoInFile(brand.name, "update_price", response) 
 
         return response
     }

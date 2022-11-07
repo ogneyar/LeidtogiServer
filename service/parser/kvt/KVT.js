@@ -382,7 +382,7 @@ module.exports = class KVT {
                     let newPrice = newProduct.price * newProduct.quantity
                     newPrice = Math.round(newPrice * 100) / 100
                     if (newPrice != oldProduct.price) {
-                        response += `"kvt${newProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}.`
+                        response += `"kvt${newProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}."`
                         Product.update({ price: newPrice },
                             { where: { id: oldProduct.id } }
                         ).then(()=>{}).catch(()=>{})
@@ -395,8 +395,8 @@ module.exports = class KVT {
             if ( ! yes) response += `"kvt${newProduct.article}": "Не найден артикул."`
         })
         response = response + `<br />}`
-
-        saveInfoInFile(brand.name, "update_price", response)
+ 
+        saveInfoInFile(brand.name, "update_price", response) 
 
         return response
     }

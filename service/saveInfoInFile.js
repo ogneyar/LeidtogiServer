@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 
 
-module.exports = function (brand, action, content) {
+module.exports = function (brand, fileName, content) {
 
     brand = brand.toLowerCase()
     
@@ -31,19 +31,10 @@ module.exports = function (brand, action, content) {
     
     let nameFolder = `${year}.${month}.${day}_${hour}.${min}.${sec}`
     
-    // try {
-    //     fs.mkdirSync(path.resolve(__dirname, '..', 'static', 'info', brand, nameFolder))
-    // }catch(e) {
-    //     console.log(`Создать папку ${nameFolder} не удалось.`)
-    //     // throw `Создать папку ${nameFolder} не удалось.`
-    //     return null
-    // }
-
     content = content.replace(/<br \/>/g, "\r\n")
 
     try {
-        fs.writeFileSync(path.resolve(__dirname, '..', 'static', 'info', brand, nameFolder + "_" + action + ".json"), content)
-        //файл записан успешно
+        fs.writeFileSync(path.resolve(__dirname, '..', 'static', 'info', brand, nameFolder + "_" + fileName + ".json"), content)
     } catch (err) {
         console.log(`Записать данные в файл не удалось.`)
         // throw `Записать данные в файл не удалось.`

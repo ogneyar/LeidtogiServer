@@ -14,6 +14,8 @@ if (process.env.URL === "http://localhost:5000" || process.env.URL === "https://
 // router.get('/add_sizes', rgkController.addSizes) // добавление габаритов RGK
 router.get('/add_sizes', checkRole('ADMIN'), rgkController.addSizes) // добавление габаритов RGK
 
+router.post('/save_info', checkRole('ADMIN'), rgkController.saveInfo) //  сохранение данных в файл
+
 
 
 module.exports = router

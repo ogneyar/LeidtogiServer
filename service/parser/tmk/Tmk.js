@@ -16,6 +16,7 @@ const translit = require('../../translit.js')
 // const createCategory = require('../../category/createCategory')
 const getUrl = require('./getUrl')
 const ProductDto = require('../../../dtos/productDto')
+const saveInfoInFile = require('../../saveInfoInFile')
 
 
 
@@ -287,7 +288,7 @@ module.exports = class Tmk {
 
     // смена цен
     async changePrice() {
-        let response = `[`
+        let response = `{<br />`
         
         let brand = await Brand.findOne({ where: { name: "TMK" } })
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
@@ -295,28 +296,31 @@ module.exports = class Tmk {
         let old = await Product.findAll({ where: { brandId: brand.id } })
 
         if (this.products !== undefined) this.products.forEach(newProduct => {
-            if (response !== `[`) response += ",<br />"
+            if (response !== `{<br />`) response += ",<br />"
             let yes = false
             old.forEach(oldProduct => {
                 if (oldProduct.article === `tmk${newProduct.code}`) {
                     let newPrice = newProduct.price
                     newPrice = Math.round(newPrice * 100) / 100
                     if (newPrice != oldProduct.price) {
-                        response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        response += `"${oldProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}"`
                         Product.update({ price: newPrice },
                             { where: { id: oldProduct.id } }
                         ).then(()=>{}).catch(()=>{})
                     }else {
-                        response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                        response += `"${oldProduct.article}": "Цена осталась прежняя = ${oldProduct.price}"`
                     }
                     yes = true
                 }
             })
-            if ( ! yes) response += `{Не найден артикул: tmk${newProduct.code}}`
+            if ( ! yes) response += `"tmk${newProduct.code}": "Не найден артикул."`
+            
         })
 
-        response = response + `]`
-console.log("end");
+        response = response + `<br />}`
+        
+        saveInfoInFile(brand.name, "update_price", response) 
+
         return response
     }
 
