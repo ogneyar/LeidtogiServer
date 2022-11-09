@@ -6,8 +6,10 @@ class mailController {
     
     async requestPrice(req, res, next) {
         try {
+            let body = req.body
+            if (!body || body === {}) body = req.query
             let response
-            await mailService.sendRequestPrice(process.env.ADMIN_EMAIL, req.body)
+            await mailService.sendRequestPrice(process.env.ADMIN_EMAIL, body) 
                 .then(data => {
                     response = true
                     console.log(data)

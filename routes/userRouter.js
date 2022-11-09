@@ -6,6 +6,11 @@ const registrationMiddleware = require('../middleware/registrationMiddleware')
 
 const router = new Router()
 
+
+if (process.env.URL === "http://localhost:5000") {
+    router.get('/retry_mail/:id', userController.retryMail)
+}
+
 router.post('/registration', registrationMiddleware, userController.registration)
 router.post('/create_guest', userController.createGuest)
 router.post('/login', userController.login)
