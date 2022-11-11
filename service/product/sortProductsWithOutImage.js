@@ -31,7 +31,7 @@ function sortProductsWithOutImage(data) {
 		return true
 	})
 
-    return [ ...withImage, ...withOutImage ]
+    data = [ ...withImage, ...withOutImage ]
     
 }
 

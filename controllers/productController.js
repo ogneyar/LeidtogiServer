@@ -89,14 +89,12 @@ class ProductController {
 
     async getAll(req, res) {
         try {
-            let { brandId, categoryId, limit, page, mix_all, mix_no_img } = req.query
-
-            // console.log("mix_all",mix_all)
-    
+            let { brandId, categoryId, limit, page, mix_all, mix_no_img, filter } = req.query
+            
             let products = await getAll({
-                brandId, categoryId, limit, page, mix_all, mix_no_img//: false
+                brandId, categoryId, limit, page, mix_all, mix_no_img/*: false*/, filter
             })
-
+            
             return res.json(products)
         }catch(e) {
             return res.json({error: 'Ошибка метода getAll!'})

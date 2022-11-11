@@ -3,9 +3,10 @@ const { Product, Category } = require("../../models/models")
 const mixPromo = require("./mixPromo")
 const mixAllProducts = require("./mixAllProducts")
 const sortProductsWithOutImage = require("./sortProductsWithOutImage")
+const filterPrice = require("./filterPrice")
 
 
-async function getAll({ brandId, categoryId, limit, page, mix_all, mix_no_img }) {
+async function getAll({ brandId, categoryId, limit, page, mix_all, mix_no_img, filter }) {
     
     page = Number(page) || 1
     limit = Number(limit) || 12
@@ -23,8 +24,10 @@ async function getAll({ brandId, categoryId, limit, page, mix_all, mix_no_img })
             // products = await Product.findAndCountAll({limit, offset})
             products = await Product.findAndCountAll()
 
+            
+            if (filter && filter.price) filterPrice(products.rows)
             if (mix_all) mixAllProducts(products.rows)
-            if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
+            if (mix_no_img) sortProductsWithOutImage(products.rows)
             if (page === 1) mixPromo(products.rows)
             let array = []
             for (let idx = offset; idx < offset + limit; idx++) {
@@ -37,7 +40,7 @@ async function getAll({ brandId, categoryId, limit, page, mix_all, mix_no_img })
             products = await Product.findAndCountAll({where:{brandId}})
 
             if (mix_all) mixAllProducts(products.rows)
-            if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
+            if (mix_no_img) sortProductsWithOutImage(products.rows)
             let array = []
             for (let idx = offset; idx < offset + limit; idx++) {
                 if (products.rows[idx]) array.push(products.rows[idx])
@@ -48,7 +51,7 @@ async function getAll({ brandId, categoryId, limit, page, mix_all, mix_no_img })
             // products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
             products = await Product.findAndCountAll()
             if (mix_all) mixAllProducts(products.rows)
-            if (mix_no_img) products.rows = sortProductsWithOutImage(products.rows)
+            if (mix_no_img) sortProductsWithOutImage(products.rows)
 
             let categories = await Category.findAll()
             
