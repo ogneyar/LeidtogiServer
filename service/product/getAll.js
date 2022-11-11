@@ -39,6 +39,7 @@ async function getAll({ brandId, categoryId, limit, page, mix_all, mix_no_img, f
             // products = await Product.findAndCountAll({where:{brandId}, limit, offset})
             products = await Product.findAndCountAll({where:{brandId}})
 
+            if (filter && filter.price) filterPrice(products.rows)
             if (mix_all) mixAllProducts(products.rows)
             if (mix_no_img) sortProductsWithOutImage(products.rows)
             let array = []
@@ -50,6 +51,8 @@ async function getAll({ brandId, categoryId, limit, page, mix_all, mix_no_img, f
         if (!brandId && categoryId) {
             // products = await Product.findAndCountAll({where:{categoryId}, limit, offset})
             products = await Product.findAndCountAll()
+
+            if (filter && filter.price) filterPrice(products.rows)
             if (mix_all) mixAllProducts(products.rows)
             if (mix_no_img) sortProductsWithOutImage(products.rows)
 
