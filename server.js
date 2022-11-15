@@ -15,7 +15,9 @@ const CORS_URL = process.env.CORS_URL || "http://leidtogi.ru"
 const CORS_URL_SECURE = process.env.CORS_URL_SECURE || "https://leidtogi.ru"
 
 let whitelist = [
-    CORS_URL, CORS_URL_SECURE, 'http://192.168.0.244:3000', 'http://www.leidtogi.ru', 'https://www.leidtogi.ru',
+    CORS_URL, CORS_URL_SECURE, 'http://192.168.0.244:3000', 
+    'http://www.leidtogi.ru', 'https://www.leidtogi.ru', 
+    'http://www.localhost:3000'
 ]
 let corsOptionsDelegate = function (req, callback) {
     let corsOptions;
