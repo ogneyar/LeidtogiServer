@@ -17,10 +17,14 @@ const ProductDto = require('../../../dtos/productDto')
 module.exports = class Leidtogi {
     
     static product = []
+    static number_sheet = 1 // number_sheet - номер вкладки (1 - Абразив, 2 - Алмаз)
     
     constructor() {}
 
-    async run(feed = {}) {
+    async run(feed = {}, numberSheet = 1) {
+
+        this.number_sheet = numberSheet
+
         let fullPath, response
 
         fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'leidtogi', 'feed.xlsx')
@@ -34,7 +38,7 @@ module.exports = class Leidtogi {
             
         if (fs.existsSync(fullPath)) { 
             
-            response = await parseXlsx(fullPath, [ 
+            response = await parseXlsx(fullPath, [
                 "Наименование",
                 "Артикул",
                 "РРЦ",
@@ -47,7 +51,7 @@ module.exports = class Leidtogi {
                 "Высота",
                 "Ширина",
                 "Объём",
-            ])
+            ], numberSheet) // numberSheet - номер вкладки (1 - абразив, 2 - алмаз)
             
             if (response && Array.isArray(response)) {
                 this.product = response.map(i => {
@@ -139,7 +143,7 @@ module.exports = class Leidtogi {
 
         createFoldersAndDeleteOldFiles("leidtogi", article)
 
-        let img = path.resolve(__dirname, '..', '..', '..', 'static', 'leidtogi', 'images', article+".jpg")
+        let img = path.resolve(__dirname, '..', '..', '..', 'static', 'leidtogi', 'images', this.number_sheet, article+".jpg")
 
         let files = `[`
 
@@ -152,7 +156,7 @@ module.exports = class Leidtogi {
             let imageSmall = fs.createWriteStream(smallFile)
 
         
-            http.get(process.env.URL + "/leidtogi/images/" + article + ".jpg", (res) => {
+            http.get(`${process.env.URL}/leidtogi/images/${this.number_sheet}/${article}.jpg`, (res) => {
                 res.pipe(imageBig)
                 res.pipe(sharp().resize(100)).pipe(imageSmall)
             })

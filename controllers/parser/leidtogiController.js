@@ -6,14 +6,16 @@ class leidtogiController {
 
     async leidtogi(req, res, next) {
         try {
-            let { number, add, change } = req.query
+            let { number, add, change, number_sheet } = req.query // number_sheet - номер вкладки
             let feed = req.files && req.files.feed || undefined
+
+            if (!number_sheet) number_sheet = 1
 
             let response, leidtogi
             // создание экземпляра класса Leidtogi
             leidtogi = new Leidtogi()
             // обработка данных файла feed.xlsx
-            response = await leidtogi.run(feed)
+            response = await leidtogi.run(feed, number_sheet)
             if ( ! response ) return res.json({error: 'Ошибка! ParseXlsx не вернул данные!'}) // вывод ошибки
 
             // добавление нового товара
