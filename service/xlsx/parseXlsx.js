@@ -8,7 +8,7 @@ arraySearch         массив искомых значений
 
 при повторяющихся значениях вернётся массив 
 */
-async function parseXlsx(file, arraySearch) {
+async function parseXlsx(file, arraySearch, numberSheet = 1) {
 
     let workbook, worksheet, response = []
     
@@ -18,7 +18,7 @@ async function parseXlsx(file, arraySearch) {
         return { error: `Файл ${file} отсутствует или пуст!` }
     }
 
-    let first_sheet_name = workbook.SheetNames[0] // наименование первой вкладки
+    let first_sheet_name = workbook.SheetNames[numberSheet - 1] // наименование первой вкладки (по умолчанию 0 вкладка)
     worksheet = workbook.Sheets[first_sheet_name] // рабочая вкладка
 
     let start, symbol = []
