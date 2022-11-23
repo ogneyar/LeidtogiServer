@@ -13,6 +13,8 @@ const translit = require('../../translit.js')
 
 async function printOne(one) {
     
+    if (one.name.toLowerCase().includes("krause")) throw "Это товар Krause, их добавляем отдельно."
+
     let brand = "tor"
 
     let category = await Category.findOne({
