@@ -16,6 +16,7 @@ const advantaRouter = require('./advantaRouter')
 const euroboorRouter = require('./euroboorRouter')
 const torRouter = require('./torRouter')
 const krauseRouter = require('./krauseRouter')
+const kedrRouter = require('./kedrRouter')
 
 
 router.use('/parse', parseRouter) // Парсер mail.ru, ya.ru и т.п.
@@ -30,6 +31,7 @@ router.use('/advanta', advantaRouter) // Advanta-M
 router.use('/euroboor', euroboorRouter) // Euroboor
 router.use('/tor', torRouter) // Tor
 router.use('/krause', krauseRouter) // Krause
+router.use('/kedr', kedrRouter) // Kedr
 
 
 
