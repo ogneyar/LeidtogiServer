@@ -41,8 +41,6 @@ class kedrController {
                 return res.json(await kedr.getLengthPrice()) 
             }
 
-            return res.json(await kedr.createCategories()) 
-
             // вывод на экран общего количества товаров (например: 372)
             return res.json(await kedr.getLength()) 
 
