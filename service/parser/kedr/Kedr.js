@@ -443,9 +443,9 @@ module.exports = class Krause {
             }
         })
 
-        if ( ! price ) return { error: "Не найдена цена товара." }
+        // if ( ! price ) return { error: "Не найдена цена товара." }
 
-        if (price === "по запросу") price = 0
+        if ( ! price || price === "по запросу") price = 0
 
         let categoryUrl = await this.getCategories(one)
 
@@ -476,11 +476,15 @@ module.exports = class Krause {
         let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kedr', article, 'big', imageName))
         let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kedr', article, 'small', imageName))
 
-        https.get("https://" + image, (res) => {
-            res.pipe(imageBig)
-            res.pipe(sharp().resize(100)).pipe(imageSmall)
-        })
-        
+        try{
+            https.get("https://" + image, (res) => {
+                res.pipe(imageBig)
+                res.pipe(sharp().resize(100)).pipe(imageSmall)
+            })
+        }catch(e) {
+            return { error: "Не найдено изображение товара." }
+        }
+
         files += `{"big":"kedr/${article}/big/${imageName}","small":"kedr/${article}/small/${imageName}"}`
 
         files += `]`
