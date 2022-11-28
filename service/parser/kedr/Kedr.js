@@ -459,33 +459,41 @@ module.exports = class Krause {
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
         
         article = "kdr" + article
-
+        
         let name = one.name
         let url = translit(name) + "_" + article
 
         let product = await Product.findOne({ where: { url } })
         if (product && product.id !== undefined) return { error: "Такой товар уже есть." }
         
-        let image = one.image // ссылка типа www.kedrweld.ru/upload/iblock/13d/fuj9m92t4t69w3tsz0vnq3hkes15rqfc.jpeg
-
+        let image = one.image // ссылка типа www.kedrweld.ru/upload/iblock/13d/fuj9m92t4t69w3tsz0vnq3hkes15rqfc.jpeg (или #Н/Д`)
+        
         let files = `[`
 
-        createFoldersAndDeleteOldFiles("kedr", article)
+        if (image && image != "#Н/Д" && image != 42 && image != "www.kedrweld.ru") {
+            
+            let imageName = '1.jpg'
 
-        let imageName = '1.jpg'
-        let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kedr', article, 'big', imageName))
-        let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kedr', article, 'small', imageName))
+            try{
+                createFoldersAndDeleteOldFiles("kedr", article)
 
-        try{
-            https.get("https://" + image, (res) => {
-                res.pipe(imageBig)
-                res.pipe(sharp().resize(100)).pipe(imageSmall)
-            })
-        }catch(e) {
-            return { error: "Не найдено изображение товара." }
+                let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kedr', article, 'big', imageName))
+                let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kedr', article, 'small', imageName))
+    
+                https.get("https://" + image, (res) => {
+                    res.pipe(imageBig)
+                    // if (number == 836) res.pipe(imageSmall)
+                    // else 
+                        res.pipe(sharp().resize(100)).pipe(imageSmall)
+                })
+            }catch(e) {
+                return { error: "Не найдено изображение товара." }
+            }
+
+            files += `{"big":"kedr/${article}/big/${imageName}","small":"kedr/${article}/small/${imageName}"}`
+        }else {
+            files += `{}`
         }
-
-        files += `{"big":"kedr/${article}/big/${imageName}","small":"kedr/${article}/small/${imageName}"}`
 
         files += `]`
         
