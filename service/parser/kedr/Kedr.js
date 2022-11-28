@@ -482,9 +482,7 @@ module.exports = class Krause {
     
                 https.get("https://" + image, (res) => {
                     res.pipe(imageBig)
-                    // if (number == 836) res.pipe(imageSmall)
-                    // else 
-                        res.pipe(sharp().resize(100)).pipe(imageSmall)
+                    res.pipe(sharp().resize(100)).pipe(imageSmall)
                 })
             }catch(e) {
                 return { error: "Не найдено изображение товара." }
