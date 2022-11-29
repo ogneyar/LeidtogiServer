@@ -231,6 +231,7 @@ class ProductController {
             if (size) {
                 let s = JSON.parse(size)
                 if (s.weight || s.volume || s.width || s.height || s.length) {
+                    if ( ! s.volume && s.width && s.height && s.length ) s.volume = ((s.width * s.height * s.length)/1e9).toFixed(4)
                     if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
                     if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
                     if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
@@ -426,6 +427,7 @@ class ProductController {
             if (size) {
                 let s = JSON.parse(size)
                 if (s.weight || s.volume || s.width || s.height || s.length) {
+                    if ( ! s.volume && s.width && s.height && s.length ) s.volume = ((s.width * s.height * s.length)/1e9).toFixed(4)
                     if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
                     if (s.volume !== 0) s.volume = s.volume.toString().replace(',', '.')
                     if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
