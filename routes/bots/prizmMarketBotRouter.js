@@ -13,7 +13,7 @@ const webHook = async (req, res, next) => {
         chat_id = req.body.message.chat.id
         type = req.body.message.chat.type
         text = req.body.message.text
-        // if (text) text = text.toLowerCase()
+        if (text) text = text.toLowerCase()
     }
 
     if (text == "курс prizm" || text == "курс" || text == "rehc" || text == "цена") {  // Курс PRIZM
