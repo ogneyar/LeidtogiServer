@@ -1,14 +1,18 @@
+
 require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
-const sequelize = require('./db')
-const models = require('./models/models')
-const router = require('./routes/index')
-const errorHandler = require('./middleware/errorHandlingMiddleware')
 const path = require('path')
 const favicon = require('serve-favicon')
+
+const sequelize = require('./db')
+const routerApi = require('./routes/index')
+const routerBots = require('./routes/bots/index')
+const routerOthers = require('./routes/others/index')
+const errorHandler = require('./middleware/errorHandlingMiddleware')
 
 const PORT = process.env.PORT || 3000
 const CORS_URL = process.env.CORS_URL || "http://leidtogi.ru"
@@ -37,21 +41,9 @@ app.use(cookieParser())
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(favicon(path.join(__dirname,'static','favicon.ico')))
 app.use(fileUpload({}))
-app.use('/api', router)
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,'static','welcome.html'))
-})
-app.get('/undefined', (req, res) => {
-    res.status(200)
-})
-app.get('/echo', (req, res) => {
-    res.sendFile(path.join(__dirname,'static','echo.json'))
-})
-
-// for w80x_duino
-app.get('/temp.json', (req, res) => {
-    res.sendFile(path.join(__dirname,'static','temp.json'))
-})
+app.use('/api', routerApi)
+app.use('/', routerBots)
+app.use('/', routerOthers)
 
 // Обработка ошибок, последний middleware
 app.use(errorHandler)
