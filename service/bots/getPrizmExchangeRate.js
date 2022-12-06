@@ -22,7 +22,7 @@ async function getPrizmExchangeRate() {
         let day = date.getDate() // день
         if (day < 10) datePZM = `0${day}.`
         else datePZM = day + "."
-        let month = date.getMonth()
+        let month = date.getMonth() + 1
         if (month < 10) datePZM += `0${month}.`
         else datePZM += month + "."
         let year = date.getFullYear()
