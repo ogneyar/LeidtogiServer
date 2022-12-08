@@ -11,6 +11,7 @@ class kvtController {
             let { number, add, change } = req.query
             let feed = req.files && req.files.feed || undefined
             let price = req.files && req.files.price || undefined
+            let price_json = req.files && req.files.price_json || undefined
 
             let response, kvt
             // создание экземпляра класса KVT
@@ -19,10 +20,10 @@ class kvtController {
                 // обработка данных файла feed.xlsx
                 response = await kvt.run(feed)
                 if ( ! response ) return res.json({error: 'Ошибка! Метод run() не вернул данные!'})
+                // обработка данных файла price.xlsx (прайс для заведения товаров)
+                response = await kvt.run_price(price)
+                if ( ! response ) return res.json({error: 'Ошибка! Метод run_price() не вернул данные!'})
             }
-            // обработка данных файла price.xlsx
-            response = await kvt.run_price(price)
-            if ( ! response ) return res.json({error: 'Ошибка! Метод run_price() не вернул данные!'})
 
             // добавление нового товара
             if (add !== undefined && number) {
@@ -31,6 +32,9 @@ class kvtController {
 
             // смена цен
             if (change !== undefined) {
+                response = await kvt.run_price_json(price_json)
+                if ( ! response ) return res.json({error: 'Ошибка! Метод run_price_json() не вернул данные!'})
+                
                 return res.send(await kvt.changePrice())
             }
 
@@ -84,7 +88,7 @@ class kvtController {
             return res.json(await parse.getLengthCatalog()) 
 
         }catch(e) {
-            return res.json({error: 'Ошибка метода parseKvtSu! ' + e})
+            return res.json({error: 'Ошибка метода parseKvtSu!'})// ' + e})
         }
     }
 
@@ -99,7 +103,7 @@ class kvtController {
 
             savePriceInFile("KVT", json)
 
-            return res.json(json) 
+            return res.json(true) 
         }catch(e) {
             return res.json({error: 'Ошибка метода savePrice! ' + e})
         }

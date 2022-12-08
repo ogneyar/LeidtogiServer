@@ -15,12 +15,14 @@ const translit = require('../../translit.js')
 const parseXlsx = require('../../xlsx/parseXlsx')
 const ProductDto = require('../../../dtos/productDto')
 const saveInfoInFile = require('../../saveInfoInFile')
+const parseJson = require('../../json/parseJson')
 
 
 module.exports = class KVT {
     
     static product = []
     static price = []
+    static priceJson = []
 
     
     constructor() {
@@ -107,6 +109,7 @@ module.exports = class KVT {
         return false
     }
 
+    // прайс для заведения товаров
     async run_price(feed = {}) {
         let fullPath, response
 
@@ -146,6 +149,24 @@ module.exports = class KVT {
 
         return false
     }
+
+    // прайс для обновления цен
+    async run_price_json(feed = {}) {
+
+        let fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'kvt', 'price.json')
+
+        if (feed && feed.name !== undefined) {
+            if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
+            if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'kvt'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'kvt'))
+            fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'kvt', feed.name)
+            await feed.mv(fullPath)
+        }
+            
+        this.priceJson = await parseJson(fullPath)
+
+        return true
+    }
+
 
     // количество записей в feed.xlsx
     async getLength() {
@@ -364,7 +385,7 @@ module.exports = class KVT {
     }
 
     // смена цен
-    async changePrice() {
+    async changePrice(json = true) {
         let response = `{<br />`
         
         let brand = await Brand.findOne({ where: { name: "KVT" } })
@@ -372,7 +393,8 @@ module.exports = class KVT {
 
         let products = await Product.findAll({ where: { brandId: brand.id } })
 
-        this.price.forEach(newProduct => {
+        this.priceJson.forEach(newProduct => {
+            if (newProduct.error) return
             if (response !== `{<br />`) response += ",<br />"
             let yes = false
             products.forEach(oldProduct => {

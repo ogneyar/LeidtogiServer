@@ -12,7 +12,7 @@ if (process.env.URL === "http://localhost:5000") {
 }
 router.post('/', checkRole("ADMIN"), kvtController.kvt) // добавление нового товара
 router.post('/parse', checkRole("ADMIN"), kvtController.parseKvtSu) // обновление цен
-router.post('/save_price', checkRole("ADMIN"), kvtController.savePrice) // сохранение прайса в файл json
+router.post('/save_price', checkRole("ADMIN"), kvtController.savePrice) // сохранение прайса в файл json 
 
 
 module.exports = router

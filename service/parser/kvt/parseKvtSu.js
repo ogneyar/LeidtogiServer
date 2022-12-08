@@ -46,7 +46,7 @@ module.exports = class ParseKvtSu {
                 data = rest
             }
         }catch(e) {
-            if (array[0] === undefined) throw `Не смог найти данные каталога, это печально.© ${e}`
+            if (array[0] === undefined) throw `Не смог найти данные каталога, это печально.©` // ${e}`
         }
 
         this.catalog = array
@@ -92,7 +92,7 @@ module.exports = class ParseKvtSu {
                 data = rest
             }
         }catch(e) {
-            if (array[0] === undefined) throw `Не смог найти данные списка товаров, это печально.© ${e}`
+            if (array[0] === undefined) throw `Не смог найти данные списка товаров, это печально.©` // ${e}`
         }
 
         this.products = array
@@ -150,7 +150,7 @@ module.exports = class ParseKvtSu {
                 data = rest
             }
         }catch(e) {
-            if (array[0] === undefined) throw `Не смог найти данные списка товарных позиций, это печально.© ${e}`
+            if (array[0] === undefined) throw `Не смог найти данные списка товарных позиций, это печально.©` // ${e}`
         }
 
         this.prices = array
