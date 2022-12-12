@@ -1,10 +1,11 @@
 {
   "name": "server",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "description": "server leidtogi",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon --max-http-header-size=16384 server.js"
+    "dev": "nodemon server.js",
+    "old": "nodemon --max-http-header-size=16384 server.js"
   },
   "keywords": [],
   "author": "",
@@ -35,7 +36,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.20"
   },
   "nodemonConfig": {
     "ext": "js, mjs, json, css, html",
