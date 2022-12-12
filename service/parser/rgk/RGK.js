@@ -8,15 +8,14 @@ const uuid = require('uuid')
 
 const { Brand, Category, Product } = require('../../../models/models')
 
-const getArticle = require('./getArticle')
-const getImages = require('./getImages')
-const getProducts = require('../../csv/parseCsv')
-
 const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 const findProductByArticle = require('../../product/findProductByArticle.js')
 const createProduct = require('../../product/createProduct.js')
 const translit = require('../../translit.js')
 const ProductDto = require('../../../dtos/productDto')
+const parseXml = require('../../xml/parseXml')
+const parseHtml = require('../../html/parseHtml')
+const saveInfoInFile = require('../../saveInfoInFile')
 
 
 
@@ -31,90 +30,152 @@ module.exports = class RGK {
         this.url = process.env.RGK_FEED_URL
     }
 
-    async update() { // не работает (редирект на стороне сервера)
-        let feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv')
-        // let file = fs.createWriteStream(feed)
+    async update() { 
+        let feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.xml')
+        
         return await new Promise((resolve, reject) => {
             try {
-                http.get(this.url, res => {
+                https.get(this.url, res => {
                     res.pipe(fs.createWriteStream(feed))
                     res.on("end", () => {
-                        console.log("Записал данные в файл feed.csv")
+                        console.log("Записал данные в файл feed.xml")
                         resolve(true)
                     })
                 })
             }catch(e) {
-                console.log("Не смог записать данные в файл feed.csv")
-                console.log(" ")
-                console.log(e);
-                resolve(false)
+                console.log("Не смог записать данные в файл feed.xml")
+                reject(`Не смог записать данные в файл feed.xml. Ошибка: ${e}`)
             }
         })
     }
 
-    async run(update) {
-        let response, fullResponse, yes, feed
+    async run(update = false) { // по умолчанию файл feed.xml не обновляется
+        let feed
 
-        if (update) {
-            response = await this.update()
-        }
+        if (update) await this.update()
 
-        feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.csv') 
-        // console.log("fullResponse: ",fullResponse);
-        if (fs.existsSync(feed) && iconv.decode(fs.readFileSync(feed), 'win1251') !== "") {
-            fullResponse = fs.readFileSync(feed)
-        }else {
-            return { error: "Файл rgk/feed.csv отсутствует или пуст!" }
+        feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'rgk', 'feed.xml') 
+        
+        if (! fs.existsSync(feed)) {
+            return { error: "Файл rgk/feed.xml отсутствует или пуст!" }
         }
         
-        // Convert from an encoded buffer to a js string.
-        fullResponse = iconv.decode(fullResponse, 'win1251')
-        
-        fullResponse = fullResponse
-            .replace(/(&amp;)/g, "&")
-            .replace(/(&amp;)/g, "&")
-            .replace(/(&quot;)/g, "\'\'")
-            .replace(/(&Prime;)/g, "\`")
-            .replace(/(&rdquo;)/g, "\`\`")
-            .replace(/(&lt;)/g, "<")
-            .replace(/(&gt;)/g, ">")
+        let { yml_catalog } = await parseXml(feed)
 
-        response = fullResponse.split('\n')
+        let shop = yml_catalog.shop
 
-        // поиск категорий
-        yes = false
-        this.category = response.map(i => {
-            let text = i.split(";")
-            if (text[0] === `"category id"`) {
-                yes = true
-            }else if (text[0] === `"offer id"`) {
-                yes = false
-            }else if (yes) {
-                return {id: text[0], name: text[1].replace(/\"/g, "").replace(/(\r)/g, "")}
-            }
-            return null
-        }).filter(j => j !== null)
+        if (shop && shop.offers && Array.isArray(shop.offers.offer)) {
+            this.product = shop.offers.offer.map(item => {
+                let article, price, name, id, images, description, specifications, brand,
+                    weight, length, height, width, characteristics, categoryId, currencyId, gabarits
 
+                id = item._attributes.id
+                name = item.name._text
+                categoryId = item.categoryId._text
+                price = item.price._text
+                brand = item.vendor._text
+                currencyId = item.currencyId._text
+                description = item.description._text.trim()
+                while(true) {
+                    let urlDelete
+                    try{
+                        urlDelete = parseHtml(description, {
+                            start: `<a href="`,
+                            end: `">`, 
+                            inclusive: true
+                        })
+                        description = description.replace(urlDelete, "").replace("</a>", "")
+                    }catch(e) {
+                        break
+                    }
+                }
+                characteristics = item.specifications//._text
+                // это какой-то странный, но необходимый костыль (: ©
+                if (characteristics) characteristics = characteristics._text.trim()
+                
+                let trDelete
+                try{
+                    trDelete = parseHtml(characteristics, {
+                        start: `<tr class="tech_item">`,
+                        end: `</tr>`, 
+                        inclusive: true
+                    })
+                    characteristics = characteristics.replace(trDelete, "")
+                }catch(e) {}
 
-        // поиск товаров
-        response = getProducts(fullResponse)
-        if (response.error !== undefined) {
-            return response
+                try{
+                    gabarits = parseHtml(characteristics, {
+                        entry: `<th>Размеры</th>`,
+                        start: `<td>`,
+                        end: `</td>`
+                    })
+                    characteristics = characteristics.replace(`<th>Размеры</th><td>${gabarits}</td>`, "")
+                    gabarits = gabarits.split(" x ")
+                    length = gabarits[0]
+                    width = gabarits[1]
+                    height = gabarits[2].split(" ")[0]
+                }catch(e) {}
+                
+                try{
+                    weight = parseHtml(characteristics, {
+                        entry: `<th>Вес</th>`,
+                        start: `<td>`,
+                        end: `</td>`
+                    })
+                    characteristics = characteristics.replace(`<th>Вес</th><td>${weight}</td>`, "")
+                    weight = weight.split(" ")[0]
+                }catch(e) {}
+
+                article = item.vendorCode._text
+
+                images = []
+                if (item.picture1) images.push(item.picture1._text)
+                if (item.picture2) images.push(item.picture2._text)
+                if (item.picture3) images.push(item.picture3._text)
+                if (item.picture4) images.push(item.picture4._text)
+
+                return {
+                    id,
+                    name,
+                    categoryId,
+                    price,
+                    brand,
+                    // currencyId,
+                    description,
+                    characteristics,
+                    weight,
+                    length,
+                    width,
+                    height,
+                    article,
+                    images
+                }
+            })
         }
-        this.product = response.message
 
+        if (shop && shop.categories && Array.isArray(shop.categories.category)) {
+            this.category = shop.categories.category.map(item => {
+                return { 
+                    id: item._attributes.id,
+                    parentId: item._attributes.parentId,
+                    name: item._text
+                }
+            })
+        }
+        
         return true
     }
 
     // вывод данных
     async print(action = "product") {
-        let stringResponse
         if (action === "product") {
-            stringResponse = this.product
+            return this.product
         }else if (action === "category") {
-            stringResponse = this.category
+            return this.category
+        }else if (typeof(action) === "number") {
+            return this.product[action]
         }
-        return stringResponse
+        return null
     }
 
     // вывод суммы общего количества товара
@@ -122,210 +183,144 @@ module.exports = class RGK {
         return this.product.length
     }
 
-    // поиск данных (поочерёдное, от 1 до getLengthProducts)
-    async search(number = 1, info = "full") {
-        if ( ! this.product ) return { error: "Ошибка: нет данных о товарах!" }
-        if (number > this.product.length) return { error: "Ошибка: такого номера не существует!" }
-        
-        // if ( ! this.product[number - 1]['available']) return "Нет в наличии"
-        let object = {}
-        
-        object.id = this.product[number - 1]['offer id']
-        // object.available = this.product[number - 1]['available']
-        // object.name = this.product[number - 1]['offer name']
-        object.name = this.product[number - 1]['offer full_name']
-        // object.type = this.product[number - 1]['offer type']
-        // object.vendor = this.product[number - 1]['offer vendor']
-        object.url = this.product[number - 1]['offer url'] + "/"
-        object.price = this.product[number - 1]['offer price']
-        // object.picture = this.product[number - 1]['offer picture']
-
-        let characteristics
-        if (this.product[number - 1]['offer param']) {
-            characteristics = this.product[number - 1]['offer param'].split("; ")
-            object.characteristics = "<tbody>" + characteristics.map(i => {
-                return "<tr>" + i.replace(" - ", "#@").split("#@").map(j => {
-                    return "<td>" + j.replace(/\?/g, "&lt;=") + "</td>"
-                }).join("") + "</tr>"
-            }).join("") + "</tbody>"
-        }
-        
-        if (this.product[number - 1]['offer description']) {
-            object.description = this.product[number - 1]['offer description'].replace(/(\r\n)/g, "")
-        }
-
-        // object.instructions = this.product[number - 1]['offer instructions']
-        // object.certificates = this.product[number - 1]['offer certificates']
-        let categoryId = this.product[number - 1]['offer category']
-        
-        this.category.forEach(i => {
-            if (i.id === categoryId) object.category = i.name
-        }) 
-        
-        if ( ! object.category ) {
-            if ( ! categoryId ) object.category = "НЕ НАЙДЕНА"
-            else object.category = categoryId
-        }
-        
-        let html
-        // console.log("object.url: ",object.url)
-        await axios.get(object.url.replace(/(:443)/g, ""))
-            .then(res => html = res.data)
-
-        let images = getImages(html)
-        if (images.error !== undefined) {
-            return images
-        }
-        object.images = images.message
-
-        let article = getArticle(html)
-        if (article.error !== undefined) {
-            console.log(article.error)
-            // return article
-            article.message = object.id
-        }
-        object.article = article.message
-
-        // { id, name, url, price, characteristics, description, category, images, article }
-        if (info === "full") return object 
-        else return object[info]
-        
-    }
 
     // 
     async add(number) {
 
-        let object = await this.search(number) // object = { id, name, url, price, characteristics, description, category, images, article }
-        // необходимо добавить { brandId, categoryId, have, country, files, info }
+        // let object = await this.search(number) // object = { id, name, url, price, characteristics, description, category, images, article }
+        // // необходимо добавить { brandId, categoryId, have, country, files, info }
 
-        if (object.error !== undefined) return object
+        // if (object.error !== undefined) return object
 
-        // преобразуем объект object
-        let { name, price, characteristics, description, category, images, article } = object
+        // // преобразуем объект object
+        // let { name, price, characteristics, description, category, images, article } = object
 
-        article = "rgk" + article
+        // article = "rgk" + article
 
-        let prod = await findProductByArticle(article)
-        if (prod) {
-            console.log("Такой товар уже есть: ",article)
-            return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
-        }
+        // let prod = await findProductByArticle(article)
+        // if (prod) {
+        //     console.log("Такой товар уже есть: ",article)
+        //     return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
+        // }
 
-        if (characteristics) 
-            characteristics = characteristics
-                .replace(/(<tr><td><\/td><\/tr>)/g, "")
-                .replace(/(<tr><td> <\/td><\/tr>)/g, "")
-                .replace(/(<tr><td>  <\/td><\/tr>)/g, "")
-                .replace(/(<tbody><\/tbody>)/g, "")
+        // if (characteristics) 
+        //     characteristics = characteristics
+        //         .replace(/(<tr><td><\/td><\/tr>)/g, "")
+        //         .replace(/(<tr><td> <\/td><\/tr>)/g, "")
+        //         .replace(/(<tr><td>  <\/td><\/tr>)/g, "")
+        //         .replace(/(<tbody><\/tbody>)/g, "")
 
-        let brand
-        try {
-            brand = await Brand.findOne({
-                where: {name: "RGK"}
-            })
-        }catch(e) {
-            return { error: "Ошибка: бренд не найден!!!" }
-        }
-        let brandId
+        // let brand
+        // try {
+        //     brand = await Brand.findOne({
+        //         where: {name: "RGK"}
+        //     })
+        // }catch(e) {
+        //     return { error: "Ошибка: бренд не найден!!!" }
+        // }
+        // let brandId
 
-        if (brand.id !== undefined) brandId = brand.id
-        else return { error: "Ошибка: бренд не найден!" }
+        // if (brand.id !== undefined) brandId = brand.id
+        // else return { error: "Ошибка: бренд не найден!" }
         
-        let categoryClass
-        try {
-            categoryClass = await Category.findOne({
-                where: {name: category}
-            })
-        }catch(e) {
-            return { error: "Ошибка: категория " + category + " не найдена!!!" }
-        }
+        // let categoryClass
+        // try {
+        //     categoryClass = await Category.findOne({
+        //         where: {name: category}
+        //     })
+        // }catch(e) {
+        //     return { error: "Ошибка: категория " + category + " не найдена!!!" }
+        // }
         
-        let categoryId
+        // let categoryId
         
-        if (categoryClass.id !== undefined) categoryId = categoryClass.id
-        else return { error: "Ошибка: категория не найдена!" }
+        // if (categoryClass.id !== undefined) categoryId = categoryClass.id
+        // else return { error: "Ошибка: категория не найдена!" }
         
-        createFoldersAndDeleteOldFiles("rgk", article)
+        // createFoldersAndDeleteOldFiles("rgk", article)
 
-        let link = ""
-        images.forEach(i => {
-            let fileName = uuid.v4() + '.jpg'
+        // let link = ""
+        // images.forEach(i => {
+        //     let fileName = uuid.v4() + '.jpg'
             
-            let file = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'big', fileName))
-            let file2 = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'small', fileName))
-            https.get(i, function(res) {
-                res.pipe(file)
-                res.pipe(file2)
-            })
+        //     let file = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'big', fileName))
+        //     let file2 = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'small', fileName))
+        //     https.get(i, function(res) {
+        //         res.pipe(file)
+        //         res.pipe(file2)
+        //     })
 
-            link = link + `{"big": "rgk/${article}/big/${fileName}", "small": "rgk/${article}/small/${fileName}"},`
-        })
+        //     link = link + `{"big": "rgk/${article}/big/${fileName}", "small": "rgk/${article}/small/${fileName}"},`
+        // })
 
-        let files = `[${link.replace(/.$/g, "")}]`
+        // let files = `[${link.replace(/.$/g, "")}]`
 
-        let info = []
-        if (description) info.push({title:"description",body:description})
-        if (characteristics) info.push({title:"characteristics",body:characteristics})
+        // let info = []
+        // if (description) info.push({title:"description",body:description})
+        // if (characteristics) info.push({title:"characteristics",body:characteristics})
 
-        let country = "Россия"
+        // let country = "Россия"
 
-        let have = 1
+        // let have = 1
 
-        let promo = undefined
+        // let promo = undefined
         
-        let size = undefined
+        // let size = undefined
         
-        let urlTranslit = translit(name) + "_" + article.toString()
+        // let urlTranslit = translit(name) + "_" + article.toString()
 
-        // console.log(" ");
-        // console.log("id",id);
-        // console.log(" ");
+        // // console.log(" ");
+        // // console.log("id",id);
+        // // console.log(" ");
         
-        // response = { name, url: urlTranslite, price, have, article, promo, country, brandId, categoryId, files, info, size }
+        // // response = { name, url: urlTranslite, price, have, article, promo, country, brandId, categoryId, files, info, size }
         
-        let product
-        try {
-            let proDto = new ProductDto({name, urlTranslit, price, have, article, promo, country, brandId, categoryId, files, info, size})
-            product = await createProduct(proDto)
-        }catch(e) {
-            return { error: "Ошибка: не смог добавить товар!!!" }
-        }
+        // let product
+        // try {
+        //     let proDto = new ProductDto({name, urlTranslit, price, have, article, promo, country, brandId, categoryId, files, info, size})
+        //     product = await createProduct(proDto)
+        // }catch(e) {
+        //     return { error: "Ошибка: не смог добавить товар!!!" }
+        // }
 
-        return product
+        // return product
     }
 
     // смена цены
-    async changePrice(number) {
-
-        let article, price, response
-            
-        await axios.get(this.product[number - 1]["offer url"].replace(/(:443)/g, "") + "/")
-            .then(res => article = getArticle(res.data))
-        if (article.error !== undefined) article = "rgk" + this.product[number - 1]["offer id"]
-        else article = "rgk" + article.message
-
-        price = this.product[number - 1]["offer price"]
-
-        // ---------------------
-        // Саня попросил завысить цену на 30%
-        // ---------------------
-        // price = Number(price) * 1.3 // позже сказал ненадо
-        // console.log("price", price)
-
-        const product = await Product.findOne({
-            where: { article }
-        })
-        if (product) {
-            if (Number(price) === Number(product.price)) return `"${article}": "Цена осталась прежняя = ${price}."`
-            response = await Product.update({ price }, {
-                where: { id: product.id }
-            })
-        }else {
-            return `"${article}": "Не найден артикул."`
-        }
+    async changePrice() {
+        let response = `{<br />`
         
-        // if (response) return { article, oldPrice: product.price, newPrice: price }
-        if (response) return `"${article}": "Старая цена = ${product.price}, новая цена = ${price}."`
+        let brand = await Brand.findOne({ where: { name: "RGK" } })
+        if (brand.id === undefined) return { error: "Не найден бренд товара." }
+
+        let old = await Product.findAll({ where: { brandId: brand.id } })
+
+        if (this.product !== undefined) this.product.forEach(newProduct => {
+            if (response !== `{<br />`) response += ",<br />"
+            let yes = false
+            old.forEach(oldProduct => {
+                if (oldProduct.article === `rgk${newProduct.article}`) {
+                    if (newProduct.price != oldProduct.price) {
+                        response += `"${oldProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newProduct.price}"`
+                        Product.update({ price: newProduct.price },
+                            { where: { id: oldProduct.id } }
+                        ).then(()=>{}).catch(()=>{})
+                    }else {
+                        response += `"${oldProduct.article}": "Цена осталась прежняя = ${oldProduct.price}"`
+                    }
+                    yes = true
+                }
+            })
+            if ( ! yes) response += `"rgk${newProduct.code}": "Не найден артикул."` 
+            
+        })
+
+        response = response + `<br />}`
+        
+        saveInfoInFile(brand.name, "update_price", response) 
+
+        return response 
+
     }
 
 

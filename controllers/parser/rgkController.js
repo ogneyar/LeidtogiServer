@@ -18,52 +18,52 @@ class rgkController {
     async rgk(req, res, next) {
         try {
             let { 
-                update, // если передан параметр update (с любым значением), значит необходимо обновить файл feed.csv
-                change, // если передан параметр change (с любым значением), значит необходимо обновить цену  - в этом случае параметр number обязателен 
+                update, // если передан параметр update (с любым значением), значит необходимо обновить файл feed.xml
+                change, // если передан параметр change (с любым значением), значит необходимо обновить цену
+                add,    // если передан параметр add (с любым значением), значит необходимо добавить в БД товар по очереди под номером number
+                        //  - в этом случае параметр number обязателен
                 print,  // если передан параметр print=product, значит необходимо вывести на экран информацию о товарах
                         // если передан параметр print=category, значит необходимо вывести на экран информацию о категориях
-                field,  // если передан параметр field, значит необходимо вывести информацию о заданном поле (например: field=article) - в этом случае параметр number обязателен 
-                number,  // если передан параметр number без параметра field, значит необходимо добавить в БД товар по очереди под номером number
-                save_info
+                number,  // если передан параметр number без доп. параметров, значит необходимо вывести на экран товар под номером number
             } = req.query
 
             let response, rgk
             // создание экземпляра класса RGK
             rgk = new RGK()
 
-            // обновление файла feed.csv
-            // if (update) await rgk.update()
-
-            // обработка данных файла feed.csv
+            // обработка данных файла feed.xml
             response = await rgk.run(update)
             if (response.error !== undefined) return res.json(response) // вывод ошибки
+
             // обновление цен
             if (change) {
-                if (number) return res.json(await rgk.changePrice(Number(number)))
-                else return next(res.json({error: 'Ошибка, не задан number при заданном параметре change!'}))
+                return res.json(await rgk.changePrice())
             }
+
             // вывод информации на экран
-            if (print) {
+            if (print && ! number) {
                 if (print === "category") return res.json(await rgk.print("category")) // все категории
                 if (print === "product") return res.json(await rgk.print("product")) // все товары
             }
-            // вывод на экран конкретной записи (например: field = "article")
-            if (field) {
-                if (number) return res.json(await rgk.search(Number(number), field))
-                else return next(res.json({error: 'Ошибка, не задан number при заданном field!'}))
-            }
+
             // добавление нового товара
-            if (number) {
+            if (add) {
+                if (! number) return res.json({error: 'Ошибка, не задан number при заданном параметре add!'})
                 response = await rgk.add(Number(number))
                 
-                if (response && response.error === undefined) return res.json(number)
-                else return next(res.json({error: `Не смог сохранить товар, ${number} по очереди!` + response.error ? " " + response.error : ""}))
+                if (! response || response.error !== undefined) 
+                    res.json({error: `Не смог сохранить товар, ${number} по очереди!` + response.error ? " " + response.error : ""})
+
+                return res.json(number)
             }
+
+            if (number) return res.json(await rgk.print(Number(number)))
+
             // вывод на экран общего количества товаров (например: 372)
             return res.json(await rgk.getLengthProducts()) 
 
         }catch(e) {
-            return next(res.json({error: 'Ошибка метода rgk!'}))
+            return res.json({error: `Ошибка метода rgk! ${e}`})
         }
     }
 
@@ -100,7 +100,7 @@ class rgkController {
                     height = height.toString().replace(',', '.')
                     length = length.toString().replace(',', '.')
                     ProductSize.create({
-                        weight,
+                        weight, 
                         volume,
                         width,
                         height,
@@ -117,17 +117,6 @@ class rgkController {
     }
 
     
-    async saveInfo(req, res, next) {
-        
-        if (!req.body || ! req.body.text) return res.json("нет данных")
-
-        let text = req.body.text
-
-        saveInfoInFile("RGK", "update_price", text)
-
-        return res.json("ok")
-    }
-
 }
 
 module.exports = new rgkController()
