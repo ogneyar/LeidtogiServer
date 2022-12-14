@@ -40,7 +40,7 @@ class rgkController {
                 return res.json(await rgk.changePrice())
             }
 
-            // вывод информации на экран
+            // вывод информации на экран 
             if (print && ! number) {
                 if (print === "category") return res.json(await rgk.print("category")) // все категории
                 if (print === "product") return res.json(await rgk.print("product")) // все товары
@@ -57,7 +57,10 @@ class rgkController {
                 return res.json(number)
             }
 
-            if (number) return res.json(await rgk.print(Number(number)))
+            if (number || print) {
+                if (number) return res.json(await rgk.print(Number(number)))
+                if (print) return res.json(await rgk.print(Number(print)))
+            }
 
             // вывод на экран общего количества товаров (например: 372)
             return res.json(await rgk.getLengthProducts()) 

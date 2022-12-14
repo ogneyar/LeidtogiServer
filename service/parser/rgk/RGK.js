@@ -4,7 +4,7 @@ const iconv = require('iconv-lite')
 const axios = require('axios')
 const http = require('http')
 const https = require('https')
-const uuid = require('uuid')
+let sharp = require('sharp')
 
 const { Brand, Category, Product } = require('../../../models/models')
 
@@ -66,15 +66,14 @@ module.exports = class RGK {
 
         if (shop && shop.offers && Array.isArray(shop.offers.offer)) {
             this.product = shop.offers.offer.map(item => {
-                let article, price, name, id, images, description, specifications, brand,
-                    weight, length, height, width, characteristics, categoryId, currencyId, gabarits
+                let article, price, name, id, images, description, brand,
+                    weight, length, height, width, characteristics, categoryId, gabarits
 
                 id = item._attributes.id
                 name = item.name._text
                 categoryId = item.categoryId._text
                 price = item.price._text
                 brand = item.vendor._text
-                currencyId = item.currencyId._text
                 description = item.description._text.trim()
                 while(true) {
                     let urlDelete
@@ -140,7 +139,6 @@ module.exports = class RGK {
                     categoryId,
                     price,
                     brand,
-                    // currencyId,
                     description,
                     characteristics,
                     weight,
@@ -173,7 +171,90 @@ module.exports = class RGK {
         }else if (action === "category") {
             return this.category
         }else if (typeof(action) === "number") {
-            return this.product[action]
+
+            let one = this.product[action - 1]
+            let categoryId = null
+            let brand = await Brand.findOne({ where: { name: "RGK" } })
+            let brandId = brand.id
+            if ( ! brandId ) throw "Не найден бренд товара!"
+            let article = one.article
+
+            let product = await findProductByArticle("rgk" + article)        
+            if (product && product.id !== undefined) throw "Такой товар уже есть."
+
+            let name = one.name
+
+            let url = translit(name) + "_" + article
+            
+            article = "rgk" + article
+            
+            let price = one.price
+            let size = {
+                weight: one.weight,
+                length: one.length,
+                width: one.width,
+                height: one.height
+            }
+            if (one.length && one.width && one.height) size.volume = ((one.length * one.width * one.height) / 1e9).toFixed(4)
+
+            let info = []
+            if (one.description) info.push( { title: "description", body: one.description} )
+            if (one.characteristics) info.push( { title: "characteristics", body: one.characteristics} )
+
+            let files = `[`
+            
+            if (one.images) {
+                
+                createFoldersAndDeleteOldFiles("rgk", article)
+    
+                let first = true
+    
+                one.images.forEach((image, idx) => {
+                    if (idx < 4) {
+                        if (first) first = false
+                        else files += `,`
+    
+                        let imageName = (idx + 1)  + '.jpg'
+    
+                        let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'big', imageName))
+                        let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'small', imageName))
+    
+                        if (image.includes("https")) {
+                            https.get(image, (res) => {
+                                res.pipe(imageBig)
+                                res.pipe(sharp().resize(100)).pipe(imageSmall)
+                            })
+                        }else {
+                            http.get(image, (res) => {
+                                res.pipe(imageBig)
+                                res.pipe(sharp().resize(100)).pipe(imageSmall)
+                            })
+                        }
+    
+                        files += `{"big":"rgk/${article}/big/${imageName}","small":"rgk/${article}/small/${imageName}"}`
+                    }
+                })
+            }else {
+                files += `{}`
+            }
+    
+            files += `]`
+    
+
+            return { 
+                categoryId,
+                brandId,
+                article, 
+                name,
+                url,
+                have: 1,
+                promo: "",
+                country: "Китай",
+                img: files,
+                price,
+                size,
+                info
+            }
         }
         return null
     }
@@ -184,107 +265,43 @@ module.exports = class RGK {
     }
 
 
-    // 
+    // добавление товара в БД
     async add(number) {
 
-        // let object = await this.search(number) // object = { id, name, url, price, characteristics, description, category, images, article }
-        // // необходимо добавить { brandId, categoryId, have, country, files, info }
-
-        // if (object.error !== undefined) return object
-
-        // // преобразуем объект object
-        // let { name, price, characteristics, description, category, images, article } = object
-
-        // article = "rgk" + article
-
-        // let prod = await findProductByArticle(article)
-        // if (prod) {
-        //     console.log("Такой товар уже есть: ",article)
-        //     return "Такой товар уже есть!" // если необходимо обновить товары, то эту строчку надо закомментировать
-        // }
-
-        // if (characteristics) 
-        //     characteristics = characteristics
-        //         .replace(/(<tr><td><\/td><\/tr>)/g, "")
-        //         .replace(/(<tr><td> <\/td><\/tr>)/g, "")
-        //         .replace(/(<tr><td>  <\/td><\/tr>)/g, "")
-        //         .replace(/(<tbody><\/tbody>)/g, "")
-
-        // let brand
-        // try {
-        //     brand = await Brand.findOne({
-        //         where: {name: "RGK"}
-        //     })
-        // }catch(e) {
-        //     return { error: "Ошибка: бренд не найден!!!" }
-        // }
-        // let brandId
-
-        // if (brand.id !== undefined) brandId = brand.id
-        // else return { error: "Ошибка: бренд не найден!" }
+        try {
+            let obj = await this.print(number)
         
-        // let categoryClass
-        // try {
-        //     categoryClass = await Category.findOne({
-        //         where: {name: category}
-        //     })
-        // }catch(e) {
-        //     return { error: "Ошибка: категория " + category + " не найдена!!!" }
-        // }
-        
-        // let categoryId
-        
-        // if (categoryClass.id !== undefined) categoryId = categoryClass.id
-        // else return { error: "Ошибка: категория не найдена!" }
-        
-        // createFoldersAndDeleteOldFiles("rgk", article)
+            let proDto = new ProductDto(obj) // Dto отсекает лишнее
 
-        // let link = ""
-        // images.forEach(i => {
-        //     let fileName = uuid.v4() + '.jpg'
+            let product = await createProduct(proDto)
             
-        //     let file = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'big', fileName))
-        //     let file2 = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'rgk', article, 'small', fileName))
-        //     https.get(i, function(res) {
-        //         res.pipe(file)
-        //         res.pipe(file2)
-        //     })
+            let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
+            console.log('\x1b[34m%s\x1b[0m', response)
 
-        //     link = link + `{"big": "rgk/${article}/big/${fileName}", "small": "rgk/${article}/small/${fileName}"},`
-        // })
-
-        // let files = `[${link.replace(/.$/g, "")}]`
-
-        // let info = []
-        // if (description) info.push({title:"description",body:description})
-        // if (characteristics) info.push({title:"characteristics",body:characteristics})
-
-        // let country = "Россия"
-
-        // let have = 1
-
-        // let promo = undefined
-        
-        // let size = undefined
-        
-        // let urlTranslit = translit(name) + "_" + article.toString()
-
-        // // console.log(" ");
-        // // console.log("id",id);
-        // // console.log(" ");
-        
-        // // response = { name, url: urlTranslite, price, have, article, promo, country, brandId, categoryId, files, info, size }
-        
-        // let product
-        // try {
-        //     let proDto = new ProductDto({name, urlTranslit, price, have, article, promo, country, brandId, categoryId, files, info, size})
-        //     product = await createProduct(proDto)
-        // }catch(e) {
-        //     return { error: "Ошибка: не смог добавить товар!!!" }
-        // }
-
-        // return product
+            return response
+        }catch(e) {
+            let response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`
+            console.log('\x1b[33m%s\x1b[0m', response)
+            return response
+        }
     }
+
+    
+    // добавление партии товара в БД
+    async addParty(number, quantity) {
+
+        if (quantity === 1) return await this.add(number)
+        
+        let array = []
+
+        for(let i = number; i < number+quantity; i++) {
+            let response = await this.add(i)
+            array.push(response)
+        }
+        
+        return array
+    }
+
 
     // смена цены
     async changePrice() {
