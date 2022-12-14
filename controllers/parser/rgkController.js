@@ -18,13 +18,15 @@ class rgkController {
     async rgk(req, res, next) {
         try {
             let { 
-                update, // если передан параметр update (с любым значением), значит необходимо обновить файл feed.xml
-                change, // если передан параметр change (с любым значением), значит необходимо обновить цену
-                add,    // если передан параметр add (с любым значением), значит необходимо добавить в БД товар по очереди под номером number
-                        //  - в этом случае параметр number обязателен
-                print,  // если передан параметр print=product, значит необходимо вывести на экран информацию о товарах
-                        // если передан параметр print=category, значит необходимо вывести на экран информацию о категориях
-                number,  // если передан параметр number без доп. параметров, значит необходимо вывести на экран товар под номером number
+                update,   // если передан параметр update (с любым значением), значит необходимо обновить файл feed.xml
+                change,   // если передан параметр change (с любым значением), значит необходимо обновить цену
+                add,      // если передан параметр add (с любым значением), значит необходимо добавить в БД товар по очереди под номером number
+                          //  - в этом случае параметр number обязателен
+                print,    // если передан параметр print=product, значит необходимо вывести на экран информацию о товарах
+                          // если передан параметр print=category, значит необходимо вывести на экран информацию о категориях
+                number,   // если передан параметр number без доп. параметров, значит необходимо вывести на экран товар под номером number
+                quantity, // при заданном параметре добавляется партия товара от number до quantity
+                category  // при заданном параметре выводится список категорий в удобочитаемом виде
             } = req.query
 
             let response, rgk
@@ -34,6 +36,10 @@ class rgkController {
             // обработка данных файла feed.xml
             response = await rgk.run(update)
             if (response.error !== undefined) return res.json(response) // вывод ошибки
+
+            if (category) {
+                return res.send(await rgk.printCategory())
+            }
 
             // обновление цен
             if (change) {
@@ -48,8 +54,11 @@ class rgkController {
 
             // добавление нового товара
             if (add) {
-                if (! number) return res.json({error: 'Ошибка, не задан number при заданном параметре add!'})
-                response = await rgk.add(Number(number))
+                if (! number && number !== 0) return res.json({error: 'Ошибка, не задан number при заданном параметре add!'})
+
+                if (quantity) return  res.json(await rgk.addParty(Number(number), Number(quantity)))
+                else 
+                    response = await rgk.add(Number(number))
                 
                 if (! response || response.error !== undefined) 
                     res.json({error: `Не смог сохранить товар, ${number} по очереди!` + response.error ? " " + response.error : ""})

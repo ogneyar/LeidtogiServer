@@ -199,7 +199,7 @@ module.exports = class RGK {
 
             let info = []
             if (one.description) info.push( { title: "description", body: one.description} )
-            if (one.characteristics) info.push( { title: "characteristics", body: one.characteristics} )
+            if (one.characteristics && one.characteristics.length < 4095) info.push( { title: "characteristics", body: one.characteristics} )
 
             let files = `[`
             
@@ -337,6 +337,64 @@ module.exports = class RGK {
         saveInfoInFile(brand.name, "update_price", response) 
 
         return response 
+
+    }
+
+
+    async printCategory() {
+        // return  this.category.length // 155 шт Всего
+        let arrayOne = this.category.filter(i => i.parentId == 0) // 2 шт
+
+        let yes = false
+        this.product.forEach(i => {if (i.categoryId === arrayOne[0].id) yes = true})
+
+        let response = arrayOne[0].name 
+        if (yes) response += " - true"         
+
+        let arrayTwoisOne = this.category.filter(i => i.parentId == arrayOne[0].id) // 9 шт
+
+        response += "<br />&emsp;&emsp;" + arrayTwoisOne[0].name 
+
+        return response
+
+        let arrayTwoisOneis_isOne = this.category.filter(i => i.parentId == arrayTwoisOne[0].id) // 3 шт
+
+        let arrayTwoisOneis_isOne_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[0].id) // 1 шт
+        let arrayTwoisOneis_isOne_TheTwo = this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[1].id) // 1 шт
+        let arrayTwoisOneis_isOne_TheThree = this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[2].id) // 0
+
+        let arrayTwoisOneis_isTwo = this.category.filter(i => i.parentId == arrayTwoisOne[1].id) // 16
+
+        let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 1
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
+        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) //
+
+        return arrayTwoisOneis_isTwo_TheOne
+
+        // let arrayTwoisOneis_isThree = this.category.filter(i => i.parentId == arrayTwoisOne[2].id)
+        // let arrayTwoisOneis_isFour = this.category.filter(i => i.parentId == arrayTwoisOne[3].id)
+        // let arrayTwoisOneis_isFive = this.category.filter(i => i.parentId == arrayTwoisOne[4].id)
+        // let arrayTwoisOneis_isSix = this.category.filter(i => i.parentId == arrayTwoisOne[5].id)
+        // let arrayTwoisOneis_isSeven = this.category.filter(i => i.parentId == arrayTwoisOne[6].id)
+        // let arrayTwoisOneis_isEight = this.category.filter(i => i.parentId == arrayTwoisOne[7].id)
+        // let arrayTwoisOneis_isNine = this.category.filter(i => i.parentId == arrayTwoisOne[8].id)
+
+        let arrayTwoisTwo = this.category.filter(i => i.parentId == arrayOne[1].id) // 7 шт
+        
+        return this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[2].id)
 
     }
 
