@@ -16,6 +16,7 @@ const ProductDto = require('../../../dtos/productDto')
 const parseXml = require('../../xml/parseXml')
 const parseHtml = require('../../html/parseHtml')
 const saveInfoInFile = require('../../saveInfoInFile')
+const findCategoryByUrl = require('../../category/findCategoryByUrl')
 
 
 
@@ -23,6 +24,7 @@ module.exports = class RGK {
     
     static url
     static category = []
+    static ourCategories = []
     static product = []
 
     
@@ -159,6 +161,7 @@ module.exports = class RGK {
                     name: item._text
                 }
             })
+            this.ourCategories = await this.getOurCategories()
         }
         
         return true
@@ -173,14 +176,24 @@ module.exports = class RGK {
         }else if (typeof(action) === "number") {
 
             let one = this.product[action - 1]
+
             let categoryId = null
+
+            this.ourCategories.forEach(async item => {
+                if (item.id == one.categoryId) {
+                    if (item.url == "bu") throw "Б/У товары не заводим на сайт!"
+                    let category = await findCategoryByUrl(item.url)        
+                    categoryId = category.id | null            
+                }
+            })
+
             let brand = await Brand.findOne({ where: { name: "RGK" } })
             let brandId = brand.id
             if ( ! brandId ) throw "Не найден бренд товара!"
             let article = one.article
 
             let product = await findProductByArticle("rgk" + article)        
-            if (product && product.id !== undefined) throw "Такой товар уже есть."
+            if (product && product.id !== undefined) throw `Такой товар уже есть (rgk+${article}).`
 
             let name = one.name
 
@@ -340,62 +353,90 @@ module.exports = class RGK {
 
     }
 
+    async getOurCategories() {        
+        return await this.printCategory()
+    }
 
     async printCategory() {
-        // return  this.category.length // 155 шт Всего
-        let arrayOne = this.category.filter(i => i.parentId == 0) // 2 шт
-
-        let yes = false
-        this.product.forEach(i => {if (i.categoryId === arrayOne[0].id) yes = true})
-
-        let response = arrayOne[0].name 
-        if (yes) response += " - true"         
-
-        let arrayTwoisOne = this.category.filter(i => i.parentId == arrayOne[0].id) // 9 шт
-
-        response += "<br />&emsp;&emsp;" + arrayTwoisOne[0].name 
-
+        let array = this.category.filter(i => i.parentId == 0)
+        let response = await this.reFunc(array)
         return response
+        // return JSON.stringify(response) //.join("")
+    }
 
-        let arrayTwoisOneis_isOne = this.category.filter(i => i.parentId == arrayTwoisOne[0].id) // 3 шт
+    async reFunc(array) {
+        let response = []
+        array.forEach(async item => {
+            let yes = false
+            this.product.forEach(i => {if (i.categoryId === item.id) yes = true})
+            if (item && item.name && yes) 
+                if (item.name.includes("теодолиты")) response.push({id: item.id, url: `teodolity`}) 
+                else if (item.name.includes("Рейки")) response.push({id: item.id, url: `reyki-nivelirnye`}) 
+                else if (item.name.toLowerCase().includes("штативы")) response.push({id: item.id, url: `shtativy`}) 
+                else if (item.name.toLowerCase().includes("буссоли") || item.name.toLowerCase().includes("компасы")) response.push({id: item.id, url: `kompasy-i-bussoli`}) 
+                else if (item.name.includes("Чехлы для штативов") 
+                    || item.name.includes("Аксессуары")
+                    || item.name.includes("Штанги")                    
+                    || item.name.includes("отвесы")                    
+                    || item.name.includes("Окуляры")                    
+                    || item.name.includes("Вехи")                    
+                    || item.name.includes("Крепления")                    
+                    || item.name.includes("системы")
+                    || item.name.includes("Комплектующие")                    
+                    || item.name.toLowerCase().includes("отражатели")
+                    || item.name.includes("Минипризмы")                    
+                    || item.name.includes("Трегеры")                    
+                    || item.name.includes("Адаптеры")                    
+                    || item.name.includes("Аккумуляторы")                    
+                    || item.name.includes("Кронштейны")                    
+                    || item.name.includes("Переходники")                    
+                    || item.name.includes("крепления")                    
+                    || item.name.includes("Мишени")
+                    || item.name.includes("Сумки")
+                    || item.name.includes("Рюкзаки")
+                ) response.push({id: item.id, url: `aksessuary`}) 
+                else if (item.name.includes("Спецодежда") 
+                    || item.name.includes("Башмаки")
+                    || item.name.includes("Очки")
+                ) response.push({id: item.id, url: `specodezhda`}) 
+                else if (item.name.includes("нивелиры")) response.push({id: item.id, url: `niveliry`}) 
+                else if (item.name.includes("колеса")) response.push({id: item.id, url: `dorozhnye-kolesa`}) 
+                else if (item.name.toLowerCase().includes("дальномеры")) response.push({id: item.id, url: `dalnomery`}) 
+                else if (item.name.toLowerCase().includes("рулетки")) response.push({id: item.id, url: `ruletki-izmeritelnye`}) 
+                else if (item.name.toLowerCase().includes("пузырьковые уровни")) response.push({id: item.id, url: `troitelnye-urovni`}) 
+                else if (item.name.toLowerCase().includes("уклономеры") || item.name.toLowerCase().includes("угломеры")) response.push({id: item.id, url: `uglomery-i-uklonomery`}) 
+                else if (item.name.toLowerCase().includes("штангенциркули")) response.push({id: item.id, url: `shtangencirkuli`}) 
+                else if (item.name.toLowerCase().includes("микрометры")) response.push({id: item.id, url: `mikrometry`}) 
+                else if (item.name.toLowerCase().includes("индикаторы часового типа")) response.push({id: item.id, url: `indikatory-chasovogo-tipa`}) 
+                else if (item.name.toLowerCase().includes("металлоискатели") || item.name.toLowerCase().includes("кабелеискатели"))
+                    response.push({id: item.id, url: `detektory-metalla-provodki`}) 
+                else if (item.name.toLowerCase().includes("навигаторы")) response.push({id: item.id, url: `navigatory`}) 
+                else if (item.name.toLowerCase().includes("пирометры")) response.push({id: item.id, url: `pirometry`}) 
+                else if (item.name.toLowerCase().includes("контактные термометры")) response.push({id: item.id, url: `kontaktnye-termometry`}) 
+                else if (item.name.toLowerCase().includes("склерометры")) response.push({id: item.id, url: `sklerometry`}) 
+                else if (item.name.toLowerCase().includes("толщиномеры")) response.push({id: item.id, url: `tolschinomery`}) 
+                else if (item.name.toLowerCase().includes("тахометры")) response.push({id: item.id, url: `tahometry`}) 
+                else if (item.name.toLowerCase().includes("тепловизоры")) response.push({id: item.id, url: `teplovizory`}) 
+                else if (item.name.toLowerCase().includes("термогигрометры") || item.name.toLowerCase().includes("измерители температуры и влажности")) 
+                    response.push({id: item.id, url: `termogigrometry`}) 
+                else if (item.name.toLowerCase().includes("анемометры")) response.push({id: item.id, url: `anemometry`}) 
+                else if (item.name.toLowerCase().includes("люксметры")) response.push({id: item.id, url: `lyuksmetry`}) 
+                else if (item.name.toLowerCase().includes("шумомеры")) response.push({id: item.id, url: `shumomery`})
+                else if (item.name.toLowerCase().includes("индикаторы напряжения") || item.name.toLowerCase().includes("тестеры напряжения")) 
+                    response.push({id: item.id, url: `indikatory-napryazheniya`})
+                else if (item.name.toLowerCase().includes("мультиметры")) response.push({id: item.id, url: `multimetry`})
+                else if (item.name.toLowerCase().includes("токовые клещи")) response.push({id: item.id, url: `tokovye-kleschi`})
+                else if (item.name.toLowerCase().includes("мегаомметры")) response.push({id: item.id, url: `megaommetry`})
+                else if (item.name.toLowerCase().includes("видеоэндоскопы")) response.push({id: item.id, url: `videoendoskopy`})
+                else if (item.name.toLowerCase().includes("б/у")) response.push({id: item.id, url: `bu`})
+                // else response.push(`<br />${split}${item.name.replace(" RGK", "")} - true`) 
+                else response.push({id: item.id, url: `drugaya-izmeritelnaya-tehnika`})
 
-        let arrayTwoisOneis_isOne_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[0].id) // 1 шт
-        let arrayTwoisOneis_isOne_TheTwo = this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[1].id) // 1 шт
-        let arrayTwoisOneis_isOne_TheThree = this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[2].id) // 0
-
-        let arrayTwoisOneis_isTwo = this.category.filter(i => i.parentId == arrayTwoisOne[1].id) // 16
-
-        let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 1
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) // 
-        // let arrayTwoisOneis_isTwo_TheOne = this.category.filter(i => i.parentId == arrayTwoisOneis_isTwo[0].id) //
-
-        return arrayTwoisOneis_isTwo_TheOne
-
-        // let arrayTwoisOneis_isThree = this.category.filter(i => i.parentId == arrayTwoisOne[2].id)
-        // let arrayTwoisOneis_isFour = this.category.filter(i => i.parentId == arrayTwoisOne[3].id)
-        // let arrayTwoisOneis_isFive = this.category.filter(i => i.parentId == arrayTwoisOne[4].id)
-        // let arrayTwoisOneis_isSix = this.category.filter(i => i.parentId == arrayTwoisOne[5].id)
-        // let arrayTwoisOneis_isSeven = this.category.filter(i => i.parentId == arrayTwoisOne[6].id)
-        // let arrayTwoisOneis_isEight = this.category.filter(i => i.parentId == arrayTwoisOne[7].id)
-        // let arrayTwoisOneis_isNine = this.category.filter(i => i.parentId == arrayTwoisOne[8].id)
-
-        let arrayTwoisTwo = this.category.filter(i => i.parentId == arrayOne[1].id) // 7 шт
-        
-        return this.category.filter(i => i.parentId == arrayTwoisOneis_isOne[2].id)
-
+            let newArray = this.category.filter(i => i.parentId == item.id)
+            
+            if (newArray && Array.isArray(newArray) && newArray[0] !== undefined) response.push(...(await this.reFunc(newArray))) 
+        })
+        return response
     }
 
 

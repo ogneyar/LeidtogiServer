@@ -38,7 +38,7 @@ class rgkController {
             if (response.error !== undefined) return res.json(response) // вывод ошибки
 
             if (category) {
-                return res.send(await rgk.printCategory())
+                return res.json(await rgk.printCategory())
             }
 
             // обновление цен
