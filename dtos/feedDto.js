@@ -18,15 +18,17 @@ module.exports = class FeedDto {
         this.article = model.article
         this.name = model.name
         this.price = model.price
-        this.description = model.info.filter(i => i.title === "description")[0].body || ""
-        this.characteristics = model.info.filter(i => i.title === "characteristics")[0].body || ""
+        this.description = model.info.filter(i => i.title === "description")[0]
+        this.description = this.description && this.description.body || ""
+        this.characteristics = model.info.filter(i => i.title === "characteristics")[0]
+        this.characteristics = this.characteristics && this.characteristics.body || ""
         // this.size = model.size[0]
         this.size = { 
-            weight: model.size[0].weight, 
-            width: model.size[0].width, 
-            height: model.size[0].height, 
-            length: model.size[0].length, 
-            volume: model.size[0].volume
+            weight: model.size[0] && model.size[0].weight || "", 
+            width: model.size[0] && model.size[0].width || "", 
+            height: model.size[0] && model.size[0].height || "", 
+            length: model.size[0] && model.size[0].length || "", 
+            volume: model.size[0] && model.size[0].volume || ""
         }
         this.image = process.env.URL + "/" + (typeof(model.img) === "string" ? JSON.parse(model.img) : model.img)[0].big || null
         this.country = model.country
