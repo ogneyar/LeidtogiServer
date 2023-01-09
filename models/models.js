@@ -15,6 +15,7 @@ const ProductFilter = require('./ProductFilter')
 const Token = require('./Token')
 const Delivery = require('./Delivery')
 const Order = require('./Order')
+const SortProduct = require('./SortProduct')
 
 
 User.hasOne(Cart)
@@ -56,6 +57,9 @@ Token.belongsTo(User)
 User.hasMany(Delivery)
 Delivery.belongsTo(User)
 
+Product.hasOne(SortProduct)
+SortProduct.belongsTo(Product)
+
 
 module.exports = {
     User,
@@ -71,5 +75,6 @@ module.exports = {
     ProductFilter,
     Token,
     Delivery,
-    Order
+    Order,
+    SortProduct
 }

@@ -6,6 +6,8 @@ function mixAllProducts(data) {
         let j = Math.floor(Math.random() * (i + 1));
         [data[i], data[j]] = [data[j], data[i]];
     }
+
+    return data
     
 }
 

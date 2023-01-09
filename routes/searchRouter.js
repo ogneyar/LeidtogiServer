@@ -3,6 +3,9 @@ const router = new Router()
 const searchController = require('../controllers/searchController')
 
 
+router.post('/', searchController.value) 
+router.get('/', searchController.value) 
+
 router.post('/article', searchController.article) 
 router.get('/article', searchController.article) 
 

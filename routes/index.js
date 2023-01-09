@@ -18,6 +18,7 @@ const telegramRouter = require('./telegramRouter')
 const mailRouter = require('./mailRouter')
 const searchRouter = require('./searchRouter')
 const dealerRouter = require('./dealerRouter')
+const sortProductRouter = require('./sortProductRouter')
 
 
 router.use('/user', userRouter)
@@ -37,6 +38,7 @@ router.use('/telegram', telegramRouter)
 router.use('/mail', mailRouter)
 router.use('/search', searchRouter)
 router.use('/dealer', dealerRouter)
+router.use('/sort_product', sortProductRouter)
 
 
 module.exports = router

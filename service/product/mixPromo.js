@@ -5,9 +5,8 @@ function mixPromo(data) {
     let start = startOne
     
     for (let i = 0; i < data.length; i++) {
-        if (data[i].promo) {
+        if (data[i].promo && data[i].brandId !== 2) { // - husqvarna
             let promo = typeof(data[i].promo) === "string" ? JSON.parse(data[i].promo) : data[i].promo
-            // if (typeof(promo) === "string") promo = JSON.parse(promo)
             if (typeof(promo) === "object" && promo.old_price !== undefined) {
                 if (startOne === 0 || (startOne) % 3 === 0) { // если он первый в столбце
                     [data[i], data[startOne + 1]] = [data[startOne + 1], data[i]]
@@ -27,6 +26,8 @@ function mixPromo(data) {
             }
         }
     }
+
+    return data
 
 }
 

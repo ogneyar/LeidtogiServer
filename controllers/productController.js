@@ -12,6 +12,7 @@ const translit = require('../service/translit.js')
 const renameFolder = require('../service/renameFolder')
 const ProductDto = require('../dtos/productDto')
 const getAll = require('../service/product/getAll')
+const getCategoryArrays = require('../service/category/getCategoryArrays')
 
 
 class ProductController {
@@ -89,15 +90,31 @@ class ProductController {
 
     async getAll(req, res) {
         try {
-            let { brandId, categoryId, limit, page, mix_all, mix_no_img, filter } = req.query
+            let { brandId, categoryId, limit, page, mix_all, mix_no_img, mix_promo, filter } = req.query
             
             let products = await getAll({
-                brandId, categoryId, limit, page, mix_all, mix_no_img/*: false*/, filter
+                brandId, categoryId, limit, page, mix_all, mix_no_img, mix_promo, filter
             })
             
             return res.json(products)
         }catch(e) {
-            return res.json({error: 'Ошибка метода getAll!'})
+            return res.json({error: 'Ошибка метода getAll! ' + e})
+        }
+    }
+
+    async getProductsByCategory(req, res) {
+        try {
+            let { category, limit, page, mix_all, mix_no_img, mix_promo, filter } = req.query 
+            
+            let selectedCategory = await getCategoryArrays(category) // [ 22, 23, 300, ..., 1023 ]
+            
+            let products = await getAll({
+                categoryId: selectedCategory, limit, page, mix_all, mix_no_img, mix_promo, filter
+            })
+            
+            return res.json(products)
+        }catch(e) {
+            return res.json({ error: 'Ошибка метода getProductsByCategory! ' + e})
         }
     }
 

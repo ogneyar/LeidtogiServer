@@ -3,9 +3,9 @@
 function sortProductsWithOutImage(data) {
 
     let withImage = data.filter(i => {
-		if (i.img === "[{}]" || i.img === "[]" || i.img === "") return false
 		let img
 		if (typeof(i.img) === "string") {
+			if (i.img === "[{}]" || i.img === "[]" || i.img === "") return false
 			try {
 				img = JSON.parse(i.img)
 			}catch(e) {
@@ -17,9 +17,9 @@ function sortProductsWithOutImage(data) {
 		return false
 	})
     let withOutImage = data.filter(i => {
-		if (i.img === "[{}]" || i.img === "[]" || i.img === "") return true
 		let img
 		if (typeof(i.img) === "string") {
+			if (i.img === "[{}]" || i.img === "[]" || i.img === "") return true
 			try {
 				img = JSON.parse(i.img)
 			}catch(e) {
@@ -32,6 +32,8 @@ function sortProductsWithOutImage(data) {
 	})
 
     data = [ ...withImage, ...withOutImage ]
+
+	return data
     
 }
 

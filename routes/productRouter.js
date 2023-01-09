@@ -8,6 +8,8 @@ const checkRole = require('../middleware/checkRoleMiddleware')
 router.post('/', checkRole('ADMIN'), productController.create)
 router.get('/', productController.getAll)
 
+router.get('/by_category', productController.getProductsByCategory)
+
 router.get('/promo', productController.getPromo)
 
 router.get('/temp', productController.temp) // использовал этот роут для удаления нулевых позиций
