@@ -21,6 +21,7 @@ const getImagesGedoreCom = require('./gedoreCom/getImagesGedoreCom')
 const getDescriptionGedoreCom = require('./gedoreCom/getDescriptionGedoreCom')
 const getNameGedoreCom = require('./gedoreCom/getNameGedoreCom')
 const ProductDto = require('../../../dtos/productDto')
+const saveInfoInFile = require('../../saveInfoInFile')
 
 
 
@@ -248,10 +249,12 @@ module.exports = class Gedore {
                     yes = true
                 }
             })
-            if ( ! yes) response += `{Не найден артикул: ged${newProduct.article}}`
+            if ( ! yes) response += `{Не найден артикул: ged${newProduct.article}}` 
         })
 
         response = response + `]`
+        
+        saveInfoInFile(brand.name, "update_price", response) 
 
         return response
     }

@@ -31,8 +31,9 @@ class kvtController {
             }
 
             // смена цен
-            if (change !== undefined) {
-                response = await kvt.run_price_json(price_json)
+            if (change !== undefined) { 
+                response = await kvt.run_price_json(price_json) 
+                if (response.error !== undefined) return res.json(response.error)
                 if ( ! response ) return res.json({error: 'Ошибка! Метод run_price_json() не вернул данные!'})
                 
                 return res.send(await kvt.changePrice())

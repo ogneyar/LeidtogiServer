@@ -330,7 +330,7 @@ module.exports = class RGK {
             let yes = false
             old.forEach(oldProduct => {
                 if (oldProduct.article === `rgk${newProduct.article}`) {
-                    if (newProduct.price != oldProduct.price) {
+                    if (Number(newProduct.price) !== Number(oldProduct.price)) {
                         response += `"${oldProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newProduct.price}"`
                         Product.update({ price: newProduct.price },
                             { where: { id: oldProduct.id } }

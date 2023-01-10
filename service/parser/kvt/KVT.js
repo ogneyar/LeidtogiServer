@@ -22,7 +22,7 @@ module.exports = class KVT {
     
     static product = []
     static price = []
-    static priceJson = []
+    static priceJson = [] 
 
     
     constructor() {
@@ -163,6 +163,8 @@ module.exports = class KVT {
         }
             
         this.priceJson = await parseJson(fullPath)
+
+        if (this.priceJson.error !== undefined) return this.priceJson.error 
 
         return true
     }
