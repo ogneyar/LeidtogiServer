@@ -6,7 +6,7 @@ class tmkController {
 
     async tmk(req, res, next) {
         try {
-            let { number, add, change, categories } = req.query
+            let { number, add, change, categories, separation } = req.query
             let feed = req.files && req.files.feed || undefined
 
             let response, tmk
@@ -23,8 +23,12 @@ class tmkController {
 
             // смена цен
             if (change !== undefined) {
-                //console.log("hjgjghjgjh");
                 return res.send(await tmk.changePrice())
+            }
+
+            // разделение товара на суббренды
+            if (separation !== undefined && number) { // separation = quantity; ~ от 1 до 10 
+                return res.json(await tmk.separateParty(Number(number), Number(separation)))
             }
 
             // вывод информации о товаре на экран

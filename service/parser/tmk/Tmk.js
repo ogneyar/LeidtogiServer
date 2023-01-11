@@ -75,6 +75,12 @@ module.exports = class Tmk {
     // количество записей в feed.json
     async getLength() {
         return this.products.length
+        // return this.products.filter(i => {
+        //     if (i.vendor.toLowerCase().includes("redverg")) return false
+        //     if (i.vendor.toLowerCase().includes("квалитет")) return false
+        //     if (i.vendor.toLowerCase().includes("concorde")) return false
+        //     return true
+        // }).length
     }
 
 
@@ -319,6 +325,61 @@ module.exports = class Tmk {
         saveInfoInFile(brand.name, "update_price", response) 
 
         return response
+    }
+
+
+    // разделение товара на суббренды
+    async separationOfVendors(number) {
+        let response = {}
+
+        let one = this.products[number - 1]
+
+        let article = "tmk" + one.code
+        let name = one.title
+        let vendor = one.vendor
+
+        if ( ! vendor) throw "Отсутствует vendor!"
+
+        let tmk
+        if (vendor.toLowerCase().includes("redverg")) tmk = "RedVerg"
+        if (vendor.toLowerCase().includes("квалитет")) tmk = "Квалитет"
+        if (vendor.toLowerCase().includes("concorde")) tmk = "Concorde"
+
+        if (name.toLowerCase().includes(tmk.toLowerCase())) return "Наименование уже содержит имя вендора!"
+        
+        let product = await findProductByArticle(article)
+        if (product.name.toLowerCase().includes(tmk.toLowerCase())) return "Наименование уже содержит имя вендора!"
+
+        name = name + " " + tmk
+
+        try {
+            await Product.update({name},{
+                where: { article }
+            })
+        }catch(e) {
+            throw "Не смог обновить имя товара! " + e
+        }
+
+        response = `У артикула ${article} сменил наименование на ${name}`
+
+        return response
+    }
+
+    
+    // разделение партии товара на суббренды
+    async separateParty(number, quantity) {
+
+        if (quantity === 1) return await this.separationOfVendors(number)
+        
+        let array = []
+
+        for(let i = number; i < number+quantity; i++) {
+            if (i > this.products.length) break;
+            let response = await this.separationOfVendors(i)
+            array.push(response)
+        }
+        
+        return array
     }
 
 
