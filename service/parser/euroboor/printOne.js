@@ -4,6 +4,8 @@ const Math = require('mathjs')
 const findProductByArticle = require('../../product/findProductByArticle')
 const translit = require('../../translit.js')
 const getHtml = require('../../html/getHtml')
+const Category = require('../../../models/Category')
+const Product = require('../../../models/Product')
 // vseInstrumenti
 const searchVI = require('./vseInstrumenti/search')
 const getFiles = require('./vseInstrumenti/getFiles')
@@ -24,7 +26,10 @@ module.exports = async (one, kursEuro) => {
     let url = translit(name) //+ "_" + article.replace("/", "_")
     let priceEuro = one.price
     let price = Math.round( (priceEuro * kursEuro) * 100 ) /100
-    let category = one.category
+    let categoryUrl = one.category
+    let category = await Category.findOne({ where: { url: categoryUrl } })    
+    let categoryId = category.id || null
+    // return { categoryUrl, category, categoryId }
     let have = true
     
     let country = "Нидерланды" || "Китай"
@@ -36,8 +41,16 @@ module.exports = async (one, kursEuro) => {
     let myArticle = "erb" + article.replace("/", "_").replace(" ", "_")
     let product = await findProductByArticle(myArticle)
     
-    if (product && product.id !== undefined) throw "Такой товар уже есть."
-    
+    if (product && product.id !== undefined) {
+        if ( ! product.categoryId ) {
+            await Product.update({ categoryId }, { where: { id: product.id }})
+                .then(() => {
+                    throw `Артикул ${myArticle} - данные о категории обновлены.`
+                })
+        }else {
+            throw "Такой товар уже есть."
+        }
+    }    
     
     let URI, html
     let info = [], size, files
@@ -88,8 +101,8 @@ module.exports = async (one, kursEuro) => {
 
 
     return {
-        category,
-        // categoryId,
+        // category,
+        categoryId,
         brandId,
         article: myArticle, 
         name,
