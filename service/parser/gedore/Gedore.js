@@ -29,7 +29,9 @@ module.exports = class Gedore {
     
     static product = []
     
-    constructor() {}
+    constructor() {
+        this.kursEuro = 80
+    }
 
     async run(feed = {}) {
         let fullPath, response
@@ -46,23 +48,40 @@ module.exports = class Gedore {
         if (fs.existsSync(fullPath)) { 
             
             response = await parseXlsx(fullPath, [ 
-                "Code",
-                "РУС",
-                "РРЦ с НДС Розница",
-                "Категории",
+                "Gedore Code-Nr.",
+                "Artikelbeschreibung",
+                "ЕВРО с ндс РРЦ",
             ])
             
             if (response && Array.isArray(response)) {
                 this.product = response.map(i => {
                     return {
-                        article: i["Code"],
-                        name: i["РУС"],
-                        price: i["РРЦ с НДС Розница"],
-                        category: i["Категории"],
+                        article: i["Gedore Code-Nr."],
+                        name: i["Artikelbeschreibung"],
+                        price: i["ЕВРО с ндс РРЦ"],
+                        category: null,
                     }
                 })
                 return true
             }
+            // response = await parseXlsx(fullPath, [ 
+            //     "Code",
+            //     "РУС",
+            //     "РРЦ с НДС Розница",
+            //     "Категории",
+            // ])
+            
+            // if (response && Array.isArray(response)) {
+            //     this.product = response.map(i => {
+            //         return {
+            //             article: i["Code"],
+            //             name: i["РУС"],
+            //             price: i["РРЦ с НДС Розница"],
+            //             category: i["Категории"],
+            //         }
+            //     })
+            //     return true
+            // }
 
         }else {
             throw `Файл ${fullPath} отсутствует или пуст!`
@@ -86,7 +105,8 @@ module.exports = class Gedore {
         let article = one.article
         let name = one.name
         // if (name === "#Н/Д" || name === "42") throw "Не найдено наименование!"
-        let price = one.price
+        // let price = one.price
+        let price = Math.round( ( one.price * kursEuro ) * 100 ) /100
         let category = one.category
         
         let categoryId = 0
@@ -224,7 +244,7 @@ module.exports = class Gedore {
 
     // смена цен
     async changePrice() {
-        let response = `[`
+        let response = `{<br />`
         
         let brand = await Brand.findOne({ where: { name: "Gedore" } })
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
@@ -232,27 +252,31 @@ module.exports = class Gedore {
         let old = await Product.findAll({ where: { brandId: brand.id } })
 
         if (this.product !== undefined) this.product.forEach(newProduct => {
-            if (response !== `[`) response += ",<br />"
+            if (response !== `{<br />`) response += ",<br />"
             let yes = false
             old.forEach(oldProduct => {
                 if (oldProduct.article === `ged${newProduct.article}`) {
                     let newPrice = newProduct.price
-                    newPrice = Math.round(newPrice * 100) / 100
+                    newPrice = Math.round( ( newPrice * this.kursEuro ) * 100 ) / 100
                     if (newPrice != oldProduct.price) {
-                        response += `{${oldProduct.article} - Старая цена: ${oldProduct.price}, Новая цена: ${newPrice}}`
+                        response += `"${oldProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}."`
                         Product.update({ price: newPrice },
                             { where: { id: oldProduct.id } }
-                        ).then(()=>{}).catch(()=>{})
+                        ).then(()=>{
+                            // console.log("then")
+                        }).catch(()=>{
+                            // console.error("catch")
+                        })
                     }else {
-                        response += `{${oldProduct.article} - Цена осталась прежняя: ${oldProduct.price}}`
+                        response += `"${oldProduct.article}": "Цена осталась прежняя = ${oldProduct.price}."`
                     }
                     yes = true
                 }
             })
-            if ( ! yes) response += `{Не найден артикул: ged${newProduct.article}}` 
+            if ( ! yes) response += `"ged${newProduct.article}": "Не найден артикул."` 
         })
 
-        response = response + `]`
+        response = response + `<br />}`
         
         saveInfoInFile(brand.name, "update_price", response) 
 

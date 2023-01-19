@@ -42,7 +42,8 @@
     "ext": "js, mjs, json, css, html",
     "ignore": [
       "tmp/*",
-      "prices/*"
+      "prices/*",
+      "static/info/*"
     ]
   }
 }
