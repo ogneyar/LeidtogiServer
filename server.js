@@ -36,7 +36,7 @@ let corsOptionsDelegate = function (req, callback) {
 const app = express()
 // app.use(cors({ origin: CORS_URL }))
 app.use(cors(corsOptionsDelegate))
-app.use(express.json())
+app.use(express.json({limit: '25mb'}))
 app.use(cookieParser())
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(favicon(path.join(__dirname,'static','favicon.ico')))
