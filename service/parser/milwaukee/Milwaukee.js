@@ -46,7 +46,9 @@ module.exports = class Milwaukee {
 
         if (fs.existsSync(fullPath)) { 
 
-            let array = [ "Артикул", "Модель", "Цена с учетом НДС, руб.", ] // массив полей
+            let priceName = "ЦЕНА с учетом НДС"
+
+            let array = [ "Артикул", "Модель", `${priceName}`, ] // массив полей
             if ( ! withOldCategories ) array.push("Категории") // если без использования старых категорий, то искать их в исходном файле
 
             response = await parseXlsx(fullPath, array)
@@ -67,7 +69,7 @@ module.exports = class Milwaukee {
                     return {
                         article,
                         name: i["Модель"],
-                        price: i["Цена с учетом НДС, руб."],
+                        price: i[`${priceName}`],
                         category,
                     }
                 })
@@ -208,6 +210,8 @@ module.exports = class Milwaukee {
         let one = await this.getOne(number)
         if ( (! one) || (one && one.article === undefined) ) return { article: undefined, update: "warning" }
 
+        if ( ! one.price ) return { article: one.article, price: one.price, update: "warning" }
+
         let { article, price, category } = one
 
         const product = await Product.findOne({
@@ -223,7 +227,7 @@ module.exports = class Milwaukee {
                 where: { id: product.id }
             })
             
-            return { article, update: "yes" }
+            return { article, old_price: product.price, new_price: price, update: "yes" }
         }else {
             return { article, category, price, update: "unknown" }
         }
@@ -247,7 +251,7 @@ module.exports = class Milwaukee {
             array.push(string)
         }
 
-        let urlChange, urlUnknown
+        let urlChange, urlUnknown 
 
         let date = new Date()
         let folderName = date.getFullYear() + "." + (date.getMonth()+1) + "." + date.getDate() + "_" + date.getHours() + "." + date.getMinutes()
