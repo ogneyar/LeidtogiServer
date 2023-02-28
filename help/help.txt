@@ -54,7 +54,9 @@ mysqldump --host=127.0.0.1 -p -u root --disable-keys --add-drop-table --default-
 service nginx ( start | stop | restart | reload )
 
 // pm2
-pm2 (start | stop | restart | status)
+pm2 (start | stop | restart | status | delete)
+pm2 save
+
 
 // обновление сертификатов вручную
 // --dry-run для тестирования (после тестирования --dry-run надо убрать)
