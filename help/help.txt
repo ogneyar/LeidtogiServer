@@ -2,6 +2,16 @@
 // |   Подсказки   |
 // +---------------+
 
+// GIT
+// добавление всех изменений
+git add .
+// внесение езменений
+git commit -m "my commit"
+// применение изменений
+git push origin master
+// приём новых изменений
+git pull
+
 // редактор файлов (nano)
 sudo nano /etc/mysql/my.cnf - example
 
@@ -18,14 +28,14 @@ sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
 // Потом нажмите ОК
 sudo apt update
 sudo apt-cache policy mysql-server
-sudo apt install mysql-server=5.7.39-1ubuntu18.04 mysql-community-server=5.7.39-1ubuntu18.04 mysql-client=5.7.39-1ubuntu18.04
+sudo apt install mysql-server=8.0.32-0ubuntu0.22.04.2 mysql-community-server=8.0.32-0ubuntu0.22.04.2 mysql-client=8.0.32-0ubuntu0.22.04.2
 // программа запросит пароль для root пользователя
 sudo mysql_secure_installation - u root -p
 // На первом шаге настраивается плагин валидации пароля. Чтобы его включить нажмите Y, или его можно не включать. Затем надо задать сложность пароля, который позволит установить этот плагин. Здесь 0 означает слабый пароль, а 2 - сложный. Когда плагин будет настроен введите пароль root и подтвердите, что хотите использовать именно его
 // Введите Y для отключения анонимного доступа к MySQL, затем ещё раз Y чтобы запретить подключаться к базе от имени root удаленно
 // Снова Y, чтобы удалить тестовую базу данных. Затем, обновите привилегии для пользователей
 sudo mysql -u root -p
-CREATE USER 'merm'@'localhost' IDENTIFIED BY 'mern';
+CREATE USER 'mern'@'localhost' IDENTIFIED BY 'mern';
 
 
 // удаление всех процессов (для SPH)
@@ -60,6 +70,9 @@ sharp('input.jpg').resize(200, 200).toFile('ouput.jpg', function(err) {});
 // ---------------------------- SQL запросы
 // узнать какие есть пользователи в БД
 SELECT User, Host FROM mysql.user;
+
+// делегирование прав
+GRANT ALL PRIVILEGES ON *.* TO 'dbuser'@'localhost';
 
 // добавление колонки в таблицу
 ALTER TABLE carts ADD value varchar(1024) not null AFTER id;
