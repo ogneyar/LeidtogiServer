@@ -37,7 +37,7 @@ m
 
 */robots.txt
 
-# secrets and individual info
+# secrets, individual info and superfluous
 prices
-
-*/temp
+static/info
+static/temp
