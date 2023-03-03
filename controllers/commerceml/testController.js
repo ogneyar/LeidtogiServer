@@ -41,7 +41,7 @@ class TestController {
             
         if (mode === "init") {
             await sendMessage("init", false)
-            return res.send(`zip=yes\nfile_limit=500`)
+            return res.send(`zip=no\nfile_limit=500`)
         }
             
         if (mode === "file") {
