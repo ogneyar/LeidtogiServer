@@ -12,7 +12,8 @@ class TestController {
 
         sendMessage(JSON.stringify(req.query))
 
-        return res.json("success\nkuka\n42")
+        // return res.json("success")
+        return res.send("success\nkuka\n42")
     }
 
 }
