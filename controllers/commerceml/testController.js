@@ -21,27 +21,31 @@ class TestController {
 
         // sendMessage(JSON.stringify(req.query))
 
-        if (type !== "catalog")
-            return res.json("success")
+        if (type !== "catalog") return res.json("success")
 
-        if (mode === "checkauth") 
+        if (mode === "checkauth") {
+            sendMessage("checkauth")
             return res.send(`
                 success\n
                 kuka\n
                 42
             `)
+        }
             
-        if (mode === "init") 
+        if (mode === "init") {
+            sendMessage("init")
             return res.send(`
                 zip=no\n
                 file_limit=50
             `)
+        }
             
-        if (mode === "file")   
+        if (mode === "file") {
             sendMessage(filename)
             return res.send(`
                 success
             `)
+        }
 
 
         return res.send("success")
