@@ -17,7 +17,7 @@ class TestController {
             await sendMessage("req.files: " + JSON.stringify(req.files), false)
         }
 
-        if (req.body && req.body !== {}) {
+        if (req.body && JSON.stringify(req.body) !== "{}") {
             await sendMessage("req.body", false)
             await sendMessage("req.body: " + JSON.stringify(req.body), false)
         }
