@@ -10,29 +10,34 @@ class TestController {
     async test(req, res) {
 
         let { type, mode, filename } = req.query
-        let file = req.files && req.files[0] || undefined
+        // let file = req.files && req.files[0] || undefined
 
-        if (req.files) {
-            await sendMessage("req.files", false)
-            await sendMessage("req.files: " + JSON.stringify(req.files), false)
-        }
+        // if (req.files) {
+        //     await sendMessage("req.files", false)
+        //     await sendMessage("req.files: " + JSON.stringify(req.files), false)
+        // }
 
+        let fullPath = ""
         if (req.body && JSON.stringify(req.body) !== "{}") {
             await sendMessage("req.body", false)
             // await sendMessage("req.body: " + JSON.stringify(req.body), false)
+            if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp'))) 
+            {
+                fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
+            }
+            if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml'))) 
+            {
+                fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'commerceml'))
+            }
+            fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', filename) 
+            if ( ! fs.existsSync(fullPath)) {
+                try {
+                    fs.writeFileSync(fullPath, JSON.stringify(req.body))
+                } catch (err) {
+                    await sendMessage(`Записать данные в файл не удалось.`, false)
+                }
+            }
         }
-
-        let fullPath = ""
-        if (file && file.name !== undefined) {
-            await sendMessage("file.name = " + filename)
-            if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
-            if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'advanta'))
-            let fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', file.name)
-            if ( ! fs.existsSync(fullPath))
-                await file.mv(fullPath)
-        }
-
-        // sendMessage(JSON.stringify(req.query))
 
         if (type !== "catalog") return res.json("success")
 
