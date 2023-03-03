@@ -38,6 +38,7 @@ class TestController {
             `)
             
         if (mode === "file")   
+            sendMessage(filename)
             return res.send(`
                 success
             `)
