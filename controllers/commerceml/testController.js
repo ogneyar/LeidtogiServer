@@ -41,7 +41,14 @@ class TestController {
         }
             
         if (mode === "file") {
-            sendMessage(filename)
+            sendMessage("mode: " + mode + " filename: " + filename)
+            return res.send(`
+                success
+            `)
+        }
+            
+        if (mode === "import") {
+            sendMessage("mode: " + mode + " filename: " + filename)
             return res.send(`
                 success
             `)
