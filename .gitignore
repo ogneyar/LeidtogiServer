@@ -42,4 +42,5 @@ prices
 static/info
 static/temp
 db.js
+static/feed
 
