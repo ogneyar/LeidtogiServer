@@ -25,33 +25,22 @@ class TestController {
 
         if (mode === "checkauth") {
             sendMessage("checkauth")
-            return res.send(`
-                success\n
-                kuka\n
-                42
-            `)
+            return res.send(`success\nkuka\n42`)
         }
             
         if (mode === "init") {
             sendMessage("init")
-            return res.send(`
-                zip=no\n
-                file_limit=50
-            `)
+            return res.send(`zip=no\nfile_limit=50`)
         }
             
         if (mode === "file") {
             sendMessage("mode: " + mode + " filename: " + filename)
-            return res.send(`
-                success
-            `)
+            return res.send(`success`)
         }
             
         if (mode === "import") {
             sendMessage("mode: " + mode + " filename: " + filename)
-            return res.send(`
-                success
-            `)
+            return res.send(`success`)
         }
 
 
