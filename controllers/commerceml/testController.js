@@ -10,9 +10,10 @@ class TestController {
     async test(req, res) {
 
         let { type, mode, filename } = req.query
-        let file = req.files && req.files[`${filename}`] || undefined
+        let file = req.files && req.files[0] || undefined
         
         if (file && file.name !== undefined) {
+            if (file.name === "import.xml") sendMessage("file.name = import.xml")
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'advanta'))
             let fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', file.name)
