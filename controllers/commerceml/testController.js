@@ -1,5 +1,7 @@
 
 const axios  = require("axios")
+const sendMessage = require("../../service/telegram/sendMessage")
+
 
 
 class TestController {
@@ -8,13 +10,10 @@ class TestController {
 
         // let {from_location, to_location, packages} = req.body
 
-        // let body = {
-        //     from_location,
-        //     to_location,
-        //     packages
-        // }
+        sendMessage(JSON.stringify(req.query))
 
-        return res.json("await")
+        return res.json(req.query)
+        return res.json("success")
     }
 
 }
