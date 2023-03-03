@@ -11,9 +11,17 @@ class TestController {
 
         let { type, mode, filename } = req.query
         let file = req.files && req.files[0] || undefined
+
+        if (req.files) {
+            sendMessage("req.files: " + JSON.stringify(req.files), false)
+        }
+
+        if (req.body) {
+            sendMessage("req.body: " + JSON.stringify(req.body), false)
+        }
         
         if (file && file.name !== undefined) {
-            if (file.name === "import.zip") sendMessage("file.name = import.zip")
+            sendMessage("file.name = " + filename)
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'advanta'))
             let fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', file.name)
