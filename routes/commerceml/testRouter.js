@@ -5,6 +5,7 @@ const testController = require('../../controllers/commerceml/testController')
 
 
 router.get('/', testController.test)
+router.post('/', testController.test)
 
 
 module.exports = router
