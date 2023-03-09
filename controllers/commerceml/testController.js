@@ -3,6 +3,7 @@ const axios  = require("axios")
 const sendMessage = require("../../service/telegram/sendMessage")
 const fs = require('fs')
 const path = require('path')
+const StringDecoder = require('string_decoder').StringDecoder
 
 
 class TestController {
@@ -12,12 +13,8 @@ class TestController {
         let { type, mode, filename } = req.query
         // let file = req.files && req.files[0] || undefined
 
-        // if (req.headers) {
-        //     await sendMessage("req.headers: " + JSON.stringify(req.headers), false)
-        // }
-
-        if (req.ip) {
-            await sendMessage("req.ip: " + JSON.stringify(req.ip), false)
+        if (req.headers) {
+            // await sendMessage("req.headers: " + JSON.stringify(req.headers), false)
         }
 
         if (req.files) {
@@ -26,9 +23,11 @@ class TestController {
         }
 
         let fullPath = ""
-        if (req.body && JSON.stringify(req.body) !== "{}") {
-            await sendMessage("req.body", false)
-            // await sendMessage("req.body: " + JSON.stringify(req.body), false)
+        if (req.body && JSON.stringify(req.body) !== "{}") 
+        {
+            let body = req.body
+            await sendMessage("req.body.type === 'Buffer'", false)
+            
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp'))) 
             {
                 fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
@@ -38,10 +37,15 @@ class TestController {
                 fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'commerceml'))
             }
             fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', filename) 
-            if ( ! fs.existsSync(fullPath)) {
-                try {
-                    fs.writeFileSync(fullPath, JSON.stringify(req.body))
-                } catch (err) {
+            if ( ! fs.existsSync(fullPath)) 
+            {
+                try 
+                {
+                    let decoder = new StringDecoder('utf8')
+                    fs.writeFileSync(fullPath, decoder.write(body))
+                } 
+                catch (err) 
+                {
                     await sendMessage(`Записать данные в файл не удалось.`, false)
                 }
             }
