@@ -28,7 +28,7 @@ class TestController {
             }
             
             let now = new Date()
-            if (URL === "http://server.hutor.site") await sendMessage("now: " + now, false)
+            if (process.env.URL === "http://server.hutor.site") await sendMessage("now: " + now, false)
             let year = now.getFullYear()
             let month = now.getMonth() + 1
             let day = now.getDate()
@@ -64,7 +64,7 @@ class TestController {
             
         if (mode === "init") {
             await sendMessage("init", false)
-            return res.send(`zip=no\nfile_limit=50000`)
+            return res.send(`zip=no\nfile_limit=52428800`) // 52 428 800 байт = 50 Мб
         }
             
         if (mode === "file") {
