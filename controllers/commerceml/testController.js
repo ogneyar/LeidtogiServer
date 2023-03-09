@@ -12,10 +12,15 @@ class TestController {
         let { type, mode, filename } = req.query
         // let file = req.files && req.files[0] || undefined
 
-        // if (req.files) {
-        //     await sendMessage("req.files", false)
-        //     await sendMessage("req.files: " + JSON.stringify(req.files), false)
-        // }
+        if (req.headers) {
+            await sendMessage("req.headers", false)
+            await sendMessage("req.headers: " + JSON.stringify(req.headers), false)
+        }
+
+        if (req.files) {
+            await sendMessage("req.files", false)
+            await sendMessage("req.files: " + JSON.stringify(req.files), false)
+        }
 
         let fullPath = ""
         if (req.body && JSON.stringify(req.body) !== "{}") {
