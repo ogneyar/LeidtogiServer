@@ -11,16 +11,6 @@ class TestController {
     async test(req, res) {
 
         let { type, mode, filename } = req.query
-        // let file = req.files && req.files[0] || undefined
-
-        if (req.headers) {
-            // await sendMessage("req.headers: " + JSON.stringify(req.headers), false)
-        }
-
-        if (req.files) {
-            await sendMessage("req.files", false)
-            // await sendMessage("req.files: " + JSON.stringify(req.files), false)
-        }
 
         let fullPath = ""
         if (req.body && JSON.stringify(req.body) !== "{}") 
@@ -36,18 +26,31 @@ class TestController {
             {
                 fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'commerceml'))
             }
-            fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', filename) 
-            if ( ! fs.existsSync(fullPath)) 
+            
+            let now = new Date()
+            let year = now.getFullYear()
+            let month = now.getMonth() + 1
+            let day = now.getDate()
+            let hour = now.getHours()
+            let min = now.getMinutes()
+            let sec = now.getSeconds()
+            if (month < 10) month = `0${month}`
+            if (day < 10) day = `0${day}`
+            if (hour < 10) hour = `0${hour}`
+            if (min < 10) min = `0${min}`
+            if (sec < 10) sec = `0${sec}`
+
+            let dateInName = `${year}.${month}.${day}_${hour}.${min}.${sec}`
+
+            fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', dateInName + "_" + filename) 
+            try 
             {
-                try 
-                {
-                    let decoder = new StringDecoder('utf8')
-                    fs.writeFileSync(fullPath, decoder.write(body))
-                } 
-                catch (err) 
-                {
-                    await sendMessage(`Записать данные в файл не удалось.`, false)
-                }
+                let decoder = new StringDecoder('utf8')
+                fs.writeFileSync(fullPath, decoder.write(body))
+            } 
+            catch (err) 
+            {
+                await sendMessage(`Записать данные в файл не удалось.`, false)
             }
         }
 
