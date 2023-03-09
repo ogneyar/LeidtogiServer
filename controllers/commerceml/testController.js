@@ -28,7 +28,6 @@ class TestController {
             }
             
             let now = new Date()
-            if (process.env.URL === "http://server.hutor.site") await sendMessage("now: " + now, false)
             let year = now.getFullYear()
             let month = now.getMonth() + 1
             let day = now.getDate()
