@@ -1,4 +1,5 @@
 //
+const axios = require('axios')
 const Math = require('mathjs')
 const fs = require('fs')
 const path = require('path')
@@ -32,6 +33,44 @@ module.exports = class Tor {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'tor'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'tor'))
             fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'tor', feed.name)
             await feed.mv(fullPath)
+        }
+        else
+        {
+            let now = new Date()
+            let year = now.getFullYear()
+            let month = now.getMonth() + 1
+            let day = now.getDate()
+            let hour = now.getHours()
+            let min = now.getMinutes()
+            let sec = now.getSeconds()
+            if (month < 10) month = `0${month}`
+            if (day < 10) day = `0${day}`
+            if (hour < 10) hour = `0${hour}`
+            if (min < 10) min = `0${min}`
+            if (sec < 10) sec = `0${sec}`
+            
+            let dateInNameFile = `feed_${year}.${month}.${day}_${hour}.${min}.${sec}.xml`
+
+            fs.rename(fullPath, path.resolve(__dirname, '..', '..', '..', 'prices', 'tor', 'oldFeeds', dateInNameFile), (err) => {
+                if (err) 
+                {
+                    let responseError = `Переместить файл feed.xml не удалось.`
+                    console.error(responseError)
+                    // throw responseError
+                }
+            })
+            
+            // Tor
+            let url = "https://eme54.ru/partners-im/partners.xml"
+            let { data } = await axios.get(url, { headers: { 'User-Agent': 'LeidTogi' }  })
+            
+            try {
+                fs.writeFileSync(fullPath, data)
+            } catch (err) {
+                let responseError = `Записать данные в файл feed.xml не удалось.`
+                console.error(responseError)
+                throw responseError
+            }
         }
             
         if (fs.existsSync(fullPath)) { 

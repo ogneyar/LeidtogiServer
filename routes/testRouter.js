@@ -1,7 +1,13 @@
+
 const Router = require('express')
 const router = new Router()
+const path = require('path')
+const fs = require('fs')
+const axios = require('axios')
+
 // const testController = require('../controllers/testController')
 const ApiError = require('../error/apiError')
+
 
 
 const testPost = async (req, res, next) => {
@@ -36,10 +42,28 @@ const testGet = async (req, res, next) => {
         return next(ApiError.badRequest('Ошибка метода testGet!'));
     }
 }
+
+const testTorGet = async (req, res, next) => {
+    try {
+        // Tor
+        let url = "https://eme54.ru/partners-im/partners.xml"
+        let { data } = await axios.get(url)
+
+        fs.rename(path.resolve(__dirname, '..', 'static', 'temp', 'test.xml'), path.resolve(__dirname, '..', 'tmp', 'test.xml'), (err) => {
+            if (err) console.error("error")
+        })
+
+        return res.json(data)
+    }catch(e) {
+        return next(ApiError.badRequest('Ошибка метода testTmkGet!'));
+    }
+}
  
 router.post('/', testPost)
 
 router.get('/', testGet)
+
+router.get('/tor', testTorGet)
 
 // router.delete('/:id', brandController.delete)
 // router.put('/:id', brandController.edit)
