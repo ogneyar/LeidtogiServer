@@ -3,6 +3,7 @@ const axios  = require("axios")
 const sendMessage = require("../../service/telegram/sendMessage")
 const fs = require('fs')
 const path = require('path')
+const getDateInName = require("../../service/getDateInName")
 const StringDecoder = require('string_decoder').StringDecoder
 
 
@@ -26,21 +27,8 @@ class TestController {
             {
                 fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'commerceml'))
             }
-            
-            let now = new Date()
-            let year = now.getFullYear()
-            let month = now.getMonth() + 1
-            let day = now.getDate()
-            let hour = now.getHours()
-            let min = now.getMinutes()
-            let sec = now.getSeconds()
-            if (month < 10) month = `0${month}`
-            if (day < 10) day = `0${day}`
-            if (hour < 10) hour = `0${hour}`
-            if (min < 10) min = `0${min}`
-            if (sec < 10) sec = `0${sec}`
 
-            let dateInName = `${year}.${month}.${day}_${hour}.${min}.${sec}`
+            let dateInName = getDateInName()
 
             fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', dateInName + "_" + filename) 
             try 
