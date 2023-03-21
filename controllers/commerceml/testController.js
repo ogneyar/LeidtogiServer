@@ -30,16 +30,35 @@ class TestController {
 
             let dateInName = getDateInName()
 
-            fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', dateInName + "_" + filename) 
-            try 
-            {
-                let decoder = new StringDecoder('utf8')
-                fs.writeFileSync(fullPath, decoder.write(body))
-            } 
-            catch (err) 
-            {
-                await sendMessage(`Записать данные в файл не удалось. Имя файла: ${filename}`, false)
+            if (filename.includes("")) {
+                let idx = filename.indexOff("/")
+                filename = filename.substring(idx, filename.length)
+                idx = filename.indexOff("/")
+                filename = filename.substring(idx, filename.length)
+                fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', dateInName + "_" + filename) 
+                try 
+                {
+                    fs.writeFile(fullPath, Buffer.from(body, "base64"), (err) => {
+                        if (err) sendMessage(`Записать данные в файл не удалось. Имя файла: ${filename}. err.`, false)
+                    })
+                } 
+                catch (err) 
+                {
+                    await sendMessage(`Записать данные в файл не удалось. Имя файла: ${filename}`, false)
+                }
+            }else {
+                fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', dateInName + "_" + filename) 
+                try 
+                {
+                    let decoder = new StringDecoder('utf8')
+                    fs.writeFileSync(fullPath, decoder.write(body))
+                } 
+                catch (err) 
+                {
+                    await sendMessage(`Записать данные в файл не удалось. Имя файла: ${filename}`, false)
+                }
             }
+
         }
 
         if (type !== "catalog") return res.json("success")
