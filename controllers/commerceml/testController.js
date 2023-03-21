@@ -31,10 +31,10 @@ class TestController {
             let dateInName = getDateInName()
 
             if (filename.includes("import_files")) {
-                let idx = filename.indexOff("/")
-                filename = filename.substring(idx, filename.length)
-                idx = filename.indexOff("/")
-                filename = filename.substring(idx, filename.length)
+                let idx = filename.indexOf("/")
+                filename = filename.substring(idx+1, filename.length)
+                idx = filename.indexOf("/")
+                filename = filename.substring(idx+1, filename.length)
                 fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', dateInName + "_" + filename) 
                 try 
                 {
