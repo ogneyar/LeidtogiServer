@@ -30,7 +30,7 @@ class TestController {
 
             let dateInName = getDateInName()
 
-            if (filename.includes("")) {
+            if (filename.includes("import_files")) {
                 let idx = filename.indexOff("/")
                 filename = filename.substring(idx, filename.length)
                 idx = filename.indexOff("/")
