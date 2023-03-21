@@ -31,16 +31,28 @@ class TestController {
             let dateInName = getDateInName()
 
             if (filename.includes("import_files")) {
+                
+                if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'import_files'))) 
+                {
+                    fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'import_files'))
+                }
+
                 let idx = filename.indexOf("/")
                 filename = filename.substring(idx+1, filename.length)
                 idx = filename.indexOf("/")
+                let folderName = filename.substring(0, idx)
+
+                if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'import_files', folderName))) 
+                {
+                    fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'import_files', folderName))
+                }
+
                 filename = filename.substring(idx+1, filename.length)
-                fullPath = path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml', dateInName + "_" + filename) 
+                fullPath = path.resolve(__dirname, '..', '..', 'static', 'import_files', folderName, filename) 
                 try 
                 {
-                    fs.writeFile(fullPath, Buffer.from(body, "base64"), (err) => {
-                        if (err) sendMessage(`Записать данные в файл не удалось. Имя файла: ${filename}. err.`, false)
-                    })
+                    fs.writeFileSync(fullPath, Buffer.from(body, "base64"))
+                    await sendMessage(`Записал данные в файл. Имя файла: ${filename}`, false)
                 } 
                 catch (err) 
                 {
