@@ -38,7 +38,7 @@ class TestController {
             } 
             catch (err) 
             {
-                await sendMessage(`Записать данные в файл не удалось.`, false)
+                await sendMessage(`Записать данные в файл не удалось. Имя файла: ${filename}`, false)
             }
         }
 
