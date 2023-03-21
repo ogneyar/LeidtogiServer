@@ -21,11 +21,11 @@ class TestController {
             
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp'))) 
             {
-                fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
+                fs.mkdirSync(path.resolve(__dirname, '..', '..', 'static', 'temp'))
             }
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml'))) 
             {
-                fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'commerceml'))
+                fs.mkdirSync(path.resolve(__dirname, '..', '..', 'static', 'temp', 'commerceml'))
             }
 
             let dateInName = getDateInName()
@@ -34,7 +34,7 @@ class TestController {
                 
                 if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'import_files'))) 
                 {
-                    fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'import_files'))
+                    fs.mkdirSync(path.resolve(__dirname, '..', '..', 'static', 'import_files'))
                 }
 
                 let idx = filename.indexOf("/")
@@ -44,7 +44,7 @@ class TestController {
 
                 if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'static', 'import_files', folderName))) 
                 {
-                    fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'import_files', folderName))
+                    fs.mkdirSync(path.resolve(__dirname, '..', '..', 'static', 'import_files', folderName))
                 }
 
                 filename = filename.substring(idx+1, filename.length)
