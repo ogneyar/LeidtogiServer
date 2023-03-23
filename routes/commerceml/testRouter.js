@@ -4,7 +4,7 @@ const router = new Router()
 const testController = require('../../controllers/commerceml/testController')
 
 
-router.get('/', testController.test)
+router.get('/', testController.get)
 router.post('/', testController.test)
 
 
