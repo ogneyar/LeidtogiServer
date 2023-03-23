@@ -240,7 +240,9 @@ class TestController {
         else if (mode) 
         {            
             await sendMessage("mode: " + mode + ", type: " + type, false)
-        }else {
+        }
+        else if (type) 
+        {
             await sendMessage("type: " + type, false)
         }
 
