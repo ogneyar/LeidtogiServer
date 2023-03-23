@@ -249,7 +249,7 @@ class TestController {
 
     
     async get(req, res) {
-        
+        res.setHeader('Content-Type', 'application/xml')
         return res.send(`
         <КоммерческаяИнформация ВерсияСхемы="2.03" ДатаФормирования="2023-03-23">
             <Документ>
