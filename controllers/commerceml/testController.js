@@ -79,10 +79,10 @@ class TestController {
 
         }
 
-        if (type !== "catalog") {
-            await sendMessage("type: " + type + ", mode: " + mode, false)
-            return res.json("success")
-        }
+        // if (type !== "catalog") {
+        //     await sendMessage("type: " + type + ", mode: " + mode, false)
+        //     return res.json("success")
+        // }
 
         if (mode === "checkauth") 
         {
