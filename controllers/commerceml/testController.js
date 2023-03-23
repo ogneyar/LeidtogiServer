@@ -86,25 +86,57 @@ class TestController {
 
         if (mode === "checkauth") 
         {
-            await sendMessage("checkauth", false)
+            await sendMessage("mode: " + mode + ", type: " + type, false)
             return res.send(`success\nkuka\n42`)
         }
         else if (mode === "init") 
         {
-            await sendMessage("init", false)
+            await sendMessage("mode: " + mode + ", type: " + type, false)
             return res.send(`zip=no\nfile_limit=52428800`) // 52 428 800 байт = 50 Мб
         }
         else if (mode === "file") 
         {
-            if ( ! fullPath ) await sendMessage("mode: " + mode + " filename: " + filename, false)
+            if ( ! fullPath ) await sendMessage("mode: " + mode + ", type: " + type + ", filename: " + filename, false)
         }
         else if (mode === "import") 
         {
-            await sendMessage("mode: " + mode + " filename: " + filename, false)
+            await sendMessage("mode: " + mode + ", type: " + type + " filename: " + filename, false)
+        }
+        else if (mode === "query") // запрос данных
+        {
+            await sendMessage("mode: " + mode + ", type: " + type, false)
+            return res.send(`
+<xsd:schema
+    xmlns:cml="urn:1C.ru:commerceml_2"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="urn:1C.ru:commerceml_2" 
+        elementFormDefault="qualified" 
+        attributeFormDefault="unqualified" 
+        version="2.10" id="commerceml"
+>
+    <xsd:group name="ИдентификаторТовара">
+        <xsd:annotation>
+            <xsd:documentation>Товар может быть идентифицирован произвольным (например GUID или внутрисистемным) идентификатором, Штрихкодом, Артикулом. Контрагент может использовать любой удобный с его точки зрения идентификатор - на выбор</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="Артикул" type="cml:АртикулТип" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:group>
+    <xsd:simpleType name="ХозОперацияТип">
+        <xsd:annotation>
+            <xsd:documentation>Определяет хозяйственную или торговую операцию</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Заказ товара"/>
+    </xsd:simpleType>
+</xsd:schema>
+            `)
         }
         else if (mode) 
         {            
-            await sendMessage("mode: " + mode, false)
+            await sendMessage("mode: " + mode + ", type: " + type, false)
+        }else {
+            await sendMessage("type: " + type, false)
         }
 
         return res.send("success")
