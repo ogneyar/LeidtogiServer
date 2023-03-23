@@ -79,23 +79,22 @@ class TestController {
             await sendMessage("checkauth", false)
             return res.send(`success\nkuka\n42`)
         }
-            
+        else
         if (mode === "init") {
             await sendMessage("init", false)
             return res.send(`zip=no\nfile_limit=52428800`) // 52 428 800 байт = 50 Мб
         }
-            
+        else            
         if (mode === "file") {
-            if ( ! fullPath )
-                await sendMessage("mode: " + mode + " filename: " + filename, false)
-            return res.send(`success`)
+            if ( ! fullPath ) await sendMessage("mode: " + mode + " filename: " + filename, false)
         }
-            
+        else
         if (mode === "import") {
             await sendMessage("mode: " + mode + " filename: " + filename, false)
-            return res.send(`success`)
         }
-
+        else {            
+            await sendMessage("mode: " + mode, false)
+        }
 
         return res.send("success")
     }
