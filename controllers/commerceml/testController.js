@@ -11,6 +11,12 @@ class TestController {
 
     async test(req, res) {
 
+        /*
+        type:
+            catalog - товары (1с присылает данные о товарах)
+            sale - заказы (1с запрашивает данные о заказах)
+
+        */
         let { type, mode, filename } = req.query
 
         let fullPath = ""
@@ -75,7 +81,7 @@ class TestController {
 
         if (type !== "catalog") {
             await sendMessage("type: " + type, false)
-            return res.json("success")
+            // return res.json("success")
         }
 
         if (mode === "checkauth") 
