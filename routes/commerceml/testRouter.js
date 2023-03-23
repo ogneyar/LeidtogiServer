@@ -4,8 +4,12 @@ const router = new Router()
 const testController = require('../../controllers/commerceml/testController')
 
 
-router.get('/', testController.get)
-router.post('/', testController.test)
+if (process.env.URL === "http://localhost:5000") {
+    router.get('/', testController.get)
+}else {
+    router.get('/', testController.test)
+    router.post('/', testController.test)
+}
 
 
 module.exports = router
