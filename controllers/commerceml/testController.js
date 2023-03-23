@@ -73,26 +73,31 @@ class TestController {
 
         }
 
-        if (type !== "catalog") return res.json("success")
+        if (type !== "catalog") {
+            await sendMessage("type: " + type, false)
+            return res.json("success")
+        }
 
-        if (mode === "checkauth") {
+        if (mode === "checkauth") 
+        {
             await sendMessage("checkauth", false)
             return res.send(`success\nkuka\n42`)
         }
-        else
-        if (mode === "init") {
+        else if (mode === "init") 
+        {
             await sendMessage("init", false)
             return res.send(`zip=no\nfile_limit=52428800`) // 52 428 800 байт = 50 Мб
         }
-        else            
-        if (mode === "file") {
+        else if (mode === "file") 
+        {
             if ( ! fullPath ) await sendMessage("mode: " + mode + " filename: " + filename, false)
         }
-        else
-        if (mode === "import") {
+        else if (mode === "import") 
+        {
             await sendMessage("mode: " + mode + " filename: " + filename, false)
         }
-        else {            
+        else if (mode) 
+        {            
             await sendMessage("mode: " + mode, false)
         }
 
