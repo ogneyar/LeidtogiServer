@@ -76,11 +76,13 @@ module.exports = async (body) => {
             img = JSON.parse(i.img)
         }catch(e) {}
         if (img && Array.isArray(img) && img[0].big !== undefined) { 
-            if ( ! i.request && i.price > 0 && i.have) return true 
+            if ( ! i.request && i.price > 0 && i.have) 
+                if (i.brandId !== 4 && i.brandId !== 9) return true 
         }
         // если нет изображений
         // если "цена по запросу" или нет цены
-        // если нет в наличии
+        // если нет в наличии 
+        // или бренд Euroboor (4) или бренд ТМК (9)
         // тогда убираем из списка
         return false                
     })
