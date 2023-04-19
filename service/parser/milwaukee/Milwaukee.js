@@ -46,7 +46,8 @@ module.exports = class Milwaukee {
 
         if (fs.existsSync(fullPath)) { 
 
-            let priceName = "ЦЕНА с учетом НДС, руб."
+            let priceName = "Цена с учетом НДС, руб"
+            
 
             let array = [ "Артикул", "Модель", `${priceName}`, ] // массив полей
             if ( ! withOldCategories ) array.push("Категории") // если без использования старых категорий, то искать их в исходном файле
