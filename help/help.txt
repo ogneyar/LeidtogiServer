@@ -102,3 +102,20 @@ UPDATE `products` SET `request` = '1' WHERE `products`.`id` = 70;
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v mySQLd /d "C:/Program Files/MySQL/MySQL Server 5.5/bin/mysqld" /f
 
 
+// установка NodeJS
+sudo apt install build-essential checkinstall
+// нам понадобится libssl
+sudo apt install libssl-dev
+//  установить менеджер версий NVM 
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+// перезапустить терминал
+source /etc/profile
+//   смотрим список доступных версий Node js
+nvm ls-remote
+// можно устанавливать Node js, при установке обязательно указывать версию
+nvm install 18.12.1
+
+
+
+
+
