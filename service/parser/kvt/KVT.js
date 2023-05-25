@@ -125,19 +125,19 @@ module.exports = class KVT {
         if (fs.existsSync(fullPath)) { 
             
             response = await parseXlsx(fullPath, [
-                "Код товара",
-                "Наименование",
-                "РРЦ",
-                "Упаковка",
+                "Название",
+                "Артикул",
+                "Цена",
+                "Кратность",
             ])
             
             if (response && Array.isArray(response)) {
                 this.price = response.map(i => {
                     return {
-                        article: i["Код товара"],
-                        name: i["Наименование"],
-                        price: i["РРЦ"],
-                        quantity: i["Упаковка"],
+                        name: i["Название"],
+                        article: i["Артикул"],
+                        price: i["Цена"],
+                        quantity: i["Кратность"],
                     }
                 })
                 return true
@@ -164,7 +164,7 @@ module.exports = class KVT {
             
         this.priceJson = await parseJson(fullPath)
 
-        if (this.priceJson.error !== undefined) return this.priceJson.error 
+        if (this.priceJson.error !== undefined) return this.priceJson.error
 
         return true
     }
