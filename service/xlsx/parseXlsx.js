@@ -13,7 +13,9 @@ async function parseXlsx(file, arraySearch, numberSheet = 1) {
     let workbook, worksheet, response = []
     
     if (fs.existsSync(file)) {
-        workbook = XLSX.readFile(file)
+        workbook = XLSX.readFile(file, {
+            bookType: "xlsx"
+        })
     }else {
         return { error: `Файл ${file} отсутствует или пуст!` }
     }
