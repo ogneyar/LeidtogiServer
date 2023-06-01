@@ -8,7 +8,7 @@ const path = require('path')
 
 // let sharp = require('sharp')
 
-// const { Brand, Category, Product } = require('../../../models/models')
+const { Product } = require('../../../models/models')
 
 // const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
 // const createProduct = require('../../product/createProduct.js')
@@ -137,27 +137,39 @@ module.exports = class KVTtest {
 
     // вывод данных на экран
     async print(number) {
-        let product = this.product
-        let stock = this.stock
+
+        let our_products = await Product.findAll()
 
         let data = []
 
-        product.forEach(prod => {
+        this.product.forEach(async(prod) => {
             let yes = false
             let stk
-            for(let i = 0; i < stock.length; i++) {
-                if (prod.article == stock[i].article) {
+            for(let i = 0; i < this.stock.length; i++) {
+                if (prod.article == this.stock[i].article) {
                     yes = true
-                    stk = stock[i]
+                    stk = this.stock[i]
                     break
                 }
             }
             if (yes) {
+                let url = "-"
+                for(let i = 0; i < our_products.length; i++) {
+                    if (our_products[i].article == "kvt" + stk.article) {
+                        url = "https://leidtogi.ru/kvt/" + our_products[i].url 
+                        break
+                    }
+                }
                 let price = Number(stk.price)
                 let our_price = price - price * process.env.KVT_OUR_PROCENT // наша цена
                 let volume
                 if (prod.length && prod.width && prod.height)
                     volume = Number(((prod.length * prod.width * prod.height) / 1000000000).toFixed(10))
+                let outdated = 0 // устаревшая (позиция)
+                if (stk.name.includes("****")) {
+                    outdated = 1
+                    stk.name = stk.name.replace(/\*\*\*\*/g, "")
+                }
                 data.push({
                     "раздел": prod.category_1,
                     "подраздел": prod.category_2,
@@ -178,12 +190,13 @@ module.exports = class KVTtest {
                     "объём ед.": volume || "",
                     "гарантийный срок эксплуатации (лет)": prod.warranty,
                     "технические характеристики": prod.characteristics,
-                    "онлайн-карточка товара": "-",
+                    "онлайн-карточка товара": url,
                     "сертификация": prod.certificate,
                     "паспорт изделия, инструкция": prod.passport,
                     "основное изображение": prod.image,
                     "чертеж": prod.plan,
                     "чертёжные характеристики": prod.plan_characteristics,
+                    "устаревшая позиция": outdated,
                 })
             }
         })

@@ -7,14 +7,18 @@ const router = new Router()
 
 const testController = require('../controllers/testController')
 
- 
-router.post('/', testController.testPost)
 
-router.get('/', testController.testGet)
+if (process.env.URL === "http://localhost:5000") {
+    
+    router.post('/', testController.testPost)
+    
+    router.get('/', testController.testGet)
+    
+    router.get('/tor', testController.testTorGet)
 
-router.get('/tor', testController.testTorGet)
-
-router.get('/kvt', testController.testKvt)
+    router.get('/kvt', testController.testKvt)
+    
+}
 
 // router.delete('/:id', testController.delete)
 // router.put('/:id', testController.edit)
