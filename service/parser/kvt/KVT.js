@@ -109,11 +109,11 @@ module.exports = class KVT {
         return false
     }
 
-    // прайс для заведения товаров
+    // прайс для заведения товаров и для обновления цен
     async run_price(feed = {}) {
         let fullPath, response
 
-        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'kvt', 'price.xlsx')
+        fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'kvt', 'stock.xlsx')
 
         if (feed && feed.name !== undefined) {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
@@ -127,6 +127,8 @@ module.exports = class KVT {
             response = await parseXlsx(fullPath, [
                 "Название",
                 "Артикул",
+                "Остаток Калуга",
+                "Остаток СПБ",
                 "Цена",
                 "Кратность",
             ])
@@ -135,6 +137,8 @@ module.exports = class KVT {
                 this.price = response.map(i => {
                     return {
                         name: i["Название"],
+                        article: i["Артикул"],
+                        stock: Number(i["Остаток Калуга"]) + Number(i["Остаток СПБ"]),
                         article: i["Артикул"],
                         price: i["Цена"],
                         quantity: i["Кратность"],
@@ -185,12 +189,22 @@ module.exports = class KVT {
         let one = this.product[number - 1]
 
         let article = one.article
-        let one_price
+        let one_price, stock, name_stock
         this.price.forEach(i => {
-            if (i.article === article) one_price = i.price 
+            if (i.article === article) {
+                one_price = i.price 
+                stock = i.stock
+                name_stock = i.name
+            }
         })
 
         if ( ! one_price ) return { error: "Не найдена цена товара." }
+        
+        let have = true
+        if (stock == 0) have = false
+
+        // звёздочками помечают старые позиции
+        if (name_stock.includes("****") && have) have = false
 
         let sub_category = one.sub_category
         let category = one.category
@@ -247,7 +261,7 @@ module.exports = class KVT {
 
         createFoldersAndDeleteOldFiles("kvt", article)
 
-        let imageName = uuid.v4() + '.jpg'
+        let imageName = '1.jpg'
 
         let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kvt', article, 'big', imageName))
         let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kvt', article, 'small', imageName))
@@ -264,7 +278,7 @@ module.exports = class KVT {
         let plan = one.plan
         
         if (plan && plan !== "—") {
-            let planName = uuid.v4() + '.jpg'
+            let planName = '2.jpg'
 
             let planBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kvt', article, 'big', planName))
             let planSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'kvt', article, 'small', planName))
@@ -281,11 +295,11 @@ module.exports = class KVT {
         
 
         let size = { 
-            weight: one.weight,
-            width: one.width * 10, // переводим сантиметры в миллиметры
-            height: one.height * 10, // переводим сантиметры в миллиметры
-            length: one.length * 10, // переводим сантиметры в миллиметры
-            volume: one.volume 
+            weight: one.weight ? one.weight : "",
+            width: one.width ? one.width * 10 : "", // переводим сантиметры в миллиметры
+            height: one.height ? one.height * 10 : "", // переводим сантиметры в миллиметры
+            length: one.length ? one.length * 10 : "", // переводим сантиметры в миллиметры
+            volume: one.volume ? one.volume : ""
         }
 
         let info = []
@@ -324,7 +338,7 @@ module.exports = class KVT {
             article, 
             name,
             url,
-            have: 1, 
+            have, 
             promo: "",
             country,
             files,
@@ -387,7 +401,11 @@ module.exports = class KVT {
     }
 
     // смена цен
-    async changePrice(json = true) {
+    async changePrice(json = false) {
+        let price
+        if (json) price = this.priceJson
+        else price = this.price
+
         let response = `{<br />`
         
         let brand = await Brand.findOne({ where: { name: "KVT" } })
@@ -395,26 +413,37 @@ module.exports = class KVT {
 
         let products = await Product.findAll({ where: { brandId: brand.id } })
 
-        this.priceJson.forEach(newProduct => {
+        price.forEach(newProduct => {
+
             if (newProduct.error) return
             if (response !== `{<br />`) response += ",<br />"
             let yes = false
             products.forEach(oldProduct => {
                 if (oldProduct.article === `kvt${newProduct.article}`) {
+                    let have = true
+                    if ( ! json && newProduct.stock == 0) have = false
+
                     let newPrice = newProduct.price * newProduct.quantity
                     newPrice = Math.round(newPrice * 100) / 100
                     if (newPrice != oldProduct.price) {
                         response += `"kvt${newProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}."`
-                        Product.update({ price: newPrice },
+                        Product.update({ price: newPrice, have },
                             { where: { id: oldProduct.id } }
                         ).then(()=>{}).catch(()=>{})
                     }else {
                         response += `"kvt${newProduct.article}": "Цена осталась прежняя = ${oldProduct.price}."`
+                        if ( ! json && oldProduct.have != have) {
+                            Product.update({ have },
+                                { where: { id: oldProduct.id } }
+                            ).then(()=>{}).catch(()=>{})
+                        }
                     }
                     yes = true
+
                 }
             })
             if ( ! yes) response += `"kvt${newProduct.article}": "Не найден артикул."`
+
         })
         response = response + `<br />}`
 

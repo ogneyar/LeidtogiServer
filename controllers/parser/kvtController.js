@@ -22,7 +22,7 @@ class kvtController {
                 if ( ! response ) return res.json({error: 'Ошибка! Метод run() не вернул данные!'})
                 // обработка данных файла price.xlsx (прайс для заведения товаров)
                 response = await kvt.run_price(price)
-                if ( ! response ) return res.json({error: 'Ошибка! Метод run_price() не вернул данные!'})
+                if ( ! response ) return res.json({error: 'Ошибка! Метод run_price() не вернул данные!'}) 
             }
 
             // добавление нового товара
@@ -32,11 +32,15 @@ class kvtController {
 
             // смена цен
             if (change !== undefined) { 
-                response = await kvt.run_price_json(price_json) 
-                if (response.error !== undefined) return res.json(response.error)
-                if ( ! response ) return res.json({error: 'Ошибка! Метод run_price_json() не вернул данные!'})
+                // response = await kvt.run_price_json(price_json) 
+                // if (response.error !== undefined) return res.json(response.error)
+                // if ( ! response ) return res.json({error: 'Ошибка! Метод run_price_json() не вернул данные!'})                
+                // return res.send(await kvt.changePrice(true))
                 
-                return res.send(await kvt.changePrice())
+                response = await kvt.run_price(price) 
+                if (response.error !== undefined) return res.json(response.error)
+                if ( ! response ) return res.json({error: 'Ошибка! Метод run_price() не вернул данные!!'})                
+                return res.send(await kvt.changePrice(false))
             }
 
             // вывод информации о товаре на экран
