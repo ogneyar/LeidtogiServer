@@ -17,6 +17,8 @@ if (process.env.URL === "http://localhost:5000") {
     router.get('/tor', testController.testTorGet)
 
     router.get('/kvt', testController.testKvt)
+
+    router.get('/edit_stock', testController.editStockKvt)
     
 }
 

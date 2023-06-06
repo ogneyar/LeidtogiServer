@@ -6,6 +6,7 @@ const axios = require('axios')
 
 const ApiError = require("../error/apiError");
 const KVTtest = require('../service/test/kvt/KVTtest');
+const EditStock = require('../service/test/kvt/EditStock');
 
 
 class TestController {
@@ -94,6 +95,21 @@ class TestController {
             return res.json({error: 'Ошибка метода testKvt! ' + e})
         }
     }
+
+    
+    async editStockKvt(req, res, next) {
+        try {
+            let stock
+            // создание экземпляра класса EditStock
+            stock = new EditStock()
+
+            return res.json(await stock.run()) 
+
+        }catch(e) {
+            return res.json({error: 'Ошибка метода editStockKvt! ' + e})
+        }
+    }
+
 }
 
 module.exports = new TestController()

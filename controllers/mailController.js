@@ -25,6 +25,28 @@ class mailController {
         }
     }
     
+    
+    async requestProduct(req, res, next) {
+        try {
+            let body = req.body
+            if (!body || body === {} || body.name === undefined) body = req.query
+            let response
+            await mailService.sendRequestProduct(process.env.ADMIN_EMAIL, body) 
+                .then(data => {
+                    response = true
+                    console.log(data)
+                })
+                .catch(err => {
+                    response = false
+                    console.log(err)
+                })
+
+            return res.json(response)
+        }catch(e) {
+            return next(res.json( { error: 'Ошибка метода requestProduct!' } ))
+        }
+    }
+    
 
     async requestProducts_AST(req, res, next) {
         try {

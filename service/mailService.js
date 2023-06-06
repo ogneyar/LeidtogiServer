@@ -96,7 +96,43 @@ class MailService {
             return e
         }
     }
+   
     
+    async sendRequestProduct(to, data) { // to - куда отправлять email, data - { name, phone, email, article, nameProduct, url }
+        try {
+            let response = await this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to,
+                subject: 'Запрос товара на ' + process.env.CORS_URL_SECURE,
+                text: '',
+                html:
+                    `
+                    <div>
+                        <h1>Клиент запросил товар, которого нет в наличии</h1>
+                        <hr />
+                        <a href="${data.url}">${data.url}</a>
+                        <br /><br />
+                        <div>
+                            <p>Наименование - ${data.nameProduct}</p>
+                            <p>Артикул - ${data.article}</p>
+                            <p>Бренд - ${data.brand}</p>
+                        </div>
+                        <hr />
+                        <div>
+                            <p>Имя клиента - ${data.name}</p>
+                            <p>Номер телефона - ${data.phone}</p>
+                            <p>Почта - ${data.email}</p>
+                        </div>
+                    </div>
+                    `
+            })
+            return response
+        }catch(e) {
+            return e
+        }
+    }
+    
+
     async sendRequestProducts_AST(to, data) { // to - куда отправлять email, data - { name, phone, email, article, nameProduct, url, multiplier, price, quantity, email_from, url }
         try {
             let transport = nodemailer.createTransport({

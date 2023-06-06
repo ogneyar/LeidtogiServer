@@ -23,7 +23,7 @@ class TesterController {
                     img = JSON.parse(i.img)
                 }catch(e) {}
                 if (img && Array.isArray(img) && img[0].big !== undefined) { 
-                    if ( ! i.request && i.price > 0 && i.have) 
+                    if ( ! i.request && i.price > 0 && i.have && i.stock > 0) 
                         if (i.brandId !== 4 && i.brandId !== 9) return true 
                 }
                 // если нет изображений

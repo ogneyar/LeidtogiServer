@@ -2,22 +2,10 @@
 const XLSX = require('xlsx')
 const fs = require('fs')
 const path = require('path')
-// const https = require('https')
-// const uuid = require('uuid')
-// const Math = require('mathjs')
-
-// let sharp = require('sharp')
 
 const { Product } = require('../../../models/models')
 
-// const createFoldersAndDeleteOldFiles = require('../../createFoldersAndDeleteOldFiles.js')
-// const createProduct = require('../../product/createProduct.js')
-// const translit = require('../../translit.js')
-
 const parseXlsx = require('../../xlsx/parseXlsx')
-// const ProductDto = require('../../../dtos/productDto')
-// const saveInfoInFile = require('../../saveInfoInFile')
-// const parseJson = require('../../json/parseJson')
 
 
 module.exports = class KVTtest {

@@ -77,7 +77,8 @@ SELECT User, Host FROM mysql.user;
 GRANT ALL PRIVILEGES ON *.* TO 'dbuser'@'localhost';
 
 // добавление колонки в таблицу
-ALTER TABLE carts ADD value varchar(1024) not null AFTER id;
+ALTER TABLE carts ADD value VARCHAR(1024) NOT NULL DEFAULT 0 AFTER id;
+// пример: ALTER TABLE products ADD stock INT NOT NULL DEFAULT 1 AFTER request;
 
 // удаление таблицы
 DROP TABLE `table_name`;
@@ -114,7 +115,6 @@ source /etc/profile
 nvm ls-remote
 // можно устанавливать Node js, при установке обязательно указывать версию
 nvm install 18.12.1
-
 
 
 

@@ -9,11 +9,12 @@ const Product = sequelize.define('product', {
     price: {type: DataTypes.DECIMAL, allowNull: false}, // цена
     rating: {type: DataTypes.FLOAT, defaultValue: 0}, // рейтинг
     img: {type: DataTypes.STRING(1024), allowNull: false}, // массив ссылок на изображения
-    have: {type: DataTypes.INTEGER, defaultValue: 0}, // имеется ли товар в наличии
+    have: {type: DataTypes.INTEGER, defaultValue: 0}, // имеется ли товар? (вообще в продаже, на заводе)
     article: {type: DataTypes.STRING, defaultValue: null}, // артикул
     promo: {type: DataTypes.STRING, defaultValue: null}, // название акции, если товар учавствует
     country: {type: DataTypes.STRING, defaultValue: null}, // страна производитель
-    request: {type: DataTypes.TINYINT, defaultValue: false} // цена по запросу (если true, то вместо цены появляется кнопка "Запросить цену")
+    request: {type: DataTypes.TINYINT, defaultValue: false}, // цена по запросу (если true, то вместо цены появляется кнопка "Запросить цену")
+    stock: {type: DataTypes.INTEGER, defaultValue: 1} // количество товара на складе
 })
 
 module.exports = Product
