@@ -16,7 +16,9 @@ module.exports = new Sequelize(
             charset: 'utf8',
             collate: 'utf8_general_ci',
         },
-        logging: process.env.DB_LOGGING == "true" ? true : false
-		// logging: console.log
+        logging: process.env.DB_LOGGING == "true" ? true : false,
+        pool: {
+            acquire: 120000 // количество секунд (120)
+        },
     }
 )
