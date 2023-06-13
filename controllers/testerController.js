@@ -24,12 +24,14 @@ class TesterController {
                 }catch(e) {}
                 if (img && Array.isArray(img) && img[0].big !== undefined) { 
                     if ( ! i.request && i.price > 0 && i.have && i.stock > 0) 
-                        if (i.brandId !== 4 && i.brandId !== 9) return true 
+                        // if (i.brandId !== 4 && i.brandId !== 9) return true 
+                        if (i.brandId == 7) return true // 7 - KVT
                 }
                 // если нет изображений
                 // если "цена по запросу" или нет цены
                 // если нет в наличии 
-                // или бренд Euroboor (4) или бренд ТМК (9)
+                        // было ( или бренд Euroboor (4) или бренд ТМК (9) )
+                // если не бренд КВТ
                 // тогда убираем из списка
                 return false                
             })
