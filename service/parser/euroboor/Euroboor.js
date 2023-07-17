@@ -16,7 +16,7 @@ module.exports = class Euroboor {
     static kursEuro = 0
     
     constructor() {
-        this.kursEuro = 80
+        this.kursEuro = 110
     }
 
     async run(args = {}) { 
