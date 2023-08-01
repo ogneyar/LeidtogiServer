@@ -118,4 +118,18 @@ nvm install 18.12.1
 
 
 
+// создание группы
+sudo groupadd images
+// добавление пользователя в группу 
+sudo usermod -aG images admin
+// узнать в каких группах состоит
+groups admin
+// назначить права на папку группе
+sudo chgrp images /images
+// узнать членов группы
+members images
+
+// смена и владельца и группы (-R рекурсия) 
+chown -R admin:admin /images
+
 
