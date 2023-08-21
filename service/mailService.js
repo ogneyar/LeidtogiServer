@@ -176,6 +176,39 @@ class MailService {
             return e
         }
     }
+    
+
+    async sendCallBack_AST(to, data) { // to - куда отправлять email, data - { name, phone, email_from }
+        try {
+            let transport = nodemailer.createTransport({
+                host: process.env.SMTP_HOST,
+                port: process.env.SMTP_PORT_SECURE,
+                secure: true,
+                auth: { user: data.email_from, pass: process.env.SMTP_PASSWORD_AST }
+            })
+            let response = await transport.sendMail({
+                from: data.email_from,
+                to,
+                subject: 'Запрос обратного звонка на ' + process.env.CORS_URL_A,
+                text: '',
+                html:
+                    `
+                    <div>
+                        <h1>Клиент запросил звонок</h1>
+                        <hr />                    
+                        <div>
+                            <p>Имя клиента - ${data.name}</p>
+                            <p>Номер телефона - ${data.phone}</p>
+                        </div>
+                    </div>
+                    `
+            })
+            return response
+            
+        }catch(e) {
+            return e
+        }
+    }
 
 
 }
