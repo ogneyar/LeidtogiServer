@@ -135,6 +135,10 @@ class MailService {
 
     async sendRequestProducts_AST(to, data) { // to - куда отправлять email, data - { name, phone, email, article, nameProduct, url, multiplier, price, quantity, email_from, url }
         try {
+            let maillist = [ to, ]
+
+            if (data.to_seo) maillist.push(data.to_seo)
+
             let transport = nodemailer.createTransport({
                 host: process.env.SMTP_HOST,
                 port: process.env.SMTP_PORT_SECURE,
@@ -143,7 +147,7 @@ class MailService {
             })
             let response = await transport.sendMail({
                 from: data.email_from,
-                to,
+                to: maillist,
                 subject: 'Запрос товара на ' + process.env.CORS_URL_A,
                 text: '',
                 html:
@@ -159,7 +163,7 @@ class MailService {
                             <p>В упаковке - ${data.multiplier} шт.</p>
                             <p>Цена - ${data.price} р.</p>
                             <p>Количество - ${data.quantity} шт.</p>
-                            <p>Итого - ${(Number(data.quantity) * Number(data.price))*100/100} р.</p>
+                            <!--<p>Итого - ${(Number(data.quantity) * Number(data.price))*100/100} р.</p>-->
                         </div>
                         <hr />
                         <div>
