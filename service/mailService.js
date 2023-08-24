@@ -147,7 +147,7 @@ class MailService {
             })
             let response = await transport.sendMail({
                 from: data.email_from,
-                to: maillist,
+                to,//: maillist,
                 subject: 'Запрос товара на ' + process.env.CORS_URL_A,
                 text: '',
                 html:
