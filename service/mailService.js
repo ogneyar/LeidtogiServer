@@ -147,7 +147,7 @@ class MailService {
             })
             let response = await transport.sendMail({
                 from: data.email_from,
-                to,//: maillist,
+                to: maillist,
                 subject: 'Запрос товара на ' + process.env.CORS_URL_A,
                 text: '',
                 html:
@@ -161,7 +161,7 @@ class MailService {
                             <p>Наименование - ${data.nameProduct}</p>
                             <p>Артикул - ${data.article}</p>
                             <p>В упаковке - ${data.multiplier} шт.</p>
-                            <p>Цена - ${data.price} р.</p>
+                            <p>Цена - от ${data.price} р.</p>
                             <p>Количество - ${data.quantity} шт.</p>
                             <!--<p>Итого - ${(Number(data.quantity) * Number(data.price))*100/100} р.</p>-->
                         </div>
