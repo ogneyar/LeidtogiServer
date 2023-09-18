@@ -7,7 +7,7 @@ class mailController {
     async requestPrice(req, res, next) {
         try {
             let body = req.body
-            if (!body || body === {} || body.name === undefined) body = req.query
+            if (!body || body.name === undefined) body = req.query
             let response
             await mailService.sendRequestPrice(process.env.ADMIN_EMAIL, body) 
                 .then(data => {
@@ -29,7 +29,7 @@ class mailController {
     async requestProduct(req, res, next) {
         try {
             let body = req.body
-            if (!body || body === {} || body.name === undefined) body = req.query
+            if (!body || body.name === undefined) body = req.query
             let response
             await mailService.sendRequestProduct(process.env.ADMIN_EMAIL, body) 
                 .then(data => {
@@ -51,9 +51,10 @@ class mailController {
     async requestProducts_AST(req, res, next) {
         try {
             let body = req.body
-            if (!body || body === {} || body.name === undefined) body = req.query
+            if (!body || body.name === undefined) body = req.query
             let response
-            await mailService.sendRequestProducts_AST(process.env.ADMIN_EMAIL_AST, body) 
+            // await mailService.sendRequestProducts_AST(process.env.ADMIN_EMAIL_AST, body) 
+            await mailService.sendRequestProducts_AST(body) 
                 .then(data => {
                     response = true
                     console.log(data)
@@ -73,9 +74,10 @@ class mailController {
     async callback_AST(req, res, next) {
         try {
             let body = req.body
-            if (!body || body === {} || body.name === undefined) body = req.query
+            if (!body || body.name === undefined) body = req.query
             let response
-            await mailService.sendCallBack_AST(process.env.ADMIN_EMAIL_AST, body) 
+            // await mailService.sendCallBack_AST(process.env.ADMIN_EMAIL_AST, body) 
+            await mailService.sendCallBack_AST(body) 
                 .then(data => {
                     response = true
                     console.log(data)

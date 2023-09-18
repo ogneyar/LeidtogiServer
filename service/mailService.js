@@ -133,9 +133,9 @@ class MailService {
     }
     
 
-    async sendRequestProducts_AST(to, data) { // to - куда отправлять email, data - { name, phone, email, article, nameProduct, url, multiplier, price, quantity, email_from, url }
+    async sendRequestProducts_AST(data) { // to - куда отправлять email, data - { name, phone, email, article, nameProduct, url, multiplier, price, quantity, email_from, url }
         try {
-            let maillist = [ to, ]
+            let maillist = [ data.to_admin, ]
 
             if (data.to_seo) maillist.push(data.to_seo)
 
@@ -182,7 +182,7 @@ class MailService {
     }
     
 
-    async sendCallBack_AST(to, data) { // to - куда отправлять email, data - { name, phone, email_from }
+    async sendCallBack_AST(data) { // to - куда отправлять email, data - { name, phone, email_from }
         try {
             let transport = nodemailer.createTransport({
                 host: process.env.SMTP_HOST,
@@ -192,7 +192,7 @@ class MailService {
             })
             let response = await transport.sendMail({
                 from: data.email_from,
-                to,
+                to: data.to_admin,
                 subject: 'Запрос обратного звонка на ' + process.env.CORS_URL_A,
                 text: '',
                 html:
