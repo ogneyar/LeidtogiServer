@@ -175,7 +175,7 @@ module.exports = class Cleanvac {
         
         let name = one.name
 
-        let url = translit(name) + "_" + article.trim().replace(" ", "_")
+        let url = translit(name) + "_" + article.trim().replace(/ /g, "_")
 
         let product = await Product.findOne({ where: { url } })
         if (product && product.id !== undefined) return { error: "Такой товар уже есть." }
