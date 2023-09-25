@@ -406,17 +406,21 @@ module.exports = class KVT {
         if (json) price = this.priceJson
         else price = this.price
 
-        let response = `{<br />`
+        let response = ``
         
         let brand = await Brand.findOne({ where: { name: "KVT" } })
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
         let products = await Product.findAll({ where: { brandId: brand.id } })
 
+        let quantityNewPrice = 0
+        let quantityNewHaveTrue = 0
+        let quantityNewHaveFalse = 0
+
         price.forEach(newProduct => {
 
             if (newProduct.error) return
-            if (response !== `{<br />`) response += ",<br />"
+            if (response !== ``) response += ",<br />"
             let yes = false
             products.forEach(oldProduct => {
                 if (oldProduct.article === `kvt${newProduct.article}`) {
@@ -426,6 +430,7 @@ module.exports = class KVT {
                     let newPrice = newProduct.price * newProduct.quantity
                     newPrice = Math.round(newPrice * 100) / 100
                     if (newPrice != oldProduct.price) {
+                        quantityNewPrice++
                         response += `"kvt${newProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}."`
                         Product.update({ price: newPrice, have },
                             { where: { id: oldProduct.id } }
@@ -433,6 +438,8 @@ module.exports = class KVT {
                     }else {
                         response += `"kvt${newProduct.article}": "Цена осталась прежняя = ${oldProduct.price}."`
                         if ( ! json && oldProduct.have != have) {
+                            if (have) quantityNewHaveTrue++
+                            else quantityNewHaveFalse++
                             Product.update({ have },
                                 { where: { id: oldProduct.id } }
                             ).then(()=>{}).catch(()=>{})
@@ -445,7 +452,7 @@ module.exports = class KVT {
             if ( ! yes) response += `"kvt${newProduct.article}": "Не найден артикул."`
 
         })
-        response = response + `<br />}`
+        response = `{<br />"Позиции сменили цену": "` + quantityNewPrice + ` шт.",<br /><br />` + `"Позиций больше нет в наличии": "` + quantityNewHaveFalse  + ` шт.",<br /><br />` + `"Позиции появились в наличии": "` + quantityNewHaveTrue  + ` шт.",<br /><br />`+ response + `<br />}`
 
         saveInfoInFile(brand.name, "update_price", response) 
 

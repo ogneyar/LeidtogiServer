@@ -341,20 +341,23 @@ module.exports = class RGK {
 
 
     // смена цены
-    async changePrice() {
-        let response = `{<br />`
+    async changePrice() {        
+        let response = ``
         
         let brand = await Brand.findOne({ where: { name: "RGK" } })
         if (brand.id === undefined) return { error: "Не найден бренд товара." }
 
         let old = await Product.findAll({ where: { brandId: brand.id } })
 
+        let quantityNewPrice = 0
+
         if (this.product !== undefined) this.product.forEach(newProduct => {
-            if (response !== `{<br />`) response += ",<br />"
+            if (response !== ``) response += ",<br />"
             let yes = false
             old.forEach(oldProduct => {
-                if (oldProduct.article === `rgk${newProduct.article}`) {
+                if (oldProduct.article === `rgk${newProduct.article}`) { 
                     if (Number(newProduct.price) !== Number(oldProduct.price)) {
+                        quantityNewPrice++
                         response += `"${oldProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newProduct.price}"`
                         Product.update({ price: newProduct.price },
                             { where: { id: oldProduct.id } }
@@ -369,7 +372,7 @@ module.exports = class RGK {
             
         })
 
-        response = response + `<br />}`
+        response = `{<br />"Позиции сменили цену": "` + quantityNewPrice + ` шт.",<br /><br />` + response + `<br />}`
         
         saveInfoInFile(brand.name, "update_price", response) 
 
