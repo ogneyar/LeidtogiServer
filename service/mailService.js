@@ -215,6 +215,28 @@ class MailService {
     }
 
 
+    async sendMessage_AST(data) { // data - { email_from, to, subject, html } // to - куда отправлять email
+        try {
+            let transport = nodemailer.createTransport({
+                host: process.env.SMTP_HOST,
+                port: process.env.SMTP_PORT_SECURE,
+                secure: true,
+                auth: { user: data.email_from, pass: process.env.SMTP_PASSWORD_AST }
+            })
+            let response = await transport.sendMail({
+                from: data.email_from,
+                to: data.to,
+                subject: data.subject,
+                text: '',
+                html: data.html
+            })
+            return response
+            
+        }catch(e) {
+            return e
+        }
+    }
+
 }
 
 // <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
