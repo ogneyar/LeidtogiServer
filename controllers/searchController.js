@@ -46,7 +46,7 @@ class SearchController {
                 response = await find("article", text)
             }
 
-            if (limit) return res.json(response.filter((i,index) => index <= limit))
+            if (limit && response && response[0] != undefined) return res.json(response.filter((i,index) => index <= limit))
 
             return res.json(response)
         }catch(e) {
