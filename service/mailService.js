@@ -223,6 +223,10 @@ class MailService {
                 secure: true,
                 auth: { user: data.email_from, pass: process.env.SMTP_PASSWORD_AST }
             })
+            console.log("data.email_from ",data.email_from)
+            console.log("data.to ",data.to)
+            console.log("data.subject ",data.subject)
+            console.log("data.html ",data.html)
             let response = await transport.sendMail({
                 from: data.email_from,
                 to: data.to,

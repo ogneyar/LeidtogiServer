@@ -96,8 +96,8 @@ class mailController {
 
     async sendMessage_AST(req, res, next) {
         try {
-            let body = req.body
-            if (!body || body.name === undefined) body = req.query
+            let body = req.body // body - { email_from, to, subject, html } // to - куда отправлять email
+            if (!body || body.subject === undefined) body = req.query
             let response
 			
             await mailService.sendMessage_AST(body) 
