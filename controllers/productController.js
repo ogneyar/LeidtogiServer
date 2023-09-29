@@ -259,19 +259,19 @@ class ProductController {
                     })
                     if (yes)  {
                         response = ProductSize.update({
-                            weight: s.weight,
-                            volume: s.volume,
-                            width: s.width,
-                            height: s.height,
-                            length: s.length
+                            weight: s.weight | 0,
+                            volume: s.volume | 0,
+                            width: s.width | 0,
+                            height: s.height | 0,
+                            length: s.length | 0
                         }, {where: { productId: id }})
                     }else {
                         response = ProductSize.create({
-                            weight: s.weight,
-                            volume: s.volume,
-                            width: s.width,
-                            height: s.height,
-                            length: s.length,
+                            weight: s.weight | 0,
+                            volume: s.volume | 0,
+                            width: s.width | 0,
+                            height: s.height | 0,
+                            length: s.length | 0,
                             productId: id
                         })
                     }

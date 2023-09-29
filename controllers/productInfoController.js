@@ -36,6 +36,40 @@ class ProductInfoController {
             return res.json({error:'Ошибка метода getOne!'})
         }
     }
+    
+    async edit(req, res, next) {
+        try {
+            let response = false
+            const { productId } = req.params
+            let body = req.body
+
+            if (body.title === undefined) return res.json({error:'Ошибка метода edit! Отсутствуют необходимые параметры!'})
+
+            let productInfo = await ProductInfo.findOne({
+                where: { productId, title: body.title }
+            })
+
+            if ( ! body.body ) {
+                if (productInfo) response = await ProductInfo.destroy({
+                    where: { productId, title: body.title }
+                })
+            }else if (productInfo) {
+                response = await ProductInfo.update({ body: body.body }, {
+                    where: { productId, title: body.title }
+                })
+            }else {
+                response = await ProductInfo.create({
+                    title: body.title,
+                    body: body.body,
+                    productId 
+                })
+            }
+            return res.json(response) // return boolean
+        }catch(e) {
+            return res.json({error:'Ошибка метода edit!'})
+        }
+    }
+
 }
 
 module.exports = new ProductInfoController()
