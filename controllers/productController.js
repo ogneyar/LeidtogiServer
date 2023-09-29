@@ -247,6 +247,7 @@ class ProductController {
     
             if (size) {
                 let s = JSON.parse(size)
+
                 if (s.weight || s.volume || s.width || s.height || s.length) {
                     if ( ! s.volume && s.width && s.height && s.length ) s.volume = ((s.width * s.height * s.length)/1e9).toFixed(4)
                     if (s.weight !== 0) s.weight = s.weight.toString().replace(',', '.')
@@ -254,21 +255,26 @@ class ProductController {
                     if (s.width !== 0) s.width = s.width.toString().replace(',', '.')
                     if (s.height !== 0) s.height = s.height.toString().replace(',', '.')
                     if (s.length !== 0) s.length = s.length.toString().replace(',', '.')
+                    
+                    // console.log("weight: ", s.weight)
+                    if ( ! s.weight ) s.weight = 0
+                    if ( ! s.volume ) s.volume = 0
+
                     let yes = await ProductSize.findOne({
                         where: {productId: id}
                     })
                     if (yes)  {
-                        response = ProductSize.update({
-                            weight: s.weight | 0,
-                            volume: s.volume | 0,
+                        response = await ProductSize.update({
+                            weight: s.weight,
+                            volume: s.volume,
                             width: s.width | 0,
                             height: s.height | 0,
                             length: s.length | 0
                         }, {where: { productId: id }})
                     }else {
-                        response = ProductSize.create({
-                            weight: s.weight | 0,
-                            volume: s.volume | 0,
+                        response = await ProductSize.create({
+                            weight: s.weight,
+                            volume: s.volume,
                             width: s.width | 0,
                             height: s.height | 0,
                             length: s.length | 0,
@@ -276,10 +282,11 @@ class ProductController {
                         })
                     }
                 }else {
-                    response = ProductSize.destroy({
+                    response = await ProductSize.destroy({
                         where: {productId: id}
                     })
                 }  
+                // console.log("productId: ", id)
             }
     
             return res.json(response) // return boolean
