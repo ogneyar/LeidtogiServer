@@ -1,6 +1,7 @@
 
 const { Certificate, Order } = require('../models/models')
 const ApiError = require('../error/apiError')
+const codeGenerator = require('../service/certificate/codeGenerator')
 
 
 class CertificateController {
@@ -17,6 +18,46 @@ class CertificateController {
             return res.json(certificate)
         }catch(e) {
             return next(res.json({ error: `Ошибка метода create! (${e})` }))
+        }
+    }
+
+    async creatingFromAFile(req, res, next) {
+        try {
+            let response = []
+            let body = req.body
+            if ( ! body.array ) body = req.query
+            let array = body.array
+            if ( ! Array.isArray(array) ) return next(res.json({ error: `Передан array не массив!` }))
+
+            let item = 0
+            while(item < array.length) {
+                let oldCert
+                let code = null
+                do {
+                    code = codeGenerator()
+                    oldCert = await Certificate.findOne({ where: { code } })
+                    if (oldCert) code = null
+                }while(code == null)
+                const certificate = await Certificate.create({
+                    code,
+                    state: "assigned",
+                    name: array[item].name,
+                    url: array[item].url,
+                })
+                if (certificate) {
+                    response.push({
+                        id: array[item].id,
+                        name: array[item].name,
+                        url: array[item].url,
+                        code
+                    })
+                }
+                item++
+            }
+
+            return res.json(response)
+        }catch(e) {
+            return next(res.json({ error: `Ошибка метода creatingFromAFile! (${e})` }))
         }
     }
     

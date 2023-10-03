@@ -9,6 +9,7 @@ if (process.env.URL === "http://localhost:5000") {
 }
 
 router.post('/', checkRole('ADMIN'), certificateController.create) // создание новой записи
+router.post('/from_a_file', checkRole('ADMIN'), certificateController.creatingFromAFile) // создание сертификатов из файла
 router.get('/get_all', certificateController.getAll) // получение всех записей
 router.get('/get_by_code', certificateController.getOneByCode) // получение записи по коду
 router.get('/get_by_order_id', certificateController.getOneByOrderId) // получение записи по ордеру
