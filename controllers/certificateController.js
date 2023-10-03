@@ -9,6 +9,10 @@ class CertificateController {
         try {
             let body = req.body
             if ( ! body.code ) body = req.query
+            const oldCertificate = await Certificate.findOne({                
+                where: { code: body.code }
+            })
+            if (oldCertificate) return next(res.json({ error: `Такой код сертификата уже существует!` }))
             const certificate = await Certificate.create(body)
             return res.json(certificate)
         }catch(e) {
