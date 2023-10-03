@@ -16,6 +16,7 @@ const Token = require('./Token')
 const Delivery = require('./Delivery')
 const Order = require('./Order')
 const SortProduct = require('./SortProduct')
+const Certificate = require('./Certificate')
 
 
 User.hasOne(Cart)
@@ -76,5 +77,6 @@ module.exports = {
     Token,
     Delivery,
     Order,
-    SortProduct
+    SortProduct,
+    Certificate
 }

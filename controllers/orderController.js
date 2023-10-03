@@ -63,7 +63,7 @@ class OrderController {
 
             if (!order.id) return res.json({error: "Отсутствует номер заказа (order.id) в ответе от БД"}) 
 			
-            let name = "", email = "", phone = "", delivery = "", address = "", cartStr = ""
+            let name = "", email = "", phone = "", delivery = "", address = "", cartStr = "", certificate = ""
 			
             let id = `Запрос ПОДТВЕРЖДЕНИЯ заказа №${order.id}.\n\n`
             if (body.name !== undefined && body.name !== null) name = `Имя клиента ${body.name}\n\n`
@@ -71,12 +71,13 @@ class OrderController {
             if (body.phone !== undefined && body.phone !== null) phone = `Телефон клиента ${body.phone}\n\n`
             if (body.delivery !== undefined && body.delivery !== null) delivery = `Доставка: ${body.delivery === "pickup" ? "самовывоз" : body.delivery}\n\n`
             if (body.address !== undefined && body.address !== null) address = `Адрес доставки: ${body.address}\n\n`
+            if (body.certificate !== undefined && body.certificate !== null) certificate = `Сертификат: ${body.certificate}\n\n`
             
             cartStr = `Корзина: \n${items.map(i => {
                 return "Артикул: " + i.itemCode + ". Наименование: " + i.name + " - " + i.quantity.value + ` шт. (Цена за штуку - ${i.itemPrice/100}р.) - ` + i.quantity.value * i.itemPrice/100 + "р.\n"
             })}\n\n`
 				
-			sendMessage(id + name + email + phone + delivery + address + cartStr)			
+			sendMessage(id + name + email + phone + delivery + address + cartStr + certificate)			
 			
 			return res.json({id: order.id})
 
