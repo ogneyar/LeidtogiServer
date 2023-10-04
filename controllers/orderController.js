@@ -3,7 +3,7 @@ const { v4 } = require('uuid')
 const qs = require('qs')
 const Math = require('mathjs')
 
-const { Order, Product } = require('../models/models')
+const { Order, Product, Certificate } = require('../models/models')
 const ApiError = require('../error/apiError')
 const AlfaBank = require('../service/payment/AlfaBank')
 const sendMessage = require('../service/telegram/sendMessage')
@@ -22,19 +22,28 @@ class OrderController {
             let cart
             if (typeof(body.cart) === "string") cart = JSON.parse(body.cart)
             else cart = body.cart
+
+            // if (body.amountNew) {console.log(body.amountNew)}
+            let amount = 0
 		
             let items = cart.map((item, index) => {
                 lastIndex = index + 1
+                let price = item.price
+                if (body.certificate) {
+                    price = (price - (price / 10))
+                }
+                amount += price * item.value
                 return {
                     positionId: lastIndex,
                     name: item.name,
                     quantity: { value: item.value, measure: "штук" },
                     itemCode: item.article,
                     tax: { taxType: 6 }, 
-                    itemPrice: Math.round(item.price * 100) // перевод в копейки
+                    itemPrice: Math.round(price * 100) // перевод в копейки
                 }
             })
             if (body.deliverySum !== undefined) {
+                // amount += body.deliverySum
                 items = [ ...items, {
                     positionId: lastIndex + 1,
                     name: "Доставка",
@@ -43,6 +52,10 @@ class OrderController {
                     tax: { taxType: 6 }, 
                     itemPrice: Math.round(body.deliverySum * 100) // перевод в копейки
                 }]
+            }
+
+            if (body.amountNew && body.amountNew !== amount) {
+                return res.json({error: `Не сходятся данные после пересчёта скидки. amount = ${amount}, amountNew = ${body.amountNew}`}) 
             }
 			
             let create = { 
@@ -62,8 +75,22 @@ class OrderController {
             const order = await Order.create(create)
 
             if (!order.id) return res.json({error: "Отсутствует номер заказа (order.id) в ответе от БД"}) 
+            
+            if (body.certificate) {
+                let certificate = await Certificate.findOne({
+                    where: { code: body.certificate }
+                })
+
+                if ( ! certificate ) return res.json({error: `Не найден сертификат ${body.certificate} в БД`}) 
+
+                let updateCert = await Certificate.update({ order_id: order.id, state: "applied" }, {
+                    where: { id: certificate.id }
+                })
+
+                if (!updateCert) return res.json({error: `Не смог обновить статус сертификата ${body.certificate}`}) 
+            }
 			
-            let name = "", email = "", phone = "", delivery = "", address = "", cartStr = "", certificate = ""
+            let name = "", email = "", phone = "", delivery = "", address = "", cartStr = "", total = "", certificate = ""
 			
             let id = `Запрос ПОДТВЕРЖДЕНИЯ заказа №${order.id}.\n\n`
             if (body.name !== undefined && body.name !== null) name = `Имя клиента ${body.name}\n\n`
@@ -76,8 +103,10 @@ class OrderController {
             cartStr = `Корзина: \n${items.map(i => {
                 return "Артикул: " + i.itemCode + ". Наименование: " + i.name + " - " + i.quantity.value + ` шт. (Цена за штуку - ${i.itemPrice/100}р.) - ` + i.quantity.value * i.itemPrice/100 + "р.\n"
             })}\n\n`
+
+            total = `Итого: ${amount+body.deliverySum}\n\n`
 				
-			sendMessage(id + name + email + phone + delivery + address + cartStr + certificate)			
+			sendMessage(id + name + email + phone + delivery + address + cartStr + total + certificate)			
 			
 			return res.json({id: order.id})
 

@@ -8,7 +8,7 @@ class CertificateController {
 
     async create(req, res, next) {
         try {
-            let body = req.body
+            let body = req.body // { code, before, state }
             if ( ! body.code ) body = req.query
             const oldCertificate = await Certificate.findOne({                
                 where: { code: body.code }
@@ -27,7 +27,7 @@ class CertificateController {
             let body = req.body
             if ( ! body.array ) body = req.query
             let array = body.array
-            if ( ! Array.isArray(array) ) return next(res.json({ error: `Передан array не массив!` }))
+            if ( ! Array.isArray(array) ) return next(res.json({ error: `Передан array, но он не массив!` }))
 
             let item = 0
             while(item < array.length) {
@@ -43,13 +43,16 @@ class CertificateController {
                     state: "assigned",
                     name: array[item].name,
                     url: array[item].url,
+                    before: body.before
                 })
                 if (certificate) {
+                    // console.log(certificate);
                     response.push({
                         id: array[item].id,
                         name: array[item].name,
                         url: array[item].url,
-                        code
+                        code, 
+                        before: certificate.before
                     })
                 }
                 item++
@@ -112,7 +115,7 @@ class CertificateController {
         try {
             const { id } = req.params
             let body = req.body
-            if ( ! body.code && ! body.action && ! body.order_id ) body = req.query
+            // body = req.query
             const certificate = await Certificate.update(body, {
                 where: { id }
             })
