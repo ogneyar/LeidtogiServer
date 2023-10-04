@@ -1,5 +1,6 @@
+
 const sequelize = require('../db')
-const {DataTypes} = require('sequelize')
+const { DataTypes } = require('sequelize')
 
 
 const Certificate = sequelize.define('certificate', {
@@ -8,7 +9,8 @@ const Certificate = sequelize.define('certificate', {
     state: {type: DataTypes.STRING, allowNull: false, defaultValue: "issued"}, // issued, assigned, applied
     name: {type: DataTypes.STRING, defaultValue: null},
     url: {type: DataTypes.STRING, defaultValue: null},
-    order_id: {type: DataTypes.INTEGER, defaultValue: null}
+    order_id: {type: DataTypes.INTEGER, defaultValue: null},
+    before: {type: DataTypes.DATEONLY, defaultValue: null} // "2023-10-04"
 })
 
 module.exports = Certificate
