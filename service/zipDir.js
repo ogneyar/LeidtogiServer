@@ -31,7 +31,22 @@ module.exports = (directory, zipfile, log = false, deleteFolder = true) => {  //
                 if (code != 0) throw '7zip exited with an error' // throw and let the handler below log it
                 else {
                     console.info('7zip complete')
-                    if (deleteFolder) fs.rmSync(path.resolve(__dirname, '..', 'static', directory), { recursive: true, force: true })
+                    if (deleteFolder) {
+                        try {
+                            fs.rmSync(path.resolve(__dirname, '..', 'static', directory), { recursive: true, force: true })
+                        }catch(err) {
+                            try {
+                                let files = fs.readdirSync(path.resolve(__dirname, '..', 'static', directory))  
+                                if (files) {             
+                                    files.forEach(item => {
+                                        try {
+                                            fs.unlinkSync(path.resolve(__dirname, '..', 'static', directory, item))
+                                        }catch(e) {}
+                                    })
+                                }
+                            }catch(e) {}
+                        }
+                    }
                     return resolve(process.env.URL + "/" + zipfile)
                 }
             })
