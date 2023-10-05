@@ -46,3 +46,5 @@ db.js
 static/feed
 static/test
 
+# сертификаты ТМК на скидку
+static/certificates
