@@ -58,10 +58,16 @@ pm2 (start | stop | restart | status | delete)
 pm2 save
 
 
+// cerbot
+sudo apt update
+sudo apt install snapd
+sudo snap install --classic certbot
+sudo apt install python-certbot-nginx
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo certbot --nginx
 // обновление сертификатов вручную
 // --dry-run для тестирования (после тестирования --dry-run надо убрать)
-sudo /usr/bin/certbot renew --dry-run
-
+sudo certbot renew --dry-run
 // обновление сертификатов вручную (так ещё не пробовал)
 certbot --force-renewal -d leidtogi.ru,server.leidtogi.ru,www.leidtogi.ru
 
