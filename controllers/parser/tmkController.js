@@ -6,15 +6,20 @@ class tmkController {
 
     async tmk(req, res, next) {
         try {
-            let { number, add, change, categories, separation } = req.query
+            let { number, add, change, categories, separation, update } = req.query
             let feed = req.files && req.files.feed || undefined
 
             let response, tmk
             // создание экземпляра класса Tmk
             tmk = new Tmk()
             // обработка данных файла feed.json
-            response = await tmk.run(feed) 
+            response = await tmk.run(feed, update) 
             if ( ! response ) return res.json({error: 'Ошибка! Метод run() не вернул данные!'}) // вывод ошибки
+
+            if (update) {
+                if (response == true) return res.json({ok: true})
+                else return res.json({error: response})
+            }
 
             // добавление нового товара
             if (add !== undefined && number) { // add = quantity; ~ от 1 до 10 

@@ -21,12 +21,58 @@ const saveInfoInFile = require('../../saveInfoInFile')
 
 module.exports = class Tmk { 
     
+    static url
     static categories = []
     static products = []
     
-    constructor() {}
+    constructor() {
+        this.url = process.env.TMK_FEED_URL
+    }
 
-    async run(feed = {}) {
+    async update() { 
+        let feed = path.resolve(__dirname, '..', '..', '..', 'prices', 'tmk', 'feed.json')
+        
+        let now = new Date()
+        let year = now.getFullYear()
+        let month = now.getMonth() + 1
+        let day = now.getDate()
+        let hour = now.getHours()
+        let min = now.getMinutes()
+        let sec = now.getSeconds()
+        if (month < 10) month = `0${month}`
+        if (day < 10) day = `0${day}`
+        if (hour < 10) hour = `0${hour}`
+        if (min < 10) min = `0${min}`
+        if (sec < 10) sec = `0${sec}`
+        
+        let dateInNameFile = `feed_${year}.${month}.${day}_${hour}.${min}.${sec}.json`
+
+        fs.rename(feed, path.resolve(__dirname, '..', '..', '..', 'prices', 'tmk', 'oldFeeds', dateInNameFile), (err) => {
+            if (err) 
+            {
+                let responseError = `Переместить файл feed.json не удалось.`
+                console.error(responseError)
+                // throw responseError
+            }
+        })
+        
+        return await new Promise((resolve, reject) => {
+            try {
+                https.get(this.url, res => {
+                    res.pipe(fs.createWriteStream(feed))
+                    res.on("end", () => {
+                        console.log("Записал данные в файл feed.json")
+                        resolve(true)
+                    })
+                })
+            }catch(e) {
+                console.log("Не смог записать данные в файл feed.json")
+                reject(`Не смог записать данные в файл feed.json. Ошибка: ${e}`)
+            }
+        })
+    }
+
+    async run(feed = {}, update = false) { // если нет feed и update = true, тогда скачать feed с их сайта
         let fullPath, response
         
         if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp'))
@@ -37,13 +83,16 @@ module.exports = class Tmk {
             await feed.mv(fullPath)
         }else {
             fullPath = path.resolve(__dirname, '..', '..', '..', 'prices', 'tmk', 'feed.json')
-            // качаем файл с их сервера
-            /* server response status code 403 - forbidden (доступ запрещён)
-            let Json
-            await axios.get(process.env.TMK_FEED_URL)
-                .then(res => Json = res.data)
-            console.log(Json)
-            */
+            if (update) {
+                // качаем файл с их сервера                
+                response = await this.update()
+                // let Json
+                // await axios.get(process.env.TMK_FEED_URL)
+                //     .then(res => Json = res.data)
+                // console.log(Json)
+                return response
+
+            }
         }
             
         if (fs.existsSync(fullPath)) { 
