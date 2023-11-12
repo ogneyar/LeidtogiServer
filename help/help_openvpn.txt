@@ -1,0 +1,14 @@
+
+cd /etc/openvpn/easy-rsa
+
+// добавление пользователя
+./easyrsa gen-req user_name nopass
+
+// подтверждение пользователя
+./easyrsa sign-req client user_name
+
+// отзыв сертификата пользователя
+./easyrsa revoke user_name
+
+// после отзыва сертификата необходимо обновить список CRL
+./easyrsa gen-crl
