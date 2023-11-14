@@ -201,6 +201,8 @@ module.exports = class RGK {
 
             let one = this.product[action - 1]
 
+            if ( ! one ) throw "Не найден товар!"
+
             let categoryId = null
 
             this.ourCategories.forEach(async item => {
