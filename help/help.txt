@@ -99,6 +99,9 @@ DELETE FROM `table_name`;
 INSERT INTO `categories` (`id`, `name`, `url`, `is_product`, `sub_category_id`, `createdAt`, `updatedAt`) VALUES 
 (NULL, 'category_name1', 'category_url1', '0', '0', '2022-02-21 12:04:23.000000', '2022-02-21 12:04:23.000000'), 
 (NULL, 'category_name2', 'category_url2', '0', '0', '2022-02-21 12:04:23.000000', '2022-02-21 12:04:23.000000');
+
+// создание таблицы
+CREATE TABLE cart_tg ( id INT PRIMARY KEY AUTO_INCREMENT, tg_id BIGINT(20) NOT NULL, product_id INT NOT NULL, quantity INT DEFAULT 1 );
 // ----------------------------
 
 
