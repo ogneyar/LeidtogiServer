@@ -22,7 +22,9 @@ const CORS_URL_SECURE = process.env.CORS_URL_SECURE || "https://leidtogi.ru"
 let whitelist = [
     CORS_URL, CORS_URL_SECURE, 'http://hutor.site/',
 	'http://192.168.178.200:3000', 'http://192.168.178.200:3000/',
-	'http://localhost:3000', 'http://www.localhost:3000',
+	'http://localhost:3000', 'http://www.localhost:3000', // puppeteer
+	'http://localhost:4000', 'http://www.localhost:4000', // react
+	'http://localhost:9000', 'http://www.localhost:9000', // babel
     'http://www.leidtogi.ru', 'https://www.leidtogi.ru'
 ]
 let corsOptionsDelegate = function (req, callback) {
