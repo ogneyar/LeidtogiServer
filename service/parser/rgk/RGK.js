@@ -306,7 +306,7 @@ module.exports = class RGK {
 
     // добавление товара в БД
     async add(number) {
-
+        let response = ""
         try {
             let obj = await this.print(number)
         
@@ -314,15 +314,19 @@ module.exports = class RGK {
 
             let product = await createProduct(proDto)
             
-            let response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
+            response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
             console.log('\x1b[34m%s\x1b[0m', response)
-
-            return response
         }catch(e) {
-            let response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`
-            console.log('\x1b[33m%s\x1b[0m', response)
-            return response
+            try {    
+                response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`  
+                console.log('\x1b[33m%s\x1b[0m', response)          
+            }catch(ex) {
+                response = `{${number}: ${e}}`
+                console.log('\x1b[33m%s\x1b[0m', response)
+            }
         }
+
+        return response
     }
 
     
