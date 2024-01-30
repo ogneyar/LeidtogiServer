@@ -125,23 +125,30 @@ module.exports = class KVT {
         if (fs.existsSync(fullPath)) { 
             
             response = await parseXlsx(fullPath, [
-                "Название",
-                "Артикул",
-                "Остаток Калуга",
-                "Остаток СПБ",
-                "Цена",
+                "Наименование",
+                "SKU",
+                "РРЦ",
                 "Кратность",
+                "Ост.Калуга",
+                "Ост.СПб",
+                "В упаковке",
+                "Единица измерения",
+                "Штрих-код EAN-13",
+                "Бренд",
             ])
             
             if (response && Array.isArray(response)) {
                 this.price = response.map(i => {
                     return {
-                        name: i["Название"],
-                        article: i["Артикул"],
-                        stock: Number(i["Остаток Калуга"]) + Number(i["Остаток СПБ"]),
-                        article: i["Артикул"],
-                        price: i["Цена"],
+                        name: i["Наименование"],
+                        article: i["SKU"],
+                        stock: Number(i["Ост.Калуга"]) + Number(i["Ост.СПб"]),
+                        price: Number(i["РРЦ"].replace(",",".")),
                         quantity: i["Кратность"],
+                        in_package: i["В упаковке"],
+                        measure: i["Единица измерения"],
+                        barcode: i["Штрих-код EAN-13"],
+                        brand: i["Бренд"],
                     }
                 })
                 return true
@@ -432,6 +439,10 @@ module.exports = class KVT {
                     if (newPrice != oldProduct.price) {
                         quantityNewPrice++
                         response += `"kvt${newProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}."`
+                        if ( ! json && oldProduct.have != have) {
+                            if (have) quantityNewHaveTrue++
+                            else quantityNewHaveFalse++
+                        }
                         Product.update({ price: newPrice, have },
                             { where: { id: oldProduct.id } }
                         ).then(()=>{}).catch(()=>{})
