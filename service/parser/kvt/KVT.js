@@ -1,8 +1,11 @@
+
+const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
 const uuid = require('uuid')
 const Math = require('mathjs')
+const XLSX = require('xlsx')
 
 let sharp = require('sharp')
 
@@ -16,6 +19,7 @@ const parseXlsx = require('../../xlsx/parseXlsx')
 const ProductDto = require('../../../dtos/productDto')
 const saveInfoInFile = require('../../saveInfoInFile')
 const parseJson = require('../../json/parseJson')
+const getDateInName = require('../../getDateInName.js')
 
 
 module.exports = class KVT {
@@ -120,6 +124,23 @@ module.exports = class KVT {
             if (!fs.existsSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'kvt'))) fs.mkdirSync(path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'kvt'))
             fullPath = path.resolve(__dirname, '..', '..', '..', 'static', 'temp', 'kvt', feed.name)
             await feed.mv(fullPath)
+        }else {
+            let dateInNameFile = getDateInName("xlsx","stock_")
+
+            fs.rename(fullPath, path.resolve(__dirname, '..', '..', '..', 'prices', 'kvt', 'old', dateInNameFile), (err) => {
+                if (err) console.error(`Переместить файл stock.xlsx не удалось.`)
+            })
+            
+            let url = process.env.KVT_STOCK_URL
+            let { data } = await axios.get(url, { responseType: 'arraybuffer' })
+            
+            try {
+                fs.writeFileSync(fullPath, data)
+            } catch (err) {
+                let responseError = `Записать данные в файл stock.xlsx не удалось.`
+                console.error(responseError)
+                throw responseError
+            }
         }
             
         if (fs.existsSync(fullPath)) { 

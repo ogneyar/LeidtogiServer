@@ -11,6 +11,7 @@ const ProductDto = require('../../../dtos/productDto')
 const createCategoriesForTor = require('./createCategoriesForTor')
 const printOne = require('./printOne')
 const saveInfoInFile = require('../../saveInfoInFile')
+const getDateInName = require('../../getDateInName.js')
 // const printOne = require('./printOne')
 
 
@@ -36,32 +37,14 @@ module.exports = class Tor {
         }
         else
         {
-            let now = new Date()
-            let year = now.getFullYear()
-            let month = now.getMonth() + 1
-            let day = now.getDate()
-            let hour = now.getHours()
-            let min = now.getMinutes()
-            let sec = now.getSeconds()
-            if (month < 10) month = `0${month}`
-            if (day < 10) day = `0${day}`
-            if (hour < 10) hour = `0${hour}`
-            if (min < 10) min = `0${min}`
-            if (sec < 10) sec = `0${sec}`
-            
-            let dateInNameFile = `feed_${year}.${month}.${day}_${hour}.${min}.${sec}.xml`
+            let dateInNameFile = getDateInName("xml", "feed_")
 
             fs.rename(fullPath, path.resolve(__dirname, '..', '..', '..', 'prices', 'tor', 'oldFeeds', dateInNameFile), (err) => {
-                if (err) 
-                {
-                    let responseError = `Переместить файл feed.xml не удалось.`
-                    console.error(responseError)
-                    // throw responseError
-                }
+                if (err) console.error(`Переместить файл feed.xml не удалось.`)
             })
             
             // Tor
-            let url = "https://eme54.ru/partners-im/partners.xml"
+            let url = process.env.TOR_FEED_URL
             let { data } = await axios.get(url, { headers: { 'User-Agent': 'LeidTogi' }  })
             
             try {
