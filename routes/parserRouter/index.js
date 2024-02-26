@@ -18,6 +18,7 @@ const torRouter = require('./torRouter')
 const krauseRouter = require('./krauseRouter')
 const kedrRouter = require('./kedrRouter')
 const cleanvacRouter = require('./cleanvacRouter')
+const ptkRouter = require('./ptkRouter')
 
 
 router.use('/parse', parseRouter) // Парсер mail.ru, ya.ru и т.п.
@@ -34,6 +35,7 @@ router.use('/tor', torRouter) // Tor
 router.use('/krause', krauseRouter) // Krause
 router.use('/kedr', kedrRouter) // Kedr
 router.use('/cleanvac', cleanvacRouter) // Cleanvac
+router.use('/ptk', ptkRouter) // ПТК замки
 
 
 
