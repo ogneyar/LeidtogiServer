@@ -25,13 +25,13 @@ module.exports = class ProductDto {
         this.name = model.name
         this.url = model.url
         this.price = model.price
-        this.rating = model.rating || undefined
+        this.rating = model.rating || 0
         this.img = model.img || model.files
         this.have = model.have
         this.article = model.article
         this.promo = model.promo
         this.country = model.country
-        this.request = model.request
+        this.request = model.request || 0
 
         this.brandId = model.brandId
         this.categoryId = model.categoryId

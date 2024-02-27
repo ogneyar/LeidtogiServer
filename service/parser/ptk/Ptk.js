@@ -63,7 +63,6 @@ module.exports = class Ptk {
                 categoryId = item.categoryId._text
                 price = item.price._text
                 price = (Number(price) + (Number(price) / 100 * process.env.PTK_OUR_PERCENTAGE)).toFixed(2)
-                brand = item.vendor._text
                 description = item.description._text
                 if (description) description = description.trim()
                 // удаление ссылок в описаннии если таковые имеются
@@ -87,10 +86,14 @@ module.exports = class Ptk {
                     item.param.forEach(it => {
                         if (it._attributes.name == "Код товара") article = it._text
                         if (it._attributes.name == "Вес (брутто)") weight = it._text
-                        if (characteristics != "") characteristics += ";"
-                        if (it._attributes.name != "Картинки") characteristics += it._attributes.name + ";" + it._text
+                        if (it._attributes.name != "Картинки") {
+                            if (characteristics != "") characteristics += ";"
+                            characteristics += it._attributes.name + ";" + it._text
+                        }
                     })
                 }
+                brand = item.vendor._text
+                characteristics = `Бренд;${brand};${characteristics}`
 
                 images = []
                 if (item.picture) images.push(item.picture._text)
@@ -185,7 +188,9 @@ module.exports = class Ptk {
     // вывод данных
     async print(action = "product") {
         if (action === "product") {
-            return this.product
+            // return Array.from(new Set(this.product.map(prod => prod.brand))).length // 101 brand
+            
+            return this.product//.filter(prod => !prod.available)
         }else if (action === "category") {
             return this.category
         }else if (typeof(action) === "number") {
@@ -194,15 +199,13 @@ module.exports = class Ptk {
 
             if ( ! one ) throw "Не найден товар!"
 
-            let categoryId = null
-
-            // this.ourCategories.forEach(async item => {
-            //     if (item.id == one.categoryId) {
-            //         if (item.url == "bu") throw "Б/У товары не заводим на сайт!"
-            //         let category = await findCategoryByUrl(item.url)        
-            //         categoryId = category.id | null            
-            //     }
-            // })
+            // их категория
+            let category = this.category.find(cat => cat.id == one.categoryId)
+            // наша категория
+            let ourCategory = await Category.findOne({                
+                where: { name: category?.name }
+            })
+            let categoryId = ourCategory?.id
 
             let brand = await Brand.findOne({ where: { name: "PTK" } })
             let brandId = brand.id
@@ -210,7 +213,7 @@ module.exports = class Ptk {
             let article = one.article
 
             let product = await findProductByArticle("ptk" + article)        
-            if (product && product.id !== undefined) throw `Такой товар уже есть (ptk+${article}).`
+            if (product && product.id !== undefined) throw `Такой товар уже есть (ptk${article}).`
 
             let name = one.name
 
@@ -219,7 +222,7 @@ module.exports = class Ptk {
             article = "ptk" + article
             
             let price = one.price
-            let size = {
+            let size = { 
                 weight: one?.weight,
                 length: one?.length,
                 width: one?.width,
@@ -252,7 +255,7 @@ module.exports = class Ptk {
                         if (image.includes("https")) {
                             https.get(image, (res) => {
                                 res.pipe(imageBig)
-                                res.pipe(sharp().resize(100)).pipe(imageSmall)
+                                res.pipe(sharp().resize(100)).pipe(imageSmall) 
                             })
                         }else {
                             http.get(image, (res) => {
@@ -271,7 +274,7 @@ module.exports = class Ptk {
             files += `]`
 
             let country = one.country
-            let have = one.available
+            let have = one.available ? 1 : 0
     
 
             return { 
@@ -306,8 +309,9 @@ module.exports = class Ptk {
         
             let proDto = new ProductDto(obj) // Dto отсекает лишнее
 
+            // console.log('\x1b[33m%s\x1b[0m', proDto)          
             let product = await createProduct(proDto)
-            
+
             response = `{${number}: ${product.url} - ${product.price}р. (${product.article})}`
             console.log('\x1b[34m%s\x1b[0m', response)
         }catch(e) {
@@ -315,8 +319,8 @@ module.exports = class Ptk {
                 response = `{${number}: ${e.replace("<","&lt;").replace(">","&gt;")}}`  
                 console.log('\x1b[33m%s\x1b[0m', response)          
             }catch(ex) {
-                response = `{${number}: ${e}}`
-                console.log('\x1b[33m%s\x1b[0m', response)
+                response = `{!${number}: ${e}}`
+                console.log('\x1b[33m%s\x1b[0m', response) 
             }
         }
 

@@ -56,11 +56,11 @@ async function createProduct(args) {
         // else s = JSON.parse(size)
         if (s.weight || s.volume || s.width || s.height || s.length) {
             if ( ! s.volume && s.width && s.height && s.length ) s.volume = ((s.width * s.height * s.length)/1e9).toFixed(4)
-            if (s.weight != 0) s.weight = s.weight.toString().replace(',', '.')
-            if (s.volume != 0) s.volume = s.volume.toString().replace(',', '.')
-            if (s.width != 0) s.width = s.width.toString().replace(',', '.')
-            if (s.height != 0) s.height = s.height.toString().replace(',', '.')
-            if (s.length != 0) s.length = s.length.toString().replace(',', '.')
+            if (s.weight && s.weight != 0) s.weight = s.weight.toString().replace(',', '.')
+            if (s.volume && s.volume != 0) s.volume = s.volume.toString().replace(',', '.')
+            if (s.width && s.width != 0) s.width = s.width.toString().replace(',', '.')
+            if (s.height && s.height != 0) s.height = s.height.toString().replace(',', '.')
+            if (s.length && s.length != 0) s.length = s.length.toString().replace(',', '.')
             ProductSize.create({
                 weight: s.weight || 0,
                 volume: s.volume || 0,

@@ -9,12 +9,12 @@ class ptkController {
             let { 
                 update,   // если передан параметр update (с любым значением), значит необходимо обновить файл feed.xml
                 change,   // если передан параметр change (с любым значением), значит необходимо обновить цену
-                add,      // если передан параметр add (с любым значением), значит необходимо добавить в БД товар по очереди под номером number
+                add,      // если передан параметр add = 1, значит необходимо добавить в БД товар по очереди под номером number
+                          // если параметр add > 1, то добавляется партия товара от number до add
                           //  - в этом случае параметр number обязателен
                 print,    // если передан параметр print=product, значит необходимо вывести на экран информацию о товарах
                           // если передан параметр print=category, значит необходимо вывести на экран информацию о категориях
                 number,   // если передан параметр number без доп. параметров, значит необходимо вывести на экран товар под номером number
-                quantity, // при заданном параметре добавляется партия товара от number до quantity
                 category,  // при заданном параметре выводится список категорий в удобочитаемом виде
                 create_categories  // при заданном параметре создаются в БД категории взятые из feed.xml
             } = req.query
@@ -44,16 +44,16 @@ class ptkController {
 
             // добавление нового товара
             if (add) {
-                if (! number && number !== 0) return res.json({error: 'Ошибка, не задан number при заданном параметре add!'})
+                if ( ! number || number == 0 ) return res.json({error: 'Ошибка, не задан number при заданном параметре add!'})
 
-                if (quantity) return  res.json(await ptk.addParty(Number(number), Number(quantity)))
+                if (add > 1) return res.json(await ptk.addParty(Number(number), Number(add)))
                 else 
                     response = await ptk.add(Number(number))
                 
                 if (! response || response.error !== undefined) 
                     res.json({error: `Не смог сохранить товар, ${number} по очереди!` + response.error ? " " + response.error : ""})
 
-                return res.json(number)
+                return res.json(response)
             }
 
             if (number || print) {
