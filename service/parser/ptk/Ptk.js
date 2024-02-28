@@ -236,7 +236,7 @@ module.exports = class Ptk {
 
             let files = `[`
             
-            if (one.images) {
+            if (one.images[0] != undefined) {
                 
                 createFoldersAndDeleteOldFiles("ptk", article)
     
@@ -247,20 +247,26 @@ module.exports = class Ptk {
                         if (first) first = false
                         else files += `,`
     
-                        let imageName = (idx + 1)  + '.jpg'
+                        let imageName = (idx + 1)  + '.jpg' 
     
                         let imageBig = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'ptk', article, 'big', imageName))
                         let imageSmall = fs.createWriteStream(path.resolve(__dirname, '..', '..', '..', 'static', 'ptk', article, 'small', imageName))
     
                         if (image.includes("https")) {
                             https.get(image, (res) => {
-                                res.pipe(imageBig)
-                                res.pipe(sharp().resize(100)).pipe(imageSmall) 
+                                // console.log('\x1b[33m%s\x1b[0m', res.statusCode)
+                                if (res.statusCode >= 200 && res.statusCode < 300) {
+                                    res.pipe(imageBig)
+                                    res.pipe(sharp().resize(100)).pipe(imageSmall)
+                                }
                             })
                         }else {
                             http.get(image, (res) => {
-                                res.pipe(imageBig)
-                                res.pipe(sharp().resize(100)).pipe(imageSmall)
+                                // console.log('\x1b[33m%s\x1b[0m', res.statusCode)
+                                if (res.statusCode >= 200 && res.statusCode < 300) {
+                                    res.pipe(imageBig)
+                                    res.pipe(sharp().resize(100)).pipe(imageSmall)
+                                }
                             })
                         }
     
@@ -272,6 +278,8 @@ module.exports = class Ptk {
             }
     
             files += `]`
+
+            if (files === '[]') files = '[{}]'
 
             let country = one.country
             let have = one.available ? 1 : 0

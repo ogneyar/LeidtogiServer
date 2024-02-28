@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 
 
-module.exports = function (brand, fileName, content) {
+module.exports = function (brand, fileName, content, expansion = 'json') {
 
     brand = brand.toLowerCase()
     
@@ -31,10 +31,11 @@ module.exports = function (brand, fileName, content) {
     
     let nameFolder = `${year}.${month}.${day}_${hour}.${min}.${sec}`
     
-    content = content.replace(/<br \/>/g, "\r\n")
+    if (expansion == 'json')
+        content = content.replace(/<br \/>/g, "\r\n")
 
     try {
-        fs.writeFileSync(path.resolve(__dirname, '..', 'static', 'info', brand, nameFolder + "_" + fileName + ".json"), content)
+        fs.writeFileSync(path.resolve(__dirname, '..', 'static', 'info', brand, nameFolder + "_" + fileName + "." + expansion), content)
     } catch (err) {
         console.log(`Записать данные в файл не удалось.`)
         // throw `Записать данные в файл не удалось.`
