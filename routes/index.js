@@ -22,6 +22,7 @@ const sortProductRouter = require('./sortProductRouter')
 const commerceml = require('./commerceml')
 const certificateRouter = require('./certificateRouter')
 const catalogsRouter = require('./catalogsRouter')
+const presentationRouter = require('./presentationRouter')
 
 
 router.use('/user', userRouter)
@@ -45,6 +46,7 @@ router.use('/sort_product', sortProductRouter)
 router.use('/commerceml', commerceml)
 router.use('/certificate', certificateRouter)
 router.use('/catalogs', catalogsRouter)
+router.use('/presentation', presentationRouter)
 
 
 module.exports = router
