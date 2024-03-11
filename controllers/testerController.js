@@ -156,7 +156,7 @@ class TesterController {
             
             if (response.errors === undefined) {
 
-                let { data } = await axios.get(response)
+                let { data } = await axios.get(response.url)
 
                 if (data) {
 
@@ -178,8 +178,8 @@ class TesterController {
                     }
                     fs.writeFile(path.resolve(__dirname, '..', 'static', 'deliveries', 'dl', 'places.csv'), data, (err) => {
                         if (err) {
-                        console.error(err)
-                        return
+                            console.error(err)
+                            return
                         }
                         //файл записан успешно
                         console.log("успех")
