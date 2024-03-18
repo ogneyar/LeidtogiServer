@@ -67,29 +67,29 @@ module.exports = class Tor {
                     let article, code, price, name, id, pageUrl, image, description, descriptionMore, brand
                     let weight, length, height, width, imageMore, characteristics, categoryName
 
-                    id = i["ID"]._text
-                    name = i["Наименование"]._text
-                    article = i["Артикул"]._text
-                    price = i["Цена"]._text
-                    code = i["Кодраздела"]._text
-                    categoryName = i["Названиераздела"]._text
-                    pageUrl = i["DETAIL_PAGE_URL"]._text
-                    image = i["Основноеизображение"]._text
-                    description = i["ПодробноеОписание"]._text
-                    descriptionMore = i["ДополнительноеОписаниеНоменклатуры"]._text
+                    id = i["ID"]?._text
+                    name = i["Наименование"]?._text
+                    article = i["Артикул"]?._text
+                    price = i["Цена"]?._text
+                    code = i["Кодраздела"]?._text
+                    categoryName = i["Названиераздела"]?._text
+                    pageUrl = i["DETAIL_PAGE_URL"]?._text
+                    image = i["Основноеизображение"]?._text
+                    description = i["ПодробноеОписание"]?._text
+                    descriptionMore = i["ДополнительноеОписаниеНоменклатуры"]?._text
                     if (!description && descriptionMore) description = descriptionMore
-                    brand = i["ПроизводительКод"]._text
-                    weight = i["Вес"]._text
-                    length = i["Длина"]._text
-                    height = i["Высота"]._text
-                    width = i["Ширина"]._text
-                    if (i["Дополнительныеизображения"] && i["Дополнительныеизображения"]["Изображение"] && i["Дополнительныеизображения"]["Изображение"]["URL"]) imageMore = i["Дополнительныеизображения"]["Изображение"]["URL"]._text
+                    brand = i["ПроизводительКод"]?._text
+                    weight = i["Вес"]?._text
+                    length = i["Длина"]?._text
+                    height = i["Высота"]?._text
+                    width = i["Ширина"]?._text
+                    if (i["Дополнительныеизображения"] && i["Дополнительныеизображения"]["Изображение"] && i["Дополнительныеизображения"]["Изображение"]["URL"]) imageMore = i["Дополнительныеизображения"]["Изображение"]["URL"]?._text
                     if (i["Характеристики"] && i["Характеристики"]["Характеристика"] && Array.isArray(i["Характеристики"]["Характеристика"])) {
                         characteristics = i["Характеристики"]["Характеристика"].map(i => {
-                            if ( ! length && i["Название"]._text === "Глубина упаковки, мм") length = i["Значение"]._text
-                            if ( ! height && i["Название"]._text === "Высота упаковки, мм") height = i["Значение"]._text
-                            if ( ! width && i["Название"]._text === "Ширина упаковки, мм") width = i["Значение"]._text
-                            return i["Название"]._text.replace(/;/g, ".") + ";" + i["Значение"]._text.replace(/;/g, ".")
+                            if ( ! length && i["Название"]?._text === "Глубина упаковки, мм") length = i["Значение"]?._text
+                            if ( ! height && i["Название"]._text === "Высота упаковки, мм") height = i["Значение"]?._text
+                            if ( ! width && i["Название"]._text === "Ширина упаковки, мм") width = i["Значение"]?._text
+                            return i["Название"]?._text.replace(/;/g, ".") + ";" + i["Значение"]?._text.replace(/;/g, ".")
                         }).join(";")
                     }
 
