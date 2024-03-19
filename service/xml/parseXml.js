@@ -1,14 +1,23 @@
 
 const fs = require('fs')
 const convert = require('xml-js')
+const iconv = require('iconv-lite')
 
 
-async function parseXml(file) {
+async function parseXml(file, encoding = 'utf8') {
 
     let xml, response, data = {}
 
     if (fs.existsSync(file)) {
-        xml = fs.readFileSync(file, {encoding:'utf8', flag:'r'})
+        let options = {
+            flag: 'r'
+        }
+        if (encoding == 'utf8') options = { ...options, encoding }
+
+        xml = fs.readFileSync(file, options)
+
+        if (encoding == 'win1251')
+            xml = iconv.decode(Buffer.from(xml), encoding)
     }else {
         return { error: `Файл ${file} отсутствует или пуст!` }
     }
