@@ -60,7 +60,8 @@ module.exports = class Stalex {
                 description = item.description._text
                 if (description) {
                     description = description.trim()
-                    description = description.replace(/\t/g, "")
+                    description = description.replace(/\t/g, " ")
+                    description = description.replace(/     /g, " ")
                     description = description.replace(/    /g, " ")
                     description = description.replace(/   /g, " ")
                     description = description.replace(/  /g, " ")

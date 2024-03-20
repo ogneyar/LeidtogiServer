@@ -29,7 +29,7 @@ module.exports = class Milwaukee {
         
         let feedWithCategory, arrayWithCategories
         if (withOldCategories) { // использовать ли категории из старого фида?
-            feedWithCategory = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'old', 'newMILWAUKEE.xlsx')
+            feedWithCategory = path.resolve(__dirname, '..', '..', '..', 'prices', 'milwaukee', 'old', 'old', 'newMILWAUKEE.xlsx')
             arrayWithCategories = await parseXlsx(feedWithCategory, [ "Артикул", "Категории" ])
         }
 
@@ -46,10 +46,10 @@ module.exports = class Milwaukee {
 
         if (fs.existsSync(fullPath)) { 
 
-            let priceName = "Цена с учетом НДС, руб"
+            let priceName = "Цена с учетом НДС, руб."
             
 
-            let array = [ "Артикул", "Модель", `${priceName}`, ] // массив полей
+            let array = [ "Артикул", "Наименование", `${priceName}`, ] // массив полей
             if ( ! withOldCategories ) array.push("Категории") // если без использования старых категорий, то искать их в исходном файле
 
             response = await parseXlsx(fullPath, array)
@@ -69,7 +69,7 @@ module.exports = class Milwaukee {
                     }
                     return {
                         article,
-                        name: i["Модель"],
+                        name: i["Наименование"],
                         price: i[`${priceName}`],
                         category,
                     }

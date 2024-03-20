@@ -30,7 +30,7 @@ module.exports = class Gedore {
     static product = []
     
     constructor() {
-        this.kursEuro = 80
+        this.kursEuro = null // 100
     }
 
     async run(feed = {}) {
@@ -48,17 +48,17 @@ module.exports = class Gedore {
         if (fs.existsSync(fullPath)) { 
             
             response = await parseXlsx(fullPath, [ 
-                "Gedore Code-Nr.",
-                "Artikelbeschreibung",
-                "ЕВРО с ндс РРЦ",
+                "Артикул",
+                "Наименование",
+                "Цена РРЦ РУБ с НДС",
             ])
             
             if (response && Array.isArray(response)) {
                 this.product = response.map(i => {
                     return {
-                        article: i["Gedore Code-Nr."],
-                        name: i["Artikelbeschreibung"],
-                        price: i["ЕВРО с ндс РРЦ"],
+                        article: i["Артикул"],
+                        name: i["Наименование"],
+                        price: i["Цена РРЦ РУБ с НДС"],
                         category: null,
                     }
                 })
@@ -257,7 +257,10 @@ module.exports = class Gedore {
             old.forEach(oldProduct => {
                 if (oldProduct.article === `ged${newProduct.article}`) {
                     let newPrice = newProduct.price
-                    newPrice = Math.round( ( newPrice * this.kursEuro ) * 100 ) / 100
+
+                    // если цена в евро
+                    if (this.kursEuro) newPrice = Math.round( ( newPrice * this.kursEuro ) * 100 ) / 100
+
                     if (newPrice != oldProduct.price) {
                         response += `"${oldProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newPrice}."`
                         Product.update({ price: newPrice },
