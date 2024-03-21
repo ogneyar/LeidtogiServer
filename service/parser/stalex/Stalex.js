@@ -162,10 +162,17 @@ module.exports = class Stalex {
 
         if (shop && shop.categories && Array.isArray(shop.categories.category)) {
             this.category = shop.categories.category.map(item => {
+                let name = item._text
+                let parentId = item._attributes?.parentId
+                if (name == "Заточные станки" && parentId) name = "Станки заточные"
+                if (name == "Фаскосниматели") parentId = null
+                if (name == "Аксессуары ") name = "Аксессуары для обработки труб"
+                if (name == "Прессы гидравлические") name = "Гидравлические прессы"
+
                 return { 
                     id: item._attributes.id,
-                    parentId: item._attributes.parentId,
-                    name: item._text
+                    parentId,
+                    name
                 }
             })
         }
@@ -220,9 +227,23 @@ module.exports = class Stalex {
     // вывод данных
     async print(action = "product") {
         if (action === "product") {
+
             return this.product.filter(prod => prod.currencyId == "RUB")
+
         }else if (action === "category") {
-            return this.category
+
+            let response = []
+
+            for (const cat of this.category) {
+                let category = await Category.findOne({   
+                    where: { name: cat.name }
+                })
+                if (category) response.push({...cat, categoryId: category.id, url: category.url})
+                // else response.push(cat)
+              }
+
+            return response
+
         }else if (typeof(action) === "number") {
 
             let one = this.product[action - 1]
@@ -448,11 +469,19 @@ module.exports = class Stalex {
         let throwable = null
 
         try {
-            array.forEach(async category => {
+            // array.forEach(async category => {
+            for (const category of array) {
+
                 let is_product = false
                 this.product.forEach(i => { if (i.categoryId == category.id) is_product = true })
 
-                let sub_category_id = 0
+                if ( ! is_product ) {
+                    let parent = false
+                    this.category.forEach(i => { if (i.parentId == category.id) parent = true })
+                    if ( ! parent ) is_product = true
+                }
+
+                let sub_category_id = 7 // 7 | Станки | stanki
                 if (category.parentId) {
                     let element = this.category.find(item => item.id == category.parentId)
                     if (element) {
@@ -467,11 +496,11 @@ module.exports = class Stalex {
                 let ourCategory = await Category.findOne({                
                     where: { name: category.name }
                 })
-                if (ourCategory) throwable = `Категория "${category.name}" уже существует! (reFuncCreateCategories)`
+                // if (ourCategory) throwable = `Категория "${category.name}" уже существует! (reFuncCreateCategories)`
 
                 let newCategory
 
-                if ( ! throwable ) {
+                if ( ! throwable && ! ourCategory ) {
                     newCategory = await Category.create({
                         name: category.name,
                         url: translit(category.name),
@@ -484,7 +513,9 @@ module.exports = class Stalex {
                     let newArray = this.category.filter(i => i.parentId == category.id)
                     if (newArray && newArray[0] != undefined) await this.reFuncCreateCategories(newArray, transaction)
                 }
-            })
+
+            }
+            // })
 
             if (throwable) {
                 console.log(throwable)
