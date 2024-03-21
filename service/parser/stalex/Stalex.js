@@ -119,9 +119,9 @@ module.exports = class Stalex {
                 if (gabarites) {
                     gabarites = gabarites.replace(/х/g, "x").replace(/Х/g, "x").replace(/X/g, "x")
                     let split = gabarites.split("x")
-                    length = split[0]?.trim()
-                    width = split[1]?.trim()
-                    height = split[2]?.trim()
+                    length = Number(split[0]?.trim())
+                    width = Number(split[1]?.trim())
+                    height = Number(split[2]?.trim())
                 }
 
                 if (length && width && height) {
@@ -263,6 +263,20 @@ module.exports = class Stalex {
             if ( ! brandId ) throw "Не найден бренд товара!"
             let article = one.article
 
+            if ( ! article ) article = action // throw "Отсутствует артикул товара!"
+            else {
+                article = article.replace(/ /g,"_")
+                article = article.replace(/\//g,"_")
+                article = article.replace(/\\/g,"_")
+                article = article.replace(/\:/g,"_")
+                article = article.replace(/\*/g,"_")
+                article = article.replace(/\?/g,"_")
+                article = article.replace(/\"/g,"_")
+                article = article.replace(/\</g,"_")
+                article = article.replace(/\>/g,"_")
+                article = article.replace(/\|/g,"_")
+            }
+ 
             let product = await findProductByArticle("stl" + article)        
             if (product && product.id !== undefined) throw `Такой товар уже есть (stl${article}).`
 
@@ -273,13 +287,18 @@ module.exports = class Stalex {
             article = "stl" + article
             
             let price = one.price
-            let size = { 
-                weight: one?.weight,
-                length: one?.length,
-                width: one?.width,
-                height: one?.height
+            let size
+
+            if (one.size) size = one.size
+            else {
+                size = { 
+                    weight: one?.weight,
+                    length: one?.length,
+                    width: one?.width,
+                    height: one?.height
+                }
+                if (one?.length && one?.width && one?.height) size.volume = ((one.length * one.width * one.height) / 1e9).toFixed(4)
             }
-            if (one?.length && one?.width && one?.height) size.volume = ((one.length * one.width * one.height) / 1e9).toFixed(4)
 
             let info = []
             if (one.description) info.push( { title: "description", body: one.description} )
@@ -287,7 +306,7 @@ module.exports = class Stalex {
 
             let files = `[`
             
-            if (one.images[0] != undefined) {
+            if (one.images[0] != undefined) { 
                 
                 createFoldersAndDeleteOldFiles("stalex", article)
     
