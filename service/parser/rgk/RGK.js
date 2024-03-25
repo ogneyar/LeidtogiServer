@@ -374,7 +374,7 @@ module.exports = class RGK {
                     yes = true
                 }
             })
-            if ( ! yes) response += `"rgk${newProduct.code}": "Не найден артикул."` 
+            if ( ! yes) response += `"rgk${newProduct.article}": "Не найден артикул."` 
             
         })
 

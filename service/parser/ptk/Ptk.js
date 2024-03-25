@@ -380,7 +380,7 @@ module.exports = class Ptk {
                     yes = true
                 }
             })
-            if ( ! yes) response += `"ptk${newProduct.code}": "Не найден артикул."` 
+            if ( ! yes) response += `"ptk${newProduct.article}": "Не найден артикул."` 
             
         })
 

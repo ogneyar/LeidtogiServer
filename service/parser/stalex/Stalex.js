@@ -207,15 +207,28 @@ module.exports = class Stalex {
                 // throw responseError
             }
         })
+
+        // https
+        //     .get(this.url, (res) => {
+        //         res.on('data', (d) => {
+        //             process.stdout.write(d);
+        //         });
+        //     })
+        //     .on('error', (e) => {
+        //         console.error(e);
+        //     });
         
         return await new Promise((resolve, reject) => {
             try {
                 https.get(this.url, res => {
                     res.pipe(fs.createWriteStream(feed))
                     res.on("end", () => {
-                        console.log("Записал данные в файл feed.xml")
+                        console.log("Записал данные в файл feed.xml") 
                         resolve(true)
                     })
+                })
+                .on('error', (e) => {
+                    console.error(e)
                 })
             }catch(e) {
                 console.log("Не смог записать данные в файл feed.xml")
@@ -263,20 +276,8 @@ module.exports = class Stalex {
             if ( ! brandId ) throw "Не найден бренд товара!"
             let article = one.article
 
-            if ( ! article ) article = action // throw "Отсутствует артикул товара!"
-            else {
-                article = article.replace(/ /g,"_")
-                article = article.replace(/\//g,"_")
-                article = article.replace(/\\/g,"_")
-                article = article.replace(/\:/g,"_")
-                article = article.replace(/\*/g,"_")
-                article = article.replace(/\?/g,"_")
-                article = article.replace(/\"/g,"_")
-                article = article.replace(/\</g,"_")
-                article = article.replace(/\>/g,"_")
-                article = article.replace(/\|/g,"_")
-            }
- 
+            article = this.articleReplace(article, action) // action (number) - номер по счёту в файле
+
             let product = await findProductByArticle("stl" + article)        
             if (product && product.id !== undefined) throw `Такой товар уже есть (stl${article}).`
 
@@ -433,11 +434,12 @@ module.exports = class Stalex {
 
         let quantityNewPrice = 0
 
-        if (this.product !== undefined) this.product.forEach(newProduct => {
+        if (this.product !== undefined) this.product.forEach((newProduct, idx) => {
+            let article = this.articleReplace(newProduct.article, idx + 1)
             if (response !== ``) response += ",<br />"
             let yes = false
             old.forEach(oldProduct => {
-                if (oldProduct.article === `stl${newProduct.article}`) { 
+                if (oldProduct.article === `stl${article}`) { 
                     if (Number(newProduct.price) !== Number(oldProduct.price)) {
                         quantityNewPrice++
                         response += `"${oldProduct.article}": "Старая цена = ${oldProduct.price}, новая цена = ${newProduct.price}"`
@@ -450,7 +452,7 @@ module.exports = class Stalex {
                     yes = true
                 }
             })
-            if ( ! yes) response += `"stl${newProduct.code}": "Не найден артикул."` 
+            if ( ! yes) response += `"stl${article}": "Не найден артикул."` 
             
         })
 
@@ -548,6 +550,28 @@ module.exports = class Stalex {
         return response
 
     }
+
+
+    
+    articleReplace(article, number) 
+    {        
+        if ( ! article ) article = number // throw "Отсутствует артикул товара!"
+        else {
+            article = article.replace(/ /g,"_")
+            article = article.replace(/\//g,"_")
+            article = article.replace(/\\/g,"_")
+            article = article.replace(/\:/g,"_")
+            article = article.replace(/\*/g,"_")
+            article = article.replace(/\?/g,"_")
+            article = article.replace(/\"/g,"_")
+            article = article.replace(/\</g,"_")
+            article = article.replace(/\>/g,"_")
+            article = article.replace(/\|/g,"_")
+        }
+
+        return article
+    }
+
 
 
 }
