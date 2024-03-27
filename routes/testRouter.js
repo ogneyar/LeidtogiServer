@@ -20,7 +20,9 @@ if (process.env.URL === "http://localhost:5000") {
 
     router.get('/edit_stock', testController.editStockKvt)
     
+    router.get('/edit_allur', testController.editAllur)
 }
+
 
 // router.delete('/:id', testController.delete)
 // router.put('/:id', testController.edit)

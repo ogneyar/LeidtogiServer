@@ -1,12 +1,13 @@
 
+const { Product, Brand } = require('../models/models')
 const path = require('path')
 const fs = require('fs')
 const axios = require('axios')
 // const Math = require('mathjs')
 
-const ApiError = require("../error/apiError");
-const KVTtest = require('../service/test/kvt/KVTtest');
-const EditStock = require('../service/test/kvt/EditStock');
+const ApiError = require("../error/apiError")
+const KVTtest = require('../service/test/kvt/KVTtest')
+const EditStock = require('../service/test/kvt/EditStock')
 
 
 class TestController {
@@ -107,6 +108,46 @@ class TestController {
 
         }catch(e) {
             return res.json({error: 'Ошибка метода editStockKvt! ' + e})
+        }
+    }
+
+    
+    async editAllur(req, res, next) {
+        try {
+
+            let brand = await Brand.findOne({
+                where: { name: "PTK" }
+            })
+
+            // let products = await Product.findAll({
+            //     where: { brandId: brand.id }
+            // })
+
+            // products = products.filter(product => {
+            //     if (product.name.toLowerCase().includes("аллюр")) {
+            //         Product.update({have: 0}, {
+            //             where: { id: product.id }
+            //         })
+            //         return true
+            //     }
+            //     return false
+            // })
+
+            // products.forEach(product => {
+            //     Product.update({have: 0}, {
+            //         where: { id: product.id }
+            //     })
+            // })
+
+            let response = await Product.update({have: 0}, {
+                where: { brandId: brand.id }
+            })
+
+            // return res.json(products.length) 
+            return res.json(response) 
+
+        }catch(e) {
+            return res.json({error: 'Ошибка метода editAllur! ' + e})
         }
     }
 
