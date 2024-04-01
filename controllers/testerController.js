@@ -18,14 +18,26 @@ class TesterController {
             const categories = await Category.findAll()
             
             products = products.filter(i => {
-                let img                    
+                let img     
+                let brandId               
                 try {
                     img = JSON.parse(i.img)
                 }catch(e) {}
                 if (img && Array.isArray(img) && img[0].big !== undefined) { 
                     if ( ! i.request && i.price > 0 && i.have && i.stock > 0) 
                         // if (i.brandId !== 4 && i.brandId !== 9) return true 
-                        if (i.brandId == 7) return true // 7 - KVT
+                        // if (i.brandId == 7) return true // 7 - KVT
+
+                        brandId = brands.find(br => br.name == 'KVT')?.id
+                        if (i.brandId == brandId) return true
+                        brandId = brands.find(br => br.name == 'RGK')?.id
+                        if (i.brandId == brandId) return true
+                        brandId = brands.find(br => br.name == 'TMK')?.id
+                        if (i.brandId == brandId) return true
+                        brandId = brands.find(br => br.name == 'Tor')?.id
+                        if (i.brandId == brandId) return true
+                        brandId = brands.find(br => br.name == 'Stalex')?.id
+                        if (i.brandId == brandId) return true
                 }
                 // если нет изображений
                 // если "цена по запросу" или нет цены
