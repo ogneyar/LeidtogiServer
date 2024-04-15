@@ -1,10 +1,12 @@
 const Router = require('express')
 const router = new Router()
 
-const testRouter = require('./testRouter')
+const commercemlRouter = require('./commercemlRouter')
+const unfRouter = require('./unfRouter')
 
-router.use('/', testRouter)
-router.use('/unf', testRouter)
+router.use('/', commercemlRouter)
+router.use('/unf', unfRouter)
+router.use('/unf_demo', unfRouter)
 
 
 module.exports = router
