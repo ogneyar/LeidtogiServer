@@ -93,7 +93,8 @@ class UnfController {
         else if (mode === "init") 
         {
             await sendMessage("mode: " + mode + ", type: " + type, false)
-            return res.send(`zip=no\nfile_limit=52428800`) // 52 428 800 байт = 50 Мб
+            // return res.send(`zip=no\nfile_limit=52428800`) // 52 428 800 байт = 50 Мб
+            return res.send(`zip=no\nfile_limit=104857600`) // 104 857 600 байт = 100 Мб
         }
         else if (mode === "file") 
         {
