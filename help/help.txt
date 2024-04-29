@@ -112,7 +112,7 @@ UPDATE `products` SET `request` = '1' WHERE `products`.`id` = 70;
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v mySQLd /d "C:/Program Files/MySQL/MySQL Server 5.5/bin/mysqld" /f
 
 
-// установка NodeJS
+// установка NodeJS (сейчас не сработала, см. файл Восстановление Leidtogi.txt)
 sudo apt install build-essential checkinstall
 // нам понадобится libssl
 sudo apt install libssl-dev

@@ -1,0 +1,15 @@
+
+// восстановление работы сайта Leidtogi
+
+// удаление старой версии
+apt purge nodejs
+apt purge npm
+
+apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
+
+curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+
+apt -y install nodejs
+
+npm i pm2 -g
+
