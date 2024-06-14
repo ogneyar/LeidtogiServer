@@ -6,7 +6,7 @@ const Order = sequelize.define('order', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     uuid: {type: DataTypes.STRING, allowNull: false},
     cart: {type: DataTypes.STRING(1024), allowNull: false},
-    delivery: {type: DataTypes.STRING, defaultValue: "pickup"},
+    delivery: {type: DataTypes.STRING, defaultValue: "pickup"}, // pickup, del, boxberry, sdek, pr (самовывоз, деловые линии, боксбери, сдек, почта России)
     address: {type: DataTypes.STRING, allowNull: true},
     role: {type: DataTypes.STRING, defaultValue: "USER"},
     state: {type: DataTypes.STRING, defaultValue: "forming"}, // forming, confirmed, onway, delivered, taken (сформирован, подтверждён, в пути, доставлен, получен)

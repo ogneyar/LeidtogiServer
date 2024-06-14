@@ -16,9 +16,21 @@ const oldHost = "pzmarket.ru" // игнорировать этот хост пр
 
 class UserController {
 
+    async getAll(req, res, next) {
+        try {
+            const users = await User.findAll()
+            return res.json(users)
+        }catch(e) {
+            return next(res.json({error:'Ошибка метода getAll! ' + e}))
+        }
+    }
+
     async registration(req, res, next) {
         try {
-            const body = req.body
+            let body = req.body
+            if ( ! body.email ) {
+                body = req.query
+            }
             const candidate = await User.findOne({ where: { email: body.email } })
             if (candidate) {
                 return next(ApiError.badRequest('Пользователь с таким email уже существует!'))
@@ -29,9 +41,10 @@ class UserController {
 
             const user = await User.create({...body, password: hashPassword, activationLink})
 
-            mailService.sendActivationMail(user.email, activationLink)
-                .then(data => console.log(data))
-                .catch(err => console.log(err))
+            if ( ! body.isActivated )
+                mailService.sendActivationMail(user.email, activationLink)
+                    .then(data => console.log(data))
+                    .catch(err => console.log(err))
             
             const userDto = new UserDto(user) // id, email, role, isActivated
             const tokens = tokenService.generateTokens({...userDto});

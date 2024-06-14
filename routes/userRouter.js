@@ -8,9 +8,12 @@ const router = new Router()
 
 
 if (process.env.URL === "http://localhost:5000") {
-    router.get('/retry_mail/:id', userController.retryMail)
+    router.get('/retry_mail/:id', userController.retryMail)    
+    router.get('/registration', registrationMiddleware, userController.registration)    
+    router.get('/', userController.getAll)
 }
 
+router.get('/', authMiddleware, userController.getAll)
 router.post('/registration', registrationMiddleware, userController.registration)
 router.post('/create_guest', userController.createGuest)
 router.post('/login', userController.login)

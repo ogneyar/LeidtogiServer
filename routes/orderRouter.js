@@ -7,7 +7,7 @@ const checkRole = require('../middleware/checkRoleMiddleware')
 router.post('/', orderController.create) // создание новой записи
 router.post('/get_payment_link', orderController.getPaymentLink) // создание ссылки на оплату
 
-router.get('/', checkRole("ADMIN"), orderController.getAll) // получение всех записей
+router.get('/', checkRole(["ADMIN", "MANAGER"]), orderController.getAll) // получение всех записей
 router.get('/user/:user_id', authMiddleware, orderController.getOrdersForUser) // получение записей у заданного пользователя
 router.get('/:id', orderController.getOrder) // получение записи по задданному id
 router.get('/by_uuid/:uuid', orderController.getOrderByUuid) // получение записи по задданному uuid
