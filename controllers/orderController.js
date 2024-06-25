@@ -104,7 +104,8 @@ class OrderController {
                 return "Артикул: " + i.itemCode + ". Наименование: " + i.name + " - " + i.quantity.value + ` шт. (Цена за штуку - ${i.itemPrice/100}р.) - ` + i.quantity.value * i.itemPrice/100 + "р.\n"
             })}\n\n`
 
-            total = `Итого: ${amount+body.deliverySum}\n\n`
+            if (body.deliverySum) total = `Итого: ${amount + body.deliverySum}\n\n`
+            else total = `Итого: ${amount}\n\n`
 				
 			sendMessage(id + name + email + phone + delivery + address + cartStr + total + certificate)			
 			
